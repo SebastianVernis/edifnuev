@@ -31,6 +31,12 @@ id = "REPLACE_WITH_YOUR_CACHE_ID"
 binding = "RATE_LIMIT"
 id = "REPLACE_WITH_YOUR_RATE_LIMIT_ID"
 
+# KV Namespace para códigos OTP
+# Ejecutar: wrangler kv:namespace create OTP_CODES
+[[kv_namespaces]]
+binding = "OTP_CODES"
+id = "REPLACE_WITH_YOUR_OTP_CODES_ID"
+
 # R2 Storage para archivos (uploads)
 # Ejecutar: wrangler r2 bucket create edificio-admin-uploads
 [[r2_buckets]]
@@ -42,6 +48,20 @@ bucket_name = "edificio-admin-uploads"
 ENVIRONMENT = "development"
 JWT_SECRET = "dev-secret-change-in-production-IMPORTANT"
 EMAIL_SENDER = "notificaciones@edificio-admin.com"
+APP_URL = "http://localhost:8787"
+
+# Configuración SMTP (opcional - MailChannels es gratuito en Workers)
+# Si quieres usar SMTP tradicional, configura estas variables en .dev.vars
+# SMTP_HOST = "smtp.gmail.com"
+# SMTP_PORT = "587"
+# SMTP_USER = "tu-email@gmail.com"
+# SMTP_PASS = "tu-password-o-app-password"
+# SMTP_FROM = "noreply@edificio-admin.com"
+# SMTP_SECURE = "false"
+
+# Para usar API SMTP alternativa (SendGrid, Mailgun, etc.)
+# SMTP_API_URL = "https://api.sendgrid.com/v3/mail/send"
+# SMTP_API_KEY = "tu-api-key"
 
 # Configuración específica para producción
 [env.production]

@@ -15,6 +15,9 @@ import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
 // Import SAAS handlers (nuevos)
 import * as subscription from './handlers/subscription.js';
 import * as buildings from './handlers/buildings.js';
+import * as onboarding from './handlers/onboarding.js';
+import * as otp from './handlers/otp.js';
+import * as invitations from './handlers/invitations.js';
 
 // Import existing handlers (adaptados desde Express)
 import * as authHandler from './handlers/auth.js';
@@ -59,6 +62,22 @@ router.get('/api/buildings', verifyToken, buildings.list);
 router.get('/api/buildings/:id', verifyToken, buildings.getDetails);
 router.put('/api/buildings/:id', verifyToken, buildings.update);
 router.delete('/api/buildings/:id', verifyToken, buildings.remove);
+
+// Onboarding routes (NUEVAS - FLUJO DE REGISTRO)
+router.post('/api/onboarding/register', onboarding.register);
+router.post('/api/onboarding/checkout', onboarding.checkout);
+router.post('/api/onboarding/setup-building', onboarding.setupBuilding);
+
+// OTP routes (NUEVAS - VERIFICACIÓN EMAIL)
+router.post('/api/otp/send', otp.sendOtp);
+router.post('/api/otp/verify', otp.verifyOtp);
+router.post('/api/otp/resend', otp.resendOtp);
+router.get('/api/otp/status/:email', otp.getOtpStatus);
+
+// Invitation routes (NUEVAS - SISTEMA DE INVITACIONES)
+router.post('/api/invitations/send', verifyToken, invitations.sendInvitation);
+router.get('/api/invitations/validate/:token', invitations.validateToken);
+router.post('/api/invitations/activate', invitations.activateInvitation);
 
 // ============================================================================
 // RUTAS EXISTENTES - Funcionalidad actual del sistema (SIN MODIFICAR)
