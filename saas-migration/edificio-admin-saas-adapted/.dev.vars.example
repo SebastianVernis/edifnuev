@@ -1,0 +1,6 @@
+# Development Environment Variables
+# Copy this file to .dev.vars and update with your values
+
+JWT_SECRET=your-super-secret-jwt-key-change-in-production
+EMAIL_SENDER=notificaciones@edificio-admin.com
+ENVIRONMENT=development
