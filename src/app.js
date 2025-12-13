@@ -16,6 +16,8 @@ import validationRoutes from './routes/validation.routes.js';
 import auditRoutes from './routes/audit.routes.js';
 import solicitudesRoutes from './routes/solicitudes.routes.js';
 import parcialidadesRoutes from './routes/parcialidades.routes.js';
+import onboardingRoutes from './routes/onboarding.routes.js';
+import invitationsRoutes from './routes/invitations.routes.js';
 import { inicializarCuotasAnuales, actualizarCuotasVencidas } from './utils/cuotasInicializacion.js';
 
 // Configuración de variables de entorno
@@ -52,6 +54,8 @@ app.use('/api/validation', validationRoutes);
 app.use('/api/audit', auditRoutes);
 app.use('/api/solicitudes', solicitudesRoutes);
 app.use('/api/parcialidades', parcialidadesRoutes);
+app.use('/api/onboarding', onboardingRoutes);
+app.use('/api/invitations', invitationsRoutes);
 
 // Ruta para servir la aplicación frontend
 app.get('/', (req, res) => {
@@ -64,6 +68,31 @@ app.get('/admin', (req, res) => {
 
 app.get('/inquilino', (req, res) => {
   res.sendFile(path.join(publicPath, 'inquilino.html'));
+});
+
+// Rutas de onboarding
+app.get('/landing', (req, res) => {
+  res.sendFile(path.join(publicPath, 'landing.html'));
+});
+
+app.get('/register', (req, res) => {
+  res.sendFile(path.join(publicPath, 'register.html'));
+});
+
+app.get('/verify-otp', (req, res) => {
+  res.sendFile(path.join(publicPath, 'verify-otp.html'));
+});
+
+app.get('/checkout', (req, res) => {
+  res.sendFile(path.join(publicPath, 'checkout.html'));
+});
+
+app.get('/setup', (req, res) => {
+  res.sendFile(path.join(publicPath, 'setup.html'));
+});
+
+app.get('/activate', (req, res) => {
+  res.sendFile(path.join(publicPath, 'activate.html'));
 });
 
 // Middleware para manejo de errores
