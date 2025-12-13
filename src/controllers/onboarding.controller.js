@@ -3,7 +3,7 @@
  * Maneja el flujo completo de registro, OTP, checkout y configuración inicial
  */
 
-import { getData, setData } from '../data.js';
+import { readData, writeData } from '../data.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { sendOtpEmail, sendWelcomeEmail, checkEmailRateLimit } from '../utils/smtp.js';
@@ -76,7 +76,7 @@ export async function register(req, res) {
     }
 
     // Verificar si el email ya existe en usuarios
-    const data = getData();
+    const data = readData();
     const existingUser = data.usuarios.find(u => u.email === email);
     
     if (existingUser) {
@@ -412,7 +412,7 @@ export async function setupBuilding(req, res) {
     }
 
     // Crear usuario administrador
-    const data = getData();
+    const data = readData();
     const hashedPassword = await bcrypt.hash(password, 10);
     
     const nuevoUsuario = {
@@ -441,7 +441,7 @@ export async function setupBuilding(req, res) {
     };
 
     data.usuarios.push(nuevoUsuario);
-    setData(data);
+    writeData(data);
 
     // Generar token JWT
     const token = jwt.sign(

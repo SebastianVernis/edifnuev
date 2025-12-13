@@ -19,6 +19,7 @@ import parcialidadesRoutes from './routes/parcialidades.routes.js';
 import onboardingRoutes from './routes/onboarding.routes.js';
 import invitationsRoutes from './routes/invitations.routes.js';
 import { inicializarCuotasAnuales, actualizarCuotasVencidas } from './utils/cuotasInicializacion.js';
+import { getTransporter } from './utils/smtp.js';
 
 // Configuración de variables de entorno
 dotenv.config();
@@ -150,6 +151,9 @@ app.listen(PORT, async () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
   console.log('DNS configurado: http://ec2-18-223-32-141.us-east-2.compute.amazonaws.com');
   
+  // Inicializar SMTP
+  await getTransporter();
+
   // Inicializar sistema después de que el servidor esté corriendo
   await inicializarSistema();
   

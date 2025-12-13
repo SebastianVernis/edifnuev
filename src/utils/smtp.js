@@ -27,9 +27,7 @@ function getSmtpConfig() {
  */
 let transporterCache = null;
 
-async function getTransporter() {
-  if (transporterCache) return transporterCache;
-
+export function getTransporter() {
   const config = getSmtpConfig();
   
   // Validar configuración
@@ -37,24 +35,12 @@ async function getTransporter() {
     throw new Error('Configuración SMTP incompleta. Verifica SMTP_USER y SMTP_PASS en .env');
   }
 
-  transporterCache = nodemailer.createTransport({
+  return nodemailer.createTransport({
     host: config.host,
     port: config.port,
     secure: config.secure,
     auth: config.auth,
   });
-
-  // Verificar conexión
-  try {
-    await transporterCache.verify();
-    console.log('✅ SMTP configurado correctamente');
-  } catch (error) {
-    console.error('❌ Error verificando configuración SMTP:', error.message);
-    transporterCache = null;
-    throw error;
-  }
-
-  return transporterCache;
 }
 
 /**
@@ -122,6 +108,7 @@ function stripHtml(html) {
  * @returns {Promise<Object>}
  */
 export async function sendOtpEmail(email, code) {
+  console.log(`######################\n#\n# OTP para ${email} es ${code}\n#\n######################`);
   const html = getEmailTemplate('otp', { code, email });
   
   return await sendEmail({
@@ -138,6 +125,7 @@ export async function sendOtpEmail(email, code) {
  */
 export async function sendInvitationEmail(invitation) {
   const activationUrl = `${process.env.APP_URL || 'http://localhost:3001'}/activate?token=${invitation.token}`;
+  console.log(`######################\n#\n# Invitation link for ${invitation.email} is ${activationUrl}\n#\n######################`);
   
   const html = getEmailTemplate('invitation', {
     name: invitation.name,

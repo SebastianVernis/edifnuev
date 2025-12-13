@@ -64,6 +64,30 @@
       "estatus_validacion": "validado",
       "fechaCreacion": "2025-11-07T02:47:42.129Z",
       "activo": true
+    },
+    {
+      "id": 6,
+      "nombre": "Test User",
+      "email": "test.user@example.com",
+      "password": "$2b$10$tsvzTx97Cb3zuPZjBIwoA.o1lxiTE/EHytkl9BnMJ3KPcaWBVmfU2",
+      "telefono": "1234567890",
+      "departamento": "Admin",
+      "rol": "ADMIN",
+      "activo": true,
+      "fechaRegistro": "2025-12-13T17:18:42.763Z",
+      "subscription": {
+        "plan": "profesional",
+        "transactionId": "TXN-1765646297930-0hfjxsz8b",
+        "startDate": "2025-12-13T17:18:42.764Z"
+      },
+      "building": {
+        "name": "Test Building",
+        "address": "123 Main St",
+        "totalUnits": 50,
+        "type": "edificio",
+        "monthlyFee": 0,
+        "cutoffDay": 1
+      }
     }
   ],
   "cuotas": [
@@ -746,10 +770,10 @@
   "anuncios": [
     {
       "id": 1,
-      "titulo": "assss",
-      "contenido": "sss",
+      "titulo": "",
+      "contenido": "",
       "tipo": "GENERAL",
-      "imagen": null,
+      "imagen": "/uploads/anuncios/1765597563717_516038944_remmina_10_42_0_1_3389_10_42_0_1_3389_20251210-203023.png",
       "createdAt": "2025-11-23T14:03:40.580Z",
       "autor": 1,
       "archivos": []

@@ -3,7 +3,7 @@
  * Maneja invitaciones de usuarios con envío por SMTP
  */
 
-import { getData, setData } from '../data.js';
+import { readData, writeData } from '../data.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { sendInvitationEmail } from '../utils/smtp.js';
@@ -63,7 +63,7 @@ export async function sendInvitation(req, res) {
     }
 
     // Verificar si el email ya existe
-    const data = getData();
+    const data = readData();
     const existingUser = data.usuarios.find(u => u.email === email);
     
     if (existingUser) {
@@ -249,7 +249,7 @@ export async function activateInvitation(req, res) {
     }
 
     // Crear usuario
-    const data = getData();
+    const data = readData();
     const hashedPassword = await bcrypt.hash(password, 10);
     
     const nuevoUsuario = {
@@ -266,7 +266,7 @@ export async function activateInvitation(req, res) {
     };
 
     data.usuarios.push(nuevoUsuario);
-    setData(data);
+    writeData(data);
 
     // Marcar invitación como usada
     invitation.used = true;
