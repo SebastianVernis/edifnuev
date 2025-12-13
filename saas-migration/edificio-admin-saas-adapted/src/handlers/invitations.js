@@ -13,11 +13,11 @@ export async function sendInvitation(request, env) {
     const invitedBy = request.usuario.id;
     const token = generateToken();
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-    await request.db.prepare(\`
+    await request.db.prepare(`
       INSERT INTO invitations (token, email, name, role, building_id, department, invited_by, expires_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    \`).bind(token, email, name, role, buildingId, department || null, invitedBy, expiresAt.toISOString()).run();
-    const building = await request.db.prepare(\`SELECT name FROM buildings WHERE id = ?\`).bind(buildingId).first();
+    `).bind(token, email, name, role, buildingId, department || null, invitedBy, expiresAt.toISOString()).run();
+    const building = await request.db.prepare(`SELECT name FROM buildings WHERE id = ?`).bind(buildingId).first();
     await sendInvitationEmail({
       token, email, name, role, buildingName: building.name,
       invitedByName: request.usuario.nombre, expiresAt: expiresAt.toISOString()
@@ -37,9 +37,9 @@ export async function validateToken(request, env) {
   try {
     const url = new URL(request.url);
     const token = url.pathname.split('/').pop();
-    const invitation = await request.db.prepare(\`
+    const invitation = await request.db.prepare(`
       SELECT * FROM invitations WHERE token = ? AND status = 'pending'
-    \`).bind(token).first();
+    `).bind(token).first();
     if (!invitation) {
       return addCorsHeaders(new Response(JSON.stringify({
         ok: false, msg: 'Invitación no encontrada o ya utilizada'
@@ -48,7 +48,7 @@ export async function validateToken(request, env) {
     const now = new Date();
     const expiresAt = new Date(invitation.expires_at);
     if (now > expiresAt) {
-      await request.db.prepare(\`UPDATE invitations SET status = 'expired' WHERE token = ?\`).bind(token).run();
+      await request.db.prepare(`UPDATE invitations SET status = 'expired' WHERE token = ?`).bind(token).run();
       return addCorsHeaders(new Response(JSON.stringify({
         ok: false, msg: 'Invitación expirada'
       }), { status: 410, headers: { 'Content-Type': 'application/json' } }), request);
@@ -68,9 +68,9 @@ export async function activateInvitation(request, env) {
   try {
     const data = await request.json();
     const { token, password } = data;
-    const invitation = await request.db.prepare(\`
+    const invitation = await request.db.prepare(`
       SELECT * FROM invitations WHERE token = ? AND status = 'pending'
-    \`).bind(token).first();
+    `).bind(token).first();
     if (!invitation) {
       return addCorsHeaders(new Response(JSON.stringify({
         ok: false, msg: 'Invitación no válida'
@@ -80,7 +80,7 @@ export async function activateInvitation(request, env) {
       name: invitation.name, email: invitation.email, password,
       role: invitation.role, unit: invitation.department, building_id: invitation.building_id,
     });
-    await request.db.prepare(\`UPDATE invitations SET status = 'accepted', accepted_at = datetime('now') WHERE token = ?\`).bind(token).run();
+    await request.db.prepare(`UPDATE invitations SET status = 'accepted', accepted_at = datetime('now') WHERE token = ?`).bind(token).run();
     return addCorsHeaders(new Response(JSON.stringify({
       ok: true, msg: 'Cuenta activada correctamente', usuario: userResult
     }), { status: 200, headers: { 'Content-Type': 'application/json' } }), request);
