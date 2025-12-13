@@ -32,15 +32,19 @@ const DBClient = (() => {
         cache.delete(cacheKey);
       }
 
-      const token = Auth.getToken();
+      // Get token from localStorage (check all possible keys)
+      const token = localStorage.getItem('token') || localStorage.getItem('edificio_token') || localStorage.getItem('edificio-token');
       
       const requestOptions = {
         method,
         headers: {
-          'Content-Type': 'application/json',
-          'x-token': token
+          'Content-Type': 'application/json'
         }
       };
+      
+      if (token) {
+        requestOptions.headers['Authorization'] = `Bearer ${token}`;
+      }
       
       if (body && method !== 'GET') {
         requestOptions.body = JSON.stringify(body);

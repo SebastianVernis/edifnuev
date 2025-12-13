@@ -4,9 +4,22 @@
 
 // Función para verificar el token JWT
 export async function verifyToken(request, env) {
-  // Obtener el token del encabezado Authorization
+  // Obtener el token del encabezado (soportar múltiples formatos)
   const authHeader = request.headers.get('Authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  const xAuthToken = request.headers.get('x-auth-token');
+  const xToken = request.headers.get('x-token');
+  
+  let token = null;
+  
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    token = authHeader.split(' ')[1];
+  } else if (xAuthToken) {
+    token = xAuthToken;
+  } else if (xToken) {
+    token = xToken;
+  }
+  
+  if (!token) {
     return new Response(JSON.stringify({ 
       success: false, 
       message: 'Acceso no autorizado. Token no proporcionado.' 
@@ -15,8 +28,6 @@ export async function verifyToken(request, env) {
       headers: { 'Content-Type': 'application/json' }
     });
   }
-
-  const token = authHeader.split(' ')[1];
 
   try {
     // Decodificar y verificar el token
@@ -41,7 +52,8 @@ export async function verifyToken(request, env) {
 
     // Si la verificación es exitosa, añadir el payload decodificado a la solicitud
     request.user = payload;
-    return request;
+    request.usuario = payload; // Alias para compatibilidad
+    // No retornar nada (undefined) para que el router continúe
   } catch (error) {
     console.error('Error verificando token:', error);
     return new Response(JSON.stringify({ 

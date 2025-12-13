@@ -10,7 +10,12 @@ class Usuario {
    */
   static async create(db, userData) {
     try {
-      const { nombre, email, password, departamento, rol = 'INQUILINO', telefono, permisos } = userData;
+      const { nombre, name, email, password, departamento, rol, role, telefono, phone, permisos, building_id } = userData;
+      
+      // Normalizar nombres de campos (soportar ambos formatos)
+      const finalName = nombre || name;
+      const finalRole = role || rol || 'INQUILINO';
+      const finalPhone = telefono || phone;
       
       // Verificar si el email ya existe
       const existeEmail = await db.prepare(
@@ -27,7 +32,7 @@ class Usuario {
       // Configurar permisos según el rol (como JSON string)
       let permisosJson = '{}';
       
-      if (rol === 'COMITE') {
+      if (finalRole === 'COMITE') {
         permisosJson = JSON.stringify({
           anuncios: permisos?.anuncios || false,
           gastos: permisos?.gastos || false,
@@ -36,7 +41,7 @@ class Usuario {
           usuarios: permisos?.usuarios || false,
           cierres: permisos?.cierres || false
         });
-      } else if (rol === 'ADMIN') {
+      } else if (finalRole === 'ADMIN') {
         permisosJson = JSON.stringify({
           anuncios: true,
           gastos: true,
@@ -52,19 +57,20 @@ class Usuario {
       await db.prepare(`
         INSERT INTO usuarios (
           id, nombre, email, password, departamento, rol, telefono,
-          permisos, activo, fechaCreacion
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          permisos, activo, fechaCreacion, building_id
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).bind(
         id,
-        nombre,
+        finalName,
         email,
         hashedPassword,
-        departamento,
-        rol,
-        telefono || null,
+        departamento || 'ADMIN',
+        finalRole,
+        finalPhone || null,
         permisosJson,
         1,
-        new Date().toISOString()
+        new Date().toISOString(),
+        building_id || null
       ).run();
       
       // Retornar usuario sin contraseña

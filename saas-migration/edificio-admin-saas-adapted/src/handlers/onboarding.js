@@ -43,7 +43,7 @@ export async function register(request, env) {
 export async function checkout(request, env) {
   try {
     const data = await request.json();
-    const { email, cardNumber } = data;
+    const { email, cardNumber, customPrice } = data;
     const pendingUser = await request.db.prepare(`
       SELECT * FROM pending_users WHERE email = ? AND otp_verified = 1
     `).bind(email).first();
@@ -52,12 +52,18 @@ export async function checkout(request, env) {
         ok: false, msg: 'Debes verificar tu email primero'
       }), { status: 403, headers: { 'Content-Type': 'application/json' } }), request);
     }
-    const transactionId = `TXN-\${Date.now()}-\${Math.random().toString(36).substr(2, 9)}`;
+    const transactionId = `TXN-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const plan = PLANS[pendingUser.selected_plan];
+    
+    // Si es plan personalizado, usar el precio enviado desde el frontend
+    const amount = (pendingUser.selected_plan === 'personalizado' && customPrice) 
+      ? customPrice 
+      : plan.price;
+    
     await request.db.prepare(`
       INSERT INTO mockup_payments (pending_user_id, plan, amount, card_last_four, transaction_id)
       VALUES (?, ?, ?, ?, ?)
-    `).bind(pendingUser.id, pendingUser.selected_plan, plan.price, cardNumber.slice(-4), transactionId).run();
+    `).bind(pendingUser.id, pendingUser.selected_plan, amount, cardNumber.slice(-4), transactionId).run();
     await request.db.prepare(`UPDATE pending_users SET checkout_completed = 1 WHERE email = ?`).bind(email).run();
     return addCorsHeaders(new Response(JSON.stringify({
       ok: true, msg: 'Pago procesado correctamente', data: { transactionId }
@@ -65,7 +71,7 @@ export async function checkout(request, env) {
   } catch (error) {
     console.error('Error en checkout:', error);
     return addCorsHeaders(new Response(JSON.stringify({
-      ok: false, msg: 'Error procesando el pago'
+      ok: false, msg: 'Error procesando el pago', error: error.message
     }), { status: 500, headers: { 'Content-Type': 'application/json' } }), request);
   }
 }
@@ -73,37 +79,110 @@ export async function checkout(request, env) {
 export async function setupBuilding(request, env) {
   try {
     const data = await request.json();
-    const { email, buildingData, adminPassword } = data;
+    const { email, buildingData, adminPassword, adminData, smtpConfig, patrimonies } = data;
+    
     const pendingUser = await request.db.prepare(`
       SELECT * FROM pending_users WHERE email = ? AND checkout_completed = 1
     `).bind(email).first();
+    
     if (!pendingUser) {
       return addCorsHeaders(new Response(JSON.stringify({
         ok: false, msg: 'Completa los pasos anteriores primero'
       }), { status: 403, headers: { 'Content-Type': 'application/json' } }), request);
     }
+    
+    // Crear edificio con todos los datos
     const buildingResult = await request.db.prepare(`
-      INSERT INTO buildings (name, address, total_units, building_type, monthly_fee, cutoff_day, setup_completed)
-      VALUES (?, ?, ?, ?, ?, ?, 1)
+      INSERT INTO buildings (
+        name, address, total_units, building_type, 
+        monthly_fee, extraordinary_fee, cutoff_day,
+        payment_due_days, late_fee_percent,
+        setup_completed, setup_completed_at
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, datetime('now'))
     `).bind(
-      buildingData.name, buildingData.address, buildingData.totalUnits,
-      buildingData.type || 'edificio', buildingData.monthlyFee || 0, buildingData.cutoffDay || 1
+      buildingData.name,
+      buildingData.address,
+      buildingData.totalUnits,
+      buildingData.type || 'edificio',
+      buildingData.monthlyFee || 0,
+      buildingData.extraordinaryFee || 0,
+      buildingData.cutoffDay || 1,
+      buildingData.paymentDueDays || 5,
+      buildingData.lateFeePercent || 2.0
     ).run();
+    
     const buildingId = buildingResult.meta.last_row_id;
+    
+    // Crear usuario administrador
+    const adminName = adminData?.name || pendingUser.full_name;
+    const adminPhone = adminData?.phone || pendingUser.phone;
+    
     const userResult = await Usuario.create(request.db, {
-      name: pendingUser.full_name, email: pendingUser.email, password: adminPassword,
-      role: 'ADMIN', phone: pendingUser.phone, building_id: buildingId,
+      name: adminName,
+      email: pendingUser.email,
+      password: adminPassword,
+      role: 'ADMIN',
+      phone: adminPhone,
+      building_id: buildingId,
     });
-    await request.db.prepare(`UPDATE pending_users SET setup_completed = 1 WHERE email = ?`).bind(email).run();
+    
+    // Crear fondos/patrimonios si se proporcionaron
+    if (patrimonies && patrimonies.length > 0) {
+      for (const patrimony of patrimonies) {
+        try {
+          await request.db.prepare(`
+            INSERT INTO fondos (nombre, tipo, saldo, descripcion, building_id, created_at)
+            VALUES (?, 'PATRIMONIO', ?, ?, ?, datetime('now'))
+          `).bind(
+            patrimony.name,
+            patrimony.amount,
+            'Fondo inicial del condominio',
+            buildingId
+          ).run();
+        } catch (fondoError) {
+          console.error('Error creando fondo:', fondoError);
+        }
+      }
+    }
+    
+    // Marcar pending_user como completado
+    await request.db.prepare(`
+      UPDATE pending_users 
+      SET setup_completed = 1, completed_at = datetime('now')
+      WHERE email = ?
+    `).bind(email).run();
+    
+    // Generar token
     const token = await generateToken({ id: userResult.id, rol: 'ADMIN' }, env);
-    await sendWelcomeEmail({ email: pendingUser.email, name: pendingUser.full_name, buildingName: buildingData.name }, env);
+    
+    // Enviar email de bienvenida
+    try {
+      await sendWelcomeEmail({
+        email: pendingUser.email,
+        name: adminName,
+        buildingName: buildingData.name
+      }, env);
+    } catch (emailError) {
+      console.error('Error enviando email de bienvenida:', emailError);
+      // No fallar si el email falla
+    }
+    
     return addCorsHeaders(new Response(JSON.stringify({
-      ok: true, msg: 'Configuración completada', token, usuario: userResult
+      ok: true,
+      msg: 'Configuración completada',
+      token,
+      usuario: userResult
     }), { status: 200, headers: { 'Content-Type': 'application/json' } }), request);
+    
   } catch (error) {
     console.error('Error en setupBuilding:', error);
+    console.error('Error stack:', error.stack);
     return addCorsHeaders(new Response(JSON.stringify({
-      ok: false, msg: 'Error en la configuración'
+      ok: false,
+      msg: 'Error en la configuración: ' + error.message,
+      error: error.message,
+      stack: error.stack
     }), { status: 500, headers: { 'Content-Type': 'application/json' } }), request);
   }
 }

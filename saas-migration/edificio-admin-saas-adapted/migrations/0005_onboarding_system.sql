@@ -14,10 +14,11 @@ CREATE TABLE IF NOT EXISTS otp_codes (
     expires_at DATETIME NOT NULL,
     verified BOOLEAN DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    verified_at DATETIME,
-    INDEX idx_otp_email (email),
-    INDEX idx_otp_expires (expires_at)
+    verified_at DATETIME
 );
+
+CREATE INDEX IF NOT EXISTS idx_otp_email ON otp_codes(email);
+CREATE INDEX IF NOT EXISTS idx_otp_expires ON otp_codes(expires_at);
 
 -- Tabla para invitaciones de usuarios
 CREATE TABLE IF NOT EXISTS invitations (
@@ -34,12 +35,13 @@ CREATE TABLE IF NOT EXISTS invitations (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     accepted_at DATETIME,
     FOREIGN KEY (building_id) REFERENCES buildings(id) ON DELETE CASCADE,
-    FOREIGN KEY (invited_by) REFERENCES usuarios(id) ON DELETE CASCADE,
-    INDEX idx_invitation_token (token),
-    INDEX idx_invitation_email (email),
-    INDEX idx_invitation_status (status),
-    INDEX idx_invitation_expires (expires_at)
+    FOREIGN KEY (invited_by) REFERENCES usuarios(id) ON DELETE CASCADE
 );
+
+CREATE INDEX IF NOT EXISTS idx_invitation_token ON invitations(token);
+CREATE INDEX IF NOT EXISTS idx_invitation_email ON invitations(email);
+CREATE INDEX IF NOT EXISTS idx_invitation_status ON invitations(status);
+CREATE INDEX IF NOT EXISTS idx_invitation_expires ON invitations(expires_at);
 
 -- Tabla para registro temporal de usuarios (pre-verificación)
 CREATE TABLE IF NOT EXISTS pending_users (
@@ -54,10 +56,11 @@ CREATE TABLE IF NOT EXISTS pending_users (
     setup_completed BOOLEAN DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     verified_at DATETIME,
-    completed_at DATETIME,
-    INDEX idx_pending_email (email),
-    INDEX idx_pending_status (otp_verified, checkout_completed, setup_completed)
+    completed_at DATETIME
 );
+
+CREATE INDEX IF NOT EXISTS idx_pending_email ON pending_users(email);
+CREATE INDEX IF NOT EXISTS idx_pending_status ON pending_users(otp_verified, checkout_completed, setup_completed);
 
 -- Agregar campos de onboarding a la tabla usuarios (si no existen)
 -- Nota: SQLite no soporta ALTER TABLE IF NOT EXISTS, usar con precaución
@@ -107,10 +110,11 @@ CREATE TABLE IF NOT EXISTS mockup_payments (
     transaction_id TEXT UNIQUE NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (pending_user_id) REFERENCES pending_users(id) ON DELETE SET NULL,
-    FOREIGN KEY (user_id) REFERENCES usuarios(id) ON DELETE SET NULL,
-    INDEX idx_payment_transaction (transaction_id),
-    INDEX idx_payment_status (payment_status)
+    FOREIGN KEY (user_id) REFERENCES usuarios(id) ON DELETE SET NULL
 );
+
+CREATE INDEX IF NOT EXISTS idx_payment_transaction ON mockup_payments(transaction_id);
+CREATE INDEX IF NOT EXISTS idx_payment_status ON mockup_payments(payment_status);
 
 -- Tabla para logs de envío de emails
 CREATE TABLE IF NOT EXISTS email_logs (
@@ -120,11 +124,12 @@ CREATE TABLE IF NOT EXISTS email_logs (
     subject TEXT NOT NULL,
     status TEXT DEFAULT 'sent' CHECK(status IN ('sent', 'failed', 'pending')),
     error_message TEXT,
-    sent_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_email_recipient (recipient),
-    INDEX idx_email_type (email_type),
-    INDEX idx_email_status (status)
+    sent_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE INDEX IF NOT EXISTS idx_email_recipient ON email_logs(recipient);
+CREATE INDEX IF NOT EXISTS idx_email_type ON email_logs(email_type);
+CREATE INDEX IF NOT EXISTS idx_email_status ON email_logs(status);
 
 -- Índices adicionales para optimización
 CREATE INDEX IF NOT EXISTS idx_usuarios_email_verified ON usuarios(email_verified);

@@ -1,10 +1,7 @@
 name = "edificio-admin-saas-adapted"
 main = "src/index.js"
 compatibility_date = "2024-11-12"
-
-# Assets configuration for static files
-[site]
-bucket = "./public"
+assets = { directory = "./public", binding = "ASSETS" }
 
 # D1 Database - NOTA: Actualizar con tu database_id después de crear la DB
 # Ejecutar: wrangler d1 create edificio_admin_db
@@ -18,6 +15,7 @@ database_id = "807560dd-74a4-43e4-81cb-f3486506fbfe"
 [[kv_namespaces]]
 binding = "SESSIONS"
 id = "08cfc405ae2640a59169aaaa21377c98"
+
 
 # KV Namespace para caché
 # Ejecutar: wrangler kv:namespace create CACHE
@@ -45,10 +43,10 @@ bucket_name = "edificio-admin-uploads"
 
 # Variables de entorno
 [vars]
-ENVIRONMENT = "development"
-JWT_SECRET = "dev-secret-change-in-production-IMPORTANT"
+ENVIRONMENT = "production"
+JWT_SECRET = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NjU2NTQyMjl9.q5GaiRMArOEz-V5QS0293GLdNPd8q_iciOZv1jvgTil2-tFsgwv2D1B0L0tfLhOrs3FKJzbyEzVi8Lrlo8bb9kyzafXtg1RUjTnRgMJKNqgr3e_tfPIGqJXf0njKJshastqS1x-v6KSzYTYEG49kJ8ZzgPpY_0vxyhy_s8udtO4VzX8X4E4xFtgiucw39LpqrzDEIBv6Ngm2XIDPRBxLh2Uxv8WlYpAy9onjexShSDlvJqqYkNddhEPo3uiTzTTrNKl8b_YcK53pGEPoIQwpbJ9WqueU6Rn4nc56FdjMlCi-_46l7JRg3Nq3W0cRDv_1hOrjGhhHIhLcMKNGRZarcA"
 EMAIL_SENDER = "notificaciones@edificio-admin.com"
-APP_URL = "http://localhost:8787"
+APP_URL = "https://edificio-admin-saas-adapted.sebastianvernis.workers.dev/"
 
 # Configuración SMTP (opcional - MailChannels es gratuito en Workers)
 # Si quieres usar SMTP tradicional, configura estas variables en .dev.vars

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - Edificio Admin</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #4F46E5;
+      --primary-dark: #4338CA;
+      --secondary: #10B981;
+      --dark: #1F2937;
+      --light: #F9FAFB;
+      --gray: #6B7280;
+      --danger: #EF4444;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--light);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .header h1 {
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .header .subtitle {
+      color: var(--gray);
+    }
+
+    .checkout-grid {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 2rem;
+    }
+
+    .payment-form, .order-summary {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: var(--dark);
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--dark);
+      font-weight: 500;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #E5E7EB;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .payment-icons {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .payment-icons i {
+      font-size: 2rem;
+      color: var(--gray);
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem 0;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .summary-item:last-child {
+      border-bottom: none;
+    }
+
+    .summary-item.total {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--primary);
+      border-top: 2px solid var(--dark);
+      margin-top: 1rem;
+      padding-top: 1rem;
+    }
+
+    .plan-details {
+      background: var(--light);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .plan-details h3 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .plan-details ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .plan-details li {
+      padding: 0.25rem 0;
+      color: var(--gray);
+    }
+
+    .plan-details li i {
+      color: var(--secondary);
+      margin-right: 0.5rem;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 1rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn:disabled {
+      background: var(--gray);
+      cursor: not-allowed;
+    }
+
+    .secure-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--gray);
+      font-size: 0.875rem;
+      margin-top: 1rem;
+    }
+
+    .secure-badge i {
+      color: var(--secondary);
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .alert.error {
+      background: #FEE2E2;
+      color: var(--danger);
+      display: block;
+    }
+
+    .alert.success {
+      background: #D1FAE5;
+      color: var(--secondary);
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .checkout-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .order-summary {
+        order: -1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Completa tu suscripción</h1>
+      <p class="subtitle">Pago seguro con cifrado SSL</p>
+    </div>
+
+    <div class="checkout-grid">
+      <div class="payment-form">
+        <h2><i class="fas fa-credit-card"></i> Información de pago</h2>
+        
+        <div id="alert" class="alert"></div>
+
+        <form id="checkoutForm">
+          <div class="form-group">
+            <label for="cardName">Nombre en la tarjeta *</label>
+            <input type="text" id="cardName" required>
+          </div>
+
+          <div class="form-group">
+            <label for="cardNumber">Número de tarjeta *</label>
+            <input type="text" id="cardNumber" maxlength="19" placeholder="1234 5678 9012 3456" required>
+            <div class="payment-icons">
+              <i class="fab fa-cc-visa"></i>
+              <i class="fab fa-cc-mastercard"></i>
+              <i class="fab fa-cc-amex"></i>
+            </div>
+          </div>
+
+          <div class="card-grid">
+            <div class="form-group">
+              <label for="cardExpiry">Vencimiento *</label>
+              <input type="text" id="cardExpiry" placeholder="MM/AA" maxlength="5" required>
+            </div>
+
+            <div class="form-group">
+              <label for="cardCVV">CVV *</label>
+              <input type="text" id="cardCVV" maxlength="4" placeholder="123" required>
+            </div>
+
+            <div class="form-group">
+              <label for="cardZip">CP *</label>
+              <input type="text" id="cardZip" maxlength="5" placeholder="12345" required>
+            </div>
+          </div>
+
+          <button type="submit" class="btn" id="submitBtn">
+            <i class="fas fa-lock"></i>
+            Procesar pago
+          </button>
+
+          <div class="secure-badge">
+            <i class="fas fa-shield-alt"></i>
+            Pago 100% seguro y encriptado
+          </div>
+        </form>
+      </div>
+
+      <div class="order-summary">
+        <h2><i class="fas fa-receipt"></i> Resumen del pedido</h2>
+        
+        <div class="plan-details" id="planDetails">
+          <!-- Plan details will be inserted here -->
+        </div>
+
+        <div class="summary-item">
+          <span>Subtotal</span>
+          <span id="subtotal">$0</span>
+        </div>
+
+        <div class="summary-item">
+          <span>IVA (16%)</span>
+          <span id="iva">$0</span>
+        </div>
+
+        <div class="summary-item total">
+          <span>Total</span>
+          <span id="total">$0</span>
+        </div>
+
+        <div class="secure-badge">
+          <i class="fas fa-calendar-alt"></i>
+          Primer cargo hoy, luego mensual
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const PLANS = {
+      basico: { name: 'Plan Básico', price: 499, maxUnits: 20 },
+      profesional: { name: 'Plan Profesional', price: 999, maxUnits: 50 },
+      empresarial: { name: 'Plan Empresarial', price: 1999, maxUnits: 200 },
+      personalizado: { name: 'Plan Personalizado', price: 2999, maxUnits: -1 }
+    };
+
+    const email = localStorage.getItem('onboarding_email');
+    const planKey = localStorage.getItem('onboarding_plan');
+
+    if (!email || !planKey) {
+      window.location.href = '/registro.html';
+    }
+
+    // Check if custom package
+    const customPackage = localStorage.getItem('custom_package');
+    let plan = PLANS[planKey];
+    
+    if (planKey === 'personalizado' && customPackage) {
+      const pkg = JSON.parse(customPackage);
+      plan = {
+        name: 'Plan Personalizado',
+        price: pkg.price,
+        maxUnits: pkg.units
+      };
+    }
+    
+    // Display plan details
+    const planDetailsEl = document.getElementById('planDetails');
+    planDetailsEl.innerHTML = `
+      <h3>${plan.name}</h3>
+      <ul>
+        <li><i class="fas fa-check"></i> ${plan.maxUnits === -1 ? 'Unidades ilimitadas' : `Hasta ${plan.maxUnits} unidades`}</li>
+        <li><i class="fas fa-check"></i> Gestión completa de cuotas</li>
+        <li><i class="fas fa-check"></i> Control de gastos</li>
+        <li><i class="fas fa-check"></i> Portal para residentes</li>
+        <li><i class="fas fa-check"></i> Soporte técnico</li>
+      </ul>
+    `;
+
+    // Calculate totals
+    const subtotal = plan.price;
+    const iva = subtotal * 0.16;
+    const total = subtotal + iva;
+
+    document.getElementById('subtotal').textContent = `$${subtotal.toLocaleString('es-MX')}`;
+    document.getElementById('iva').textContent = `$${iva.toLocaleString('es-MX')}`;
+    document.getElementById('total').textContent = `$${total.toLocaleString('es-MX')} MXN`;
+
+    // Card number formatting
+    document.getElementById('cardNumber').addEventListener('input', (e) => {
+      let value = e.target.value.replace(/\s/g, '');
+      let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+      e.target.value = formattedValue;
+    });
+
+    // Expiry formatting
+    document.getElementById('cardExpiry').addEventListener('input', (e) => {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length >= 2) {
+        value = value.slice(0, 2) + '/' + value.slice(2, 4);
+      }
+      e.target.value = value;
+    });
+
+    // CVV and ZIP only numbers
+    document.getElementById('cardCVV').addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/\D/g, '');
+    });
+
+    document.getElementById('cardZip').addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/\D/g, '');
+    });
+
+    // Form submission
+    document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const submitBtn = document.getElementById('submitBtn');
+      const alert = document.getElementById('alert');
+      
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando pago...';
+      
+      const data = {
+        email,
+        cardNumber: document.getElementById('cardNumber').value.replace(/\s/g, ''),
+        cardName: document.getElementById('cardName').value,
+        cardExpiry: document.getElementById('cardExpiry').value,
+        cardCVV: document.getElementById('cardCVV').value,
+        cardZip: document.getElementById('cardZip').value,
+        customPrice: planKey === 'personalizado' && customPackage ? JSON.parse(customPackage).price : undefined
+      };
+
+      try {
+        const response = await fetch('/api/onboarding/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (result.ok) {
+          alert.className = 'alert success';
+          alert.textContent = '¡Pago procesado exitosamente! Redirigiendo...';
+          
+          setTimeout(() => {
+            window.location.href = '/setup-edificio.html';
+          }, 1500);
+        } else {
+          throw new Error(result.msg || 'Error procesando el pago');
+        }
+      } catch (error) {
+        alert.className = 'alert error';
+        alert.textContent = error.message;
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-lock"></i> Procesar pago';
+      }
+    });
+  </script>
+</body>
+</html>

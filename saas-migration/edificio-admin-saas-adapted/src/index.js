@@ -10,7 +10,6 @@ import { Router } from 'itty-router';
 import { handleCors, addCorsHeaders } from './middleware/cors.js';
 import { verifyToken } from './middleware/auth.js';
 import { withDb } from './middleware/database.js';
-import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
 
 // Import SAAS handlers (nuevos)
 import * as subscription from './handlers/subscription.js';
@@ -89,6 +88,18 @@ router.post('/api/auth/registro', authHandler.registro);
 router.get('/api/auth/renew', verifyToken, authHandler.renovarToken);
 router.get('/api/auth/perfil', verifyToken, authHandler.getPerfil);
 
+// Debug endpoint (temporal)
+router.get('/api/debug/token/:email', async (request, env) => {
+  const email = request.params.email;
+  const user = await request.db.prepare('SELECT id, nombre, email, rol FROM usuarios WHERE email = ?').bind(email).first();
+  if (!user) return new Response(JSON.stringify({ ok: false, msg: 'Usuario no encontrado' }), { status: 404, headers: { 'Content-Type': 'application/json' } });
+  
+  const { generateToken } = await import('./middleware/auth.js');
+  const token = await generateToken({ id: user.id, rol: user.rol }, env);
+  
+  return new Response(JSON.stringify({ ok: true, token, user }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+});
+
 // Usuarios routes
 router.get('/api/usuarios', verifyToken, usuariosHandler.getAll);
 router.get('/api/usuarios/:id', verifyToken, usuariosHandler.getById);
@@ -100,6 +111,7 @@ router.delete('/api/usuarios/:id', verifyToken, usuariosHandler.remove);
 router.get('/api/cuotas', verifyToken, cuotasHandler.getAll);
 router.get('/api/cuotas/departamento/:departamento', verifyToken, cuotasHandler.getByDepartamento);
 router.post('/api/cuotas', verifyToken, cuotasHandler.create);
+router.post('/api/cuotas/generar', verifyToken, cuotasHandler.create); // Alias para generar masivo
 router.put('/api/cuotas/:id', verifyToken, cuotasHandler.update);
 router.delete('/api/cuotas/:id', verifyToken, cuotasHandler.remove);
 router.post('/api/cuotas/:id/pagar', verifyToken, cuotasHandler.pagar);
@@ -188,96 +200,43 @@ export default {
         return response;
       }
       
-      // Servir archivos estáticos
-      if (env.__STATIC_CONTENT) {
+      // Servir archivos estáticos usando el nuevo Assets binding
+      if (env.ASSETS) {
         try {
-          const manifest = env.__STATIC_CONTENT_MANIFEST 
-            ? JSON.parse(env.__STATIC_CONTENT_MANIFEST) 
-            : {};
+          // Intentar obtener el asset
+          const asset = await env.ASSETS.fetch(request);
           
-          return await getAssetFromKV(
-            {
-              request,
-              waitUntil: ctx.waitUntil.bind(ctx),
-            },
-            {
-              ASSET_NAMESPACE: env.__STATIC_CONTENT,
-              ASSET_MANIFEST: manifest,
-            }
-          );
-        } catch (e) {
-          // Si el archivo no existe, intentar servir index.html (SPA fallback)
-          if (e.status === 404) {
-            // Para rutas de admin e inquilino, servir el HTML correspondiente
-            if (url.pathname === '/admin') {
-              try {
-                const manifest = env.__STATIC_CONTENT_MANIFEST 
-                  ? JSON.parse(env.__STATIC_CONTENT_MANIFEST) 
-                  : {};
-                
-                return await getAssetFromKV(
-                  {
-                    request: new Request(`${url.origin}/admin.html`, request),
-                    waitUntil: ctx.waitUntil.bind(ctx),
-                  },
-                  {
-                    ASSET_NAMESPACE: env.__STATIC_CONTENT,
-                    ASSET_MANIFEST: manifest,
-                  }
-                );
-              } catch (e2) {
-                console.error('Error loading admin.html:', e2);
-              }
-            } else if (url.pathname === '/inquilino') {
-              try {
-                const manifest = env.__STATIC_CONTENT_MANIFEST 
-                  ? JSON.parse(env.__STATIC_CONTENT_MANIFEST) 
-                  : {};
-                
-                return await getAssetFromKV(
-                  {
-                    request: new Request(`${url.origin}/inquilino.html`, request),
-                    waitUntil: ctx.waitUntil.bind(ctx),
-                  },
-                  {
-                    ASSET_NAMESPACE: env.__STATIC_CONTENT,
-                    ASSET_MANIFEST: manifest,
-                  }
-                );
-              } catch (e2) {
-                console.error('Error loading inquilino.html:', e2);
-              }
-            }
-            
-            // Por defecto, servir index.html
-            try {
-              const manifest = env.__STATIC_CONTENT_MANIFEST 
-                ? JSON.parse(env.__STATIC_CONTENT_MANIFEST) 
-                : {};
-              
-              return await getAssetFromKV(
-                {
-                  request: new Request(`${url.origin}/index.html`, request),
-                  waitUntil: ctx.waitUntil.bind(ctx),
-                },
-                {
-                  ASSET_NAMESPACE: env.__STATIC_CONTENT,
-                  ASSET_MANIFEST: manifest,
-                }
-              );
-            } catch (e2) {
-              return new Response('Not Found', { status: 404 });
-            }
+          if (asset && asset.status !== 404) {
+            return asset;
           }
-          throw e;
+          
+          // Si no se encuentra, intentar servir HTML según la ruta
+          let htmlPath = '/index.html';
+          
+          if (url.pathname === '/admin' || url.pathname === '/admin/') {
+            htmlPath = '/admin.html';
+          } else if (url.pathname === '/inquilino' || url.pathname === '/inquilino/') {
+            htmlPath = '/inquilino.html';
+          } else if (url.pathname === '/' || url.pathname === '') {
+            htmlPath = '/index.html';
+          }
+          
+          const htmlRequest = new Request(new URL(htmlPath, url.origin), request);
+          const htmlAsset = await env.ASSETS.fetch(htmlRequest);
+          
+          if (htmlAsset && htmlAsset.status === 200) {
+            return htmlAsset;
+          }
+          
+          return new Response('Not Found', { status: 404 });
+        } catch (e) {
+          console.error('Asset error:', e);
+          return new Response(`Error: ${e.message}`, { status: 500 });
         }
       }
       
-      // Fallback para desarrollo sin assets configurados
-      return new Response('Página no encontrada. Configura los assets en wrangler.toml', { 
-        status: 404,
-        headers: { 'Content-Type': 'text/plain; charset=utf-8' }
-      });
+      return new Response('Assets not configured', { status: 500 });
+
     } catch (error) {
       // General error handler
       console.error('Unhandled error:', error);

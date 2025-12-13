@@ -1382,9 +1382,10 @@ async function editarUsuario(userId) {
     }
     
     const data = await response.json();
-    const user = data.usuarios.find(u => u.id === parseInt(userId));
+    const user = data.usuarios.find(u => u.id === userId);
     
     if (!user) {
+      console.error('Usuario no encontrado. userId:', userId, 'usuarios:', data.usuarios);
       alert('Usuario no encontrado');
       return;
     }
