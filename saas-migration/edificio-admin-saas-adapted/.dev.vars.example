@@ -6,6 +6,10 @@ EMAIL_SENDER=notificaciones@edificio-admin.com
 ENVIRONMENT=development
 APP_URL=http://localhost:8787
 
+# Testing Mode - Skip OTP validation (for automated testing)
+# Set to 'true' to bypass OTP verification in checkout and setup
+SKIP_OTP_VALIDATION=false
+
 # ============================================================================
 # EMAIL CONFIGURATION
 # ============================================================================

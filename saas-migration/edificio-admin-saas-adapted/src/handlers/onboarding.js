@@ -44,12 +44,17 @@ export async function checkout(request, env) {
   try {
     const data = await request.json();
     const { email, cardNumber, customPrice } = data;
+    
+    // Modo testing: Permitir checkout sin OTP si SKIP_OTP_VALIDATION está habilitado
+    const skipOtpValidation = env.SKIP_OTP_VALIDATION === 'true' || env.ENVIRONMENT === 'development';
+    
     const pendingUser = await request.db.prepare(`
-      SELECT * FROM pending_users WHERE email = ? AND otp_verified = 1
+      SELECT * FROM pending_users WHERE email = ?${skipOtpValidation ? '' : ' AND otp_verified = 1'}
     `).bind(email).first();
+    
     if (!pendingUser) {
       return addCorsHeaders(new Response(JSON.stringify({
-        ok: false, msg: 'Debes verificar tu email primero'
+        ok: false, msg: skipOtpValidation ? 'Usuario no encontrado' : 'Debes verificar tu email primero'
       }), { status: 403, headers: { 'Content-Type': 'application/json' } }), request);
     }
     const transactionId = `TXN-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -81,8 +86,11 @@ export async function setupBuilding(request, env) {
     const data = await request.json();
     const { email, buildingData, adminPassword, adminData, smtpConfig, patrimonies } = data;
     
+    // Modo testing: Permitir setup sin checkout si SKIP_OTP_VALIDATION está habilitado
+    const skipValidation = env.SKIP_OTP_VALIDATION === 'true' || env.ENVIRONMENT === 'development';
+    
     const pendingUser = await request.db.prepare(`
-      SELECT * FROM pending_users WHERE email = ? AND checkout_completed = 1
+      SELECT * FROM pending_users WHERE email = ?${skipValidation ? '' : ' AND checkout_completed = 1'}
     `).bind(email).first();
     
     if (!pendingUser) {
