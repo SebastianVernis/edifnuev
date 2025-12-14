@@ -32,13 +32,6 @@ function getSmtpConfig(env) {
  */
 export async function sendEmail({ to, subject, html, text }, env) {
   try {
-    const config = getSmtpConfig(env);
-    
-    // Validar configuración
-    if (!config.user || !config.pass) {
-      throw new Error('Configuración SMTP incompleta. Verifica SMTP_USER y SMTP_PASS');
-    }
-    
     // Validar destinatario
     if (!to || !to.includes('@')) {
       throw new Error('Email destinatario inválido');
@@ -46,16 +39,22 @@ export async function sendEmail({ to, subject, html, text }, env) {
     
     // Construir el email en formato MIME
     const emailContent = buildMimeMessage({
-      from: config.from,
+      from: env.SMTP_FROM || 'Edificio Admin <onboarding@resend.dev>',
       to,
       subject,
       html,
       text: text || stripHtml(html),
     });
     
-    // Enviar usando fetch a API SMTP (MailChannels para Cloudflare Workers)
-    // Alternativa: usar servicio externo como SendGrid, Mailgun, etc.
-    const response = await sendViaMailChannels(emailContent, env);
+    // Intentar enviar con Resend primero (si está configurado)
+    let response;
+    if (env.RESEND_API_KEY) {
+      console.log('Enviando email vía Resend...');
+      response = await sendViaResend(emailContent, env);
+    } else {
+      console.log('RESEND_API_KEY no configurado, usando MailChannels...');
+      response = await sendViaMailChannels(emailContent, env);
+    }
     
     // Log del envío
     await logEmail(env.DB, {
@@ -90,8 +89,50 @@ export async function sendEmail({ to, subject, html, text }, env) {
 }
 
 /**
- * Enviar email usando MailChannels (recomendado para Cloudflare Workers)
- * MailChannels es gratuito para Workers y no requiere configuración adicional
+ * Enviar email usando Resend (recomendado para Workers sin dominio propio)
+ * 3000 emails/mes gratis, sin configuración DNS
+ */
+async function sendViaResend(emailContent, env) {
+  try {
+    if (!env.RESEND_API_KEY) {
+      throw new Error('RESEND_API_KEY no configurado');
+    }
+
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: env.SMTP_FROM || 'Edificio Admin <onboarding@resend.dev>',
+        to: [emailContent.to],
+        subject: emailContent.subject,
+        html: emailContent.html,
+        text: emailContent.text,
+      }),
+    });
+    
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(`Resend error: ${error}`);
+    }
+    
+    const result = await response.json();
+    console.log('Email enviado vía Resend:', result.id);
+    
+    return { ok: true, msg: 'Email enviado correctamente', emailId: result.id };
+  } catch (error) {
+    console.error('Error con Resend:', error);
+    
+    // Fallback: intentar con MailChannels o SMTP
+    return await sendViaMailChannels(emailContent, env);
+  }
+}
+
+/**
+ * Enviar email usando MailChannels (requiere dominio propio + DNS)
+ * MailChannels es gratuito para Workers pero requiere configuración DNS
  */
 async function sendViaMailChannels(emailContent, env) {
   try {

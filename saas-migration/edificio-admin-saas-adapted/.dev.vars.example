@@ -6,7 +6,20 @@ EMAIL_SENDER=notificaciones@edificio-admin.com
 ENVIRONMENT=development
 APP_URL=http://localhost:8787
 
-# SMTP Configuration (Optional - MailChannels is free on Cloudflare Workers)
+# ============================================================================
+# EMAIL CONFIGURATION
+# ============================================================================
+
+# OPCIÓN 1: Resend (Recomendado - 3000 emails/mes gratis, sin DNS)
+# Obtener API key en: https://resend.com/api-keys
+RESEND_API_KEY=re_your_api_key_here
+SMTP_FROM=Edificio Admin <onboarding@resend.dev>
+
+# OPCIÓN 2: MailChannels (Gratis ilimitado, requiere dominio propio + DNS)
+# Requiere configurar SPF y DKIM records en Cloudflare DNS
+# SMTP_FROM=noreply@tudominio.com
+
+# OPCIÓN 3: SMTP Tradicional (Gmail, Outlook, etc.)
 # Uncomment and configure if you want to use traditional SMTP
 # SMTP_HOST=smtp.gmail.com
 # SMTP_PORT=587
@@ -15,6 +28,6 @@ APP_URL=http://localhost:8787
 # SMTP_FROM=noreply@edificio-admin.com
 # SMTP_SECURE=false
 
-# Alternative: Use SMTP API (SendGrid, Mailgun, etc.)
+# OPCIÓN 4: SMTP API (SendGrid, Mailgun, etc.)
 # SMTP_API_URL=https://api.sendgrid.com/v3/mail/send
 # SMTP_API_KEY=your-api-key

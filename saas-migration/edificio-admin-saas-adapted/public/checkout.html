@@ -247,12 +247,12 @@
         <form id="checkoutForm">
           <div class="form-group">
             <label for="cardName">Nombre en la tarjeta *</label>
-            <input type="text" id="cardName" required>
+            <input type="text" id="cardName" name="cardName" required>
           </div>
 
           <div class="form-group">
             <label for="cardNumber">Número de tarjeta *</label>
-            <input type="text" id="cardNumber" maxlength="19" placeholder="1234 5678 9012 3456" required>
+            <input type="text" id="cardNumber" name="cardNumber" maxlength="19" placeholder="1234 5678 9012 3456" required>
             <div class="payment-icons">
               <i class="fab fa-cc-visa"></i>
               <i class="fab fa-cc-mastercard"></i>
@@ -263,17 +263,17 @@
           <div class="card-grid">
             <div class="form-group">
               <label for="cardExpiry">Vencimiento *</label>
-              <input type="text" id="cardExpiry" placeholder="MM/AA" maxlength="5" required>
+              <input type="text" id="cardExpiry" name="expiry" placeholder="MM/AA" maxlength="5" required>
             </div>
 
             <div class="form-group">
               <label for="cardCVV">CVV *</label>
-              <input type="text" id="cardCVV" maxlength="4" placeholder="123" required>
+              <input type="text" id="cardCVV" name="cvv" maxlength="4" placeholder="123" required>
             </div>
 
             <div class="form-group">
               <label for="cardZip">CP *</label>
-              <input type="text" id="cardZip" maxlength="5" placeholder="12345" required>
+              <input type="text" id="cardZip" name="postalCode" maxlength="5" placeholder="12345" required>
             </div>
           </div>
 
