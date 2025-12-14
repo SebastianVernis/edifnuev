@@ -421,23 +421,23 @@
 
         <div class="form-group">
           <label for="buildingName">Nombre del edificio/condominio *</label>
-          <input type="text" id="buildingName" required>
+          <input type="text" id="buildingName" name="buildingName" required>
         </div>
 
         <div class="form-group">
           <label for="address">Dirección completa *</label>
-          <textarea id="address" required></textarea>
+          <textarea id="address" name="address" required></textarea>
         </div>
 
         <div class="form-grid">
           <div class="form-group">
             <label for="totalUnits">Total de unidades *</label>
-            <input type="number" id="totalUnits" min="1" required>
+            <input type="number" id="totalUnits" name="totalUnits" min="1" required>
           </div>
 
           <div class="form-group">
             <label for="buildingType">Tipo de propiedad *</label>
-            <select id="buildingType" required>
+            <select id="buildingType" name="buildingType" required>
               <option value="edificio">Edificio</option>
               <option value="condominio">Condominio horizontal</option>
               <option value="residencial">Residencial</option>
@@ -455,23 +455,23 @@
         <div class="form-grid">
           <div class="form-group">
             <label for="adminName">Nombre completo *</label>
-            <input type="text" id="adminName" required>
+            <input type="text" id="adminName" name="adminName" required>
           </div>
 
           <div class="form-group">
             <label for="adminPhone">Teléfono *</label>
-            <input type="tel" id="adminPhone" required placeholder="5512345678">
+            <input type="tel" id="adminPhone" name="adminPhone" required placeholder="5512345678">
           </div>
         </div>
 
         <div class="form-group">
           <label for="adminPassword">Contraseña de administrador *</label>
-          <input type="password" id="adminPassword" minlength="6" required>
+          <input type="password" id="adminPassword" name="password" minlength="6" required>
         </div>
 
         <div class="form-group">
           <label for="confirmPassword">Confirmar contraseña *</label>
-          <input type="password" id="confirmPassword" minlength="6" required>
+          <input type="password" id="confirmPassword" name="confirmPassword" minlength="6" required>
         </div>
 
         <!-- Configuración SMTP -->
@@ -630,33 +630,33 @@
         <div class="form-grid">
           <div class="form-group">
             <label for="monthlyFee">Cuota mensual ordinaria (MXN) *</label>
-            <input type="number" id="monthlyFee" min="0" step="0.01" required>
+            <input type="number" id="monthlyFee" name="monthlyFee" min="0" step="0.01" required>
             <p class="help-text">Monto regular mensual por unidad</p>
           </div>
 
           <div class="form-group">
             <label for="extraordinaryFee">Cuota extraordinaria (MXN) <span class="optional">(opcional)</span></label>
-            <input type="number" id="extraordinaryFee" min="0" step="0.01">
+            <input type="number" id="extraordinaryFee" name="extraordinaryFee" min="0" step="0.01">
             <p class="help-text">Para proyectos especiales</p>
           </div>
         </div>
 
         <div class="form-group">
           <label for="cutoffDay">Día de corte mensual *</label>
-          <input type="number" id="cutoffDay" min="1" max="31" value="1" required>
+          <input type="number" id="cutoffDay" name="cutoffDay" min="1" max="31" value="1" required>
           <p class="help-text">Día del mes en que vencen las cuotas</p>
         </div>
 
         <div class="form-grid">
           <div class="form-group">
             <label for="paymentDueDays">Días de gracia para pago *</label>
-            <input type="number" id="paymentDueDays" min="0" max="30" value="5" required>
+            <input type="number" id="paymentDueDays" name="paymentDueDays" min="0" max="30" value="5" required>
             <p class="help-text">Días después del corte antes de aplicar mora</p>
           </div>
 
           <div class="form-group">
             <label for="lateFeePercent">Recargo por mora (%) *</label>
-            <input type="number" id="lateFeePercent" min="0" max="100" step="0.1" value="2" required>
+            <input type="number" id="lateFeePercent" name="lateFeePercent" min="0" max="100" step="0.1" value="2" required>
             <p class="help-text">Porcentaje de recargo mensual por mora</p>
           </div>
         </div>
