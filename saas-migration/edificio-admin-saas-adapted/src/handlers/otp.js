@@ -92,17 +92,22 @@ export async function sendOtp(request, env) {
     }
 
     // Enviar email con código OTP
+    console.log(`📧 Enviando OTP a ${email} con código ${code}`);
     const emailResult = await sendOtpEmail(email, code, env);
 
     if (!emailResult.ok) {
+      console.error(`❌ Error enviando OTP: ${emailResult.error || emailResult.msg}`);
       return addCorsHeaders(new Response(JSON.stringify({
         ok: false,
-        msg: 'Error al enviar el código. Intenta nuevamente.'
+        msg: 'Error al enviar el código. Intenta nuevamente.',
+        error: env.ENVIRONMENT === 'development' ? emailResult.error : undefined
       }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' }
       }), request);
     }
+    
+    console.log(`✅ OTP enviado exitosamente a ${email}`);
 
     return addCorsHeaders(new Response(JSON.stringify({
       ok: true,
