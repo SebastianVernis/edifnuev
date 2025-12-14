@@ -1,6 +1,6 @@
 /**
  * Templates HTML para emails
- * Sistema de onboarding Edificio Admin
+ * Sistema de onboarding ChispartBuilding
  */
 
 /**
@@ -125,12 +125,12 @@ function otpTemplate({ code, email }) {
     <body>
       <div class="email-container">
         <div class="email-header">
-          <h1>🏢 Edificio Admin</h1>
+          <h1>🏢 ChispartBuilding</h1>
         </div>
         <div class="email-body">
           <h2>Código de Verificación</h2>
           <p>Hola,</p>
-          <p>Has solicitado un código de verificación para completar tu registro en Edificio Admin.</p>
+          <p>Has solicitado un código de verificación para completar tu registro en ChispartBuilding.</p>
           
           <div class="otp-code">
             <p style="margin: 0 0 10px 0; font-size: 14px; color: #6c757d;">Tu código de verificación es:</p>
@@ -151,12 +151,12 @@ function otpTemplate({ code, email }) {
           
           <p style="margin-top: 30px;">
             Saludos,<br>
-            <strong>El equipo de Edificio Admin</strong>
+            <strong>El equipo de ChispartBuilding</strong>
           </p>
         </div>
         <div class="email-footer">
           <p>Este email fue enviado a <strong>${email}</strong></p>
-          <p>© 2025 Edificio Admin. Todos los derechos reservados.</p>
+          <p>© 2025 ChispartBuilding. Todos los derechos reservados.</p>
           <p>
             <a href="#">Política de Privacidad</a> | 
             <a href="#">Términos de Servicio</a> | 
@@ -192,18 +192,18 @@ function invitationTemplate({ name, invitedBy, buildingName, role, activationUrl
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Invitación a Edificio Admin</title>
+      <title>Invitación a ChispartBuilding</title>
       ${baseStyles}
     </head>
     <body>
       <div class="email-container">
         <div class="email-header">
-          <h1>🏢 Edificio Admin</h1>
+          <h1>🏢 ChispartBuilding</h1>
         </div>
         <div class="email-body">
           <h2>¡Has sido invitado!</h2>
           <p>Hola <strong>${name}</strong>,</p>
-          <p><strong>${invitedBy}</strong> te ha invitado a unirte a <strong>${buildingName}</strong> en Edificio Admin.</p>
+          <p><strong>${invitedBy}</strong> te ha invitado a unirte a <strong>${buildingName}</strong> en ChispartBuilding.</p>
           
           <div class="info-box">
             <p style="margin: 0;"><strong>📋 Detalles de la invitación:</strong></p>
@@ -232,8 +232,8 @@ function invitationTemplate({ name, invitedBy, buildingName, role, activationUrl
           
           <div class="divider"></div>
           
-          <h3 style="color: #667eea; font-size: 18px;">¿Qué es Edificio Admin?</h3>
-          <p>Edificio Admin es una plataforma completa para la gestión de edificios y condominios que te permite:</p>
+          <h3 style="color: #667eea; font-size: 18px;">¿Qué es ChispartBuilding?</h3>
+          <p>ChispartBuilding es una plataforma completa para la gestión de edificios y condominios que te permite:</p>
           <ul>
             <li>💰 Gestionar cuotas y pagos</li>
             <li>📊 Controlar gastos y presupuestos</li>
@@ -245,11 +245,11 @@ function invitationTemplate({ name, invitedBy, buildingName, role, activationUrl
           <p style="margin-top: 30px;">
             Si tienes alguna pregunta, no dudes en contactarnos.<br><br>
             Saludos,<br>
-            <strong>El equipo de Edificio Admin</strong>
+            <strong>El equipo de ChispartBuilding</strong>
           </p>
         </div>
         <div class="email-footer">
-          <p>© 2025 Edificio Admin. Todos los derechos reservados.</p>
+          <p>© 2025 ChispartBuilding. Todos los derechos reservados.</p>
           <p>
             <a href="#">Política de Privacidad</a> | 
             <a href="#">Términos de Servicio</a> | 
@@ -272,18 +272,18 @@ function welcomeTemplate({ name, buildingName, dashboardUrl }) {
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>¡Bienvenido a Edificio Admin!</title>
+      <title>¡Bienvenido a ChispartBuilding!</title>
       ${baseStyles}
     </head>
     <body>
       <div class="email-container">
         <div class="email-header">
-          <h1>🏢 Edificio Admin</h1>
+          <h1>🏢 ChispartBuilding</h1>
         </div>
         <div class="email-body">
-          <h2>¡Bienvenido a Edificio Admin!</h2>
+          <h2>¡Bienvenido a ChispartBuilding!</h2>
           <p>Hola <strong>${name}</strong>,</p>
-          <p>¡Felicitaciones! Has completado exitosamente el proceso de configuración de <strong>${buildingName}</strong> en Edificio Admin.</p>
+          <p>¡Felicitaciones! Has completado exitosamente el proceso de configuración de <strong>${buildingName}</strong> en ChispartBuilding.</p>
           
           <div class="info-box">
             <p style="margin: 0;"><strong>✅ Tu cuenta está lista</strong></p>
@@ -315,11 +315,11 @@ function welcomeTemplate({ name, buildingName, dashboardUrl }) {
           <p style="margin-top: 30px;">
             Estamos aquí para ayudarte a gestionar tu edificio de la mejor manera.<br><br>
             Saludos,<br>
-            <strong>El equipo de Edificio Admin</strong>
+            <strong>El equipo de ChispartBuilding</strong>
           </p>
         </div>
         <div class="email-footer">
-          <p>© 2025 Edificio Admin. Todos los derechos reservados.</p>
+          <p>© 2025 ChispartBuilding. Todos los derechos reservados.</p>
           <p>
             <a href="#">Política de Privacidad</a> | 
             <a href="#">Términos de Servicio</a> | 
