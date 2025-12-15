@@ -255,7 +255,7 @@ export const generarJWT = (userId, userRole, userDepartamento) => {
     }
   };
   
-  return jwt.sign(payload, process.env.JWT_SECRET || 'admin-secreto-2026', {
+  return jwt.sign(payload, process.env.JWT_SECRET || 'edificio205_secret_key_2025', {
     expiresIn: '24h'
   });
 };

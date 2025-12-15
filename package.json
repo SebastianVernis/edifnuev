@@ -22,7 +22,8 @@
     "test:usuarios": "node tests/usuarios.test.js",
     "test:integration": "node tests/integration.test.js",
     "test:performance": "node tests/performance.test.js",
-    "test:security": "node tests/security.test.js"
+    "test:security": "node tests/security.test.js",
+    "test:post-fixes": "node tests/post-fixes-endpoints.test.js"
   },
   "keywords": [
     "edificio",

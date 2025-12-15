@@ -42,9 +42,33 @@ export const transferirEntreFondos = async (req, res) => {
     res.json({
       ok: true,
       fondos: fondosActualizados,
-      msg: `Transferencia de $${monto} realizada correctamente de ${origen} a ${destino}`
+      msg: `Transferencia de ${monto} realizada correctamente de ${origen} a ${destino}`
     });
   } catch (error) {
     return handleControllerError(error, res, 'transferirEntreFondos');
+  }
+};
+
+export const getPatrimonio = async (req, res) => {
+  try {
+    const { readData } = await import('../data.js');
+    const data = readData();
+    const fondos = data.fondos;
+    
+    const patrimonioTotal = (fondos.ahorroAcumulado || 0) + 
+                           (fondos.gastosMayores || 0) + 
+                           (fondos.dineroOperacional || 0);
+    
+    res.json({
+      ok: true,
+      patrimonioTotal,
+      fondos: {
+        ahorroAcumulado: fondos.ahorroAcumulado || 0,
+        gastosMayores: fondos.gastosMayores || 0,
+        dineroOperacional: fondos.dineroOperacional || 0
+      }
+    });
+  } catch (error) {
+    return handleControllerError(error, res, 'getPatrimonio');
   }
 };

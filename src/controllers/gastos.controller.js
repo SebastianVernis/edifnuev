@@ -179,3 +179,47 @@ export const eliminarGasto = async (req, res) => {
     });
   }
 };
+
+export const getGastosStats = async (req, res) => {
+  try {
+    const gastos = await Gasto.getAll();
+    
+    const stats = {
+      total: gastos.length,
+      totalMonto: gastos.reduce((sum, g) => sum + (g.monto || 0), 0),
+      porCategoria: {},
+      porProveedor: {}
+    };
+    
+    // Agrupar por categoría
+    gastos.forEach(gasto => {
+      if (!stats.porCategoria[gasto.categoria]) {
+        stats.porCategoria[gasto.categoria] = {
+          count: 0,
+          monto: 0
+        };
+      }
+      stats.porCategoria[gasto.categoria].count++;
+      stats.porCategoria[gasto.categoria].monto += gasto.monto || 0;
+    });
+    
+    // Agrupar por proveedor
+    gastos.forEach(gasto => {
+      if (!stats.porProveedor[gasto.proveedor]) {
+        stats.porProveedor[gasto.proveedor] = {
+          count: 0,
+          monto: 0
+        };
+      }
+      stats.porProveedor[gasto.proveedor].count++;
+      stats.porProveedor[gasto.proveedor].monto += gasto.monto || 0;
+    });
+    
+    res.json({
+      ok: true,
+      stats
+    });
+  } catch (error) {
+    return handleControllerError(error, res, 'getGastosStats');
+  }
+};

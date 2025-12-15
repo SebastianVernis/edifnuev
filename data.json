@@ -815,6 +815,24 @@
       "monto": 1000,
       "fecha": "2025-11-23T10:34:37.256Z",
       "descripcion": "Transferencia de Ahorro Acumulado a Dinero Operacional"
+    },
+    {
+      "id": 3,
+      "tipo": "transferencia",
+      "origen": "ahorroAcumulado",
+      "destino": "gastosMayores",
+      "monto": 100,
+      "fecha": "2025-12-15T09:14:15.790Z",
+      "descripcion": "Transferencia de Ahorro Acumulado a Gastos Mayores"
+    },
+    {
+      "id": 4,
+      "tipo": "transferencia",
+      "origen": "ahorroAcumulado",
+      "destino": "gastosMayores",
+      "monto": 100,
+      "fecha": "2025-12-15T09:19:03.915Z",
+      "descripcion": "Transferencia de Ahorro Acumulado a Gastos Mayores"
     }
   ],
   "parcialidades2026": {
