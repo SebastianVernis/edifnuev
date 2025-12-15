@@ -67,6 +67,7 @@ name = "edificio-admin-saas-adapted-prod"
 vars = { ENVIRONMENT = "production" }
 
 # Scheduled events (cron jobs)
-# Descomentarlos cuando estén listos los handlers
-# [triggers]
-# crons = ["0 0 * * *", "0 9 * * MON", "0 0 1 * *"]
+[triggers]
+crons = [
+  "0 0 L * *"  # Último día del mes a medianoche (cierre automático)
+]

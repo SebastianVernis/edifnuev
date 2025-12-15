@@ -31,6 +31,8 @@ import * as permisosHandler from './handlers/permisos.js';
 import * as auditHandler from './handlers/audit.js';
 import * as solicitudesHandler from './handlers/solicitudes.js';
 import * as parcialidadesHandler from './handlers/parcialidades.js';
+import * as cronHandler from './handlers/cron.js';
+import * as downloadsHandler from './handlers/downloads.js';
 
 // Create router
 const router = Router();
@@ -170,6 +172,10 @@ router.post('/api/parcialidades', verifyToken, parcialidadesHandler.create);
 router.put('/api/parcialidades/:id', verifyToken, parcialidadesHandler.update);
 router.delete('/api/parcialidades/:id', verifyToken, parcialidadesHandler.remove);
 
+// Downloads routes (archivos de cierres)
+router.get('/api/downloads/cierres/*', downloadsHandler.downloadCierreFile);
+router.get('/api/cierres/:id/files', verifyToken, downloadsHandler.listCierreFiles);
+
 // ============================================================================
 // EXPORT DEFAULT HANDLER
 // ============================================================================
@@ -255,19 +261,27 @@ export default {
 
   // Scheduled event handler for periodic tasks
   async scheduled(event, env, ctx) {
+    console.log('🕒 Cron trigger:', event.cron);
+    
     switch (event.cron) {
       case '0 0 * * *':
         // Tareas diarias: actualizar cuotas vencidas, backups, etc.
         console.log('Running daily maintenance tasks');
         break;
+        
       case '0 9 * * MON':
         // Tareas semanales: reportes, notificaciones
         console.log('Generating weekly reports');
         break;
-      case '0 0 1 * *':
-        // Tareas mensuales: facturación, cierre de mes
-        console.log('Processing monthly billing');
+        
+      case '0 0 L * *':
+        // Último día del mes a medianoche: Generar cierres automáticos
+        console.log('🕛 Ejecutando cierre automático de fin de mes');
+        await cronHandler.handleCronFinDeMes(event, env, ctx);
         break;
+        
+      default:
+        console.log('Unknown cron pattern:', event.cron);
     }
   }
 };

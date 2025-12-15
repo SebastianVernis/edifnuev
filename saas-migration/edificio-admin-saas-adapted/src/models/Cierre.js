@@ -47,6 +47,11 @@ class Cierre {
   }
   
   static async update(db, id, updates) {
+    const allowedFields = [
+      'estado', 'observaciones', 'fecha_cierre', 'total_ingresos', 
+      'total_egresos', 'saldo_final', 'pdf_url', 'comprobantes_zip_url',
+      'total_comprobantes', 'enviado_email', 'fecha_envio'
+    ];
     const fields = [];
     const values = [];
     
