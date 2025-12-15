@@ -15,8 +15,17 @@ export async function getAll(request, env) {
     const anio = url.searchParams.get('anio');
     const estado = url.searchParams.get('estado');
     
-    let query = 'SELECT * FROM cuotas WHERE 1=1';
-    const params = [];
+    // ⭐ MULTITENANCY: Filtrar por building_id del usuario
+    const buildingId = request.user?.building_id;
+    if (!buildingId) {
+      return addCorsHeaders(new Response(JSON.stringify({
+        ok: false,
+        msg: 'Usuario sin edificio asignado'
+      }), { status: 403, headers: { 'Content-Type': 'application/json' } }), request);
+    }
+    
+    let query = 'SELECT * FROM cuotas WHERE building_id = ?';
+    const params = [buildingId];
     
     if (departamento) {
       query += ' AND departamento = ?';
