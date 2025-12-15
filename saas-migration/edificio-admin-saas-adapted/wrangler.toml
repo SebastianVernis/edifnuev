@@ -69,5 +69,6 @@ vars = { ENVIRONMENT = "production" }
 # Scheduled events (cron jobs)
 [triggers]
 crons = [
-  "0 0 L * *"  # Último día del mes a medianoche (cierre automático)
+  "0 0 L * *",      # Último día del mes a medianoche (cierre automático)
+  "0 */6 * * *"     # Cada 6 horas (verificar trials expirados)
 ]

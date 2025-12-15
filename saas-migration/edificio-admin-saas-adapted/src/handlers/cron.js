@@ -5,6 +5,7 @@
 
 import { generarCierreAutomatico } from '../utils/cierreExporter.js';
 import { sendEmail } from '../utils/smtp.js';
+import { verificarTrialsExpirados } from './leads.js';
 
 /**
  * Handler para cron trigger de fin de mes
@@ -180,6 +181,24 @@ async function logCronError(db, errorData) {
 }
 
 /**
+ * Handler para verificación diaria de trials
+ */
+export async function handleCronVerificarTrials(env) {
+  try {
+    console.log('🔍 Ejecutando verificación de trials expirados...');
+
+    const resultado = await verificarTrialsExpirados(env.DB);
+
+    console.log(`✅ Trials verificados: ${resultado.trialsExpirados} expirados`);
+
+    return resultado;
+  } catch (error) {
+    console.error('Error verificando trials:', error);
+    throw error;
+  }
+}
+
+/**
  * Router principal de cron
  */
 export async function handleCron(event, env, ctx) {
@@ -188,9 +207,14 @@ export async function handleCron(event, env, ctx) {
   console.log('🕒 Cron trigger ejecutado:', cron);
 
   try {
-    // Por ahora solo tenemos fin de mes
-    // En el futuro se pueden agregar más tareas programadas
-    await handleCronFinDeMes(event, env);
+    // Ejecutar según tipo de cron
+    if (cron === '0 0 L * *') {
+      // Fin de mes: Cierres automáticos
+      await handleCronFinDeMes(event, env);
+    } else if (cron === '0 */6 * * *') {
+      // Cada 6 horas: Verificar trials expirados
+      await handleCronVerificarTrials(env);
+    }
     
     console.log('✅ Cron completado exitosamente');
   } catch (error) {

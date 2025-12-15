@@ -34,6 +34,7 @@ import * as parcialidadesHandler from './handlers/parcialidades.js';
 import * as cronHandler from './handlers/cron.js';
 import * as downloadsHandler from './handlers/downloads.js';
 import * as missingEndpoints from './handlers/missing-endpoints.js';
+import * as leadsHandler from './handlers/leads.js';
 
 // Create router
 const router = Router();
@@ -187,6 +188,10 @@ router.delete('/api/parcialidades/:id', verifyToken, parcialidadesHandler.remove
 router.get('/api/downloads/cierres/*', downloadsHandler.downloadCierreFile);
 router.get('/api/cierres/:id/files', verifyToken, downloadsHandler.listCierreFiles);
 
+// Leads routes (gestión de ventas)
+router.get('/api/leads', verifyToken, leadsHandler.getAll);
+router.put('/api/leads/:email/confirmar-pago', verifyToken, leadsHandler.confirmarPago);
+
 // ============================================================================
 // EXPORT DEFAULT HANDLER
 // ============================================================================
@@ -289,6 +294,12 @@ export default {
         // Último día del mes a medianoche: Generar cierres automáticos
         console.log('🕛 Ejecutando cierre automático de fin de mes');
         await cronHandler.handleCronFinDeMes(event, env, ctx);
+        break;
+        
+      case '0 */6 * * *':
+        // Cada 6 horas: Verificar trials expirados
+        console.log('🕒 Verificando trials expirados');
+        await cronHandler.handleCronVerificarTrials(env);
         break;
         
       default:
