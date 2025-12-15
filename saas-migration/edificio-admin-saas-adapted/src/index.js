@@ -33,6 +33,7 @@ import * as solicitudesHandler from './handlers/solicitudes.js';
 import * as parcialidadesHandler from './handlers/parcialidades.js';
 import * as cronHandler from './handlers/cron.js';
 import * as downloadsHandler from './handlers/downloads.js';
+import * as missingEndpoints from './handlers/missing-endpoints.js';
 
 // Create router
 const router = Router();
@@ -112,8 +113,11 @@ router.delete('/api/usuarios/:id', verifyToken, usuariosHandler.remove);
 // Cuotas routes
 router.get('/api/cuotas', verifyToken, cuotasHandler.getAll);
 router.get('/api/cuotas/departamento/:departamento', verifyToken, cuotasHandler.getByDepartamento);
+router.get('/api/cuotas/stats', verifyToken, missingEndpoints.cuotasGetStats);
+router.get('/api/cuotas/pendientes', verifyToken, missingEndpoints.cuotasGetPendientes);
 router.post('/api/cuotas', verifyToken, cuotasHandler.create);
-router.post('/api/cuotas/generar', verifyToken, cuotasHandler.create); // Alias para generar masivo
+router.post('/api/cuotas/generar', verifyToken, cuotasHandler.create);
+router.post('/api/cuotas/verificar-vencimientos', verifyToken, missingEndpoints.cuotasVerificarVencimientos);
 router.put('/api/cuotas/:id', verifyToken, cuotasHandler.update);
 router.delete('/api/cuotas/:id', verifyToken, cuotasHandler.remove);
 router.post('/api/cuotas/:id/pagar', verifyToken, cuotasHandler.pagar);
@@ -121,6 +125,7 @@ router.post('/api/cuotas/:id/pagar', verifyToken, cuotasHandler.pagar);
 // Gastos routes
 router.get('/api/gastos', verifyToken, gastosHandler.getAll);
 router.get('/api/gastos/:id', verifyToken, gastosHandler.getById);
+router.get('/api/gastos/stats', verifyToken, missingEndpoints.gastosGetStats);
 router.post('/api/gastos', verifyToken, gastosHandler.create);
 router.put('/api/gastos/:id', verifyToken, gastosHandler.update);
 router.delete('/api/gastos/:id', verifyToken, gastosHandler.remove);
@@ -147,7 +152,10 @@ router.delete('/api/anuncios/:id', verifyToken, anunciosHandler.remove);
 // Fondos routes
 router.get('/api/fondos', verifyToken, fondosHandler.getAll);
 router.get('/api/fondos/:id', verifyToken, fondosHandler.getById);
+router.get('/api/fondos/patrimonio', verifyToken, missingEndpoints.fondosGetPatrimonio);
 router.post('/api/fondos', verifyToken, fondosHandler.create);
+router.post('/api/fondos/transferencia', verifyToken, missingEndpoints.fondosTransferir);
+router.post('/api/fondos/transferir', verifyToken, missingEndpoints.fondosTransferir);
 router.put('/api/fondos/:id', verifyToken, fondosHandler.update);
 router.delete('/api/fondos/:id', verifyToken, fondosHandler.remove);
 
@@ -168,7 +176,10 @@ router.delete('/api/solicitudes/:id', verifyToken, solicitudesHandler.remove);
 // Parcialidades routes
 router.get('/api/parcialidades', verifyToken, parcialidadesHandler.getAll);
 router.get('/api/parcialidades/cuota/:cuotaId', verifyToken, parcialidadesHandler.getByCuota);
+router.get('/api/parcialidades/pagos', verifyToken, missingEndpoints.parcialidadesGetPagos);
+router.get('/api/parcialidades/estado', verifyToken, missingEndpoints.parcialidadesGetEstado);
 router.post('/api/parcialidades', verifyToken, parcialidadesHandler.create);
+router.post('/api/parcialidades/pagos/:pagoId/validar', verifyToken, missingEndpoints.parcialidadesValidarPago);
 router.put('/api/parcialidades/:id', verifyToken, parcialidadesHandler.update);
 router.delete('/api/parcialidades/:id', verifyToken, parcialidadesHandler.remove);
 

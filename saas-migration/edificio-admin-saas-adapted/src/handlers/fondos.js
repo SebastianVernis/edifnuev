@@ -206,3 +206,82 @@ export async function remove(request, env) {
     }), request);
   }
 }
+
+/**
+ * POST /api/fondos/transferir - Transferir entre fondos
+ */
+export async function transferir(request, env) {
+  try {
+    const data = await request.json();
+    const { fondoOrigenId, fondoDestinoId, monto, concepto } = data;
+
+    if (!fondoOrigenId || !fondoDestinoId || !monto) {
+      return addCorsHeaders(new Response(JSON.stringify({
+        ok: false,
+        msg: 'Faltan datos requeridos'
+      }), { status: 400, headers: { 'Content-Type': 'application/json' } }), request);
+    }
+
+    const montoNum = parseFloat(monto);
+    
+    // Obtener fondos
+    const origen = await request.db.prepare('SELECT * FROM fondos WHERE id = ?').bind(fondoOrigenId).first();
+    const destino = await request.db.prepare('SELECT * FROM fondos WHERE id = ?').bind(fondoDestinoId).first();
+
+    if (!origen || !destino) {
+      return addCorsHeaders(new Response(JSON.stringify({
+        ok: false,
+        msg: 'Fondo no encontrado'
+      }), { status: 404, headers: { 'Content-Type': 'application/json' } }), request);
+    }
+
+    if (origen.saldo < montoNum) {
+      return addCorsHeaders(new Response(JSON.stringify({
+        ok: false,
+        msg: 'Saldo insuficiente'
+      }), { status: 400, headers: { 'Content-Type': 'application/json' } }), request);
+    }
+
+    // Actualizar saldos
+    await request.db.prepare('UPDATE fondos SET saldo = saldo - ? WHERE id = ?').bind(montoNum, fondoOrigenId).run();
+    await request.db.prepare('UPDATE fondos SET saldo = saldo + ? WHERE id = ?').bind(montoNum, fondoDestinoId).run();
+
+    // Registrar movimiento
+    await request.db.prepare(`
+      INSERT INTO fondos_movimientos (id, fondo_origen_id, fondo_destino_id, monto, concepto, created_at)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `).bind(crypto.randomUUID(), fondoOrigenId, fondoDestinoId, montoNum, concepto || 'Transferencia', new Date().toISOString()).run();
+
+    return addCorsHeaders(new Response(JSON.stringify({
+      ok: true,
+      msg: 'Transferencia exitosa'
+    }), { status: 200, headers: { 'Content-Type': 'application/json' } }), request);
+  } catch (error) {
+    console.error('Error en transferencia:', error);
+    return addCorsHeaders(new Response(JSON.stringify({
+      ok: false,
+      msg: 'Error en el servidor',
+      error: env.ENVIRONMENT === 'development' ? error.message : undefined
+    }), { status: 500, headers: { 'Content-Type': 'application/json' } }), request);
+  }
+}
+
+/**
+ * GET /api/fondos/patrimonio - Obtener patrimonio total
+ */
+export async function getPatrimonio(request, env) {
+  try {
+    const result = await request.db.prepare('SELECT COALESCE(SUM(saldo), 0) as total FROM fondos').first();
+    
+    return addCorsHeaders(new Response(JSON.stringify({
+      ok: true,
+      patrimonioTotal: parseFloat(result?.total || 0)
+    }), { status: 200, headers: { 'Content-Type': 'application/json' } }), request);
+  } catch (error) {
+    console.error('Error obteniendo patrimonio:', error);
+    return addCorsHeaders(new Response(JSON.stringify({
+      ok: false,
+      msg: 'Error en el servidor'
+    }), { status: 500, headers: { 'Content-Type': 'application/json' } }), request);
+  }
+}
