@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
-import { getGastos, getGastoById, getGastosByCategoria, getGastosByMesAño, crearGasto, actualizarGasto, eliminarGasto } from '../controllers/gastos.controller.js';
+import { getGastos, getGastoById, getGastosByCategoria, getGastosByMesAño, crearGasto, actualizarGasto, eliminarGasto, getGastosStats } from '../controllers/gastos.controller.js';
 import { validarCampos } from '../middleware/validar-campos.js';
 import { verifyToken, isAdmin } from '../middleware/auth.js';
 
@@ -8,6 +8,9 @@ const router = Router();
 
 // Obtener todos los gastos
 router.get('/', verifyToken, getGastos);
+
+// Obtener estadísticas de gastos
+router.get('/stats', verifyToken, getGastosStats);
 
 // Obtener gasto por ID
 router.get('/:id', verifyToken, getGastoById);

@@ -6,7 +6,9 @@ import {
   crearCuota,
   actualizarCuota,
   verificarVencimientos,
-  getAcumuladoAnual
+  getAcumuladoAnual,
+  getCuotasStats,
+  getCuotasPendientes
 } from '../controllers/cuotas.controller.js';
 import { verifyToken, hasPermission } from '../middleware/auth.js';
 import { verificarEstadoCuotas, inicializarCuotasAnuales, programarCuotasAnuales } from '../utils/cuotasInicializacion.js';
@@ -15,6 +17,12 @@ const router = express.Router();
 
 // Ruta para obtener todas las cuotas (protegida)
 router.get('/', verifyToken, getCuotas);
+
+// Ruta para obtener estadísticas de cuotas
+router.get('/stats', verifyToken, getCuotasStats);
+
+// Ruta para obtener cuotas pendientes
+router.get('/pendientes', verifyToken, getCuotasPendientes);
 
 // Ruta para obtener cuota por ID (protegida)
 router.get('/:id', verifyToken, getCuotaById);
