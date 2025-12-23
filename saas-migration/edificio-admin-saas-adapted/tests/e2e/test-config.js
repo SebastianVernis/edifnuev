@@ -3,6 +3,9 @@
  * Configuración centralizada para tests end-to-end
  */
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 export const config = {
   // Base URL del Worker desplegado
   baseUrl: 'https://edificio-admin-saas-adapted.sebastianvernis.workers.dev',
