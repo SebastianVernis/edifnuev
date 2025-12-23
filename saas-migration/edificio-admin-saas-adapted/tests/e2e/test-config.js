@@ -10,6 +10,12 @@ export const config = {
   // Base URL del Worker desplegado
   baseUrl: 'https://edificio-admin-saas-adapted.sebastianvernis.workers.dev',
   
+  // Service Token para Cloudflare Access
+  serviceToken: {
+    clientId: process.env.CF_ACCESS_CLIENT_ID,
+    clientSecret: process.env.CF_ACCESS_CLIENT_SECRET
+  },
+  
   // Timeouts
   timeout: {
     default: 10000,
@@ -141,6 +147,12 @@ export async function makeRequest(method, endpoint, options = {}) {
     'Content-Type': 'application/json',
     ...options.headers
   };
+  
+  // Agregar Service Token headers si están configurados
+  if (config.serviceToken.clientId && config.serviceToken.clientSecret) {
+    headers['CF-Access-Client-Id'] = config.serviceToken.clientId;
+    headers['CF-Access-Client-Secret'] = config.serviceToken.clientSecret;
+  }
   
   const fetchOptions = {
     method,

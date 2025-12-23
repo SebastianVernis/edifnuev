@@ -38,6 +38,7 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20231218.0",
     "chai": "^4.3.10",
+    "dotenv": "^17.2.3",
     "mocha": "^10.2.0",
     "node-fetch": "^3.3.2",
     "wrangler": "^3.22.0"
