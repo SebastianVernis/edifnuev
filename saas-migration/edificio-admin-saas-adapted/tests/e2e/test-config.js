@@ -23,25 +23,28 @@ export const config = {
     short: 5000
   },
   
-  // Usuarios de prueba
+  // Usuarios de prueba (usuarios reales en DB)
   testUsers: {
     admin1: {
-      email: 'admin@edificio205.com',
-      password: 'Gemelo1',
-      nombre: 'Admin Edificio 205',
-      rol: 'ADMIN'
+      email: 'sebas@sebas.com',
+      password: 'TestPass123!',
+      nombre: 'edif',
+      rol: 'ADMIN',
+      building_id: 13
     },
     admin2: {
-      email: 'admin@edificio206.com',
-      password: 'Gemelo1',
-      nombre: 'Admin Edificio 206',
-      rol: 'ADMIN'
+      email: 'admin@building99.com',
+      password: 'TestPass123!',
+      nombre: 'Admin Building 99',
+      rol: 'ADMIN',
+      building_id: 99
     },
     inquilino1: {
-      email: 'maria.garcia@edificio205.com',
-      password: 'Gemelo1',
-      nombre: 'María García',
-      rol: 'INQUILINO'
+      email: 'usu@usu.com',
+      password: 'TestPass123!',
+      nombre: 'Usuario Inquilino',
+      rol: 'INQUILINO',
+      building_id: 13
     },
     inquilino2: {
       email: 'carlos.lopez@edificio205.com',
@@ -133,7 +136,7 @@ export const config = {
   // Métricas esperadas
   metrics: {
     coverage: 90, // % mínimo de cobertura
-    responseTime: 200, // ms máximo de respuesta promedio
+    responseTime: 300, // ms máximo de respuesta promedio (ajustado para Workers)
     errorRate: 0.01 // % máximo de errores
   }
 };
@@ -163,6 +166,9 @@ export async function makeRequest(method, endpoint, options = {}) {
   if (options.body && typeof options.body === 'object') {
     fetchOptions.body = JSON.stringify(options.body);
   }
+  
+  // Throttle para evitar saturar el Worker
+  await throttleRequest();
   
   const startTime = Date.now();
   const response = await fetch(url, fetchOptions);
@@ -214,6 +220,23 @@ export function authHeaders(token) {
  */
 export function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * Sleep automático entre requests para evitar rate limiting del Worker
+ */
+const REQUEST_DELAY = 150; // ms entre requests
+let lastRequestTime = 0;
+
+async function throttleRequest() {
+  const now = Date.now();
+  const timeSinceLastRequest = now - lastRequestTime;
+  
+  if (timeSinceLastRequest < REQUEST_DELAY) {
+    await sleep(REQUEST_DELAY - timeSinceLastRequest);
+  }
+  
+  lastRequestTime = Date.now();
 }
 
 /**

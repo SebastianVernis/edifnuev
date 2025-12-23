@@ -1,0 +1,298 @@
+{
+  "timestamp": "2025-12-23T21:44:47.763Z",
+  "totalTests": 76,
+  "totalPassed": 56,
+  "totalFailed": 20,
+  "coverage": 59.09090909090909,
+  "avgResponseTime": 170.76923076923077,
+  "dataLeaks": 0,
+  "vulnerabilities": {
+    "critical": 0,
+    "high": 0,
+    "medium": 2,
+    "low": 0
+  },
+  "suites": {
+    "auth": {
+      "total": 10,
+      "passed": 9,
+      "failed": 1,
+      "errors": [
+        {
+          "test": "Response time - Login debe responder en <200ms",
+          "error": "Response time 205ms exceeds 200ms"
+        }
+      ]
+    },
+    "multitenancy": {
+      "total": 8,
+      "passed": 1,
+      "failed": 7,
+      "errors": [
+        {
+          "test": "Multitenancy - Admin2 no puede ver usuarios de Building1",
+          "error": "Login failed: {\"ok\":false,\"msg\":\"Credenciales inválidas\"}"
+        },
+        {
+          "test": "Multitenancy - Cuotas están aisladas por building",
+          "error": "Login failed: {\"ok\":false,\"msg\":\"Credenciales inválidas\"}"
+        },
+        {
+          "test": "Multitenancy - Gastos están aislados por building",
+          "error": "Login failed: {\"ok\":false,\"msg\":\"Credenciales inválidas\"}"
+        },
+        {
+          "test": "Multitenancy - Fondos están aislados por building",
+          "error": "Login failed: {\"ok\":false,\"msg\":\"Credenciales inválidas\"}"
+        },
+        {
+          "test": "Multitenancy - Anuncios están aislados por building",
+          "error": "Login failed: {\"ok\":false,\"msg\":\"Credenciales inválidas\"}"
+        },
+        {
+          "test": "Multitenancy - No se puede acceder a recursos de otro building por ID",
+          "error": "Login failed: {\"ok\":false,\"msg\":\"Credenciales inválidas\"}"
+        },
+        {
+          "test": "Multitenancy - Inquilinos solo ven datos de su building",
+          "error": "Login failed: {\"ok\":false,\"msg\":\"Credenciales inválidas\"}"
+        }
+      ],
+      "dataLeaks": []
+    },
+    "security": {
+      "total": 17,
+      "passed": 12,
+      "failed": 5,
+      "errors": [
+        {
+          "test": "Security - JWT - Valida header x-auth-token",
+          "error": "Should only accept x-auth-token header"
+        },
+        {
+          "test": "Security - RBAC - Inquilino no puede crear usuarios",
+          "error": "Login failed: {\"ok\":false,\"msg\":\"Credenciales inválidas\"}"
+        },
+        {
+          "test": "Security - RBAC - Inquilino no puede eliminar usuarios",
+          "error": "Login failed: {\"ok\":false,\"msg\":\"Credenciales inválidas\"}"
+        },
+        {
+          "test": "Security - RBAC - Inquilino no puede crear gastos",
+          "error": "Login failed: {\"ok\":false,\"msg\":\"Credenciales inválidas\"}"
+        },
+        {
+          "test": "Security - RBAC - Admin puede crear usuarios",
+          "error": "Admin should be able to create users"
+        }
+      ],
+      "vulnerabilities": [
+        {
+          "type": "JWT",
+          "severity": "MEDIUM",
+          "issue": "Accepts tokens from wrong header"
+        },
+        {
+          "type": "RATE_LIMITING",
+          "severity": "MEDIUM",
+          "issue": "No rate limiting on login endpoint"
+        }
+      ]
+    },
+    "api": {
+      "total": 41,
+      "passed": 34,
+      "failed": 7,
+      "errors": [
+        {
+          "test": "POST /api/otp/send",
+          "error": "Unexpected status: 500"
+        },
+        {
+          "test": "POST /api/otp/resend",
+          "error": "Unexpected status: 500"
+        },
+        {
+          "test": "POST /api/onboarding/checkout",
+          "error": "Unexpected status: 403"
+        },
+        {
+          "test": "POST /api/onboarding/setup-building",
+          "error": "Unexpected status: 403"
+        },
+        {
+          "test": "POST /api/usuarios",
+          "error": "Expected 200/201, got 400"
+        },
+        {
+          "test": "POST /api/cuotas",
+          "error": "Unexpected status: 500"
+        },
+        {
+          "test": "POST /api/fondos/transferir",
+          "error": "Unexpected status: 500"
+        }
+      ],
+      "endpointResults": {
+        "POST /api/auth/login": {
+          "status": 200,
+          "responseTime": 201,
+          "tested": true
+        },
+        "POST /api/auth/registro": {
+          "status": 201,
+          "responseTime": 412,
+          "tested": true
+        },
+        "GET /api/auth/renew": {
+          "status": 200,
+          "responseTime": 125,
+          "tested": true
+        },
+        "GET /api/auth/perfil": {
+          "status": 200,
+          "responseTime": 99,
+          "tested": true
+        },
+        "POST /api/onboarding/register": {
+          "status": 201,
+          "responseTime": 255,
+          "tested": true
+        },
+        "POST /api/otp/send": {
+          "status": 500,
+          "responseTime": 1250,
+          "tested": true
+        },
+        "POST /api/otp/verify": {
+          "status": 404,
+          "responseTime": 123,
+          "tested": true
+        },
+        "POST /api/otp/resend": {
+          "status": 500,
+          "responseTime": 218,
+          "tested": true
+        },
+        "GET /api/otp/status/:email": {
+          "status": 200,
+          "responseTime": 28,
+          "tested": true
+        },
+        "POST /api/onboarding/checkout": {
+          "status": 403,
+          "responseTime": 97,
+          "tested": true
+        },
+        "POST /api/onboarding/setup-building": {
+          "status": 403,
+          "responseTime": 84,
+          "tested": true
+        },
+        "GET /api/usuarios": {
+          "status": 200,
+          "responseTime": 210,
+          "tested": true
+        },
+        "POST /api/usuarios": {
+          "status": 400,
+          "responseTime": 152,
+          "tested": true
+        },
+        "GET /api/cuotas": {
+          "status": 200,
+          "responseTime": 200,
+          "tested": true
+        },
+        "POST /api/cuotas": {
+          "status": 500,
+          "responseTime": 155,
+          "tested": true
+        },
+        "POST /api/cuotas/generar": {
+          "status": 400,
+          "responseTime": 27,
+          "tested": true
+        },
+        "GET /api/cuotas/departamento/:depto": {
+          "status": 200,
+          "responseTime": 90,
+          "tested": true
+        },
+        "GET /api/gastos": {
+          "status": 200,
+          "responseTime": 153,
+          "tested": true
+        },
+        "POST /api/gastos": {
+          "status": 201,
+          "responseTime": 32,
+          "tested": true
+        },
+        "GET /api/fondos": {
+          "status": 200,
+          "responseTime": 91,
+          "tested": true
+        },
+        "POST /api/fondos": {
+          "status": 201,
+          "responseTime": 31,
+          "tested": true
+        },
+        "POST /api/fondos/transferir": {
+          "status": 500,
+          "responseTime": 85,
+          "tested": true
+        },
+        "GET /api/anuncios": {
+          "status": 200,
+          "responseTime": 91,
+          "tested": true
+        },
+        "POST /api/anuncios": {
+          "status": 201,
+          "responseTime": 32,
+          "tested": true
+        },
+        "GET /api/cierres": {
+          "status": 200,
+          "responseTime": 166,
+          "tested": true
+        },
+        "POST /api/cierres": {
+          "status": 201,
+          "responseTime": 33,
+          "tested": true
+        }
+      },
+      "responseTimes": [
+        201,
+        412,
+        125,
+        99,
+        255,
+        1250,
+        123,
+        218,
+        28,
+        97,
+        84,
+        210,
+        152,
+        200,
+        155,
+        27,
+        90,
+        153,
+        32,
+        91,
+        31,
+        85,
+        91,
+        32,
+        166,
+        33
+      ]
+    }
+  }
+}
