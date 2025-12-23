@@ -9,8 +9,22 @@ import { addCorsHeaders } from '../middleware/cors.js';
  */
 export async function getAll(request, env) {
   try {
-    const stmt = request.db.prepare('SELECT * FROM fondos ORDER BY created_at DESC');
-    const result = await stmt.all();
+    // SECURITY: Obtener building_id del usuario autenticado
+    const buildingId = request.usuario?.building_id || request.user?.building_id;
+    
+    if (!buildingId) {
+      return addCorsHeaders(new Response(JSON.stringify({
+        ok: false,
+        msg: 'Usuario sin edificio asignado'
+      }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      }), request);
+    }
+    
+    // SECURITY: Filtrar por building_id para aislamiento multitenancy
+    const stmt = request.db.prepare('SELECT * FROM fondos WHERE building_id = ? ORDER BY created_at DESC');
+    const result = await stmt.bind(buildingId).all();
     
     return addCorsHeaders(new Response(JSON.stringify({
       ok: true,
@@ -38,8 +52,23 @@ export async function getAll(request, env) {
 export async function getById(request, env) {
   try {
     const id = request.params.id;
-    const stmt = request.db.prepare('SELECT * FROM fondos WHERE id = ?');
-    const item = await stmt.bind(id).first();
+    
+    // SECURITY: Obtener building_id del usuario autenticado
+    const buildingId = request.usuario?.building_id || request.user?.building_id;
+    
+    if (!buildingId) {
+      return addCorsHeaders(new Response(JSON.stringify({
+        ok: false,
+        msg: 'Usuario sin edificio asignado'
+      }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      }), request);
+    }
+    
+    // SECURITY: Validar ownership - solo puede ver fondos de su building
+    const stmt = request.db.prepare('SELECT * FROM fondos WHERE id = ? AND building_id = ?');
+    const item = await stmt.bind(id, buildingId).first();
     
     if (!item) {
       return addCorsHeaders(new Response(JSON.stringify({
@@ -83,15 +112,47 @@ export async function create(request, env) {
       });
     }
 
-    const { user } = request;
-    const data = await request.json();
+    // SECURITY: Obtener building_id del usuario autenticado
+    const buildingId = request.usuario?.building_id || request.user?.building_id;
     
-    // Aquí va la lógica específica de creación
-    // Por ahora retornamos success genérico
+    if (!buildingId) {
+      return addCorsHeaders(new Response(JSON.stringify({
+        ok: false,
+        msg: 'Usuario sin edificio asignado'
+      }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      }), request);
+    }
+
+    const data = await request.json();
+    const { nombre, tipo, saldo_inicial, descripcion } = data;
+    
+    // Validaciones básicas
+    if (!nombre || !tipo) {
+      return addCorsHeaders(new Response(JSON.stringify({
+        ok: false,
+        msg: 'Faltan campos requeridos: nombre y tipo'
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      }), request);
+    }
+    
+    const id = crypto.randomUUID();
+    const saldo = parseFloat(saldo_inicial || 0);
+    const now = new Date().toISOString();
+    
+    // SECURITY: Incluir building_id en INSERT para aislamiento multitenancy
+    await request.db.prepare(`
+      INSERT INTO fondos (id, nombre, tipo, saldo, descripcion, building_id, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).bind(id, nombre, tipo, saldo, descripcion || null, buildingId, now, now).run();
     
     return addCorsHeaders(new Response(JSON.stringify({
       ok: true,
-      msg: 'Creado exitosamente (pendiente de implementación completa)'
+      msg: 'Fondo creado exitosamente',
+      fondo: { id, nombre, tipo, saldo, descripcion, building_id: buildingId }
     }), {
       status: 201,
       headers: { 'Content-Type': 'application/json' }
@@ -121,27 +182,76 @@ export async function update(request, env) {
       });
     }
 
-    const { user } = request;
     const id = request.params.id;
-    const data = await request.json();
     
-    // Verificar que existe
-    const check = await request.db.prepare('SELECT id FROM fondos WHERE id = ?').bind(id).first();
+    // SECURITY: Obtener building_id del usuario autenticado
+    const buildingId = request.usuario?.building_id || request.user?.building_id;
+    
+    if (!buildingId) {
+      return addCorsHeaders(new Response(JSON.stringify({
+        ok: false,
+        msg: 'Usuario sin edificio asignado'
+      }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      }), request);
+    }
+    
+    // SECURITY: Validar ownership - verificar que el fondo pertenece al building del usuario
+    const check = await request.db.prepare('SELECT id FROM fondos WHERE id = ? AND building_id = ?').bind(id, buildingId).first();
     if (!check) {
       return addCorsHeaders(new Response(JSON.stringify({
         ok: false,
-        msg: 'No encontrado'
+        msg: 'No encontrado o no tiene permisos'
       }), {
         status: 404,
         headers: { 'Content-Type': 'application/json' }
       }), request);
     }
     
-    // Aquí va la lógica específica de actualización
+    const data = await request.json();
+    const { nombre, tipo, descripcion } = data;
+    
+    // Construir UPDATE dinámico
+    const updates = [];
+    const values = [];
+    
+    if (nombre !== undefined) {
+      updates.push('nombre = ?');
+      values.push(nombre);
+    }
+    if (tipo !== undefined) {
+      updates.push('tipo = ?');
+      values.push(tipo);
+    }
+    if (descripcion !== undefined) {
+      updates.push('descripcion = ?');
+      values.push(descripcion);
+    }
+    
+    if (updates.length === 0) {
+      return addCorsHeaders(new Response(JSON.stringify({
+        ok: false,
+        msg: 'No hay campos para actualizar'
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      }), request);
+    }
+    
+    updates.push('updated_at = ?');
+    values.push(new Date().toISOString());
+    
+    // SECURITY: Incluir building_id en WHERE para garantizar aislamiento
+    values.push(id, buildingId);
+    
+    await request.db.prepare(`
+      UPDATE fondos SET ${updates.join(', ')} WHERE id = ? AND building_id = ?
+    `).bind(...values).run();
     
     return addCorsHeaders(new Response(JSON.stringify({
       ok: true,
-      msg: 'Actualizado exitosamente (pendiente de implementación completa)'
+      msg: 'Fondo actualizado exitosamente'
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
@@ -171,8 +281,21 @@ export async function remove(request, env) {
       });
     }
 
-    const { user } = request;
     const id = request.params.id;
+    const user = request.usuario || request.user;
+    
+    // SECURITY: Obtener building_id del usuario autenticado
+    const buildingId = user?.building_id;
+    
+    if (!buildingId) {
+      return addCorsHeaders(new Response(JSON.stringify({
+        ok: false,
+        msg: 'Usuario sin edificio asignado'
+      }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      }), request);
+    }
     
     // Solo admin puede eliminar
     if (user.rol !== 'ADMIN') {
@@ -185,7 +308,20 @@ export async function remove(request, env) {
       }), request);
     }
     
-    await request.db.prepare('DELETE FROM fondos WHERE id = ?').bind(id).run();
+    // SECURITY: Validar ownership antes de eliminar
+    const check = await request.db.prepare('SELECT id FROM fondos WHERE id = ? AND building_id = ?').bind(id, buildingId).first();
+    if (!check) {
+      return addCorsHeaders(new Response(JSON.stringify({
+        ok: false,
+        msg: 'No encontrado o no tiene permisos'
+      }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' }
+      }), request);
+    }
+    
+    // SECURITY: Incluir building_id en DELETE para garantizar aislamiento
+    await request.db.prepare('DELETE FROM fondos WHERE id = ? AND building_id = ?').bind(id, buildingId).run();
     
     return addCorsHeaders(new Response(JSON.stringify({
       ok: true,
@@ -212,6 +348,19 @@ export async function remove(request, env) {
  */
 export async function transferir(request, env) {
   try {
+    // SECURITY: Obtener building_id del usuario autenticado
+    const buildingId = request.usuario?.building_id || request.user?.building_id;
+    
+    if (!buildingId) {
+      return addCorsHeaders(new Response(JSON.stringify({
+        ok: false,
+        msg: 'Usuario sin edificio asignado'
+      }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      }), request);
+    }
+    
     const data = await request.json();
     const { fondoOrigenId, fondoDestinoId, monto, concepto } = data;
 
@@ -224,14 +373,14 @@ export async function transferir(request, env) {
 
     const montoNum = parseFloat(monto);
     
-    // Obtener fondos
-    const origen = await request.db.prepare('SELECT * FROM fondos WHERE id = ?').bind(fondoOrigenId).first();
-    const destino = await request.db.prepare('SELECT * FROM fondos WHERE id = ?').bind(fondoDestinoId).first();
+    // SECURITY: Validar que ambos fondos pertenecen al mismo building
+    const origen = await request.db.prepare('SELECT * FROM fondos WHERE id = ? AND building_id = ?').bind(fondoOrigenId, buildingId).first();
+    const destino = await request.db.prepare('SELECT * FROM fondos WHERE id = ? AND building_id = ?').bind(fondoDestinoId, buildingId).first();
 
     if (!origen || !destino) {
       return addCorsHeaders(new Response(JSON.stringify({
         ok: false,
-        msg: 'Fondo no encontrado'
+        msg: 'Fondo no encontrado o no tiene permisos'
       }), { status: 404, headers: { 'Content-Type': 'application/json' } }), request);
     }
 
@@ -242,15 +391,15 @@ export async function transferir(request, env) {
       }), { status: 400, headers: { 'Content-Type': 'application/json' } }), request);
     }
 
-    // Actualizar saldos
-    await request.db.prepare('UPDATE fondos SET saldo = saldo - ? WHERE id = ?').bind(montoNum, fondoOrigenId).run();
-    await request.db.prepare('UPDATE fondos SET saldo = saldo + ? WHERE id = ?').bind(montoNum, fondoDestinoId).run();
+    // SECURITY: Actualizar saldos con building_id en WHERE para garantizar aislamiento
+    await request.db.prepare('UPDATE fondos SET saldo = saldo - ?, updated_at = ? WHERE id = ? AND building_id = ?').bind(montoNum, new Date().toISOString(), fondoOrigenId, buildingId).run();
+    await request.db.prepare('UPDATE fondos SET saldo = saldo + ?, updated_at = ? WHERE id = ? AND building_id = ?').bind(montoNum, new Date().toISOString(), fondoDestinoId, buildingId).run();
 
     // Registrar movimiento
     await request.db.prepare(`
-      INSERT INTO fondos_movimientos (id, fondo_origen_id, fondo_destino_id, monto, concepto, created_at)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).bind(crypto.randomUUID(), fondoOrigenId, fondoDestinoId, montoNum, concepto || 'Transferencia', new Date().toISOString()).run();
+      INSERT INTO fondos_movimientos (id, fondo_origen_id, fondo_destino_id, monto, concepto, building_id, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).bind(crypto.randomUUID(), fondoOrigenId, fondoDestinoId, montoNum, concepto || 'Transferencia', buildingId, new Date().toISOString()).run();
 
     return addCorsHeaders(new Response(JSON.stringify({
       ok: true,
@@ -271,7 +420,21 @@ export async function transferir(request, env) {
  */
 export async function getPatrimonio(request, env) {
   try {
-    const result = await request.db.prepare('SELECT COALESCE(SUM(saldo), 0) as total FROM fondos').first();
+    // SECURITY: Obtener building_id del usuario autenticado
+    const buildingId = request.usuario?.building_id || request.user?.building_id;
+    
+    if (!buildingId) {
+      return addCorsHeaders(new Response(JSON.stringify({
+        ok: false,
+        msg: 'Usuario sin edificio asignado'
+      }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      }), request);
+    }
+    
+    // SECURITY: Filtrar por building_id para calcular solo patrimonio del building
+    const result = await request.db.prepare('SELECT COALESCE(SUM(saldo), 0) as total FROM fondos WHERE building_id = ?').bind(buildingId).first();
     
     return addCorsHeaders(new Response(JSON.stringify({
       ok: true,

@@ -4,30 +4,21 @@
 
 // Función para verificar el token JWT
 export async function verifyToken(request, env) {
-  // Obtener el token del encabezado (soportar múltiples formatos)
-  const authHeader = request.headers.get('Authorization');
+  // SECURITY: Solo aceptar x-auth-token (estándar del proyecto)
+  // PROHIBIDO: Authorization Bearer, x-token, u otros headers
   const xAuthToken = request.headers.get('x-auth-token');
-  const xToken = request.headers.get('x-token');
   
-  let token = null;
-  
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    token = authHeader.split(' ')[1];
-  } else if (xAuthToken) {
-    token = xAuthToken;
-  } else if (xToken) {
-    token = xToken;
-  }
-  
-  if (!token) {
+  if (!xAuthToken) {
     return new Response(JSON.stringify({ 
-      success: false, 
-      message: 'Acceso no autorizado. Token no proporcionado.' 
+      ok: false,
+      msg: 'Token no proporcionado' 
     }), {
       status: 401,
       headers: { 'Content-Type': 'application/json' }
     });
   }
+  
+  const token = xAuthToken;
 
   try {
     // Decodificar y verificar el token
@@ -42,8 +33,8 @@ export async function verifyToken(request, env) {
     const isRevoked = await env.SESSIONS.get(`revoked:${token}`);
     if (isRevoked) {
       return new Response(JSON.stringify({ 
-        success: false, 
-        message: 'Sesión expirada o inválida. Inicie sesión nuevamente.' 
+        ok: false,
+        msg: 'Sesión expirada o inválida. Inicie sesión nuevamente.' 
       }), {
         status: 401,
         headers: { 'Content-Type': 'application/json' }
@@ -57,8 +48,8 @@ export async function verifyToken(request, env) {
   } catch (error) {
     console.error('Error verificando token:', error);
     return new Response(JSON.stringify({ 
-      success: false, 
-      message: 'Token inválido o expirado',
+      ok: false,
+      msg: 'Token inválido o expirado',
       error: env.ENVIRONMENT === 'development' ? error.message : undefined
     }), {
       status: 401,
@@ -91,8 +82,8 @@ export function verifyRole(roles = []) {
     // Verificar si el usuario tiene un rol permitido
     if (roles.length && !roles.includes(user.role)) {
       return new Response(JSON.stringify({ 
-        success: false, 
-        message: 'No tiene permisos para acceder a este recurso' 
+        ok: false,
+        msg: 'No tiene permisos para acceder a este recurso' 
       }), {
         status: 403,
         headers: { 'Content-Type': 'application/json' }
@@ -112,8 +103,8 @@ export function verifySameBuilding(request) {
   // Obtener el ID del edificio de los parámetros de la ruta
   if (!buildingId || !user.buildings.includes(parseInt(buildingId))) {
     return new Response(JSON.stringify({ 
-      success: false, 
-      message: 'No tiene acceso a este edificio' 
+      ok: false,
+      msg: 'No tiene acceso a este edificio' 
     }), {
       status: 403,
       headers: { 'Content-Type': 'application/json' }
