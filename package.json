@@ -22,7 +22,11 @@
     "test:usuarios": "node tests/usuarios.test.js",
     "test:integration": "node tests/integration.test.js",
     "test:performance": "node tests/performance.test.js",
-    "test:security": "node tests/security.test.js"
+    "test:security": "node tests/security.test.js",
+    "test:bug2": "./tests/run-bug2-validation.sh",
+    "test:bug2:html": "node tests/bug2-html-validation.test.js",
+    "test:bug2:selectors": "node tests/bug2-selector-validation.test.js",
+    "test:playwright": "npx playwright test"
   },
   "keywords": [
     "edificio",
@@ -53,6 +57,7 @@
   },
   "homepage": "https://github.com/SebastianVernisMora/edificio-admin#readme",
   "devDependencies": {
+    "@playwright/test": "^1.57.0",
     "autoprefixer": "^10.4.22",
     "cssnano": "^7.1.2",
     "esbuild": "^0.27.0",
