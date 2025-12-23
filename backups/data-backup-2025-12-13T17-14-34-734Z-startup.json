@@ -746,10 +746,10 @@
   "anuncios": [
     {
       "id": 1,
-      "titulo": "assss",
-      "contenido": "sss",
+      "titulo": "",
+      "contenido": "",
       "tipo": "GENERAL",
-      "imagen": null,
+      "imagen": "/uploads/anuncios/1765597563717_516038944_remmina_10_42_0_1_3389_10_42_0_1_3389_20251210-203023.png",
       "createdAt": "2025-11-23T14:03:40.580Z",
       "autor": 1,
       "archivos": []

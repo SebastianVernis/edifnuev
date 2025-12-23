@@ -54,3 +54,8 @@
 {"timestamp":"2025-12-13T03:46:20.265Z","type":"AUTH_SUCCESS","userId":1,"userRole":"ADMIN","resource":"/","permission":null,"granted":true,"ip":"::ffff:127.0.0.1","userAgent":"Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0"}
 {"timestamp":"2025-12-13T03:46:20.748Z","type":"AUTH_SUCCESS","userId":1,"userRole":"ADMIN","resource":"/","permission":null,"granted":true,"ip":"::ffff:127.0.0.1","userAgent":"Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0"}
 {"timestamp":"2025-12-13T03:46:21.533Z","type":"AUTH_SUCCESS","userId":1,"userRole":"ADMIN","resource":"/","permission":null,"granted":true,"ip":"::ffff:127.0.0.1","userAgent":"Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0"}
+{"timestamp":"2025-12-13T17:20:18.418Z","type":"AUTH_FAILED","userId":null,"userRole":null,"resource":"/send","permission":null,"granted":false,"ip":"::1","userAgent":"curl/8.5.0"}
+{"timestamp":"2025-12-13T17:22:28.156Z","type":"AUTH_FAILED","userId":null,"userRole":null,"resource":"/send","permission":null,"granted":false,"ip":"::1","userAgent":"curl/8.5.0"}
+{"timestamp":"2025-12-13T17:24:22.791Z","type":"AUTH_FAILED","userId":null,"userRole":null,"resource":"/send","permission":null,"granted":false,"ip":"::1","userAgent":"curl/8.5.0"}
+{"timestamp":"2025-12-13T17:25:30.022Z","type":"AUTH_SUCCESS","userId":6,"userRole":"ADMIN","resource":"/send","permission":null,"granted":true,"ip":"::1","userAgent":"curl/8.5.0"}
+{"timestamp":"2025-12-13T17:27:25.079Z","type":"AUTH_SUCCESS","userId":6,"userRole":"ADMIN","resource":"/send","permission":null,"granted":true,"ip":"::1","userAgent":"curl/8.5.0"}
