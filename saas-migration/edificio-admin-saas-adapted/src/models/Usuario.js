@@ -26,8 +26,8 @@ class Usuario {
         throw new Error('El email ya está registrado');
       }
       
-      // Hash de la contraseña
-      const hashedPassword = await bcrypt.hash(password, 10);
+      // Hash de la contraseña (4 rounds para Workers)
+      const hashedPassword = await bcrypt.hash(password, 4);
       
       // Configurar permisos según el rol (como JSON string)
       let permisosJson = '{}';
@@ -251,7 +251,7 @@ class Usuario {
       }
       
       // Hash de la nueva contraseña
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      const hashedPassword = await bcrypt.hash(newPassword, 4);
       
       // Actualizar contraseña
       await db.prepare(

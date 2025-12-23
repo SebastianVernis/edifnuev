@@ -1,8 +1,8 @@
 # 🏢 Multitenancy Validation Report
 
-**Date:** 12/23/2025, 9:45:03 PM  
-**Data Leaks Detected:** 0  
-**Status:** ✅ SECURE
+**Date:** 12/23/2025, 10:00:15 PM  
+**Data Leaks Detected:** 1  
+**Status:** 🚨 INSECURE
 
 ---
 
@@ -11,11 +11,20 @@
 | Test | Status |
 |------|--------|
 | Total Tests | 8 |
-| Passed | 1 |
-| Failed | 7 |
+| Passed | 5 |
+| Failed | 3 |
 
 ---
 
-## ✅ No Data Leaks Detected
+## 🚨 Data Leaks Detected
 
-All multitenancy tests passed successfully. Data is properly isolated between buildings.
+### 1. fondos
+```json
+{
+  "type": "fondos",
+  "overlap": 4
+}
+```
+
+
+⚠️ **ACTION REQUIRED:** Fix data isolation issues before deploying to production!

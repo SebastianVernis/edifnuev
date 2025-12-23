@@ -192,14 +192,27 @@ export async function makeRequest(method, endpoint, options = {}) {
 }
 
 /**
- * Helper para login y obtener token
+ * Cache de tokens para evitar múltiples logins
+ */
+const tokenCache = {};
+
+/**
+ * Helper para login y obtener token (con cache)
  */
 export async function login(email, password) {
+  // Verificar cache
+  const cacheKey = `${email}:${password}`;
+  if (tokenCache[cacheKey]) {
+    return tokenCache[cacheKey];
+  }
+  
   const response = await makeRequest('POST', '/api/auth/login', {
     body: { email, password }
   });
   
   if (response.ok && response.data.token) {
+    // Cachear token
+    tokenCache[cacheKey] = response.data.token;
     return response.data.token;
   }
   

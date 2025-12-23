@@ -1,8 +1,8 @@
 # 🧪 E2E Test Results - SmartBuilding SaaS
 
-**Date:** 12/23/2025, 9:44:47 PM  
+**Date:** 12/23/2025, 10:00:00 PM  
 **Status:** ❌ FAILED  
-**Pass Rate:** 73.7%
+**Pass Rate:** 80.3%
 
 ---
 
@@ -11,11 +11,11 @@
 | Metric | Value |
 |--------|-------|
 | Total Tests | 76 |
-| Passed | 56 |
-| Failed | 20 |
+| Passed | 61 |
+| Failed | 15 |
 | API Coverage | 59.1% |
-| Avg Response Time | 171ms |
-| Data Leaks | 0 |
+| Avg Response Time | 147ms |
+| Data Leaks | 1 |
 | Critical Vulnerabilities | 0 |
 
 ---
@@ -24,14 +24,14 @@
 
 ### 1. Authentication Tests
 - **Total:** 10
-- **Passed:** 9
-- **Failed:** 1
+- **Passed:** 10
+- **Failed:** 0
 
 ### 2. Multitenancy Tests
 - **Total:** 8
-- **Passed:** 1
-- **Failed:** 7
-- **Data Leaks:** 0
+- **Passed:** 5
+- **Failed:** 3
+- **Data Leaks:** 1
 
 ### 3. Security Tests
 - **Total:** 17
@@ -51,7 +51,7 @@
 
 ⚠️ Some tests failed. Review the errors before deploying.
 
-✅ No data leaks detected.
+🚨 **CRITICAL:** Data leaks detected in multitenancy. Fix immediately!
 
 ✅ No critical security issues.
 

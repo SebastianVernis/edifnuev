@@ -1,0 +1,156 @@
+
+> edificio-admin-saas@1.0.0 test:e2e
+> node tests/e2e/run-all-tests.js
+
+
+======================================================================
+🚀 SMARTBUILDING SAAS - E2E TESTING SUITE
+======================================================================
+📅 Started at: 12/23/2025, 9:56:55 PM
+======================================================================
+
+
+📦 SUITE 1/4: Authentication Tests
+
+🧪 Testing Authentication Module
+
+==================================================
+✅ POST /api/auth/login - Login exitoso con credenciales válidas
+✅ POST /api/auth/login - Falla con credenciales inválidas
+✅ POST /api/auth/login - Falla con email inexistente
+✅ POST /api/auth/login - Valida campos requeridos
+❌ GET /api/auth/renew - Renueva token válido: Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+✅ GET /api/auth/renew - Falla sin token
+✅ GET /api/auth/renew - Falla con token inválido
+❌ GET /api/auth/perfil - Obtiene perfil de usuario autenticado: Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+✅ GET /api/auth/perfil - Falla sin autenticación
+✅ Response time - Login debe responder en <200ms
+==================================================
+
+📊 Results: 8/10 passed
+
+❌ Failed tests (2):
+  - GET /api/auth/renew - Renueva token válido
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+  - GET /api/auth/perfil - Obtiene perfil de usuario autenticado
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+
+
+📦 SUITE 2/4: Multitenancy & Data Isolation Tests
+
+🏢 Testing Multitenancy & Data Isolation
+
+==================================================
+❌ Multitenancy - Admin1 no puede ver usuarios de Building2: Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+❌ Multitenancy - Admin2 no puede ver usuarios de Building1: Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+❌ Multitenancy - Cuotas están aisladas por building: Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+❌ Multitenancy - Gastos están aislados por building: Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+❌ Multitenancy - Fondos están aislados por building: Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+❌ Multitenancy - Anuncios están aislados por building: Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+❌ Multitenancy - No se puede acceder a recursos de otro building por ID: Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+❌ Multitenancy - Inquilinos solo ven datos de su building: Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+==================================================
+
+📊 Results: 0/8 passed
+
+✅ No data leaks detected - Multitenancy is secure!
+
+❌ Failed tests (8):
+  - Multitenancy - Admin1 no puede ver usuarios de Building2
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+  - Multitenancy - Admin2 no puede ver usuarios de Building1
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+  - Multitenancy - Cuotas están aisladas por building
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+  - Multitenancy - Gastos están aislados por building
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+  - Multitenancy - Fondos están aislados por building
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+  - Multitenancy - Anuncios están aislados por building
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+  - Multitenancy - No se puede acceder a recursos de otro building por ID
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+  - Multitenancy - Inquilinos solo ven datos de su building
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+
+
+📦 SUITE 3/4: Security Audit Tests
+
+🔒 Security Audit - Comprehensive Testing
+
+==================================================
+✅ Security - JWT - Rechaza tokens malformados
+✅ Security - JWT - Rechaza tokens expirados
+✅ Security - JWT - Rechaza tokens sin firma
+❌ Security - JWT - Valida header x-auth-token: Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+❌ Security - RBAC - Inquilino no puede crear usuarios: Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+❌ Security - RBAC - Inquilino no puede eliminar usuarios: Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+❌ Security - RBAC - Inquilino no puede crear gastos: Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+❌ Security - RBAC - Admin puede crear usuarios: Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+✅ Security - SQL Injection - Login con payload SQL
+❌ Security - SQL Injection - Búsqueda de usuarios con payload: Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+❌ Security - XSS - Sanitiza input en creación de usuarios: Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+❌ Security - XSS - Sanitiza input en anuncios: Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+✅ Security - Rate Limiting - Protege contra brute force en login
+✅ Security - CORS - Headers configurados correctamente
+❌ Security - Password - Rechaza contraseñas débiles: Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+❌ Security - Data Exposure - No expone passwords en responses: Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+✅ Security - Data Exposure - No expone JWT secrets
+==================================================
+
+📊 Results: 7/17 passed
+
+✅ No critical vulnerabilities detected!
+
+❌ Failed tests (10):
+  - Security - JWT - Valida header x-auth-token
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+  - Security - RBAC - Inquilino no puede crear usuarios
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+  - Security - RBAC - Inquilino no puede eliminar usuarios
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+  - Security - RBAC - Inquilino no puede crear gastos
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+  - Security - RBAC - Admin puede crear usuarios
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+  - Security - SQL Injection - Búsqueda de usuarios con payload
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+  - Security - XSS - Sanitiza input en creación de usuarios
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+  - Security - XSS - Sanitiza input en anuncios
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+  - Security - Password - Rechaza contraseñas débiles
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+  - Security - Data Exposure - No expone passwords en responses
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+
+
+📦 SUITE 4/4: API Endpoints Tests (44 endpoints)
+
+🌐 Testing All API Endpoints (44 total)
+
+==================================================
+
+📍 Testing Auth Endpoints (4)
+❌ POST /api/auth/login: Expected 200, got 429
+✅ POST /api/auth/registro
+❌ GET /api/auth/renew: Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+❌ GET /api/auth/perfil: Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+
+📍 Testing Onboarding Endpoints (7)
+✅ POST /api/onboarding/register
+❌ POST /api/otp/send: Unexpected status: 500
+✅ POST /api/otp/verify
+❌ POST /api/otp/resend: Unexpected status: 500
+✅ GET /api/otp/status/:email
+❌ POST /api/onboarding/checkout: Unexpected status: 403
+❌ POST /api/onboarding/setup-building: Unexpected status: 403
+
+📍 Testing Usuarios Endpoints (5)
+
+💥 Fatal error running tests: Error: Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":300}
+    at login (file:///home/admin/edifnuev/saas-migration/edificio-admin-saas-adapted/tests/e2e/test-config.js:206:9)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async testUsuariosEndpoints (file:///home/admin/edifnuev/saas-migration/edificio-admin-saas-adapted/tests/e2e/04-api-endpoints.test.js:214:17)
+    at async runAllTests (file:///home/admin/edifnuev/saas-migration/edificio-admin-saas-adapted/tests/e2e/04-api-endpoints.test.js:701:3)
+    at async runAllTestSuites (file:///home/admin/edifnuev/saas-migration/edificio-admin-saas-adapted/tests/e2e/run-all-tests.js:75:22)
