@@ -53,6 +53,7 @@
   },
   "homepage": "https://github.com/SebastianVernisMora/edificio-admin#readme",
   "devDependencies": {
+    "@playwright/test": "^1.57.0",
     "autoprefixer": "^10.4.22",
     "cssnano": "^7.1.2",
     "esbuild": "^0.27.0",
