@@ -246,12 +246,13 @@ export const getTodayAccessLogs = () => {
 };
 
 // Función para generar JWT token
-export const generarJWT = (userId, userRole, userDepartamento) => {
+export const generarJWT = (userId, userRole, userDepartamento, buildingId = null) => {
   const payload = {
     usuario: {
       id: userId,
       rol: userRole,
-      departamento: userDepartamento
+      departamento: userDepartamento,
+      buildingId: buildingId
     }
   };
   

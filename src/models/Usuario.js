@@ -2,13 +2,14 @@ import bcrypt from 'bcryptjs';
 import { readData, addItem, updateItem, deleteItem } from '../data.js';
 
 class Usuario {
-  constructor(nombre, email, password, departamento, rol = 'INQUILINO', permisos = {}) {
+  constructor(nombre, email, password, departamento, rol = 'INQUILINO', permisos = {}, buildingId = null) {
     this.nombre = nombre;
     this.email = email;
     this.password = password;
     this.departamento = departamento;
     this.rol = rol;
     this.permisos = permisos; // Nuevo campo para permisos configurables
+    this.buildingId = buildingId; // ID del edificio para multitenancy
     this.fechaCreacion = new Date().toISOString();
     this.activo = true;
   }

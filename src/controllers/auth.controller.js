@@ -40,8 +40,8 @@ export const login = async (req, res) => {
       });
     }
     
-    // Generar JWT
-    const token = await generarJWT(usuario.id, usuario.rol, usuario.departamento);
+    // Generar JWT incluyendo buildingId
+    const token = await generarJWT(usuario.id, usuario.rol, usuario.departamento, usuario.buildingId);
     
     res.json({
       ok: true,
@@ -50,7 +50,8 @@ export const login = async (req, res) => {
         nombre: usuario.nombre,
         email: usuario.email,
         departamento: usuario.departamento,
-        rol: usuario.rol
+        rol: usuario.rol,
+        buildingId: usuario.buildingId
       },
       token
     });

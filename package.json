@@ -23,14 +23,11 @@
     "test:integration": "node tests/integration.test.js",
     "test:performance": "node tests/performance.test.js",
     "test:security": "node tests/security.test.js",
-<<<<<<< HEAD
     "test:bug2": "./tests/run-bug2-validation.sh",
     "test:bug2:html": "node tests/bug2-html-validation.test.js",
     "test:bug2:selectors": "node tests/bug2-selector-validation.test.js",
-    "test:playwright": "npx playwright test"
-=======
+    "test:playwright": "npx playwright test",
     "test:post-fixes": "node tests/post-fixes-endpoints.test.js"
->>>>>>> origin/test/api-endpoints-post-fixes-validation-3ybrp5
   },
   "keywords": [
     "edificio",
