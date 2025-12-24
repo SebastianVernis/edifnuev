@@ -67,11 +67,12 @@ export async function login(request, env) {
       }), request);
     }
     
-    // Generar JWT
+    // Generar JWT con building_id para multitenancy
     const token = await generateToken({
       id: usuario.id,
       rol: usuario.rol,
-      departamento: usuario.departamento
+      departamento: usuario.departamento,
+      building_id: usuario.building_id
     }, env);
     
     return addCorsHeaders(new Response(JSON.stringify({

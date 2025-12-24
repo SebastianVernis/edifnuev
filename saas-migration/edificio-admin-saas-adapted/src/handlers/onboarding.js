@@ -1,19 +1,20 @@
 import { addCorsHeaders } from '../middleware/cors.js';
 import { generateToken } from '../middleware/auth.js';
 import { sendWelcomeEmail } from '../utils/smtp.js';
+import { generarYEnviarFactura } from '../utils/facturaGenerator.js';
 import Usuario from '../models/Usuario.js';
 
 const PLANS = {
-  basico: { name: 'Básico', price: 499, maxUnits: 20 },
-  profesional: { name: 'Profesional', price: 999, maxUnits: 50 },
-  empresarial: { name: 'Empresarial', price: 1999, maxUnits: 200 },
-  personalizado: { name: 'Personalizado', price: 0, maxUnits: -1 },
+  basico: { name: 'Básico', price: 2000, priceAnual: 2000, maxUnits: 20 },
+  profesional: { name: 'Profesional', price: 4000, priceAnual: 4000, maxUnits: 50 },
+  empresarial: { name: 'Empresarial', price: 6000, priceAnual: 6000, maxUnits: 200 },
+  personalizado: { name: 'Personalizado', price: 0, priceAnual: 0, maxUnits: -1 },
 };
 
 export async function register(request, env) {
   try {
     const data = await request.json();
-    const { email, fullName, phone, buildingName, selectedPlan } = data;
+    const { email, fullName, phone, buildingName, selectedPlan, requiereFactura, datosFiscales, solucionPersonalizada } = data;
     if (!email || !email.includes('@')) {
       return addCorsHeaders(new Response(JSON.stringify({
         ok: false, msg: 'Email inválido'
@@ -25,12 +26,42 @@ export async function register(request, env) {
         ok: false, msg: 'Este email ya está registrado'
       }), { status: 409, headers: { 'Content-Type': 'application/json' } }), request);
     }
+    // Calcular trial (24 horas)
+    const trialStart = new Date();
+    const trialExpires = new Date(trialStart.getTime() + (24 * 60 * 60 * 1000));
+
     await request.db.prepare(`
-      INSERT OR REPLACE INTO pending_users (email, full_name, phone, building_name, selected_plan)
-      VALUES (?, ?, ?, ?, ?)
-    `).bind(email, fullName, phone || null, buildingName, selectedPlan).run();
+      INSERT OR REPLACE INTO pending_users (
+        email, full_name, phone, building_name, selected_plan,
+        requiere_factura, rfc, razon_social, direccion_fiscal, codigo_postal_fiscal,
+        solucion_personalizada, trial_start, trial_expires, trial_active, lead_status
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 'nuevo')
+    `).bind(
+      email, fullName, phone || null, buildingName, selectedPlan,
+      requiereFactura ? 1 : 0,
+      datosFiscales?.rfc || null,
+      datosFiscales?.razonSocial || null,
+      datosFiscales?.direccionFiscal || null,
+      datosFiscales?.codigoPostal || null,
+      solucionPersonalizada || null,
+      trialStart.toISOString(),
+      trialExpires.toISOString()
+    ).run();
+
+    // Obtener pending_user recién creado
+    const pendingUser = await request.db.prepare(
+      'SELECT * FROM pending_users WHERE email = ?'
+    ).bind(email).first();
+
+    // Generar factura si la solicitó
+    if (requiereFactura && datosFiscales) {
+      await generarYEnviarFactura(pendingUser, env);
+    }
+
     return addCorsHeaders(new Response(JSON.stringify({
-      ok: true, msg: 'Registro iniciado correctamente'
+      ok: true, 
+      msg: 'Registro iniciado correctamente',
+      trialExpires: trialExpires.toISOString()
     }), { status: 201, headers: { 'Content-Type': 'application/json' } }), request);
   } catch (error) {
     console.error('Error en register:', error);

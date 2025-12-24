@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registro - Edificio Admin</title>
+  <title>Registro - ChispartBuilding</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -239,7 +239,7 @@
 <body>
   <div class="container">
     <div class="info-panel">
-      <h2>Únete a Edificio Admin</h2>
+      <h2>Únete a ChispartBuilding</h2>
       <p>La plataforma más completa para la gestión de condominios y edificios.</p>
       <ul class="features">
         <li><i class="fas fa-check-circle"></i> Gestión de cuotas automatizada</li>
@@ -252,7 +252,7 @@
 
     <div class="form-panel">
       <h1>Crear cuenta</h1>
-      <p class="subtitle">Comienza tu prueba gratuita de 30 días</p>
+      <p class="subtitle">Sé uno de los primeros 100 en contratar el servicio de manera anual y ahorra dos meses</p>
 
       <div id="alert" class="alert"></div>
 
@@ -310,6 +310,44 @@
           </div>
         </div>
 
+        <!-- Facturación -->
+        <div class="form-group" style="margin-top: 2rem; border-top: 2px solid #E5E7EB; padding-top: 1.5rem;">
+          <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+            <input type="checkbox" id="requiereFactura" name="requiereFactura" style="width: auto;">
+            <span>Requiero factura electrónica</span>
+          </label>
+        </div>
+
+        <div id="datosFiscales" style="display: none;">
+          <div class="form-group">
+            <label for="rfc">RFC *</label>
+            <input type="text" id="rfc" name="rfc" maxlength="13" placeholder="XAXX010101000">
+          </div>
+
+          <div class="form-group">
+            <label for="razonSocial">Razón Social *</label>
+            <input type="text" id="razonSocial" name="razonSocial">
+          </div>
+
+          <div class="form-group">
+            <label for="direccionFiscal">Dirección Fiscal *</label>
+            <textarea id="direccionFiscal" name="direccionFiscal" rows="2"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="codigoPostalFiscal">Código Postal *</label>
+            <input type="text" id="codigoPostalFiscal" name="codigoPostalFiscal" maxlength="5">
+          </div>
+        </div>
+
+        <!-- Solución Personalizada -->
+        <div class="form-group">
+          <label for="solucionPersonalizada">
+            ¿Requieres alguna solución personalizada? <span style="color: var(--gray); font-weight: normal;">(Opcional)</span>
+          </label>
+          <textarea id="solucionPersonalizada" name="solucionPersonalizada" rows="3" placeholder="Describe tus necesidades específicas..."></textarea>
+        </div>
+
         <button type="submit" class="btn" id="submitBtn">
           Continuar <i class="fas fa-arrow-right"></i>
         </button>
@@ -344,6 +382,20 @@
       customOption.querySelector('input').checked = true;
     }
 
+    // Toggle facturaci\u00f3n fields
+    document.getElementById('requiereFactura').addEventListener('change', (e) => {
+      const datosFiscales = document.getElementById('datosFiscales');
+      const campos = datosFiscales.querySelectorAll('input, textarea');
+      
+      if (e.target.checked) {
+        datosFiscales.style.display = 'block';
+        campos.forEach(campo => campo.required = true);
+      } else {
+        datosFiscales.style.display = 'none';
+        campos.forEach(campo => campo.required = false);
+      }
+    });
+
     // Plan selection
     document.querySelectorAll('.plan-option').forEach(option => {
       option.addEventListener('click', function() {
@@ -374,8 +426,20 @@
         email: document.getElementById('email').value,
         phone: document.getElementById('phone').value,
         buildingName: document.getElementById('buildingName').value,
-        selectedPlan: document.querySelector('input[name="plan"]:checked').value
+        selectedPlan: document.querySelector('input[name="plan"]:checked').value,
+        requiereFactura: document.getElementById('requiereFactura').checked,
+        solucionPersonalizada: document.getElementById('solucionPersonalizada').value || null
       };
+
+      // Datos fiscales si requiere factura
+      if (data.requiereFactura) {
+        data.datosFiscales = {
+          rfc: document.getElementById('rfc').value,
+          razonSocial: document.getElementById('razonSocial').value,
+          direccionFiscal: document.getElementById('direccionFiscal').value,
+          codigoPostal: document.getElementById('codigoPostalFiscal').value
+        };
+      }
 
       try {
         const response = await fetch('/api/onboarding/register', {
@@ -392,10 +456,10 @@
           localStorage.setItem('onboarding_plan', data.selectedPlan);
           
           alert.className = 'alert success';
-          alert.textContent = '¡Registro exitoso! Redirigiendo...';
+          alert.textContent = '¡Registro exitoso! Generando tu acceso...';
           
           setTimeout(() => {
-            window.location.href = '/verificar-otp.html';
+            window.location.href = '/lead-generado.html';
           }, 1500);
         } else {
           throw new Error(result.msg || 'Error en el registro');

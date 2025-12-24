@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head><title>Testing Pages</title></head>
+<body>
+<h1>ChispartBuilding Pages - Working!</h1>
+<p>If you see this, the proxy is working.</p>
+<script>
+  fetch('/api/health')
+    .then(r => r.json())
+    .then(d => console.log('API Health:', d))
+    .catch(e => console.error('API Error:', e));
+</script>
+</body>
+</html>

@@ -57,7 +57,7 @@ setInterval(cleanExpiredCache, 10 * 60 * 1000);
 export const verifyToken = (req, res, next) => {
   try {
     // Obtener token del header
-    const token = req.header('x-auth-token');
+    const token = req.header('Authorization')?.replace('Bearer ', '');
     const ip = req.ip || req.connection.remoteAddress;
     const userAgent = req.get('User-Agent');
     
@@ -71,8 +71,8 @@ export const verifyToken = (req, res, next) => {
     }
     
     // Verificar token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'edificio205_secret_key_2025');
-    req.usuario = decoded.usuario;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'edificio-admin-secret-key-2025');
+    req.usuario = decoded;
     
     // Log de autenticación exitosa
     logAccess('AUTH_SUCCESS', req.usuario.id, req.usuario.rol, req.path, null, true, ip, userAgent);
