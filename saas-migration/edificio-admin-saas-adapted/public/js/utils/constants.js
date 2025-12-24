@@ -1,4 +1,4 @@
-// Constantes del Frontend - ChispartBuilding
+// Constantes del Frontend - Edificio Admin
 // Siguiendo estándares BLACKBOX.md
 
 // API Endpoints

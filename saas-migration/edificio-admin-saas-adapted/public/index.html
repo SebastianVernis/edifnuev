@@ -3,414 +3,119 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ChispartBuilding - Sistema de Gestión para Condominios</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>Edificio-Admin | Login</title>
+  <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --primary: #4F46E5;
-      --primary-dark: #4338CA;
-      --secondary: #10B981;
-      --dark: #1F2937;
-      --light: #F9FAFB;
-      --gray: #6B7280;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-      line-height: 1.6;
-      color: var(--dark);
-    }
-
-    /* Header */
-    header {
-      background: white;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      position: fixed;
-      width: 100%;
-      top: 0;
-      z-index: 1000;
-    }
-
-    nav {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .logo {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: var(--primary);
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      align-items: center;
-    }
-
-    .nav-links a {
-      text-decoration: none;
-      color: var(--dark);
-      transition: color 0.3s;
-    }
-
-    .nav-links a:hover {
-      color: var(--primary);
-    }
-
-    .btn {
-      padding: 0.75rem 1.5rem;
-      border-radius: 0.5rem;
-      text-decoration: none;
-      font-weight: 500;
-      transition: all 0.3s;
-      border: none;
-      cursor: pointer;
-      display: inline-block;
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: var(--primary-dark);
-    }
-
-    .btn-outline {
-      border: 2px solid var(--primary);
-      color: var(--primary);
-      background: white;
-    }
-
-    .btn-outline:hover {
-      background: var(--primary);
-      color: white;
-    }
-
-    /* Hero Section */
-    .hero {
-      margin-top: 80px;
-      padding: 4rem 2rem;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      text-align: center;
-    }
-
-    .hero h1 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-
-    .hero p {
-      font-size: 1.25rem;
-      margin-bottom: 2rem;
-      opacity: 0.9;
-    }
-
-    .hero-buttons {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    /* Features */
-    .features {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 4rem 2rem;
-    }
-
-    .features h2 {
-      text-align: center;
-      font-size: 2.5rem;
-      margin-bottom: 3rem;
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
-    }
-
-    .feature-card {
-      padding: 2rem;
-      background: white;
-      border-radius: 1rem;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      transition: transform 0.3s;
-    }
-
-    .feature-card:hover {
-      transform: translateY(-5px);
-    }
-
-    .feature-card i {
-      font-size: 2.5rem;
-      color: var(--primary);
-      margin-bottom: 1rem;
-    }
-
-    .feature-card h3 {
-      margin-bottom: 0.5rem;
-    }
-
-    /* Pricing */
-    .pricing {
-      background: var(--light);
-      padding: 4rem 2rem;
-    }
-
-    .pricing h2 {
-      text-align: center;
-      font-size: 2.5rem;
-      margin-bottom: 3rem;
-    }
-
-    .pricing-grid {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
-    }
-
-    .pricing-card {
-      background: white;
-      padding: 2rem;
-      border-radius: 1rem;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-
-    .pricing-card.featured {
-      border: 3px solid var(--primary);
-      transform: scale(1.05);
-    }
-
-    .pricing-card h3 {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .price {
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: var(--primary);
-      margin-bottom: 0.5rem;
-    }
-
-    .price-period {
-      color: var(--gray);
-      margin-bottom: 1.5rem;
-    }
-
-    .features-list {
-      list-style: none;
-      margin-bottom: 2rem;
-      text-align: left;
-    }
-
-    .features-list li {
-      padding: 0.5rem 0;
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    .features-list i {
-      color: var(--secondary);
-      margin-right: 0.5rem;
-    }
-
-    /* CTA */
-    .cta {
-      background: var(--dark);
-      color: white;
-      padding: 4rem 2rem;
-      text-align: center;
-    }
-
-    .cta h2 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .cta p {
-      font-size: 1.25rem;
-      margin-bottom: 2rem;
-    }
-
-    /* Footer */
-    footer {
-      background: var(--dark);
-      color: white;
-      padding: 2rem;
-      text-align: center;
-    }
-
-    @media (max-width: 768px) {
-      .hero h1 {
-        font-size: 2rem;
-      }
-
-      .features h2, .pricing h2, .cta h2 {
-        font-size: 1.75rem;
-      }
-
-      .nav-links {
-        display: none;
-      }
-    }
-  </style>
 </head>
 <body>
-  <!-- Header -->
-  <header>
-    <nav>
-      <div class="logo">
-        <i class="fas fa-building"></i> ChispartBuilding
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <h1>Edificio-Admin</h1>
+        <p>Sistema de Administración de Condominio</p>
       </div>
-      <div class="nav-links">
-        <a href="#features">Características</a>
-        <a href="#pricing">Precios</a>
-        <a href="/login.html" class="btn btn-outline">Iniciar Sesión</a>
-      </div>
-    </nav>
-  </header>
-
-  <!-- Hero Section -->
-  <section class="hero">
-    <h1>Gestión Inteligente de Condominios</h1>
-    <p>Simplifica la administración de tu edificio o condominio con nuestra plataforma todo-en-uno</p>
-    <p style="color: #10B981; font-weight: 600; margin-top: 1rem; font-size: 1.1rem;">🎉 Sé uno de los primeros 100 en contratar el servicio de manera anual y ahorra dos meses</p>
-    <div class="hero-buttons">
-      <a href="/registro.html" class="btn btn-primary">Comenzar Ahora</a>
-      <a href="/login.html" class="btn btn-outline">Ver Demo</a>
-    </div>
-  </section>
-
-  <!-- Features Section -->
-  <section id="features" class="features">
-    <h2>Todo lo que necesitas en un solo lugar</h2>
-    <div class="features-grid">
-      <div class="feature-card">
-        <i class="fas fa-dollar-sign"></i>
-        <h3>Gestión de Cuotas</h3>
-        <p>Control completo de pagos, estados de cuenta y recordatorios automáticos para residentes.</p>
-      </div>
-
-      <div class="feature-card">
-        <i class="fas fa-receipt"></i>
-        <h3>Gastos y Presupuestos</h3>
-        <p>Administra gastos comunes, proveedores y presupuestos con total transparencia.</p>
-      </div>
-
-      <div class="feature-card">
-        <i class="fas fa-users"></i>
-        <h3>Portal de Residentes</h3>
-        <p>Cada residente tiene acceso a su estado de cuenta y puede realizar solicitudes.</p>
-      </div>
-
-      <div class="feature-card">
-        <i class="fas fa-bullhorn"></i>
-        <h3>Comunicación</h3>
-        <p>Anuncios, notificaciones y sistema de solicitudes para mantener a todos informados.</p>
-      </div>
-
-      <div class="feature-card">
-        <i class="fas fa-piggy-bank"></i>
-        <h3>Fondos Comunes</h3>
-        <p>Administra fondos de reserva, emergencia y proyectos especiales.</p>
-      </div>
-
-      <div class="feature-card">
-        <i class="fas fa-chart-line"></i>
-        <h3>Reportes y Cierres</h3>
-        <p>Genera reportes mensuales y cierres contables de forma automática.</p>
+      
+      <div class="login-form">
+        <h2>Iniciar Sesión</h2>
+        <form id="login-form">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" name="password" required>
+          </div>
+          
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">Ingresar</button>
+          </div>
+        </form>
+        
+        <div class="login-info">
+          <button id="show-credentials-btn" class="credentials-btn">
+            <i class="fas fa-key"></i>
+            Ver Credenciales de Demo
+          </button>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- Pricing Section -->
-  <section id="pricing" class="pricing">
-    <h2>Planes para cada necesidad</h2>
-    <div class="pricing-grid">
-      <div class="pricing-card">
-        <h3>Básico</h3>
-        <div class="price">$2,000</div>
-        <div class="price-period">MXN / año</div>
-        <p style="color: #10B981; font-weight: 600; font-size: 0.875rem; margin: 0.5rem 0;">Ahorra 2 meses vs mensual</p>
-        <ul class="features-list">
-          <li><i class="fas fa-check"></i> Hasta 20 unidades</li>
-          <li><i class="fas fa-check"></i> Gestión de cuotas</li>
-          <li><i class="fas fa-check"></i> Control de gastos</li>
-          <li><i class="fas fa-check"></i> Portal de residentes</li>
-          <li><i class="fas fa-check"></i> Soporte por email</li>
-        </ul>
-        <a href="/registro.html" class="btn btn-outline">Empezar</a>
+  <!-- Modal para credenciales -->
+  <div id="credentials-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-key"></i> Credenciales de Acceso Demo</h2>
+        <span class="close">&times;</span>
       </div>
+      <div class="modal-body">
+        <div class="credentials-grid">
+          <div class="credential-card admin">
+            <div class="role-header">
+              <i class="fas fa-crown"></i>
+              <h3>ADMINISTRADOR</h3>
+            </div>
+            <div class="credential-details">
+              <p><strong>Email:</strong> admin@edificio205.com</p>
+              <p><strong>Contraseña:</strong> Gemelo1</p>
+              <p class="role-desc">Acceso completo al sistema</p>
+            </div>
+          </div>
 
-      <div class="pricing-card featured">
-        <h3>Profesional</h3>
-        <div class="price">$4,000</div>
-        <div class="price-period">MXN / año</div>
-        <p style="color: #10B981; font-weight: 600; font-size: 0.875rem; margin: 0.5rem 0;">⭐ Más popular - Ahorra 2 meses</p>
-        <ul class="features-list">
-          <li><i class="fas fa-check"></i> Hasta 50 unidades</li>
-          <li><i class="fas fa-check"></i> Todo lo del plan Básico</li>
-          <li><i class="fas fa-check"></i> Fondos y reservas</li>
-          <li><i class="fas fa-check"></i> Reportes avanzados</li>
-          <li><i class="fas fa-check"></i> Cierres mensuales</li>
-          <li><i class="fas fa-check"></i> Soporte prioritario</li>
-        </ul>
-        <a href="/registro.html" class="btn btn-primary">Empezar</a>
-      </div>
+          <div class="credential-card comite">
+            <div class="role-header">
+              <i class="fas fa-users"></i>
+              <h3>COMITÉ</h3>
+            </div>
+            <div class="credential-details">
+              <p><strong>Email:</strong> comite@edificio205.com</p>
+              <p><strong>Contraseña:</strong> Gemelo1</p>
+              <p class="role-desc">Gestión de gastos y presupuestos</p>
+            </div>
+          </div>
 
-      <div class="pricing-card">
-        <h3>Empresarial</h3>
-        <div class="price">$6,000</div>
-        <div class="price-period">MXN / año</div>
-        <p style="color: #10B981; font-weight: 600; font-size: 0.875rem; margin: 0.5rem 0;">Ahorra 2 meses vs mensual</p>
-        <ul class="features-list">
-          <li><i class="fas fa-check"></i> Hasta 200 unidades</li>
-          <li><i class="fas fa-check"></i> Todo lo del plan Profesional</li>
-          <li><i class="fas fa-check"></i> Múltiples edificios</li>
-          <li><i class="fas fa-check"></i> API personalizada</li>
-          <li><i class="fas fa-check"></i> Capacitación incluida</li>
-          <li><i class="fas fa-check"></i> Soporte 24/7</li>
-        </ul>
-        <a href="/registro.html" class="btn btn-outline">Empezar</a>
+          <div class="credential-card inquilino">
+            <div class="role-header">
+              <i class="fas fa-home"></i>
+              <h3>INQUILINOS</h3>
+            </div>
+            <div class="credential-details">
+              <div class="inquilino-list">
+                <div class="inquilino-item">
+                  <p><strong>María García (Depto 101):</strong></p>
+                  <p>maria.garcia@edificio205.com</p>
+                </div>
+                <div class="inquilino-item">
+                  <p><strong>Carlos López (Depto 102):</strong></p>
+                  <p>carlos.lopez@edificio205.com</p>
+                </div>
+                <div class="inquilino-item">
+                  <p><strong>Ana Martínez (Depto 201):</strong></p>
+                  <p>ana.martinez@edificio205.com</p>
+                </div>
+                <div class="inquilino-item">
+                  <p><strong>Roberto Silva (Depto 202):</strong></p>
+                  <p>roberto.silva@edificio205.com</p>
+                </div>
+              </div>
+              <p><strong>Contraseña universal:</strong> Gemelo1</p>
+              <p class="role-desc">Consulta de estado de cuenta</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <div class="notice">
+            <i class="fas fa-info-circle"></i>
+            <p>Sistema reiniciado con usuarios de demostración. Todas las contraseñas son temporales.</p>
+          </div>
+        </div>
       </div>
     </div>
-  </section>
-
-  <!-- CTA Section -->
-  <section class="cta">
-    <h2>¿Listo para simplificar tu administración?</h2>
-    <p>Únete a cientos de condominios que ya confían en nosotros</p>
-    <a href="/registro.html" class="btn btn-primary" style="background: white; color: var(--primary);">Comenzar Ahora</a>
-  </section>
-
-  <!-- Footer -->
-  <footer>
-    <p>&copy; 2024 ChispartBuilding. Todos los derechos reservados.</p>
-    <p style="margin-top: 0.5rem;">
-      <a href="/login.html" style="color: white; margin: 0 1rem;">Iniciar Sesión</a> |
-      <a href="/admin" style="color: white; margin: 0 1rem;">Panel Admin</a> |
-      <a href="/inquilino" style="color: white; margin: 0 1rem;">Portal Residente</a>
-    </p>
-  </footer>
+  </div>
+  
+  <script src="js/auth/auth.js"></script>
 </body>
 </html>

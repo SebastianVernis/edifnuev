@@ -36,6 +36,7 @@ import * as cronHandler from './handlers/cron.js';
 import * as downloadsHandler from './handlers/downloads.js';
 import * as missingEndpoints from './handlers/missing-endpoints.js';
 import * as leadsHandler from './handlers/leads.js';
+import * as themeHandler from './handlers/theme.js';
 
 // Create router
 const router = Router();
@@ -194,6 +195,15 @@ router.get('/api/cierres/:id/files', verifyToken, downloadsHandler.listCierreFil
 // Leads routes (gestión de ventas)
 router.get('/api/leads', verifyToken, leadsHandler.getAll);
 router.put('/api/leads/:email/confirmar-pago', verifyToken, leadsHandler.confirmarPago);
+
+// Theme customization routes
+router.get('/api/theme/my-theme', verifyToken, themeHandler.getMyTheme);
+router.get('/api/theme/my-theme/css', verifyToken, themeHandler.getMyThemeCSS);
+router.get('/api/theme/building/:buildingId', verifyToken, themeHandler.getTheme);
+router.get('/api/theme/building/:buildingId/css', themeHandler.getThemeCSS);
+router.put('/api/theme/building/:buildingId', verifyToken, themeHandler.createOrUpdateTheme);
+router.delete('/api/theme/building/:buildingId', verifyToken, themeHandler.deleteTheme);
+router.get('/api/theme/all', verifyToken, themeHandler.getAllThemes);
 
 // ============================================================================
 // EXPORT DEFAULT HANDLER

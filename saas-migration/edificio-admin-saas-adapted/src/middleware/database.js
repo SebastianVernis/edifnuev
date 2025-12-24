@@ -148,6 +148,16 @@ export async function runMigrations(env) {
       FOREIGN KEY (approved_by) REFERENCES users (id)
     )`,
 
+    // Tabla de configuración de temas
+    `CREATE TABLE IF NOT EXISTS theme_configs (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      building_id INTEGER NOT NULL UNIQUE,
+      config TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (building_id) REFERENCES buildings (id) ON DELETE CASCADE
+    )`,
+
     // Índices para mejorar el rendimiento
     `CREATE INDEX IF NOT EXISTS idx_building_users_building_id ON building_users (building_id)`,
     `CREATE INDEX IF NOT EXISTS idx_building_users_user_id ON building_users (user_id)`,
@@ -156,6 +166,7 @@ export async function runMigrations(env) {
     `CREATE INDEX IF NOT EXISTS idx_expenses_building_id ON expenses (building_id)`,
     `CREATE INDEX IF NOT EXISTS idx_subscriptions_building_id ON subscriptions (building_id)`,
     `CREATE INDEX IF NOT EXISTS idx_payments_subscription_id ON payments (subscription_id)`,
+    `CREATE INDEX IF NOT EXISTS idx_theme_configs_building_id ON theme_configs (building_id)`,
   ];
 
   try {

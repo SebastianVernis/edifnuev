@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración - Edificio Admin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .container { background: white; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); max-width: 600px; width: 100%; padding: 2rem; }
+        .logo { text-align: center; font-size: 2rem; color: #667eea; margin-bottom: 1rem; }
+        h1 { text-align: center; margin-bottom: 0.5rem; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 2rem; }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        input, select { width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem; }
+        input:focus, select:focus { outline: none; border-color: #667eea; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 5px; font-size: 1rem; font-weight: bold; cursor: pointer; }
+        .btn:hover:not(:disabled) { transform: translateY(-2px); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .alert { padding: 1rem; border-radius: 5px; margin-bottom: 1rem; }
+        .alert-error { background: #f8d7da; color: #721c24; }
+        .alert-success { background: #d4edda; color: #155724; }
+        .loading { display: none; text-align: center; margin-top: 1rem; }
+        .loading.active { display: block; }
+        .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #667eea; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .step-indicator { text-align: center; margin-bottom: 2rem; color: #999; }
+        .required { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🏢 Edificio Admin</div>
+        <div class="step-indicator">Paso 3 de 3</div>
+        <h1>Configuración inicial</h1>
+        <p class="subtitle">Configura tu edificio y crea tu contraseña</p>
+
+        <div id="alertContainer"></div>
+
+        <form id="setupForm">
+            <h3 style="margin-bottom: 1rem;">Datos del Edificio</h3>
+            
+            <div class="form-group">
+                <label>Dirección completa <span class="required">*</span></label>
+                <input type="text" id="address" required>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Total de unidades <span class="required">*</span></label>
+                    <input type="number" id="totalUnits" required min="1">
+                </div>
+                <div class="form-group">
+                    <label>Tipo</label>
+                    <select id="type">
+                        <option value="edificio">Edificio</option>
+                        <option value="condominio">Condominio</option>
+                        <option value="residencial">Residencial</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Cuota mensual</label>
+                    <input type="number" id="monthlyFee" placeholder="0" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Día de corte</label>
+                    <input type="number" id="cutoffDay" placeholder="1" min="1" max="31" value="1">
+                </div>
+            </div>
+
+            <h3 style="margin: 2rem 0 1rem;">Tu Cuenta de Administrador</h3>
+
+            <div class="form-group">
+                <label>Contraseña <span class="required">*</span></label>
+                <input type="password" id="password" required minlength="6">
+            </div>
+
+            <div class="form-group">
+                <label>Confirmar contraseña <span class="required">*</span></label>
+                <input type="password" id="confirmPassword" required minlength="6">
+            </div>
+
+            <button type="submit" class="btn">Completar Configuración</button>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Creando tu cuenta...</p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = window.location.origin;
+        const email = sessionStorage.getItem('registrationEmail');
+        const regData = JSON.parse(sessionStorage.getItem('registrationData') || '{}');
+
+        if (!email) window.location.href = '/register';
+
+        function showAlert(msg, type = 'error') {
+            document.getElementById('alertContainer').innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+            setTimeout(() => document.getElementById('alertContainer').innerHTML = '', 5000);
+        }
+
+        function setLoading(loading) {
+            document.getElementById('loading').classList.toggle('active', loading);
+            document.querySelector('.btn').disabled = loading;
+        }
+
+        document.getElementById('setupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password.length < 6) {
+                showAlert('La contraseña debe tener al menos 6 caracteres');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showAlert('Las contraseñas no coinciden');
+                return;
+            }
+
+            const buildingData = {
+                address: document.getElementById('address').value,
+                totalUnits: parseInt(document.getElementById('totalUnits').value),
+                type: document.getElementById('type').value,
+                monthlyFee: parseFloat(document.getElementById('monthlyFee').value) || 0,
+                cutoffDay: parseInt(document.getElementById('cutoffDay').value) || 1,
+            };
+
+            setLoading(true);
+
+            try {
+                const response = await fetch(`${API_URL}/api/onboarding/setup-building`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, buildingData })
+                });
+
+                const data = await response.json();
+
+                if (data.ok) {
+                    // Guardar token
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('usuario', JSON.stringify(data.usuario));
+                    
+                    // Limpiar session storage
+                    sessionStorage.clear();
+
+                    showAlert('¡Cuenta creada exitosamente!', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = '/admin';
+                    }, 1500);
+                } else {
+                    showAlert(data.msg || 'Error en la configuración');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Error de conexión');
+            } finally {
+                setLoading(false);
+            }
+        });
+    </script>
+</body>
+</html>

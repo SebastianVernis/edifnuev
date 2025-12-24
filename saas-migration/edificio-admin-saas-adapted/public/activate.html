@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activar Cuenta - Edificio Admin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .container { background: white; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); max-width: 500px; width: 100%; padding: 2rem; }
+        .logo { text-align: center; font-size: 2rem; color: #667eea; margin-bottom: 1rem; }
+        h1 { text-align: center; margin-bottom: 0.5rem; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 2rem; }
+        .invitation-info { background: #f8f9fa; padding: 1.5rem; border-radius: 5px; margin-bottom: 2rem; border-left: 4px solid #667eea; }
+        .invitation-info div { margin: 0.5rem 0; }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        input { width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem; }
+        input:focus { outline: none; border-color: #667eea; }
+        .btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 5px; font-size: 1rem; font-weight: bold; cursor: pointer; }
+        .btn:hover:not(:disabled) { transform: translateY(-2px); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .alert { padding: 1rem; border-radius: 5px; margin-bottom: 1rem; }
+        .alert-error { background: #f8d7da; color: #721c24; }
+        .alert-success { background: #d4edda; color: #155724; }
+        .loading { display: none; text-align: center; margin-top: 1rem; }
+        .loading.active { display: block; }
+        .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #667eea; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .required { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🏢 Edificio Admin</div>
+        <h1>Activar tu cuenta</h1>
+        <p class="subtitle">Has sido invitado a unirte al sistema</p>
+
+        <div class="invitation-info" id="invitationInfo" style="display:none;">
+            <div><strong>Nombre:</strong> <span id="userName">-</span></div>
+            <div><strong>Email:</strong> <span id="userEmail">-</span></div>
+            <div><strong>Rol:</strong> <span id="userRole">-</span></div>
+            <div><strong>Edificio:</strong> <span id="buildingName">-</span></div>
+            <div><strong>Invitado por:</strong> <span id="invitedBy">-</span></div>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <form id="activateForm" style="display:none;">
+            <div class="form-group">
+                <label>Crear tu contraseña <span class="required">*</span></label>
+                <input type="password" id="password" required minlength="6">
+            </div>
+
+            <div class="form-group">
+                <label>Confirmar contraseña <span class="required">*</span></label>
+                <input type="password" id="confirmPassword" required minlength="6">
+            </div>
+
+            <button type="submit" class="btn">Activar Cuenta</button>
+        </form>
+
+        <div class="loading active" id="loading">
+            <div class="spinner"></div>
+            <p>Verificando invitación...</p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = window.location.origin;
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get('token');
+
+        if (!token) {
+            showAlert('Token de invitación no encontrado');
+        } else {
+            verifyInvitation();
+        }
+
+        function showAlert(msg, type = 'error') {
+            document.getElementById('alertContainer').innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+        }
+
+        function setLoading(loading) {
+            document.getElementById('loading').classList.toggle('active', loading);
+        }
+
+        const roleNames = {
+            ADMIN: 'Administrador',
+            COMITE: 'Comité',
+            INQUILINO: 'Inquilino'
+        };
+
+        async function verifyInvitation() {
+            try {
+                const response = await fetch(`${API_URL}/api/invitations/verify/${token}`);
+                const data = await response.json();
+
+                if (data.ok) {
+                    document.getElementById('userName').textContent = data.data.name;
+                    document.getElementById('userEmail').textContent = data.data.email;
+                    document.getElementById('userRole').textContent = roleNames[data.data.role] || data.data.role;
+                    document.getElementById('buildingName').textContent = data.data.buildingName;
+                    document.getElementById('invitedBy').textContent = data.data.invitedBy;
+
+                    document.getElementById('invitationInfo').style.display = 'block';
+                    document.getElementById('activateForm').style.display = 'block';
+                    setLoading(false);
+                } else {
+                    showAlert(data.msg || 'Token de invitación inválido o expirado');
+                    setLoading(false);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Error de conexión');
+                setLoading(false);
+            }
+        }
+
+        document.getElementById('activateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password.length < 6) {
+                showAlert('La contraseña debe tener al menos 6 caracteres');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showAlert('Las contraseñas no coinciden');
+                return;
+            }
+
+            setLoading(true);
+
+            try {
+                const response = await fetch(`${API_URL}/api/invitations/activate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token, password })
+                });
+
+                const data = await response.json();
+
+                if (data.ok) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('usuario', JSON.stringify(data.usuario));
+
+                    showAlert('¡Cuenta activada exitosamente!', 'success');
+                    
+                    setTimeout(() => {
+                        const redirectUrl = data.usuario.rol === 'ADMIN' ? '/admin' : '/inquilino';
+                        window.location.href = redirectUrl;
+                    }, 1500);
+                } else {
+                    showAlert(data.msg || 'Error al activar la cuenta');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Error de conexión');
+            } finally {
+                setLoading(false);
+            }
+        });
+    </script>
+</body>
+</html>
