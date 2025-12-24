@@ -10,7 +10,12 @@
     "migrate": "node scripts/migrate.js",
     "seed": "node scripts/seed.js",
     "setup": "sh scripts/setup-dev.sh",
-    "deploy:prod": "sh scripts/deploy.sh"
+    "deploy:prod": "sh scripts/deploy.sh",
+    "test:e2e": "node tests/e2e/run-all-tests.js",
+    "test:auth": "node tests/e2e/01-auth.test.js",
+    "test:multitenancy": "node tests/e2e/02-multitenancy.test.js",
+    "test:security": "node tests/e2e/03-security.test.js",
+    "test:api": "node tests/e2e/04-api-endpoints.test.js"
   },
   "keywords": [
     "cloudflare",
@@ -34,6 +39,10 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20231218.0",
+    "chai": "^4.3.10",
+    "dotenv": "^17.2.3",
+    "mocha": "^10.2.0",
+    "node-fetch": "^3.3.2",
     "wrangler": "^3.22.0"
   }
 }

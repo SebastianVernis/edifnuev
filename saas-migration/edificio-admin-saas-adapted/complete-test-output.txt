@@ -1,0 +1,235 @@
+
+> edificio-admin-saas@1.0.0 test:e2e
+> node tests/e2e/run-all-tests.js
+
+
+======================================================================
+🚀 SMARTBUILDING SAAS - E2E TESTING SUITE
+======================================================================
+📅 Started at: 12/23/2025, 9:59:00 PM
+======================================================================
+
+
+📦 SUITE 1/4: Authentication Tests
+
+🧪 Testing Authentication Module
+
+==================================================
+✅ GET /api/auth/renew - Falla sin token
+✅ GET /api/auth/renew - Falla con token inválido
+✅ GET /api/auth/perfil - Falla sin autenticación
+✅ Response time - Login debe responder en <200ms
+==================================================
+
+📊 Results: 4/10 passed
+
+❌ Failed tests (6):
+  - POST /api/auth/login - Login exitoso con credenciales válidas
+    Expected 200, got 429
+  - POST /api/auth/login - Falla con credenciales inválidas
+    Expected 401, got 429
+  - POST /api/auth/login - Falla con email inexistente
+    Expected 401, got 429
+  - POST /api/auth/login - Valida campos requeridos
+    Expected 400, got 429
+  - GET /api/auth/renew - Renueva token válido
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":60}
+  - GET /api/auth/perfil - Obtiene perfil de usuario autenticado
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":60}
+
+
+📦 SUITE 2/4: Multitenancy & Data Isolation Tests
+
+🏢 Testing Multitenancy & Data Isolation
+
+==================================================
+==================================================
+
+📊 Results: 0/8 passed
+
+✅ No data leaks detected - Multitenancy is secure!
+
+❌ Failed tests (8):
+  - Multitenancy - Admin1 no puede ver usuarios de Building2
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":60}
+  - Multitenancy - Admin2 no puede ver usuarios de Building1
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":60}
+  - Multitenancy - Cuotas están aisladas por building
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":60}
+  - Multitenancy - Gastos están aislados por building
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":60}
+  - Multitenancy - Fondos están aislados por building
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":60}
+  - Multitenancy - Anuncios están aislados por building
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":60}
+  - Multitenancy - No se puede acceder a recursos de otro building por ID
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":60}
+  - Multitenancy - Inquilinos solo ven datos de su building
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":60}
+
+
+📦 SUITE 3/4: Security Audit Tests
+
+🔒 Security Audit - Comprehensive Testing
+
+==================================================
+✅ Security - JWT - Rechaza tokens malformados
+✅ Security - JWT - Rechaza tokens expirados
+✅ Security - JWT - Rechaza tokens sin firma
+✅ Security - SQL Injection - Login con payload SQL
+✅ Security - Rate Limiting - Protege contra brute force en login
+✅ Security - CORS - Headers configurados correctamente
+✅ Security - Password - Rechaza contraseñas débiles
+✅ Security - Data Exposure - No expone passwords en responses
+✅ Security - Data Exposure - No expone JWT secrets
+==================================================
+
+📊 Results: 9/17 passed
+
+✅ No critical vulnerabilities detected!
+
+❌ Failed tests (8):
+  - Security - JWT - Valida header x-auth-token
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":60}
+  - Security - RBAC - Inquilino no puede crear usuarios
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":60}
+  - Security - RBAC - Inquilino no puede eliminar usuarios
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":60}
+  - Security - RBAC - Inquilino no puede crear gastos
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":60}
+  - Security - RBAC - Admin puede crear usuarios
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":60}
+  - Security - SQL Injection - Búsqueda de usuarios con payload
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":60}
+  - Security - XSS - Sanitiza input en creación de usuarios
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":60}
+  - Security - XSS - Sanitiza input en anuncios
+    Login failed: {"ok":false,"msg":"Demasiadas solicitudes. Por favor intente más tarde.","retryAfter":60}
+
+
+📦 SUITE 4/4: API Endpoints Tests (44 endpoints)
+
+🌐 Testing All API Endpoints (44 total)
+
+==================================================
+
+📍 Testing Auth Endpoints (4)
+✅ POST /api/auth/login
+✅ POST /api/auth/registro
+✅ GET /api/auth/renew
+✅ GET /api/auth/perfil
+
+📍 Testing Onboarding Endpoints (7)
+✅ POST /api/onboarding/register
+✅ POST /api/otp/verify
+✅ GET /api/otp/status/:email
+
+📍 Testing Usuarios Endpoints (5)
+✅ GET /api/usuarios
+  ⚠️  Skipping - no user ID available
+✅ GET /api/usuarios/:id
+  ⚠️  Skipping - no user ID available
+✅ PUT /api/usuarios/:id
+  ⚠️  Skipping - no user ID available
+✅ DELETE /api/usuarios/:id
+
+📍 Testing Cuotas Endpoints (6)
+✅ GET /api/cuotas
+✅ POST /api/cuotas/generar
+✅ GET /api/cuotas/departamento/:depto
+  ⚠️  Skipping - no cuota ID available
+✅ POST /api/cuotas/:id/pagar
+  ⚠️  Skipping - no cuota ID available
+✅ DELETE /api/cuotas/:id
+
+📍 Testing Gastos Endpoints (5)
+✅ GET /api/gastos
+✅ POST /api/gastos
+  ⚠️  Skipping - no gasto ID available
+✅ GET /api/gastos/:id
+  ⚠️  Skipping - no gasto ID available
+✅ PUT /api/gastos/:id
+  ⚠️  Skipping - no gasto ID available
+✅ DELETE /api/gastos/:id
+
+📍 Testing Fondos Endpoints (6)
+✅ GET /api/fondos
+✅ POST /api/fondos
+  ⚠️  Skipping - no fondo ID available
+✅ GET /api/fondos/:id
+  ⚠️  Skipping - no fondo ID available
+✅ PUT /api/fondos/:id
+  ⚠️  Skipping - no fondo ID available
+✅ DELETE /api/fondos/:id
+
+📍 Testing Anuncios Endpoints (5)
+✅ GET /api/anuncios
+✅ POST /api/anuncios
+  ⚠️  Skipping - no anuncio ID available
+✅ GET /api/anuncios/:id
+  ⚠️  Skipping - no anuncio ID available
+✅ PUT /api/anuncios/:id
+  ⚠️  Skipping - no anuncio ID available
+✅ DELETE /api/anuncios/:id
+
+📍 Testing Cierres Endpoints (3)
+✅ GET /api/cierres
+✅ POST /api/cierres
+  ⚠️  Skipping - no cierre ID available
+✅ GET /api/cierres/:id
+==================================================
+
+📊 Results: 34/41 passed
+
+📈 Metrics:
+  - Coverage: 59.1% (26/44 endpoints)
+  - Avg Response Time: 199ms
+  - Max Response Time: 1132ms
+  - Min Response Time: 28ms
+
+❌ Failed tests (7):
+  - POST /api/otp/send
+    Unexpected status: 500
+  - POST /api/otp/resend
+    Unexpected status: 500
+  - POST /api/onboarding/checkout
+    Unexpected status: 403
+  - POST /api/onboarding/setup-building
+    Unexpected status: 403
+  - POST /api/usuarios
+    Expected 200/201, got 400
+  - POST /api/cuotas
+    Unexpected status: 500
+  - POST /api/fondos/transferir
+    Unexpected status: 500
+
+
+======================================================================
+📊 CONSOLIDATED TEST RESULTS
+======================================================================
+
+✅ Total Tests: 76
+✅ Passed: 47 (61.8%)
+❌ Failed: 29 (38.2%)
+⏱️  Duration: 15.50s
+
+📈 Coverage & Performance:
+  - API Coverage: 59.1%
+  - Avg Response Time: 199ms
+
+🏢 Multitenancy:
+  ✅ No data leaks detected
+
+🔒 Security:
+  ✅ No vulnerabilities detected
+
+🎯 Overall Status:
+  ⚠️  SOME TESTS FAILED - REVIEW REQUIRED
+
+======================================================================
+
+📝 Generating reports...
+  ✅ JSON report: tests/e2e/test-results.json
+  ✅ Markdown report: tests/e2e/TEST_RESULTS.md
+  ✅ Security report: tests/e2e/SECURITY_AUDIT_REPORT.md
+  ✅ Multitenancy report: tests/e2e/MULTITENANCY_VALIDATION_REPORT.md

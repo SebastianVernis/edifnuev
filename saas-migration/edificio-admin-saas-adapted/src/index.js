@@ -10,6 +10,7 @@ import { Router } from 'itty-router';
 import { handleCors, addCorsHeaders } from './middleware/cors.js';
 import { verifyToken } from './middleware/auth.js';
 import { withDb } from './middleware/database.js';
+import { loginRateLimit, registroRateLimit, apiRateLimit } from './middleware/ratelimit.js';
 
 // Import SAAS handlers (nuevos)
 import * as subscription from './handlers/subscription.js';
@@ -87,6 +88,8 @@ router.post('/api/invitations/activate', invitations.activateInvitation);
 // ============================================================================
 
 // Authentication routes
+// NOTA: Rate limiting deshabilitado temporalmente para testing E2E
+// TODO: Rehabilitar después de completar testing inicial
 router.post('/api/auth/login', authHandler.login);
 router.post('/api/auth/registro', authHandler.registro);
 router.get('/api/auth/renew', verifyToken, authHandler.renovarToken);

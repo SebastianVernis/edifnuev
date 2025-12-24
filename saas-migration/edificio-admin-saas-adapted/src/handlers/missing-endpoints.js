@@ -76,18 +76,57 @@ export async function gastosGetStats(request, env) {
 // Fondos
 export async function fondosTransferir(request, env) {
   try {
+    // SECURITY: Obtener building_id del usuario autenticado
+    const buildingId = request.usuario?.building_id || request.user?.building_id;
+    
+    if (!buildingId) {
+      return addCorsHeaders(new Response(JSON.stringify({
+        ok: false,
+        msg: 'Usuario sin edificio asignado'
+      }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      }), request);
+    }
+    
     const data = await request.json();
     const { fondoOrigenId, fondoDestinoId, monto, concepto } = data;
 
+    if (!fondoOrigenId || !fondoDestinoId || !monto) {
+      return addCorsHeaders(new Response(JSON.stringify({
+        ok: false,
+        msg: 'Faltan datos requeridos'
+      }), { status: 400, headers: { 'Content-Type': 'application/json' } }), request);
+    }
+
     const montoNum = parseFloat(monto);
     
-    await request.db.prepare('UPDATE fondos SET saldo = saldo - ? WHERE id = ?').bind(montoNum, fondoOrigenId).run();
-    await request.db.prepare('UPDATE fondos SET saldo = saldo + ? WHERE id = ?').bind(montoNum, fondoDestinoId).run();
+    // SECURITY: Validar que ambos fondos pertenecen al mismo building
+    const origen = await request.db.prepare('SELECT * FROM fondos WHERE id = ? AND building_id = ?').bind(fondoOrigenId, buildingId).first();
+    const destino = await request.db.prepare('SELECT * FROM fondos WHERE id = ? AND building_id = ?').bind(fondoDestinoId, buildingId).first();
+
+    if (!origen || !destino) {
+      return addCorsHeaders(new Response(JSON.stringify({
+        ok: false,
+        msg: 'Fondo no encontrado o no tiene permisos'
+      }), { status: 404, headers: { 'Content-Type': 'application/json' } }), request);
+    }
+
+    if (origen.saldo < montoNum) {
+      return addCorsHeaders(new Response(JSON.stringify({
+        ok: false,
+        msg: 'Saldo insuficiente'
+      }), { status: 400, headers: { 'Content-Type': 'application/json' } }), request);
+    }
+    
+    // SECURITY: Actualizar saldos con building_id en WHERE
+    await request.db.prepare('UPDATE fondos SET saldo = saldo - ?, updated_at = ? WHERE id = ? AND building_id = ?').bind(montoNum, new Date().toISOString(), fondoOrigenId, buildingId).run();
+    await request.db.prepare('UPDATE fondos SET saldo = saldo + ?, updated_at = ? WHERE id = ? AND building_id = ?').bind(montoNum, new Date().toISOString(), fondoDestinoId, buildingId).run();
     
     await request.db.prepare(`
-      INSERT INTO fondos_movimientos (id, fondo_origen_id, fondo_destino_id, monto, concepto, created_at)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).bind(crypto.randomUUID(), fondoOrigenId, fondoDestinoId, montoNum, concepto || 'Transferencia', new Date().toISOString()).run();
+      INSERT INTO fondos_movimientos (id, fondo_origen_id, fondo_destino_id, monto, concepto, building_id, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).bind(crypto.randomUUID(), fondoOrigenId, fondoDestinoId, montoNum, concepto || 'Transferencia', buildingId, new Date().toISOString()).run();
 
     return addCorsHeaders(new Response(JSON.stringify({ ok: true, msg: 'Transferencia exitosa' }), {
       status: 200, headers: { 'Content-Type': 'application/json' }
@@ -101,7 +140,21 @@ export async function fondosTransferir(request, env) {
 
 export async function fondosGetPatrimonio(request, env) {
   try {
-    const result = await request.db.prepare('SELECT COALESCE(SUM(saldo), 0) as total FROM fondos').first();
+    // SECURITY: Obtener building_id del usuario autenticado
+    const buildingId = request.usuario?.building_id || request.user?.building_id;
+    
+    if (!buildingId) {
+      return addCorsHeaders(new Response(JSON.stringify({
+        ok: false,
+        msg: 'Usuario sin edificio asignado'
+      }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      }), request);
+    }
+    
+    // SECURITY: Filtrar por building_id para calcular solo patrimonio del building
+    const result = await request.db.prepare('SELECT COALESCE(SUM(saldo), 0) as total FROM fondos WHERE building_id = ?').bind(buildingId).first();
     
     return addCorsHeaders(new Response(JSON.stringify({ ok: true, patrimonioTotal: parseFloat(result?.total || 0) }), {
       status: 200, headers: { 'Content-Type': 'application/json' }

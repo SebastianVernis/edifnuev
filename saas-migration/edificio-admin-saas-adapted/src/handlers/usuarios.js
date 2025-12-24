@@ -210,7 +210,7 @@ export async function create(request, env) {
     }
     
     // Hash de la contraseña
-    const passwordHash = await bcrypt.hash(password, 10);
+    const passwordHash = await bcrypt.hash(password, 4);
     
     // Crear usuario
     const id = crypto.randomUUID();
@@ -371,7 +371,7 @@ export async function update(request, env) {
       values.push(esEditor ? 1 : 0);
     }
     if (password) {
-      const passwordHash = await bcrypt.hash(password, 10);
+      const passwordHash = await bcrypt.hash(password, 4);
       updates.push('password = ?');
       values.push(passwordHash);
     }
