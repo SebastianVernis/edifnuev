@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
-import { getFondos, actualizarFondos, transferirEntreFondos } from '../controllers/fondos.controller.js';
+import { getFondos, actualizarFondos, transferirEntreFondos, getPatrimonio } from '../controllers/fondos.controller.js';
 import { validarCampos } from '../middleware/validar-campos.js';
 import { verifyToken, isAdmin } from '../middleware/auth.js';
 
@@ -8,6 +8,9 @@ const router = Router();
 
 // Obtener fondos
 router.get('/', verifyToken, getFondos);
+
+// Obtener patrimonio total
+router.get('/patrimonio', verifyToken, getPatrimonio);
 
 // Actualizar fondos (solo admin)
 router.put('/', [

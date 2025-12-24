@@ -1,0 +1,72 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - heading "Únete a Edificio Admin" [level=2] [ref=e4]
+    - paragraph [ref=e5]: La plataforma más completa para la gestión de condominios y edificios.
+    - list [ref=e6]:
+      - listitem [ref=e7]:
+        - generic [ref=e8]: 
+        - text: Gestión de cuotas automatizada
+      - listitem [ref=e9]:
+        - generic [ref=e10]: 
+        - text: Control de gastos en tiempo real
+      - listitem [ref=e11]:
+        - generic [ref=e12]: 
+        - text: Portal para residentes
+      - listitem [ref=e13]:
+        - generic [ref=e14]: 
+        - text: Reportes y cierres mensuales
+      - listitem [ref=e15]:
+        - generic [ref=e16]: 
+        - text: Soporte técnico incluido
+  - generic [ref=e17]:
+    - heading "Crear cuenta" [level=1] [ref=e18]
+    - paragraph [ref=e19]: Comienza tu prueba gratuita de 30 días
+    - generic [ref=e20]:
+      - generic [ref=e21]:
+        - generic [ref=e22]: Nombre completo *
+        - textbox "Nombre completo *" [ref=e23]
+      - generic [ref=e24]:
+        - generic [ref=e25]: Email *
+        - textbox "Email *" [ref=e26]
+      - generic [ref=e27]:
+        - generic [ref=e28]: Teléfono (opcional)
+        - textbox "Teléfono (opcional)" [ref=e29]
+      - generic [ref=e30]:
+        - generic [ref=e31]: Nombre del edificio/condominio *
+        - textbox "Nombre del edificio/condominio *" [ref=e32]
+      - generic [ref=e33]:
+        - generic [ref=e34]: Selecciona un plan *
+        - generic [ref=e35]:
+          - generic [ref=e36] [cursor=pointer]:
+            - generic [ref=e37]: Básico
+            - generic [ref=e38]: $499/mes
+            - generic [ref=e39]: Hasta 20 unidades
+          - generic [ref=e40] [cursor=pointer]:
+            - generic [ref=e41]: Profesional
+            - generic [ref=e42]: $999/mes
+            - generic [ref=e43]: Hasta 50 unidades
+          - generic [ref=e44] [cursor=pointer]:
+            - generic [ref=e45]: Empresarial
+            - generic [ref=e46]: $1,999/mes
+            - generic [ref=e47]: Hasta 200 unidades
+          - generic [ref=e48] [cursor=pointer]:
+            - generic [ref=e49]: Personalizado
+            - generic [ref=e50]: A medida
+            - generic [ref=e51]: Configurar
+      - button "Continuar " [ref=e52] [cursor=pointer]:
+        - text: Continuar
+        - generic [ref=e53]: 
+      - generic [ref=e54]:
+        - text: ¿Necesitas más de 200 unidades?
+        - link "Crea tu paquete " [ref=e55] [cursor=pointer]:
+          - /url: /crear-paquete.html
+          - text: Crea tu paquete
+          - generic [ref=e56]: 
+    - generic [ref=e57]:
+      - text: ¿Ya tienes cuenta?
+      - link "Inicia sesión" [ref=e58] [cursor=pointer]:
+        - /url: /login.html
+```

@@ -221,3 +221,41 @@ export const getAcumuladoAnual = async (req, res) => {
     return handleControllerError(error, res, 'getAcumuladoAnual');
   }
 };
+
+export const getCuotasStats = async (req, res) => {
+  try {
+    const cuotas = Cuota.obtenerTodas();
+    
+    const stats = {
+      total: cuotas.length,
+      pagadas: cuotas.filter(c => c.estado === 'PAGADO').length,
+      pendientes: cuotas.filter(c => c.estado === 'PENDIENTE').length,
+      vencidas: cuotas.filter(c => c.estado === 'VENCIDO').length,
+      montoTotal: cuotas.reduce((sum, c) => sum + (c.monto || 0), 0),
+      montoPagado: cuotas.filter(c => c.estado === 'PAGADO').reduce((sum, c) => sum + (c.monto || 0), 0),
+      montoPendiente: cuotas.filter(c => c.estado !== 'PAGADO').reduce((sum, c) => sum + (c.monto || 0), 0)
+    };
+    
+    res.json({
+      ok: true,
+      stats
+    });
+  } catch (error) {
+    return handleControllerError(error, res, 'getCuotasStats');
+  }
+};
+
+export const getCuotasPendientes = async (req, res) => {
+  try {
+    const cuotas = Cuota.obtenerTodas();
+    const pendientes = cuotas.filter(c => c.estado === 'PENDIENTE' || c.estado === 'VENCIDO');
+    
+    res.json({
+      ok: true,
+      cuotas: pendientes,
+      total: pendientes.length
+    });
+  } catch (error) {
+    return handleControllerError(error, res, 'getCuotasPendientes');
+  }
+};
