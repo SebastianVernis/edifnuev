@@ -1,0 +1,6 @@
+node_modules/
+# Test results
+test-results/
+
+# Cookies
+cookie.txt
