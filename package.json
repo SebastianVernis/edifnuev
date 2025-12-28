@@ -1,6 +1,6 @@
 {
   "name": "edificio-admin",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Sistema de administración para edificio de 20 departamentos",
   "main": "src/app.js",
   "type": "module",
@@ -10,6 +10,7 @@
     "build": "node build-scripts/build.js",
     "build:dev": "node build-scripts/build.js --dev",
     "build:watch": "node build-scripts/build.js --watch",
+    "build:workers": "echo 'Workers build ready'",
     "test": "node tests/sistema-completo.test.js",
     "test:all": "node tests/sistema-completo.test.js",
     "test:sistema": "node tests/sistema-completo.test.js",
@@ -27,13 +28,16 @@
     "test:bug2:html": "node tests/bug2-html-validation.test.js",
     "test:bug2:selectors": "node tests/bug2-selector-validation.test.js",
     "test:playwright": "npx playwright test --config=config/playwright.config.js",
-    "test:post-fixes": "node tests/post-fixes-endpoints.test.js"
+    "test:post-fixes": "node tests/post-fixes-endpoints.test.js",
+    "deploy:workers": "./scripts/deployment/deploy-workers.sh",
+    "wrangler": "wrangler"
   },
   "keywords": [
     "edificio",
     "administracion",
     "presupuesto",
-    "cuotas"
+    "cuotas",
+    "cloudflare-workers"
   ],
   "author": "",
   "license": "MIT",
@@ -44,6 +48,7 @@
     "dotenv": "^16.6.1",
     "express": "^4.21.2",
     "express-validator": "^7.3.0",
+    "itty-router": "^5.0.22",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
     "node-fetch": "^3.3.2",
@@ -66,6 +71,7 @@
     "jest": "^30.2.0",
     "postcss": "^8.5.6",
     "supertest": "^7.1.4",
-    "terser": "^5.44.1"
+    "terser": "^5.44.1",
+    "wrangler": "^4.54.0"
   }
 }
