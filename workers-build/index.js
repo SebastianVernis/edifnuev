@@ -260,6 +260,142 @@ export default {
         });
       }
 
+      // === ONBOARDING ROUTES ===
+
+      // POST /api/onboarding/register - Iniciar registro
+      if (method === 'POST' && path === '/api/onboarding/register') {
+        const body = await request.json();
+        const { email, fullName, phone, buildingName, selectedPlan } = body;
+
+        // Validar datos
+        if (!email || !fullName || !buildingName || !selectedPlan) {
+          return new Response(JSON.stringify({
+            ok: false,
+            msg: 'Datos incompletos'
+          }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Verificar si email ya existe
+        const existing = await env.DB.prepare('SELECT id FROM usuarios WHERE email = ?').bind(email).first();
+        if (existing) {
+          return new Response(JSON.stringify({
+            ok: false,
+            msg: 'El email ya está registrado'
+          }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Generar OTP
+        const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+        
+        // Guardar en KV temporal (si está configurado) o en memoria
+        if (env.KV) {
+          await env.KV.put(`otp:${email}`, JSON.stringify({
+            code: otpCode,
+            email,
+            fullName,
+            phone,
+            buildingName,
+            selectedPlan,
+            timestamp: Date.now()
+          }), { expirationTtl: 600 }); // 10 minutos
+        }
+
+        // TODO: Enviar email con OTP
+        // Por ahora, retornar OTP en respuesta (solo para desarrollo)
+        
+        return new Response(JSON.stringify({
+          ok: true,
+          msg: 'Registro iniciado. Revisa tu email para el código OTP.',
+          otp: otpCode // REMOVER EN PRODUCCIÓN
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // POST /api/onboarding/verify-otp - Verificar código OTP
+      if (method === 'POST' && path === '/api/onboarding/verify-otp') {
+        const body = await request.json();
+        const { email, otp } = body;
+
+        if (!email || !otp) {
+          return new Response(JSON.stringify({
+            ok: false,
+            msg: 'Email y código OTP requeridos'
+          }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Verificar OTP desde KV
+        let otpData = null;
+        if (env.KV) {
+          const stored = await env.KV.get(`otp:${email}`);
+          if (stored) {
+            otpData = JSON.parse(stored);
+          }
+        }
+
+        if (!otpData || otpData.code !== otp) {
+          return new Response(JSON.stringify({
+            ok: false,
+            msg: 'Código OTP inválido o expirado'
+          }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // OTP verificado, retornar datos para continuar
+        return new Response(JSON.stringify({
+          ok: true,
+          msg: 'OTP verificado correctamente',
+          data: {
+            email: otpData.email,
+            fullName: otpData.fullName,
+            buildingName: otpData.buildingName,
+            selectedPlan: otpData.selectedPlan
+          }
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // POST /api/onboarding/complete-setup - Completar setup
+      if (method === 'POST' && path === '/api/onboarding/complete-setup') {
+        const body = await request.json();
+        const { email, buildingName, unitsCount, address, selectedPlan } = body;
+
+        // Crear usuario admin del edificio
+        const password = 'admin123'; // Temporal
+        
+        const insertUser = await env.DB.prepare(
+          'INSERT INTO usuarios (nombre, email, password, rol, departamento, activo) VALUES (?, ?, ?, ?, ?, ?)'
+        ).bind('Administrador', email, password, 'ADMIN', 'Admin', 1).run();
+
+        // Limpiar OTP usado
+        if (env.KV) {
+          await env.KV.delete(`otp:${email}`);
+        }
+
+        return new Response(JSON.stringify({
+          ok: true,
+          msg: 'Edificio configurado exitosamente',
+          credentials: {
+            email,
+            password // REMOVER EN PRODUCCIÓN, enviar por email
+          }
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
       // === STATIC ASSETS ===
       
       // Mapear rutas HTML

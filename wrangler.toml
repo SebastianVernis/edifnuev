@@ -21,10 +21,10 @@ binding = "DB"
 database_name = "edificio-admin-db"
 database_id = "a571aea0-d80d-4846-a31c-9936bddabdf5"
 
-# KV para sesiones y cache (descomentar después de crear)
-# [[kv_namespaces]]
-# binding = "KV"
-# id = "your-kv-id-here"
+# KV para sesiones y cache
+[[kv_namespaces]]
+binding = "KV"
+id = "0b84d7b28cec4d66939634b383e71ea7"
 
 # R2 para uploads/archivos (descomentar después de crear)
 # [[r2_buckets]]
