@@ -332,7 +332,7 @@
     const planKey = localStorage.getItem('onboarding_plan');
 
     if (!email || !planKey) {
-      window.location.href = '/registro.html';
+      window.location.href = '/register';
     }
 
     // Check if custom package
@@ -429,7 +429,7 @@
           alert.textContent = '¡Pago procesado exitosamente! Redirigiendo...';
           
           setTimeout(() => {
-            window.location.href = '/setup-edificio.html';
+            window.location.href = '/setup';
           }, 1500);
         } else {
           throw new Error(result.msg || 'Error procesando el pago');

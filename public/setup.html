@@ -686,7 +686,7 @@
     const buildingNameStorage = localStorage.getItem('building_name');
 
     if (!email) {
-      window.location.href = '/registro.html';
+      window.location.href = '/register';
     }
 
     // Pre-fill building name if available
@@ -1062,7 +1062,7 @@ En caso de venta, debe notificar y liquidar adeudos.`
       };
 
       try {
-        const response = await fetch('/api/onboarding/setup-building', {
+        const response = await fetch('/api/onboarding/complete-setup', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
@@ -1072,11 +1072,11 @@ En caso de venta, debe notificar y liquidar adeudos.`
 
         if (result.ok) {
           alert.className = 'alert success';
-          alert.textContent = '¡Configuración completada! Redirigiendo al panel...';
+          alert.textContent = '¡Configuración completada! Redirigiendo...';
           
-          // Save token
-          if (result.token) {
-            localStorage.setItem('token', result.token);
+          // Save credentials for activate page
+          if (result.credentials) {
+            localStorage.setItem('new_credentials', JSON.stringify(result.credentials));
           }
           
           // Clear onboarding data
@@ -1086,7 +1086,7 @@ En caso de venta, debe notificar y liquidar adeudos.`
           localStorage.removeItem('custom_package');
           
           setTimeout(() => {
-            window.location.href = '/admin';
+            window.location.href = '/activate';
           }, 2000);
         } else {
           throw new Error(result.msg || 'Error en la configuración');

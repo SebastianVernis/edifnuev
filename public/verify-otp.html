@@ -212,7 +212,7 @@
     const email = localStorage.getItem('onboarding_email');
     
     if (!email) {
-      window.location.href = '/registro.html';
+      window.location.href = '/register';
     }
 
     document.getElementById('emailDisplay').textContent = email;
@@ -355,10 +355,10 @@
       verifyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
       
       try {
-        const response = await fetch('/api/otp/verify', {
+        const response = await fetch('/api/onboarding/verify-otp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, code })
+          body: JSON.stringify({ email, otp: code })
         });
 
         const result = await response.json();
@@ -370,7 +370,7 @@
           alert.textContent = '¡Email verificado! Redirigiendo...';
           
           setTimeout(() => {
-            window.location.href = '/checkout.html';
+            window.location.href = '/checkout';
           }, 1500);
         } else {
           throw new Error(result.msg || 'Código inválido');

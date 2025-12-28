@@ -317,7 +317,7 @@
 
         <div style="text-align: center; margin-top: 1rem; color: var(--gray); font-size: 0.875rem;">
           ¿Necesitas más de 200 unidades? 
-          <a href="/crear-paquete.html" style="color: var(--primary); text-decoration: none; font-weight: 600;">
+          <a href="/crear-paquete" style="color: var(--primary); text-decoration: none; font-weight: 600;">
             Crea tu paquete <i class="fas fa-arrow-right"></i>
           </a>
         </div>
@@ -350,7 +350,7 @@
       option.addEventListener('click', function() {
         // If clicking on personalizado without custom package, redirect to builder
         if (this.dataset.plan === 'personalizado' && !customPackage) {
-          window.location.href = '/crear-paquete.html';
+          window.location.href = '/crear-paquete';
           return;
         }
         
@@ -396,7 +396,7 @@
           alert.textContent = '¡Registro exitoso! Redirigiendo...';
           
           setTimeout(() => {
-            window.location.href = '/verificar-otp.html';
+            window.location.href = '/verify-otp';
           }, 1500);
         } else {
           throw new Error(result.msg || 'Error en el registro');
