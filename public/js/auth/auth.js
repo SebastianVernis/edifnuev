@@ -29,15 +29,16 @@ const Auth = (() => {
       
       const data = await response.json();
       
-      if (!response.ok) {
-        throw new Error(data.msg || 'Error al iniciar sesión');
+      if (!response.ok && !data.success) {
+        throw new Error(data.msg || data.message || 'Error al iniciar sesión');
       }
       
-      // Save token and user data
+      // Save token and user data (compatible con ambos formatos)
+      const usuario = data.usuario || data.user;
       localStorage.setItem(TOKEN_KEY, data.token);
-      localStorage.setItem(USER_KEY, JSON.stringify(data.usuario));
+      localStorage.setItem(USER_KEY, JSON.stringify(usuario));
       
-      return data.usuario;
+      return usuario;
     } catch (error) {
       console.error('Error en login:', error);
       throw error;
@@ -55,16 +56,16 @@ const Auth = (() => {
   const checkAuth = () => {
     const currentPath = window.location.pathname;
     
-    // En página de login
-    if (currentPath === '/' || currentPath === '/index.html') {
+    // En páginas de login/landing
+    if (currentPath === '/' || currentPath === '/index.html' || currentPath === '/login' || currentPath === '/login.html') {
       if (isLoggedIn()) {
         const user = getCurrentUser();
         if (user && user.rol) {
           // Solo redirigir si tenemos usuario válido
           if (user.rol === 'ADMIN' || user.rol === 'COMITE') {
-            window.location.replace('/admin.html');
+            window.location.replace('/admin');
           } else {
-            window.location.replace('/inquilino.html');
+            window.location.replace('/inquilino');
           }
         }
       }
@@ -72,10 +73,10 @@ const Auth = (() => {
     }
     
     // En páginas protegidas
-    if (currentPath === '/admin.html' || currentPath === '/inquilino.html') {
+    if (currentPath === '/admin' || currentPath === '/admin.html' || currentPath === '/inquilino' || currentPath === '/inquilino.html') {
       if (!isLoggedIn()) {
         // No hay token, ir al login
-        window.location.replace('/');
+        window.location.replace('/login');
       }
       // SI hay token, NO hacer nada más (evitar loops)
     }

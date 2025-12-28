@@ -417,10 +417,12 @@ export default {
       // Mapear rutas HTML
       const htmlRoutes = {
         '/': 'index.html',
+        '/login': 'login.html',
         '/admin': 'admin.html',
         '/inquilino': 'inquilino.html',
         '/landing': 'landing.html',
         '/register': 'register.html',
+        '/registro': 'register.html',
         '/verify-otp': 'verify-otp.html',
         '/verificar-otp': 'verify-otp.html',
         '/checkout': 'checkout.html',
