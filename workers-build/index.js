@@ -372,12 +372,26 @@ export default {
         const body = await request.json();
         const { email, buildingName, unitsCount, address, selectedPlan } = body;
 
-        // Crear usuario admin del edificio
+        // Crear building primero
+        const insertBuilding = await env.DB.prepare(
+          'INSERT INTO buildings (name, address, units_count, plan, active) VALUES (?, ?, ?, ?, ?)'
+        ).bind(buildingName, address || '', unitsCount || 20, selectedPlan, 1).run();
+
+        const buildingId = insertBuilding.meta.last_row_id;
+
+        // Crear usuario admin del edificio con building_id
         const password = 'admin123'; // Temporal
         
         const insertUser = await env.DB.prepare(
-          'INSERT INTO usuarios (nombre, email, password, rol, departamento, activo) VALUES (?, ?, ?, ?, ?, ?)'
-        ).bind('Administrador', email, password, 'ADMIN', 'Admin', 1).run();
+          'INSERT INTO usuarios (nombre, email, password, rol, departamento, activo, building_id) VALUES (?, ?, ?, ?, ?, ?, ?)'
+        ).bind('Administrador', email, password, 'ADMIN', 'Admin', 1, buildingId).run();
+
+        const userId = insertUser.meta.last_row_id;
+
+        // Actualizar building con admin_user_id
+        await env.DB.prepare(
+          'UPDATE buildings SET admin_user_id = ? WHERE id = ?'
+        ).bind(userId, buildingId).run();
 
         // Limpiar OTP usado
         if (env.KV) {
@@ -387,6 +401,8 @@ export default {
         return new Response(JSON.stringify({
           ok: true,
           msg: 'Edificio configurado exitosamente',
+          buildingId: buildingId,
+          userId: userId,
           credentials: {
             email,
             password // REMOVER EN PRODUCCIÓN, enviar por email
