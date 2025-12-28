@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 
 const API = 'https://edificio-admin.sebastianvernis.workers.dev';
-const FRONTEND = 'https://production.chispartbuilding.pages.dev';
+const FRONTEND = 'https://chispartbuilding.pages.dev';
 
 console.log('🧪 Testing Multi-Tenancy Flow\n');
 console.log('═══════════════════════════════════════════════════\n');

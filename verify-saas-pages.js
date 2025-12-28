@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 
-const BASE_URL = 'https://production.chispartbuilding.pages.dev';
+const BASE_URL = 'https://chispartbuilding.pages.dev';
 
 console.log('🧪 Verificando Páginas SAAS Desplegadas\n');
 

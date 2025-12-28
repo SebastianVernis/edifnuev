@@ -8,14 +8,14 @@
 
 ## 🌐 URL Principal
 
-### https://production.chispartbuilding.pages.dev
+### https://chispartbuilding.pages.dev
 
 ---
 
 ## ✅ Flujo Completo Verificado
 
 ### 1. Landing Page (/)
-**URL:** https://production.chispartbuilding.pages.dev/
+**URL:** https://chispartbuilding.pages.dev/
 
 ✅ Hero: "Gestión Inteligente de Condominios"  
 ✅ Features: 6 cards con iconos  
@@ -24,7 +24,7 @@
 ✅ CTA "Iniciar Sesión" → `/login`  
 
 ### 2. Login (/login)
-**URL:** https://production.chispartbuilding.pages.dev/login
+**URL:** https://chispartbuilding.pages.dev/login
 
 ✅ Formulario de login con ChispartBuilding branding  
 ✅ API: `POST /api/auth/login` ✅  
@@ -32,7 +32,7 @@
 ✅ Redirige a `/admin` (ADMIN/COMITE) o `/inquilino` (INQUILINO) ✅  
 
 ### 3. Registro (/register)
-**URL:** https://production.chispartbuilding.pages.dev/register
+**URL:** https://chispartbuilding.pages.dev/register
 
 ✅ Two-column: Info panel + Form  
 ✅ 4 planes: Básico, Profesional, Empresarial, **Personalizado**  
@@ -42,7 +42,7 @@
 ✅ Redirige a `/verify-otp` ✅  
 
 ### 4. Constructor de Paquetes (/crear-paquete)
-**URL:** https://production.chispartbuilding.pages.dev/crear-paquete
+**URL:** https://chispartbuilding.pages.dev/crear-paquete
 
 ✅ Slider 1-500 unidades  
 ✅ Cálculo automático: (base * units) + 10%  
@@ -51,7 +51,7 @@
 ✅ Regresa a `/register?plan=personalizado` ✅  
 
 ### 5. Verificar OTP (/verify-otp)
-**URL:** https://production.chispartbuilding.pages.dev/verify-otp
+**URL:** https://chispartbuilding.pages.dev/verify-otp
 
 ✅ Input de 6 dígitos  
 ✅ API: `POST /api/onboarding/verify-otp` ✅  
@@ -59,14 +59,14 @@
 ✅ Redirige a `/checkout` ✅  
 
 ### 6. Checkout (/checkout)
-**URL:** https://production.chispartbuilding.pages.dev/checkout
+**URL:** https://chispartbuilding.pages.dev/checkout
 
 ✅ Resumen del plan  
 ✅ Form de pago (simulado)  
 ✅ Redirige a `/setup` ✅  
 
 ### 7. Setup Edificio (/setup)
-**URL:** https://production.chispartbuilding.pages.dev/setup
+**URL:** https://chispartbuilding.pages.dev/setup
 
 ✅ Wizard de 8 pasos (1,103 líneas)  
 ✅ Formularios completos  
@@ -75,14 +75,14 @@
 ✅ Redirige a `/activate` ✅  
 
 ### 8. Activación (/activate)
-**URL:** https://production.chispartbuilding.pages.dev/activate
+**URL:** https://chispartbuilding.pages.dev/activate
 
 ✅ Muestra credenciales generadas  
 ✅ Mensaje de bienvenida  
 ✅ Link a dashboard  
 
 ### 9. Dashboard Admin (/admin)
-**URL:** https://production.chispartbuilding.pages.dev/admin
+**URL:** https://chispartbuilding.pages.dev/admin
 
 ✅ Full dashboard (867 líneas)  
 ✅ Protected (requiere login)  
@@ -108,7 +108,7 @@
 ## 💾 Infraestructura
 
 ### Cloudflare Pages
-- **URL:** https://production.chispartbuilding.pages.dev
+- **URL:** https://chispartbuilding.pages.dev
 - **Archivos:** 60 files
 - **Páginas:** 14 HTML
 - **Estado:** ✅ Activo
@@ -211,7 +211,7 @@ node verify-complete-visual.js
 **Edificio Demo:**
 - Email: admin@edificio.com
 - Password: admin123
-- URL: https://production.chispartbuilding.pages.dev/login
+- URL: https://chispartbuilding.pages.dev/login
 
 ---
 
@@ -238,12 +238,12 @@ node verify-complete-visual.js
 ## 🎯 Instrucciones de Uso
 
 ### Para Login Existente:
-1. https://production.chispartbuilding.pages.dev/login
+1. https://chispartbuilding.pages.dev/login
 2. admin@edificio.com / admin123
 3. Dashboard admin
 
 ### Para Nuevo Registro:
-1. https://production.chispartbuilding.pages.dev/
+1. https://chispartbuilding.pages.dev/
 2. Click "Comenzar Gratis"
 3. Seguir flujo: Register → OTP → Checkout → Setup → Activate
 4. Login con credenciales generadas
@@ -296,7 +296,7 @@ node verify-complete-visual.js
 ✅ **Tests** 100% passing  
 ✅ **Diseño visual** profesional restaurado  
 
-**URL:** https://production.chispartbuilding.pages.dev  
+**URL:** https://chispartbuilding.pages.dev  
 **GitHub:** 75 commits  
 **Costo:** $5/mes  
 

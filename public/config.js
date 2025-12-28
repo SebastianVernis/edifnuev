@@ -31,6 +31,8 @@
     API_BASE_URL: API_BASE_URL,
     ENVIRONMENT: isLocalhost ? 'development' : 'production',
     VERSION: '2.0.0',
+    SITE_NAME: 'ChispartBuilding',
+    DOMAIN: isLocalhost ? 'localhost:3001' : 'chispartbuilding.pages.dev',
     
     // Helper para construir URLs
     apiUrl: function(endpoint) {
@@ -47,9 +49,10 @@
     }
   };
   
-  console.log('🔧 App Config:', {
+  console.log('🔧 ChispartBuilding Config:', {
     environment: window.APP_CONFIG.ENVIRONMENT,
     apiBaseUrl: window.APP_CONFIG.API_BASE_URL,
+    domain: window.APP_CONFIG.DOMAIN,
     hostname: hostname
   });
   

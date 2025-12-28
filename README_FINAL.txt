@@ -10,7 +10,7 @@ Estado: ✅ 100% FUNCIONAL Y VERIFICADO
 🌐 URL PRINCIPAL
 ───────────────────────────────────────────────────────────────
 
-https://production.chispartbuilding.pages.dev
+https://chispartbuilding.pages.dev
 
 ───────────────────────────────────────────────────────────────
 ✅ CONFIRMACIÓN: SÍ, TODO FUNCIONA
@@ -109,7 +109,7 @@ building_id: En todas las tablas para aislamiento
 ───────────────────────────────────────────────────────────────
 
 Edificio Demo (Principal):
-  URL: https://production.chispartbuilding.pages.dev/login
+  URL: https://chispartbuilding.pages.dev/login
   Email: admin@edificio.com
   Password: admin123
   Rol: ADMIN
@@ -144,12 +144,12 @@ Documentación:
 ───────────────────────────────────────────────────────────────
 
 Opción 1 - Login Edificio Existente:
-  1. https://production.chispartbuilding.pages.dev/login
+  1. https://chispartbuilding.pages.dev/login
   2. admin@edificio.com / admin123
   3. ✅ Dashboard admin completo
 
 Opción 2 - Registrar Nuevo Edificio:
-  1. https://production.chispartbuilding.pages.dev/
+  1. https://chispartbuilding.pages.dev/
   2. Click "Comenzar Gratis"
   3. Completar: Registro → OTP → Checkout → Setup
   4. Recibir credenciales
@@ -200,7 +200,7 @@ Total: $5/mes
   🚀 SISTEMA COMPLETAMENTE OPERATIVO
 ═══════════════════════════════════════════════════════════════
 
-URL: https://production.chispartbuilding.pages.dev
+URL: https://chispartbuilding.pages.dev
 Login: admin@edificio.com / admin123
 GitHub: https://github.com/SebastianVernis/edifnuev
 

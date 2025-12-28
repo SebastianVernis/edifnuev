@@ -8,7 +8,7 @@
 
 ## 🌐 URL Principal
 
-### https://production.chispartbuilding.pages.dev
+### https://chispartbuilding.pages.dev
 
 **Branding:** ✅ ChispartBuilding en todas las páginas  
 **Estado:** ✅ Completamente funcional  
@@ -19,7 +19,7 @@
 ## 🎯 Funcionalidades Desplegadas
 
 ### Landing Page SAAS
-**URL:** https://production.chispartbuilding.pages.dev/landing
+**URL:** https://chispartbuilding.pages.dev/landing
 
 ✅ **Branding ChispartBuilding**
 - Logo: 🏢 ChispartBuilding
@@ -160,7 +160,7 @@ Los Pinos: 1 admin
 ## 💾 Infrastructure
 
 ### Cloudflare Pages (Frontend)
-**URL:** https://production.chispartbuilding.pages.dev  
+**URL:** https://chispartbuilding.pages.dev  
 **Files:** 57 archivos estáticos  
 **Branding:** ✅ ChispartBuilding  
 **Estado:** ✅ Activo
@@ -191,7 +191,7 @@ Los Pinos: 1 admin
 ## 🔐 Credenciales de Acceso
 
 ### Edificio Demo (Original)
-- **URL:** https://production.chispartbuilding.pages.dev
+- **URL:** https://chispartbuilding.pages.dev
 - **Email:** admin@edificio.com
 - **Password:** admin123
 - **Rol:** ADMIN
@@ -284,7 +284,7 @@ node verify-saas-pages.js
 
 ### 1. Flujo SAAS Completo
 ```
-1. Visita: https://production.chispartbuilding.pages.dev/landing
+1. Visita: https://chispartbuilding.pages.dev/landing
 2. Click: "Seleccionar Plan" (cualquier plan)
 3. Completa: Formulario de registro
 4. Recibe: Código OTP (visible en response por ahora)
@@ -296,7 +296,7 @@ node verify-saas-pages.js
 
 ### 2. Login Edificio Existente
 ```
-1. Visita: https://production.chispartbuilding.pages.dev
+1. Visita: https://chispartbuilding.pages.dev
 2. Login: admin@edificio.com / admin123
 3. Accede: Dashboard admin
 ```
@@ -342,8 +342,8 @@ node verify-saas-pages.js
 
 **ChispartBuilding está completamente operativo:**
 
-🌐 **Landing SAAS:** https://production.chispartbuilding.pages.dev/landing  
-🔐 **Login:** https://production.chispartbuilding.pages.dev  
+🌐 **Landing SAAS:** https://chispartbuilding.pages.dev/landing  
+🔐 **Login:** https://chispartbuilding.pages.dev  
 🔌 **API:** https://edificio-admin.sebastianvernis.workers.dev  
 📊 **Database:** 3 edificios, 4 usuarios, multi-tenant  
 💰 **Costo:** $5/mes  

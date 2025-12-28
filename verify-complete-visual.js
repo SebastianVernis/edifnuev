@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 
-const BASE = 'https://production.chispartbuilding.pages.dev';
+const BASE = 'https://chispartbuilding.pages.dev';
 
 console.log('🎨 Verificando Diseño Visual Completo\n');
 

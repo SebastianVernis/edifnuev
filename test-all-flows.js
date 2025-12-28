@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 
 const API = 'https://edificio-admin.sebastianvernis.workers.dev';
-const PAGES = 'https://production.chispartbuilding.pages.dev';
+const PAGES = 'https://chispartbuilding.pages.dev';
 
 console.log('🧪 VERIFICACIÓN EXHAUSTIVA DE TODOS LOS FLUJOS\n');
 console.log('═══════════════════════════════════════════════════\n');
