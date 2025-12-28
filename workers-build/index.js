@@ -422,10 +422,14 @@ export default {
         '/landing': 'landing.html',
         '/register': 'register.html',
         '/verify-otp': 'verify-otp.html',
+        '/verificar-otp': 'verify-otp.html',
         '/checkout': 'checkout.html',
         '/setup': 'setup.html',
+        '/setup-edificio': 'setup.html',
         '/activate': 'activate.html',
-        '/theme-customizer': 'theme-customizer.html'
+        '/theme-customizer': 'theme-customizer.html',
+        '/crear-paquete': 'crear-paquete.html',
+        '/admin-optimized': 'admin-optimized.html'
       };
 
       let assetPath = path;
