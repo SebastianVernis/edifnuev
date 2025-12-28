@@ -1,242 +1,198 @@
-# Sistema de Administración Edificio 205
+# Edificio Admin - Sistema de Administración
 
-**Versión:** 2.0 | **Estado:** ✅ Operacional | **Última actualización:** 2025-11-23
+Sistema completo de administración para edificios de departamentos con gestión de cuotas, presupuestos, gastos y control de acceso multiusuario.
 
-Sistema web completo para la administración de un edificio de 20 departamentos con gestión de presupuestos, cuotas, gastos y usuarios.
+[![Node.js](https://img.shields.io/badge/Node.js-20+-green.svg)](https://nodejs.org/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ## 🚀 Inicio Rápido
 
 ```bash
+# Clonar repositorio
+git clone https://github.com/SebastianVernisMora/edificio-admin.git
+cd edificio-admin
+
 # Instalar dependencias
 npm install
 
+# Configurar variables de entorno
+cp .env.example .env
+# Editar .env con tus credenciales
+
 # Iniciar servidor
-npm run dev
-
-# Ejecutar tests
-npm test
+npm start
 ```
 
-## 📊 Estado del Proyecto
+Acceder a http://localhost:3001
 
-- **Servidor:** EC2 AWS (ec2-18-223-32-141.us-east-2.compute.amazonaws.com)
-- **Puerto:** 3000 (Node.js con PM2) → 80 (Nginx)
-- **Base de datos:** JSON file-based (42KB, 20 usuarios)
-- **Código:** Limpio, sin duplicados, estandarizado ✅
-- **Estado:** ✅ OPERACIONAL - Servidor activo con PM2 - Ver [Estado Completo](docs/ESTADO_PROYECTO.md)
+## 📋 Características Principales
 
-## 📁 Estructura del Proyecto
+- 🔐 **Autenticación robusta** - JWT + bcrypt, sistema de roles
+- 💰 **Gestión financiera** - Presupuestos, gastos, cuotas automáticas
+- 👥 **Multitenancy** - Sistema de onboarding y temas customizables
+- 📊 **Reportes** - Cierres anuales, estados de cuenta, auditoría
+- 📧 **Notificaciones** - Sistema de emails integrado
+- 🎨 **Temas personalizables** - Branding por edificio
+- 📱 **Responsive** - Interfaz adaptable a móviles
 
-```
-edificio-admin/
-├── src/                    # Backend (controllers, models, routes)
-│   ├── controllers/       # 12 controllers limpios
-│   ├── models/            # 9 modelos sin duplicados
-│   ├── routes/            # 13 rutas estandarizadas
-│   ├── middleware/        # Auth, validation, error handling
-│   └── utils/             # Helpers y constantes
-├── public/                # Frontend (HTML, CSS, JS)
-│   ├── js/modules/        # 33 módulos organizados
-│   ├── css/               # Estilos
-│   └── *.html             # Vistas (admin, inquilino)
-├── tests/                 # 11 suites de testing
-├── scripts/               # Deployment y maintenance
-├── docs/                  # Documentación completa
-├── backups/               # Backups automáticos
-└── uploads/               # Archivos subidos (anuncios)
-```
+## 🎯 Usuarios Demo
 
-## 👥 Tipos de Usuario
+**Administrador:**
+- Email: `admin@edificio.com`
+- Password: `admin123`
 
-- **ADMIN**: Acceso completo al sistema
-- **COMITE**: Gestión de gastos, presupuestos y cuotas
-- **INQUILINO**: Consulta de estado de cuenta y información
+**Propietario:**
+- Email: `prop1@edificio.com`
+- Password: `prop123`
 
-## 🛠️ Tecnologías
+## 📦 Despliegue
 
-- **Backend**: Node.js + Express
-- **Frontend**: HTML5 + Vanilla JavaScript
-- **Base de Datos**: JSON (archivo data.json)
-- **Autenticación**: JWT + bcrypt
-- **Servidor Web**: Nginx (producción)
-
-## 📋 Funcionalidades
-
-- ✅ Autenticación y autorización por roles
-- ✅ Gestión de presupuestos anuales
-- ✅ Control de gastos mensuales
-- ✅ Cálculo automático de cuotas
-- ✅ Sistema de cierres anuales
-- ✅ Dashboard personalizado por rol
-- ✅ Subida de comprobantes
-- ✅ Reportes y análisis
-
-## 🔧 Comandos Disponibles
-
+### Local / VPS
 ```bash
-# Servidor
-npm run dev                    # Desarrollo (puerto 3000)
-npm start                      # Producción
-
-# Testing - Suite Completa
-npm test                       # Todos los tests
-npm run test:sistema           # Sistema completo
-npm run test:api               # Validación API
-npm run test:security          # Seguridad
-npm run test:permisos          # Roles y permisos
-npm run test:usuarios          # CRUD usuarios
-npm run test:cuotas            # Sistema de cuotas
-npm run test:frontend          # Integración frontend
-npm run test:integration       # Tests integración
-npm run test:performance       # Tests rendimiento
-npm run test:cierre            # Cierre anual
-
-# Test individual
-node tests/permisos.test.js    # Ejecutar test específico
+npm install
+npm start
 ```
 
-## 🎯 Estándares de Código
+### Google Cloud Run
+```bash
+# Deploy completo
+./scripts/deployment/deploy-cloudrun.sh YOUR_PROJECT_ID
 
-```javascript
-// Response format (ÚNICO PERMITIDO)
-res.json({ ok: true, data: result });           // Success
-res.status(400).json({ ok: false, msg: 'Error' });  // Error
-
-// Error handling (OBLIGATORIO)
-import { handleControllerError } from '../middleware/error-handler.js';
-try {
-    // logic
-} catch (error) {
-    return handleControllerError(error, res, 'controllerName');
-}
-
-// Auth header (ÚNICO PERMITIDO)
-const token = req.header('x-auth-token');
+# Configurar variables
+./scripts/deployment/setup-env-cloudrun.sh YOUR_PROJECT_ID
 ```
 
-Ver estándares completos en [CRUSH.md](CRUSH.md) y [BLACKBOX.md](BLACKBOX.md)
+Ver [guía completa de Cloud Run](docs/deployment/CLOUD_RUN_DEPLOYMENT.md)
+
+### Docker
+```bash
+docker build -t edificio-admin .
+docker run -p 8080:8080 \
+  -e NODE_ENV=production \
+  -e JWT_SECRET=your-secret \
+  edificio-admin
+```
 
 ## 📚 Documentación
 
-### Guías de Desarrollo
-- **[CRUSH.md](CRUSH.md)** - Guía rápida para agentes de código
-- **[BLACKBOX.md](BLACKBOX.md)** - Estándares técnicos obligatorios
-- **[Estado del Proyecto](docs/ESTADO_PROYECTO.md)** - Estado actual completo
-- **[Guía de Despliegue](docs/GUIA_DESPLIEGUE.md)** - Procedimientos de deploy
+- **[Guía de Deployment Cloud Run](docs/deployment/CLOUD_RUN_DEPLOYMENT.md)** - Deploy en Google Cloud
+- **[Guía de Despliegue General](docs/guides/GUIA_DESPLIEGUE.md)** - Deploy en VPS/servidores
+- **[Setup Inicial](docs/guides/INSTRUCCIONES_SETUP.md)** - Configuración paso a paso
+- **[Documentación Técnica](docs/technical/PROYECTO_COMPLETO.md)** - Arquitectura completa
+- **[Sistema de Temas](docs/technical/THEME_SYSTEM.md)** - Customización
+- **[Comandos PM2](docs/guides/PM2_COMANDOS.md)** - Gestión con PM2
 
-### Documentación Técnica
-- [Sistema de Permisos](docs/technical/PERMISOS.md)
-- [Sistema de Parcialidades](docs/technical/SISTEMA_PARCIALIDADES.md)
-- [Project Summary](docs/technical/PROJECT_SUMMARY.md)
+## 🏗️ Estructura del Proyecto
 
-### Reportes
-- [Cambios Implementados](docs/reports/CAMBIOS_IMPLEMENTADOS.md)
-- [Refactorización Completada](docs/reports/REFACTORIZACION_COMPLETADA.md)
+```
+edifnuev/
+├── src/                    # Backend (Node.js + Express)
+│   ├── controllers/       # Lógica de negocio
+│   ├── models/           # Modelos de datos
+│   ├── routes/           # Rutas API
+│   ├── middleware/       # Auth, validation
+│   └── utils/            # Utilidades
+├── public/                # Frontend (HTML + CSS + JS)
+│   ├── js/              # JavaScript modular
+│   └── css/             # Estilos
+├── tests/                # Suite de tests
+├── scripts/              # Scripts de utilidad
+├── config/               # Configuraciones
+└── docs/                 # Documentación
+```
 
-## 🚀 Despliegue
+## 🧪 Testing
 
-### Despliegue Manual (Con PM2)
 ```bash
-# En el servidor
-cd /home/admin
-git pull origin master
-npm install
-pm2 restart edificio-admin
-# O si es primera vez:
-pm2 start src/app.js --name edificio-admin
-pm2 save
+npm test                  # Suite completa
+npm run test:api          # Tests de API
+npm run test:frontend     # Tests frontend
+npm run test:playwright   # Tests E2E
 ```
 
-### Despliegue Automático
-- **GitHub Actions:** Push a `master` despliega automáticamente
-- **Scripts:** `scripts/deployment/redeploy.sh`
-- **Documentación completa:** [GUIA_DESPLIEGUE.md](docs/GUIA_DESPLIEGUE.md)
+## 🛠️ Stack Tecnológico
 
-## 🌐 Acceso al Sistema
+**Backend:**
+- Node.js 20+
+- Express 4.21+
+- JWT + Bcrypt
+- Nodemailer
 
-```yaml
-URL: http://ec2-18-223-32-141.us-east-2.compute.amazonaws.com
+**Frontend:**
+- HTML5 + CSS3
+- JavaScript ES6+ (Vanilla)
+- Arquitectura modular
 
-Credenciales:
-  Admin:     admin@edificio205.com / admin2026
-  Comité:    comite@edificio205.com / comite2026
-  Inquilino: [email]@edificio205.com / inquilino2026
-```
+**DevOps:**
+- Docker
+- Google Cloud Run
+- PM2 (process manager)
+- Nginx (reverse proxy)
 
-## 🔐 Arquitectura de Seguridad
+## 🔧 Variables de Entorno
 
-- **Autenticación:** JWT con bcryptjs (10 rounds)
-- **Header:** `x-auth-token` (único permitido)
-- **Roles:** ADMIN, COMITE, INQUILINO
-- **Validación:** express-validator en todos los endpoints
-- **CORS:** Configurado con headers específicos
-
-## 📊 Métricas del Proyecto
-
-```yaml
-Archivos JS: 80+
-Backend: 12 controllers, 9 models, 13 routes
-Frontend: 33 módulos
-Tests: 11 suites
-Líneas código: ~15,000
-Duplicación: 0% ✅
-Consistency: 100% ✅
-```
-
-## 🆘 Troubleshooting
-
-### Servidor no responde
 ```bash
-# Ver estado PM2
-pm2 status
+# Aplicación
+NODE_ENV=production
+PORT=8080
+APP_URL=https://your-domain.com
 
-# Reiniciar
-pm2 restart edificio-admin
+# Seguridad
+JWT_SECRET=your-secret-key-here
 
-# Ver logs
-pm2 logs edificio-admin
+# Email (SMTP)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password
+SMTP_FROM=noreply@edificio-admin.com
 ```
 
-### Ver logs
-```bash
-pm2 logs edificio-admin              # App logs (PM2)
-pm2 logs edificio-admin --lines 100  # Últimas 100 líneas
-tail -f /var/log/nginx/error.log     # Nginx logs
-```
+Ver [.env.example](.env.example) para configuración completa.
 
-### Restaurar backup
-```bash
-cp backups/data-backup-[fecha].json data.json
-```
+## 📈 Estado del Proyecto
 
-## 🔮 Roadmap
+- ✅ Sistema de autenticación completo
+- ✅ Gestión financiera (cuotas, gastos, presupuestos)
+- ✅ Sistema de fondos
+- ✅ Cierres anuales
+- ✅ Permisos granulares
+- ✅ Sistema de temas
+- ✅ Onboarding multitenancy
+- ✅ Suite de tests completa
+- ✅ Documentación organizada
+- ✅ Listo para producción
 
-### Inmediato
-- [x] Limpieza de código duplicado
-- [x] Estandarización de responses
-- [x] Centralización de error handling
-- [ ] Reiniciar servidor en producción
+## 🤝 Contribución
 
-### Corto Plazo
-- [ ] Implementar PM2 para auto-restart
-- [ ] Backups automáticos diarios
-- [ ] Health checks automáticos
-- [ ] NODE_ENV a production
+1. Fork el proyecto
+2. Crear feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit cambios (`git commit -m 'Add AmazingFeature'`)
+4. Push al branch (`git push origin feature/AmazingFeature`)
+5. Abrir Pull Request
 
-### Medio Plazo
-- [ ] HTTPS con Let's Encrypt
-- [ ] Dominio personalizado
-- [ ] Rate limiting
-- [ ] Logging estructurado (Winston)
+## 📄 Licencia
 
-## 📞 Soporte y Contacto
+MIT License - ver [LICENSE](LICENSE) para más detalles.
 
-- **Repositorio:** [github.com/SebastianVernisMora/edificio-admin](https://github.com/SebastianVernisMora/edificio-admin)
-- **Issues:** Usar GitHub Issues
-- **Documentación:** Ver carpeta `docs/`
+## 🆘 Soporte
+
+- **Issues:** [GitHub Issues](https://github.com/SebastianVernisMora/edificio-admin/issues)
+- **Docs:** [Documentación completa](docs/)
+- **Email:** [Contacto del proyecto]
+
+## 📝 Changelog
+
+### v2.0.0 (2025-12-28)
+- 🧹 Limpieza completa del proyecto (-426MB)
+- 📁 Reorganización de documentación
+- 🐳 Docker + Cloud Run deployment
+- 📚 Documentación mejorada
+- ✅ Suite de tests actualizada
+
+Ver [CHANGELOG.md](CHANGELOG.md) para historial completo.
 
 ---
 
-**Última verificación:** 2025-11-23 05:40 UTC  
-**Estado:** ✅ OPERACIONAL - Servidor activo con PM2  
-**Próxima revisión:** 2025-11-24
+**Desarrollado con ❤️ para la gestión eficiente de edificios**

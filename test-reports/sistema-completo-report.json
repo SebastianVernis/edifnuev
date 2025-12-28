@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-11-23T08:59:05.751Z",
+  "timestamp": "2025-12-28T14:34:55.831Z",
   "summary": {
     "totalTests": 0,
     "passedTests": 0,
@@ -9,15 +9,15 @@
   },
   "testSuites": [],
   "systemInfo": {
-    "nodeVersion": "v25.1.0",
+    "nodeVersion": "v20.19.2",
     "platform": "linux",
     "arch": "x64",
     "memoryUsage": {
-      "rss": 61497344,
-      "heapTotal": 11669504,
-      "heapUsed": 8455440,
-      "external": 3581067,
-      "arrayBuffers": 35735
+      "rss": 65814528,
+      "heapTotal": 9969664,
+      "heapUsed": 7606544,
+      "external": 2507110,
+      "arrayBuffers": 87703
     }
   }
 }

@@ -12,12 +12,21 @@ import {
 
 const router = express.Router();
 
+// Health check endpoint (public, for Cloud Run and monitoring)
+router.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'healthy', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
 // Todas las rutas requieren autenticación y rol de administrador
 router.use(verifyToken);
 router.use(isAdmin);
 
-// GET /api/validation/health - Obtener reporte de salud de datos
-router.get('/health', obtenerReporteSalud);
+// GET /api/validation/health-admin - Obtener reporte de salud de datos (admin)
+router.get('/health-admin', obtenerReporteSalud);
 
 // GET /api/validation/validate - Validar estructura de datos
 router.get('/validate', validarEstructura);

@@ -10,8 +10,8 @@
     "build": "node build-scripts/build.js",
     "build:dev": "node build-scripts/build.js --dev",
     "build:watch": "node build-scripts/build.js --watch",
-    "test": "node test-all.js",
-    "test:all": "node test-all.js",
+    "test": "node tests/sistema-completo.test.js",
+    "test:all": "node tests/sistema-completo.test.js",
     "test:sistema": "node tests/sistema-completo.test.js",
     "test:cuotas": "node tests/cuotas-sistema.test.js",
     "test:frontend": "node tests/frontend-api.test.js",
@@ -26,7 +26,7 @@
     "test:bug2": "./tests/run-bug2-validation.sh",
     "test:bug2:html": "node tests/bug2-html-validation.test.js",
     "test:bug2:selectors": "node tests/bug2-selector-validation.test.js",
-    "test:playwright": "npx playwright test",
+    "test:playwright": "npx playwright test --config=config/playwright.config.js",
     "test:post-fixes": "node tests/post-fixes-endpoints.test.js"
   },
   "keywords": [
