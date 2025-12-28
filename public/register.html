@@ -1,330 +1,413 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro - ChispartBuilding</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro - ChispartBuilding</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
+    :root {
+      --primary: #4F46E5;
+      --primary-dark: #4338CA;
+      --secondary: #10B981;
+      --dark: #1F2937;
+      --light: #F9FAFB;
+      --gray: #6B7280;
+      --danger: #EF4444;
+    }
 
-        .container {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            max-width: 500px;
-            width: 100%;
-            padding: 2rem;
-        }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
 
-        .logo {
-            text-align: center;
-            font-size: 2rem;
-            color: #667eea;
-            margin-bottom: 1rem;
-        }
+    .container {
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 900px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+    }
 
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 0.5rem;
-        }
+    .info-panel {
+      background: var(--primary);
+      color: white;
+      padding: 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
 
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 2rem;
-        }
+    .info-panel h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
 
-        .selected-plan {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 5px;
-            margin-bottom: 2rem;
-            border-left: 4px solid #667eea;
-        }
+    .info-panel p {
+      opacity: 0.9;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
 
-        .selected-plan strong {
-            color: #667eea;
-        }
+    .features {
+      list-style: none;
+    }
 
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
+    .features li {
+      padding: 0.5rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
 
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #333;
-            font-weight: 500;
-        }
+    .features i {
+      color: var(--secondary);
+    }
 
-        input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
+    .form-panel {
+      padding: 3rem;
+    }
 
-        input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
+    .form-panel h1 {
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
 
-        .required {
-            color: #dc3545;
-        }
+    .form-panel .subtitle {
+      color: var(--gray);
+      margin-bottom: 2rem;
+    }
 
-        .btn {
-            width: 100%;
-            padding: 1rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
 
-        .btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-        }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--dark);
+      font-weight: 500;
+    }
 
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
+    input, select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #E5E7EB;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
 
-        .back-link {
-            text-align: center;
-            margin-top: 1rem;
-        }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
 
-        .back-link a {
-            color: #667eea;
-            text-decoration: none;
-        }
+    .plan-selector {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
 
-        .back-link a:hover {
-            text-decoration: underline;
-        }
+    .plan-option {
+      padding: 1rem;
+      border: 2px solid #E5E7EB;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+    }
 
-        .alert {
-            padding: 1rem;
-            border-radius: 5px;
-            margin-bottom: 1rem;
-        }
+    .plan-option:hover {
+      border-color: var(--primary);
+    }
 
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
+    .plan-option.selected {
+      border-color: var(--primary);
+      background: #EEF2FF;
+    }
 
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
+    .plan-option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+      pointer-events: auto;
+    }
 
-        .loading {
-            display: none;
-            text-align: center;
-            margin-top: 1rem;
-        }
+    .plan-name {
+      font-weight: bold;
+      color: var(--dark);
+      margin-bottom: 0.25rem;
+    }
 
-        .loading.active {
-            display: block;
-        }
+    .plan-price {
+      color: var(--primary);
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
 
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
+    .plan-units {
+      color: var(--gray);
+      font-size: 0.875rem;
+    }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
+    .btn {
+      width: 100%;
+      padding: 1rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn:disabled {
+      background: var(--gray);
+      cursor: not-allowed;
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .alert.error {
+      background: #FEE2E2;
+      color: var(--danger);
+      display: block;
+    }
+
+    .alert.success {
+      background: #D1FAE5;
+      color: var(--secondary);
+      display: block;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 1rem;
+      color: var(--gray);
+    }
+
+    .login-link a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+
+      .info-panel {
+        display: none;
+      }
+
+      .plan-selector {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
   <script src="/config.js"></script>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">🏢 ChispartBuilding</div>
-        <h1>Crear tu cuenta</h1>
-        <p class="subtitle">Comienza a administrar tu edificio hoy</p>
-
-        <div class="selected-plan" id="planInfo">
-            <strong>Plan seleccionado:</strong> <span id="planName">-</span>
-        </div>
-
-        <div id="alertContainer"></div>
-
-        <form id="registerForm">
-            <div class="form-group">
-                <label for="email">Email <span class="required">*</span></label>
-                <input type="email" id="email" name="email" required>
-            </div>
-
-            <div class="form-group">
-                <label for="fullName">Nombre completo <span class="required">*</span></label>
-                <input type="text" id="fullName" name="fullName" required>
-            </div>
-
-            <div class="form-group">
-                <label for="phone">Teléfono</label>
-                <input type="tel" id="phone" name="phone" placeholder="Opcional">
-            </div>
-
-            <div class="form-group">
-                <label for="buildingName">Nombre del edificio/condominio <span class="required">*</span></label>
-                <input type="text" id="buildingName" name="buildingName" required placeholder="Ej: Condominio 205">
-            </div>
-
-            <button type="submit" class="btn" id="submitBtn">Continuar</button>
-        </form>
-
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>Procesando...</p>
-        </div>
-
-        <div class="back-link">
-            <a href="/landing">← Volver a planes</a>
-        </div>
+  <div class="container">
+    <div class="info-panel">
+      <h2>Únete a ChispartBuilding</h2>
+      <p>La plataforma más completa para la gestión de condominios y edificios.</p>
+      <ul class="features">
+        <li><i class="fas fa-check-circle"></i> Gestión de cuotas automatizada</li>
+        <li><i class="fas fa-check-circle"></i> Control de gastos en tiempo real</li>
+        <li><i class="fas fa-check-circle"></i> Portal para residentes</li>
+        <li><i class="fas fa-check-circle"></i> Reportes y cierres mensuales</li>
+        <li><i class="fas fa-check-circle"></i> Soporte técnico incluido</li>
+      </ul>
     </div>
 
-    <script>
-        const API_URL = window.location.origin;
+    <div class="form-panel">
+      <h1>Crear cuenta</h1>
+      <p class="subtitle">Comienza tu prueba gratuita de 30 días</p>
 
-        // Mapeo de planes
-        const plans = {
-            basico: { name: 'Plan Básico', price: 499 },
-            profesional: { name: 'Plan Profesional', price: 999 },
-            empresarial: { name: 'Plan Empresarial', price: 1999 }
-        };
+      <div id="alert" class="alert"></div>
 
-        // Obtener plan seleccionado
-        const selectedPlan = sessionStorage.getItem('selectedPlan') || 'basico';
-        const planInfo = plans[selectedPlan];
+      <form id="registroForm">
+        <div class="form-group">
+          <label for="fullName">Nombre completo *</label>
+          <input type="text" id="fullName" required>
+        </div>
 
-        // Mostrar plan seleccionado
-        document.getElementById('planName').textContent = `${planInfo.name} - $${planInfo.price}/mes`;
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input type="email" id="email" required>
+        </div>
 
-        // Función para mostrar alertas
-        function showAlert(message, type = 'error') {
-            const alertContainer = document.getElementById('alertContainer');
-            const alertClass = type === 'error' ? 'alert-error' : 'alert-success';
-            alertContainer.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
-            
-            // Auto-ocultar después de 5 segundos
-            setTimeout(() => {
-                alertContainer.innerHTML = '';
-            }, 5000);
+        <div class="form-group">
+          <label for="phone">Teléfono (opcional)</label>
+          <input type="tel" id="phone">
+        </div>
+
+        <div class="form-group">
+          <label for="buildingName">Nombre del edificio/condominio *</label>
+          <input type="text" id="buildingName" required>
+        </div>
+
+        <div class="form-group">
+          <label>Selecciona un plan *</label>
+          <div class="plan-selector">
+            <label class="plan-option" data-plan="basico">
+              <input type="radio" name="plan" value="basico" required>
+              <div class="plan-name">Básico</div>
+              <div class="plan-price">$499/mes</div>
+              <div class="plan-units">Hasta 20 unidades</div>
+            </label>
+
+            <label class="plan-option" data-plan="profesional">
+              <input type="radio" name="plan" value="profesional">
+              <div class="plan-name">Profesional</div>
+              <div class="plan-price">$999/mes</div>
+              <div class="plan-units">Hasta 50 unidades</div>
+            </label>
+
+            <label class="plan-option" data-plan="empresarial">
+              <input type="radio" name="plan" value="empresarial">
+              <div class="plan-name">Empresarial</div>
+              <div class="plan-price">$1,999/mes</div>
+              <div class="plan-units">Hasta 200 unidades</div>
+            </label>
+
+            <label class="plan-option" data-plan="personalizado" id="customPlanOption">
+              <input type="radio" name="plan" value="personalizado">
+              <div class="plan-name">Personalizado</div>
+              <div class="plan-price" id="customPrice">A medida</div>
+              <div class="plan-units" id="customUnits">Configurar</div>
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn" id="submitBtn">
+          Continuar <i class="fas fa-arrow-right"></i>
+        </button>
+
+        <div style="text-align: center; margin-top: 1rem; color: var(--gray); font-size: 0.875rem;">
+          ¿Necesitas más de 200 unidades? 
+          <a href="/crear-paquete.html" style="color: var(--primary); text-decoration: none; font-weight: 600;">
+            Crea tu paquete <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </form>
+
+      <div class="login-link">
+        ¿Ya tienes cuenta? <a href="/login.html">Inicia sesión</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Check if coming back from custom package builder
+    const urlParams = new URLSearchParams(window.location.search);
+    const customPackage = localStorage.getItem('custom_package');
+    
+    if (urlParams.get('plan') === 'personalizado' && customPackage) {
+      const pkg = JSON.parse(customPackage);
+      document.getElementById('customPrice').textContent = '$' + pkg.price.toLocaleString('es-MX') + '/mes';
+      document.getElementById('customUnits').textContent = pkg.units + ' unidades';
+      
+      // Auto-select custom plan
+      const customOption = document.getElementById('customPlanOption');
+      customOption.classList.add('selected');
+      customOption.querySelector('input').checked = true;
+    }
+
+    // Plan selection
+    document.querySelectorAll('.plan-option').forEach(option => {
+      option.addEventListener('click', function() {
+        // If clicking on personalizado without custom package, redirect to builder
+        if (this.dataset.plan === 'personalizado' && !customPackage) {
+          window.location.href = '/crear-paquete.html';
+          return;
         }
+        
+        document.querySelectorAll('.plan-option').forEach(o => o.classList.remove('selected'));
+        this.classList.add('selected');
+        this.querySelector('input').checked = true;
+      });
+    });
 
-        // Función para mostrar/ocultar loading
-        function setLoading(isLoading) {
-            const loading = document.getElementById('loading');
-            const submitBtn = document.getElementById('submitBtn');
-            const form = document.getElementById('registerForm');
+    // Form submission
+    document.getElementById('registroForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const submitBtn = document.getElementById('submitBtn');
+      const alert = document.getElementById('alert');
+      
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando...';
+      
+      const data = {
+        fullName: document.getElementById('fullName').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        buildingName: document.getElementById('buildingName').value,
+        selectedPlan: document.querySelector('input[name="plan"]:checked').value
+      };
 
-            if (isLoading) {
-                loading.classList.add('active');
-                submitBtn.disabled = true;
-                form.style.opacity = '0.6';
-            } else {
-                loading.classList.remove('active');
-                submitBtn.disabled = false;
-                form.style.opacity = '1';
-            }
-        }
-
-        // Manejar envío del formulario
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const formData = {
-                email: document.getElementById('email').value.trim(),
-                fullName: document.getElementById('fullName').value.trim(),
-                phone: document.getElementById('phone').value.trim() || null,
-                buildingName: document.getElementById('buildingName').value.trim(),
-                selectedPlan: selectedPlan
-            };
-
-            // Validación básica
-            if (!formData.email || !formData.fullName || !formData.buildingName) {
-                showAlert('Por favor completa todos los campos requeridos');
-                return;
-            }
-
-            if (!formData.email.includes('@')) {
-                showAlert('Por favor ingresa un email válido');
-                return;
-            }
-
-            setLoading(true);
-
-            try {
-                const response = await fetch(`${API_URL}/api/onboarding/register`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
-
-                const data = await response.json();
-
-                if (data.ok) {
-                    // Guardar email para siguiente paso
-                    sessionStorage.setItem('registrationEmail', formData.email);
-                    sessionStorage.setItem('registrationData', JSON.stringify(formData));
-                    
-                    showAlert('Registro iniciado correctamente', 'success');
-                    
-                    // Redirigir a verificación OTP después de 1 segundo
-                    setTimeout(() => {
-                        window.location.href = '/verify-otp';
-                    }, 1000);
-                } else {
-                    showAlert(data.msg || 'Error al registrar. Intenta nuevamente.');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showAlert('Error de conexión. Por favor intenta nuevamente.');
-            } finally {
-                setLoading(false);
-            }
+      try {
+        const response = await fetch('/api/onboarding/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
         });
 
-        // Si no hay plan seleccionado, redirigir a landing
-        if (!sessionStorage.getItem('selectedPlan')) {
-            window.location.href = '/landing';
+        const result = await response.json();
+
+        if (result.ok) {
+          // Guardar email en localStorage para siguiente paso
+          localStorage.setItem('onboarding_email', data.email);
+          localStorage.setItem('onboarding_plan', data.selectedPlan);
+          
+          alert.className = 'alert success';
+          alert.textContent = '¡Registro exitoso! Redirigiendo...';
+          
+          setTimeout(() => {
+            window.location.href = '/verificar-otp.html';
+          }, 1500);
+        } else {
+          throw new Error(result.msg || 'Error en el registro');
         }
-    </script>
+      } catch (error) {
+        alert.className = 'alert error';
+        alert.textContent = error.message;
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Continuar <i class="fas fa-arrow-right"></i>';
+      }
+    });
+  </script>
 </body>
 </html>
