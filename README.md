@@ -1,4 +1,4 @@
-# Edificio Admin - Sistema de Administración
+# ChispartBuilding - Sistema de Administración
 
 Sistema completo de administración para edificios de departamentos con gestión de cuotas, presupuestos, gastos y control de acceso multiusuario.
 
@@ -9,8 +9,8 @@ Sistema completo de administración para edificios de departamentos con gestión
 
 ```bash
 # Clonar repositorio
-git clone https://github.com/SebastianVernisMora/edificio-admin.git
-cd edificio-admin
+git clone https://github.com/SebastianVernisMora/chispartbuilding.git
+cd chispartbuilding
 
 # Instalar dependencias
 npm install
@@ -66,11 +66,11 @@ Ver [guía completa de Cloud Run](docs/deployment/CLOUD_RUN_DEPLOYMENT.md)
 
 ### Docker
 ```bash
-docker build -t edificio-admin .
+docker build -t chispartbuilding .
 docker run -p 8080:8080 \
   -e NODE_ENV=production \
   -e JWT_SECRET=your-secret \
-  edificio-admin
+  chispartbuilding
 ```
 
 ## 📚 Documentación
@@ -146,7 +146,7 @@ SMTP_PORT=587
 SMTP_SECURE=false
 SMTP_USER=your-email@gmail.com
 SMTP_PASS=your-app-password
-SMTP_FROM=noreply@edificio-admin.com
+SMTP_FROM=noreply@chispartbuilding.com
 ```
 
 Ver [.env.example](.env.example) para configuración completa.
@@ -178,7 +178,7 @@ MIT License - ver [LICENSE](LICENSE) para más detalles.
 
 ## 🆘 Soporte
 
-- **Issues:** [GitHub Issues](https://github.com/SebastianVernisMora/edificio-admin/issues)
+- **Issues:** [GitHub Issues](https://github.com/SebastianVernisMora/chispartbuilding/issues)
 - **Docs:** [Documentación completa](docs/)
 - **Email:** [Contacto del proyecto]
 

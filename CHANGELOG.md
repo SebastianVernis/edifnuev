@@ -9,7 +9,7 @@ Todos los cambios notables del proyecto se documentan aquí.
   - Eliminado `saas-migration/` (207MB)
   - Eliminado `crimson-recipe-f545/` (219MB)
   - Eliminado `src-optimized/` (88KB)
-  - Eliminado `edificio-admin/` vacía
+  - Eliminado `chispartbuilding/` vacía
 - **Backups antiguos eliminados** - Solo se mantiene el más reciente
 - **Archivos temporales limpiados** - `.backup`, `.pid`, logs antiguos
 
