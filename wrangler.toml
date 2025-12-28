@@ -1,41 +1,32 @@
 name = "edificio-admin"
 main = "workers-build/index.js"
 compatibility_date = "2024-01-01"
-node_compat = true
+compatibility_flags = ["nodejs_compat"]
 
-# Variables de entorno (configurar después del deploy)
-[env.production]
-vars = { NODE_ENV = "production" }
+# Variables de entorno
+[vars]
+NODE_ENV = "production"
+
+# Assets estáticos (Pages)
+[site]
+bucket = "./public"
+
+# Build configuration
+# [build]
+# command = "npm run build:workers"
 
 # D1 Database binding
 [[d1_databases]]
 binding = "DB"
 database_name = "edificio-admin-db"
-database_id = "" # Se configurará después de crear la DB
+database_id = "a571aea0-d80d-4846-a31c-9936bddabdf5"
 
-# KV para sesiones y cache
-[[kv_namespaces]]
-binding = "KV"
-id = "" # Se configurará después
+# KV para sesiones y cache (descomentar después de crear)
+# [[kv_namespaces]]
+# binding = "KV"
+# id = "your-kv-id-here"
 
-# R2 para uploads/archivos
-[[r2_buckets]]
-binding = "UPLOADS"
-bucket_name = "edificio-admin-uploads"
-
-# Configuración de Workers
-[build]
-command = "npm run build:workers"
-
-# Limites
-[limits]
-cpu_ms = 50
-
-# Routes
-routes = [
-  { pattern = "edificio-admin.workers.dev", zone_name = "" }
-]
-
-# Assets estáticos (Pages)
-[site]
-bucket = "./public"
+# R2 para uploads/archivos (descomentar después de crear)
+# [[r2_buckets]]
+# binding = "UPLOADS"
+# bucket_name = "edificio-admin-uploads"
