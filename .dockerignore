@@ -1,0 +1,79 @@
+# Node modules (will be installed in container)
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Development files
+*.log
+logs/*.log
+*.pid
+
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Test files
+tests/
+test-reports/
+screenshots-e2e/
+screenshots-consolidados/
+e2e-tests/
+*.test.js
+*.spec.js
+*.spec.ts
+playwright.config.*
+jest.config.*
+
+# Build artifacts
+dist/
+build/
+coverage/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Backup files
+backups/*.json
+*.backup
+*.tar.gz
+*.zip
+
+# Scripts not needed in production
+scripts/testing/
+scripts/deployment/local*.sh
+scripts/maintenance/
+
+# Config files not needed
+config/eslint.config.js
+config/jsconfig.json
+config/*.code-workspace
+config/nginx-config-nuevo.conf
+
+# Temporary files
+tmp/
+temp/
+.cache/
+.wrangler/
+
+# Cloud Run specific (will be set via env vars)
+.gcloudignore
+
+# Large unnecessary files
+uploads/anuncios/*
+!uploads/anuncios/.gitkeep

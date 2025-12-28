@@ -1,0 +1,60 @@
+# This file specifies files that are *not* uploaded to Google Cloud
+# using gcloud. It follows the same syntax as .gitignore
+
+# Node.js dependencies
+node_modules/
+
+# Environment files (set via Cloud Run env vars)
+.env
+.env.*
+!.env.example
+
+# Git files
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Tests
+tests/
+test-reports/
+screenshots-e2e/
+e2e-tests/
+*.test.js
+*.spec.js
+*.spec.ts
+playwright.config.*
+
+# Logs
+logs/
+*.log
+
+# Build artifacts
+dist/
+build/
+coverage/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Backups
+backups/
+*.backup
+*.tar.gz
+
+# Temporary files
+tmp/
+temp/
+.cache/
+
+# Cloud specific
+.dockerignore
+Dockerfile
+.gcloudignore
