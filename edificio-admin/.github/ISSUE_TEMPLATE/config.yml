@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 📚 Documentación
+    url: https://github.com/SebastianVernisMora/edificio-admin/blob/main/docs/production/README.md
+    about: Consulta la documentación completa del proyecto
+  - name: 💬 Discusión General
+    url: https://github.com/SebastianVernisMora/edificio-admin/discussions
+    about: Para preguntas generales, ideas o discusiones
+  - name: 🚨 Reporte de Seguridad
+    url: https://github.com/SebastianVernisMora/edificio-admin/security/advisories/new
+    about: Reportar vulnerabilidades de seguridad de forma privada

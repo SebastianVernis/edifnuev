@@ -1,0 +1,23 @@
+{
+  "timestamp": "2025-11-23T08:59:05.751Z",
+  "summary": {
+    "totalTests": 0,
+    "passedTests": 0,
+    "failedTests": 1,
+    "successRate": 0,
+    "overallSuccess": false
+  },
+  "testSuites": [],
+  "systemInfo": {
+    "nodeVersion": "v25.1.0",
+    "platform": "linux",
+    "arch": "x64",
+    "memoryUsage": {
+      "rss": 61497344,
+      "heapTotal": 11669504,
+      "heapUsed": 8455440,
+      "external": 3581067,
+      "arrayBuffers": 35735
+    }
+  }
+}
