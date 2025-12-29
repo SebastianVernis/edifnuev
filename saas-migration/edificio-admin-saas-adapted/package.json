@@ -5,7 +5,11 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
+<<<<<<< HEAD
     "dev": "wrangler dev",
+=======
+    "dev": "wrangler dev --local --persist-to .wrangler/state --port 8787 --assets ./public",
+>>>>>>> 9db658b (Primer Commit)
     "deploy": "wrangler publish",
     "migrate": "node scripts/migrate.js",
     "seed": "node scripts/seed.js",

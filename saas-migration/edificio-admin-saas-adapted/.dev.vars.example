@@ -4,6 +4,7 @@
 JWT_SECRET=your-super-secret-jwt-key-change-in-production
 EMAIL_SENDER=notificaciones@edificio-admin.com
 ENVIRONMENT=development
+<<<<<<< HEAD
 APP_URL=http://localhost:8787
 
 # SMTP Configuration (Optional - MailChannels is free on Cloudflare Workers)
@@ -18,3 +19,5 @@ APP_URL=http://localhost:8787
 # Alternative: Use SMTP API (SendGrid, Mailgun, etc.)
 # SMTP_API_URL=https://api.sendgrid.com/v3/mail/send
 # SMTP_API_KEY=your-api-key
+=======
+>>>>>>> 9db658b (Primer Commit)
