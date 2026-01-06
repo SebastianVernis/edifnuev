@@ -1,0 +1,54 @@
+name = "edificio-admin-saas-adapted"
+main = "src/index.js"
+compatibility_date = "2024-11-12"
+
+# Assets configuration for static files
+[site]
+bucket = "./public"
+
+# D1 Database - NOTA: Actualizar con tu database_id después de crear la DB
+# Ejecutar: wrangler d1 create edificio_admin_db
+[[d1_databases]]
+binding = "DB"
+database_name = "edificio_admin_db"
+database_id = "REPLACE_WITH_YOUR_DATABASE_ID"
+
+# KV Namespace para sesiones - NOTA: Actualizar IDs después de crear
+# Ejecutar: wrangler kv:namespace create SESSIONS
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "REPLACE_WITH_YOUR_SESSIONS_ID"
+
+# KV Namespace para caché
+# Ejecutar: wrangler kv:namespace create CACHE
+[[kv_namespaces]]
+binding = "CACHE"
+id = "REPLACE_WITH_YOUR_CACHE_ID"
+
+# KV Namespace para rate limiting
+# Ejecutar: wrangler kv:namespace create RATE_LIMIT
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "REPLACE_WITH_YOUR_RATE_LIMIT_ID"
+
+# R2 Storage para archivos (uploads)
+# Ejecutar: wrangler r2 bucket create edificio-admin-uploads
+[[r2_buckets]]
+binding = "UPLOADS"
+bucket_name = "edificio-admin-uploads"
+
+# Variables de entorno
+[vars]
+ENVIRONMENT = "development"
+JWT_SECRET = "dev-secret-change-in-production-IMPORTANT"
+EMAIL_SENDER = "notificaciones@edificio-admin.com"
+
+# Configuración específica para producción
+[env.production]
+name = "edificio-admin-saas-adapted-prod"
+vars = { ENVIRONMENT = "production" }
+
+# Scheduled events (cron jobs)
+# Descomentarlos cuando estén listos los handlers
+# [triggers]
+# crons = ["0 0 * * *", "0 9 * * MON", "0 0 1 * *"]
