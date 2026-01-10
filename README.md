@@ -75,8 +75,15 @@ docker run -p 8080:8080 \
 
 ## 📚 Documentación
 
+**📖 [Índice Completo de Documentación](DOCUMENTATION_INDEX.md)** - Navegación completa de todos los docs
+
+### Guías Principales
+- **[START_HERE.md](START_HERE.md)** - 🎯 Punto de entrada rápido
+- **[DEPLOY.md](DEPLOY.md)** - Hub de deployment
 - **[Guía de Deployment Cloud Run](docs/deployment/CLOUD_RUN_DEPLOYMENT.md)** - Deploy en Google Cloud
 - **[Guía de Despliegue General](docs/guides/GUIA_DESPLIEGUE.md)** - Deploy en VPS/servidores
+
+### Documentación Técnica
 - **[Setup Inicial](docs/guides/INSTRUCCIONES_SETUP.md)** - Configuración paso a paso
 - **[Documentación Técnica](docs/technical/PROYECTO_COMPLETO.md)** - Arquitectura completa
 - **[Sistema de Temas](docs/technical/THEME_SYSTEM.md)** - Customización

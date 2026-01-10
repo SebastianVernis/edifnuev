@@ -60,12 +60,13 @@ node workers-test-complete.js
 
 ### Para Usuarios
 - **[README.md](README.md)** - Introducción y quick start
-- **[PRODUCTION_READY.md](PRODUCTION_READY.md)** - Estado de producción
+- **[PRODUCTION_READY.md](docs/reports/PRODUCTION_READY.md)** - Estado de producción
+- **[DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md)** - 📚 Índice completo de documentación
 
 ### Para Developers
-- **[FINAL_DEPLOYMENT_REPORT.md](FINAL_DEPLOYMENT_REPORT.md)** - Reporte técnico completo
-- **[DEPLOYMENT_SUMMARY.md](DEPLOYMENT_SUMMARY.md)** - Resumen de todos los deployments
-- **[WORKERS_DEPLOYMENT_STATUS.md](WORKERS_DEPLOYMENT_STATUS.md)** - Estado Workers
+- **[FINAL_DEPLOYMENT_REPORT.md](docs/reports/FINAL_DEPLOYMENT_REPORT.md)** - Reporte técnico completo
+- **[DEPLOYMENT_SUMMARY.md](docs/reports/DEPLOYMENT_SUMMARY.md)** - Resumen de todos los deployments
+- **[WORKERS_DEPLOYMENT_STATUS.md](docs/reports/WORKERS_DEPLOYMENT_STATUS.md)** - Estado Workers
 
 ### Guías de Deployment
 - **[docs/deployment/WORKERS_COMPLETE_SETUP.md](docs/deployment/WORKERS_COMPLETE_SETUP.md)** - Setup Workers
@@ -108,7 +109,7 @@ npm start
 → admin@edificio.com / admin123
 
 **¿La lógica SAAS está funcionando?**
-→ ✅ Sí, 100% intacta y verificada (ver SAAS_STATUS.md)
+→ ✅ Sí, 100% intacta y verificada (ver [SAAS_STATUS.md](docs/reports/SAAS_STATUS.md))
 
 **¿Cuánto cuesta?**
 → $5/mes (Workers Paid) + Pages gratis
