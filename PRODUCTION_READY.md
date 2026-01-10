@@ -9,8 +9,8 @@
 ## 🌐 URLs de Producción
 
 ### Frontend (Cloudflare Pages)
-**URL Principal:** https://production.tourcelula.pages.dev  
-**URL Alias:** https://tourcelula.pages.dev
+**URL Principal:** https://production.chispartbuilding.pages.dev  
+**URL Alias:** https://chispartbuilding.pages.dev
 
 **Características:**
 - ✅ 12 páginas HTML desplegadas
@@ -76,7 +76,7 @@
 
 Abrir en navegador:
 ```
-https://production.tourcelula.pages.dev
+https://production.chispartbuilding.pages.dev
 ```
 
 ### Paso 2: Login con Credenciales Demo
@@ -107,7 +107,7 @@ Una vez logueado:
 └────────────┬────────────────────────────────────┘
              │
              ├─→ Frontend (Cloudflare Pages)
-             │   https://production.tourcelula.pages.dev
+             │   https://production.chispartbuilding.pages.dev
              │   ├── HTML/CSS/JS
              │   ├── config.js (auto-detection)
              │   └── _headers, _routes.json
@@ -252,7 +252,7 @@ node workers-test-complete.js
 wrangler deploy
 
 # Deploy Frontend Pages
-wrangler pages deploy public --project-name=tourcelula --branch=production
+wrangler pages deploy public --project-name=chispartbuilding --branch=production
 
 # Ver logs
 wrangler tail
@@ -312,7 +312,7 @@ wrangler d1 export edificio-admin-db --remote --output=backup.sql
 ### Frontend no carga
 ```bash
 # Verificar deployment
-wrangler pages deployment list --project-name=tourcelula
+wrangler pages deployment list --project-name=chispartbuilding
 
 # Verificar en browser console
 # Debe mostrar: "🔧 App Config: {environment: 'production', apiBaseUrl: '...'}"
@@ -365,7 +365,7 @@ curl https://edificio-admin.sebastianvernis.workers.dev/api/validation/health
 
 ## 🎯 Para Empezar
 
-1. **Acceder:** https://production.tourcelula.pages.dev
+1. **Acceder:** https://production.chispartbuilding.pages.dev
 2. **Login:** admin@edificio.com / admin123
 3. **Explorar:** Dashboard, usuarios, cuotas
 4. **(Opcional) Expandir:** Agregar más endpoints según necesites
@@ -374,7 +374,7 @@ curl https://edificio-admin.sebastianvernis.workers.dev/api/validation/health
 
 **🎉 SISTEMA COMPLETAMENTE FUNCIONAL EN CLOUDFLARE** 🎉
 
-**Frontend:** https://production.tourcelula.pages.dev  
+**Frontend:** https://production.chispartbuilding.pages.dev  
 **API:** https://edificio-admin.sebastianvernis.workers.dev  
 **GitHub:** https://github.com/SebastianVernis/edifnuev
 

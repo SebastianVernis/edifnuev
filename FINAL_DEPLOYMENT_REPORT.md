@@ -8,17 +8,11 @@
 
 ## 🌐 URLs de Producción
 
-### Frontend Deployments (Cloudflare Pages)
+### Frontend Deployment (Cloudflare Pages)
 
-**Deployment 1:**
-- **URL:** https://production.tourcelula.pages.dev
-- **Alias:** https://tourcelula.pages.dev
-- **Estado:** ✅ Activo
-- **Archivos:** 57 files
-
-**Deployment 2:**
+**Production:**
 - **URL:** https://production.chispartbuilding.pages.dev
-- **Alias:** https://chispartbuilding.pages.dev  
+- **Alias:** https://chispartbuilding.pages.dev
 - **Estado:** ✅ Activo
 - **Archivos:** 57 files
 
@@ -90,7 +84,7 @@ GET  /api/cuotas              → ✅ 200 OK (protected, with filters)
          │  Cloudflare Pages  │   │ Cloudflare Workers │
          │   (Frontend)       │   │   (API Backend)    │
          ├────────────────────┤   ├────────────────────┤
-         │ tourcelula         │   │ edificio-admin     │
+         │ chispartbuilding         │   │ edificio-admin     │
          │ .pages.dev         │──▶│ .workers.dev       │
          │                    │   │                    │
          │ - HTML/CSS/JS      │   │ - Router           │
@@ -192,7 +186,7 @@ wrangler d1 execute edificio-admin-db --remote \
 ```bash
 # Hacer cambios en public/
 git add -A && git commit -m "update" && git push
-wrangler pages deploy public --project-name=tourcelula --branch=production
+wrangler pages deploy public --project-name=chispartbuilding --branch=production
 ```
 
 ### Actualizar API
@@ -260,7 +254,7 @@ wrangler r2 bucket create edificio-admin-uploads
 ```bash
 # En Cloudflare Dashboard:
 # Workers → edificio-admin → Triggers → Add Custom Domain
-# Pages → tourcelula → Custom domains → Add domain
+# Pages → chispartbuilding → Custom domains → Add domain
 ```
 
 ### 5. Configurar Monitoring
@@ -333,7 +327,7 @@ wrangler tail --format=pretty
 
 **Sistema completamente funcional en Cloudflare:**
 
-✅ **Frontend:** https://production.tourcelula.pages.dev  
+✅ **Frontend:** https://production.chispartbuilding.pages.dev  
 ✅ **API:** https://edificio-admin.sebastianvernis.workers.dev  
 ✅ **Database:** D1 (a571aea0-d80d-4846-a31c-9936bddabdf5)  
 ✅ **GitHub:** https://github.com/SebastianVernis/edifnuev  
@@ -347,7 +341,7 @@ wrangler tail --format=pretty
 
 **🚀 PROYECTO LISTO PARA PRODUCCIÓN** 🚀
 
-_Para acceder: https://production.tourcelula.pages.dev_  
+_Para acceder: https://production.chispartbuilding.pages.dev_  
 _Login: admin@edificio.com / admin123_
 
 ---

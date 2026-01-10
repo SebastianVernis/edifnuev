@@ -9,7 +9,7 @@ https://edificio-admin.pages.dev
 
 Redirige a:
 ```
-https://smartbuilding.pages.dev
+https://chispartbuilding.pages.dev
 ```
 
 ## Deploy

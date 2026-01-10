@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 
 const WORKER_API = 'https://edificio-admin.sebastianvernis.workers.dev';
-const PAGES_FRONTEND = 'https://production.tourcelula.pages.dev';
+const PAGES_FRONTEND = 'https://production.chispartbuilding.pages.dev';
 
 console.log('🧪 Full Integration Test\n');
 console.log('═══════════════════════════════════════════════════\n');

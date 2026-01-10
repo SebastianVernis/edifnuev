@@ -60,7 +60,7 @@ c644559 - docs: verify SAAS logic is intact after cleanup
 - Conectar a Worker API
 
 **Opción B: Usar proyecto existente**
-- URL: https://smartbuilding.pages.dev
+- URL: https://production.chispartbuilding.pages.dev
 - Actualizar API_URL a Worker
 
 **Opción C: Workers Sites**
@@ -165,7 +165,7 @@ edifnuev/
 # 2. Deploy: wrangler pages deploy public --project-name=edificio-admin-frontend
 
 # Opción B: Usar existente
-wrangler pages deploy public --project-name=smartbuilding
+wrangler pages deploy public --project-name=chispartbuilding
 ```
 
 ### 2. Expandir API Worker
@@ -190,7 +190,7 @@ wrangler r2 bucket create edificio-admin-uploads
 
 **Producción:**
 - API Worker: https://edificio-admin.sebastianvernis.workers.dev
-- Frontend: https://smartbuilding.pages.dev (actual)
+- Frontend: https://production.chispartbuilding.pages.dev (actual)
 
 **Desarrollo:**
 - GitHub: https://github.com/SebastianVernis/edifnuev

@@ -126,7 +126,7 @@ docker run -p 8080:8080 -e NODE_ENV=production edificio-admin
 ```
 
 ### 4. Cloudflare Pages (Actual)
-**URL:** https://smartbuilding.pages.dev  
+**URL:** https://production.chispartbuilding.pages.dev  
 **Configuración:** docs/cloudflare/
 
 ## 🧪 Testing
@@ -179,7 +179,7 @@ docker run -p 8080:8080 -e NODE_ENV=production edificio-admin
 ## 🌐 URLs y Accesos
 
 **GitHub:** https://github.com/SebastianVernis/edifnuev  
-**Producción Actual:** https://smartbuilding.pages.dev  
+**Producción Actual:** https://production.chispartbuilding.pages.dev  
 **Cloud Run:** (pendiente de deploy)
 
 **Credenciales Demo:**

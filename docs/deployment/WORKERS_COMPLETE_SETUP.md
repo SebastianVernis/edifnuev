@@ -87,7 +87,7 @@ El Worker ya tiene `[site]` configurado en wrangler.toml y sube los 55 assets.
 
 ```
 Frontend (Pages)  →  API (Workers)  →  Database (D1)
-smartbuilding          edificio-admin     edificio-admin-db
+chispartbuilding          edificio-admin     edificio-admin-db
 .pages.dev            .workers.dev        (D1)
 ```
 
@@ -110,13 +110,13 @@ EOF
 
 **2. Deploy frontend a Pages existente:**
 ```bash
-wrangler pages deploy public --project-name=smartbuilding
+wrangler pages deploy public --project-name=chispartbuilding
 ```
 
 **3. Test completo:**
 ```bash
 # Abrir en navegador
-https://smartbuilding.pages.dev
+https://chispartbuilding.pages.dev
 
 # Login con:
 # admin@edificio.com / admin123
@@ -256,7 +256,7 @@ wrangler rollback
 **Error: Frontend 404**
 - Opción A: Deploy a Pages separado
 - Opción B: Arreglar Workers Sites routing
-- Opción C: Usar proyecto Pages existente (smartbuilding.pages.dev)
+- Opción C: Usar proyecto Pages existente (chispartbuilding.pages.dev)
 
 ---
 

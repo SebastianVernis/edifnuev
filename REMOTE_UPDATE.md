@@ -38,7 +38,7 @@ a5204b6 - docs: add GitHub repository setup guide
 
 **GitHub (actual):** https://github.com/SebastianVernis/edifnuev
 
-**Cloudflare (producción actual):** https://smartbuilding.pages.dev
+**Cloudflare (producción actual):** https://production.chispartbuilding.pages.dev
 
 ## 🔄 Para Cambiar de Organización
 

@@ -7,7 +7,7 @@
 ## 🌐 Acceder a la Aplicación
 
 ### 🎯 URL Principal (RECOMENDADA)
-**https://production.tourcelula.pages.dev**
+**https://production.chispartbuilding.pages.dev**
 
 ### 🔐 Login
 - **Email:** `admin@edificio.com`
@@ -33,8 +33,7 @@
 
 | Servicio | URL | Estado |
 |----------|-----|--------|
-| **Frontend 1** | https://production.tourcelula.pages.dev | ✅ Activo |
-| **Frontend 2** | https://production.chispartbuilding.pages.dev | ✅ Activo |
+| **Frontend** | https://production.chispartbuilding.pages.dev | ✅ Activo |
 | **API Workers** | https://edificio-admin.sebastianvernis.workers.dev | ✅ Activo |
 | **GitHub** | https://github.com/SebastianVernis/edifnuev | ✅ Actualizado |
 
@@ -89,7 +88,7 @@ wrangler d1 execute edificio-admin-db --remote \
 wrangler deploy
 
 # Redeploy Frontend
-wrangler pages deploy public --project-name=tourcelula --branch=production
+wrangler pages deploy public --project-name=chispartbuilding --branch=production
 
 # Desarrollo local
 npm start
@@ -100,7 +99,7 @@ npm start
 ## 💡 FAQ Rápido
 
 **¿Dónde está el frontend?**
-→ https://production.tourcelula.pages.dev
+→ https://production.chispartbuilding.pages.dev
 
 **¿Dónde está la API?**
 → https://edificio-admin.sebastianvernis.workers.dev
@@ -130,7 +129,7 @@ Tu sistema está completamente desplegado en Cloudflare:
 5. **SAAS** lógica intacta
 6. **GitHub** actualizado
 
-**Visita ahora:** https://production.tourcelula.pages.dev
+**Visita ahora:** https://production.chispartbuilding.pages.dev
 
 ---
 

@@ -61,7 +61,7 @@ docker run -p 8080:8080 \
 
 ### 🔥 Cloudflare Pages
 
-**Current deployment:** https://smartbuilding.pages.dev
+**Current deployment:** https://production.chispartbuilding.pages.dev
 
 See existing Cloudflare configuration in `docs/cloudflare/`
 

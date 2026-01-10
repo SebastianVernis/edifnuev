@@ -138,7 +138,7 @@ Cloudflare Stack:
 │   └── JWT_SECRET                  ✅
 │
 └── Pages (Frontend)                 ⏳ Pendiente
-    └── Opción: smartbuilding.pages.dev (existente)
+    └── Opción: production.chispartbuilding.pages.dev (existente)
 ```
 
 ## 🌐 URLs del Proyecto
@@ -147,7 +147,7 @@ Cloudflare Stack:
 https://edificio-admin.sebastianvernis.workers.dev
 
 **Frontend actual (Cloudflare Pages):**  
-https://smartbuilding.pages.dev
+https://production.chispartbuilding.pages.dev
 
 **Frontend puede apuntar al Worker API:**
 ```javascript
@@ -162,8 +162,8 @@ const API_URL = 'https://edificio-admin.sebastianvernis.workers.dev';
 **Opción 1: Usar proyecto Pages existente**
 ```bash
 # Actualizar API_URL en frontend para apuntar al Worker
-# Deploy a smartbuilding.pages.dev
-wrangler pages deploy public --project-name=smartbuilding --branch=production
+# Deploy a production.chispartbuilding.pages.dev
+wrangler pages deploy public --project-name=chispartbuilding --branch=production
 ```
 
 **Opción 2: Crear nuevo proyecto Pages desde dashboard**
