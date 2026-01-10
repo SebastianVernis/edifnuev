@@ -262,6 +262,20 @@
           throw new Error(result.msg || 'Error enviando código');
         }
 
+        // DESARROLLO: Mostrar OTP en consola y alert
+        if (result.otp) {
+          console.log('🔐 Código OTP:', result.otp);
+          const alert = document.getElementById('alert');
+          alert.className = 'alert success';
+          alert.textContent = `✅ Código enviado. Para desarrollo: ${result.otp}`;
+          
+          // Auto-llenar el código en desarrollo
+          const otpString = result.otp.toString();
+          inputs.forEach((input, i) => {
+            input.value = otpString[i] || '';
+          });
+        }
+
         startTimer(300); // 5 minutos
       } catch (error) {
         const alert = document.getElementById('alert');
@@ -303,7 +317,7 @@
       resendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
       
       try {
-        const response = await fetch('/api/otp/resend', {
+        const response = await fetch('/api/otp/send', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email })
@@ -315,15 +329,24 @@
           alert.className = 'alert success';
           alert.textContent = 'Código reenviado exitosamente';
           
-          // Clear inputs
-          inputs.forEach(input => input.value = '');
-          inputs[0].focus();
+          // DESARROLLO: Mostrar OTP
+          if (result.otp) {
+            console.log('🔐 Código OTP (reenviado):', result.otp);
+            alert.textContent = `✅ Código reenviado. Para desarrollo: ${result.otp}`;
+            
+            // Auto-llenar el código
+            const otpString = result.otp.toString();
+            inputs.forEach((input, i) => {
+              input.value = otpString[i] || '';
+            });
+          }
           
+          inputs[0].focus();
           startTimer(300);
           
           setTimeout(() => {
             alert.style.display = 'none';
-          }, 3000);
+          }, 5000);
         } else {
           throw new Error(result.msg || 'Error reenviando código');
         }

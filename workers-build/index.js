@@ -7,7 +7,7 @@
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-auth-token',
 };
 
 // Helper: Base64 URL encode
@@ -261,6 +261,46 @@ export default {
       }
 
       // === ONBOARDING ROUTES ===
+
+      // POST /api/otp/send - Enviar código OTP
+      if (method === 'POST' && path === '/api/otp/send') {
+        const body = await request.json();
+        const { email } = body;
+
+        if (!email) {
+          return new Response(JSON.stringify({
+            ok: false,
+            msg: 'Email requerido'
+          }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Generar OTP
+        const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+        
+        // Guardar en KV temporal (si está configurado)
+        if (env.KV) {
+          await env.KV.put(`otp:${email}`, JSON.stringify({
+            code: otpCode,
+            email,
+            timestamp: Date.now()
+          }), { expirationTtl: 300 }); // 5 minutos
+        }
+
+        // TODO: Enviar email con OTP usando servicio de email
+        // Por ahora, retornar OTP en respuesta (solo para desarrollo)
+        console.log(`OTP para ${email}: ${otpCode}`);
+        
+        return new Response(JSON.stringify({
+          ok: true,
+          msg: 'Código OTP enviado correctamente',
+          otp: otpCode // REMOVER EN PRODUCCIÓN
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
 
       // POST /api/onboarding/register - Iniciar registro
       if (method === 'POST' && path === '/api/onboarding/register') {
