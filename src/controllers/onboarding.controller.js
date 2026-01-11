@@ -441,6 +441,27 @@ export async function setupBuilding(req, res) {
     };
 
     data.usuarios.push(nuevoUsuario);
+    
+    // Inicializar fondos si no existen
+    if (!data.fondos) {
+      data.fondos = {
+        ahorroAcumulado: 67500,
+        gastosMayores: 125000,
+        dineroOperacional: 48000,
+        patrimonioTotal: 240500
+      };
+    }
+    
+    // Inicializar proyectos críticos si no existen
+    if (!data.proyectos) {
+      data.proyectos = [
+        { id: 1, nombre: 'Legitimidad Legal', monto: 35000, prioridad: 'URGENTE' },
+        { id: 2, nombre: 'Irregularidades Eléctricas', monto: 85000, prioridad: 'ALTA' },
+        { id: 3, nombre: 'Bombas Base Inestable', monto: 45000, prioridad: 'MEDIA' },
+        { id: 4, nombre: 'Estructura Castillos', monto: 120000, prioridad: 'ALTA' }
+      ];
+    }
+    
     writeData(data);
 
     // Generar token JWT

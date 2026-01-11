@@ -151,14 +151,11 @@
         <div class="parcialidades-info">
           <div class="info-card">
             <h3>Proyectos Críticos 2026</h3>
-            <ul>
-              <li><strong>Legitimidad Legal:</strong> $35,000 MXN (URGENTE)</li>
-              <li><strong>Irregularidades Eléctricas:</strong> $85,000 MXN</li>
-              <li><strong>Bombas Base Inestable:</strong> $45,000 MXN</li>
-              <li><strong>Estructura Castillos:</strong> $120,000 MXN</li>
+            <ul id="proyectos-criticos-list">
+              <li>Cargando proyectos...</li>
             </ul>
-            <p><strong>Total:</strong> $285,000 MXN</p>
-            <p><strong>Por Departamento:</strong> $14,250 MXN</p>
+            <p><strong>Total:</strong> <span id="proyectos-total">$0</span></p>
+            <p><strong>Por Departamento:</strong> <span id="proyectos-por-depto">$0</span></p>
           </div>
           
           <div class="info-card">
@@ -245,6 +242,7 @@
   <script src="js/auth/auth.js?v=5"></script>
   <script src="js/simple-navigation.js?v=5"></script>
   <script src="js/modules/inquilino/inquilino-buttons.js?v=5"></script>
+  <script src="js/shared/proyectos-loader.js?v=1"></script>
   <!-- <script src="js/modules/inquilino/inquilino.js?v=4"></script> -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {

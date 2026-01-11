@@ -29,6 +29,7 @@
           <li><a href="#anuncios"><i class="fas fa-bullhorn"></i> Anuncios</a></li>
           <li><a href="#cierres"><i class="fas fa-calendar-check"></i> Cierres</a></li>
           <li><a href="#parcialidades"><i class="fas fa-percentage"></i> Parcialidades 2026</a></li>
+          <li><a href="#configuracion"><i class="fas fa-cog"></i> Configuración</a></li>
         </ul>
       </nav>
       
@@ -748,14 +749,11 @@
         <div class="parcialidades-info">
           <div class="info-card">
             <h3>Proyectos Críticos 2026</h3>
-            <ul>
-              <li><strong>Legitimidad Legal:</strong> $35,000 MXN (URGENTE)</li>
-              <li><strong>Irregularidades Eléctricas:</strong> $85,000 MXN</li>
-              <li><strong>Bombas Base Inestable:</strong> $45,000 MXN</li>
-              <li><strong>Estructura Castillos:</strong> $120,000 MXN</li>
+            <ul id="proyectos-criticos-list-admin">
+              <li>Cargando proyectos...</li>
             </ul>
-            <p><strong>Total:</strong> $285,000 MXN</p>
-            <p><strong>Por Departamento:</strong> $14,250 MXN</p>
+            <p><strong>Total:</strong> <span id="proyectos-total-admin">$0</span></p>
+            <p><strong>Por Departamento:</strong> <span id="proyectos-por-depto-admin">$0</span></p>
           </div>
         </div>
         
@@ -830,6 +828,239 @@
           </div>
         </div>
       </section>
+      
+      <!-- Configuracion Section -->
+      <section id="configuracion-section" class="content-section">
+        <div class="section-header">
+          <h2>Configuración del Sistema</h2>
+        </div>
+        
+        <!-- Tabs de configuración -->
+        <div class="config-tabs">
+          <button class="tab-btn active" data-tab="proyectos">Proyectos Críticos</button>
+          <button class="tab-btn" data-tab="perfil">Mi Perfil</button>
+          <button class="tab-btn" data-tab="edificio">Información del Edificio</button>
+          <button class="tab-btn" data-tab="documentos">Documentos</button>
+        </div>
+        
+        <!-- Tab: Proyectos Críticos -->
+        <div class="config-tab-content active" id="tab-proyectos">
+          <div class="config-container">
+            <div class="config-card">
+              <h3>Proyectos Críticos 2026</h3>
+              <p class="description">Gestiona los proyectos críticos del condominio y sus montos</p>
+              
+              <div class="proyectos-list" id="proyectos-list">
+                <!-- Proyectos will be loaded here -->
+              </div>
+              
+              <button id="nuevo-proyecto-btn" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Agregar Proyecto
+              </button>
+            </div>
+            
+            <div class="config-card">
+              <h3>Información General</h3>
+              <div class="info-item">
+                <label>Total de Departamentos:</label>
+                <p id="config-total-deptos">20</p>
+              </div>
+              <div class="info-item">
+                <label>Cuota Mensual:</label>
+                <p id="config-cuota-mensual">$1,500 MXN</p>
+              </div>
+              <div class="info-item">
+                <label>Día de Corte:</label>
+                <p id="config-dia-corte">1</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Tab: Mi Perfil -->
+        <div class="config-tab-content" id="tab-perfil">
+          <div class="config-card" style="max-width: 600px; margin: 0 auto;">
+            <h3>Mi Información</h3>
+            <p class="description">Actualiza tu información personal</p>
+            
+            <form id="perfil-form">
+              <div class="form-group">
+                <label for="perfil-nombre">Nombre Completo:</label>
+                <input type="text" id="perfil-nombre" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="perfil-email">Email:</label>
+                <input type="email" id="perfil-email" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="perfil-telefono">Teléfono:</label>
+                <input type="tel" id="perfil-telefono">
+              </div>
+              
+              <div class="form-group">
+                <label for="perfil-departamento">Departamento:</label>
+                <input type="text" id="perfil-departamento" readonly>
+              </div>
+              
+              <h4 style="margin-top: 2rem;">Cambiar Contraseña</h4>
+              
+              <div class="form-group">
+                <label for="perfil-password-actual">Contraseña Actual:</label>
+                <input type="password" id="perfil-password-actual">
+              </div>
+              
+              <div class="form-group">
+                <label for="perfil-password-nueva">Nueva Contraseña:</label>
+                <input type="password" id="perfil-password-nueva">
+              </div>
+              
+              <div class="form-group">
+                <label for="perfil-password-confirmar">Confirmar Nueva Contraseña:</label>
+                <input type="password" id="perfil-password-confirmar">
+              </div>
+              
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        
+        <!-- Tab: Información del Edificio -->
+        <div class="config-tab-content" id="tab-edificio">
+          <div class="config-card" style="max-width: 600px; margin: 0 auto;">
+            <h3>Información del Edificio</h3>
+            <p class="description">Gestiona la información general del condominio</p>
+            
+            <form id="edificio-form">
+              <div class="form-group">
+                <label for="edificio-nombre">Nombre:</label>
+                <input type="text" id="edificio-nombre" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="edificio-direccion">Dirección:</label>
+                <input type="text" id="edificio-direccion" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="edificio-total-unidades">Total de Unidades:</label>
+                <input type="number" id="edificio-total-unidades" min="1" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="edificio-cuota-mensual">Cuota Mensual:</label>
+                <input type="number" id="edificio-cuota-mensual" min="0" step="0.01" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="edificio-dia-corte">Día de Corte:</label>
+                <input type="number" id="edificio-dia-corte" min="1" max="31" required>
+              </div>
+              
+              <h4 style="margin-top: 2rem;">Políticas del Condominio</h4>
+              
+              <div class="form-group">
+                <label for="edificio-politicas">Políticas y Reglamento:</label>
+                <textarea id="edificio-politicas" rows="8" placeholder="Ingresa las políticas del condominio..."></textarea>
+              </div>
+              
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                <button type="button" id="descargar-politicas-btn" class="btn btn-secondary">
+                  <i class="fas fa-download"></i> Descargar Políticas
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+        
+        <!-- Tab: Documentos -->
+        <div class="config-tab-content" id="tab-documentos">
+          <div class="config-card">
+            <h3>Documentos del Edificio</h3>
+            <p class="description">Gestiona los documentos oficiales del condominio</p>
+            
+            <div class="documentos-container" id="documentos-container">
+              <!-- Documentos will be loaded here -->
+            </div>
+            
+            <div style="margin-top: 2rem;">
+              <h4>Subir Nuevo Documento</h4>
+              <form id="documento-form">
+                <div class="form-group">
+                  <label for="documento-tipo">Tipo de Documento:</label>
+                  <select id="documento-tipo" required>
+                    <option value="">Seleccionar...</option>
+                    <option value="acta_constitutiva">Acta Constitutiva</option>
+                    <option value="escrituras">Escrituras</option>
+                    <option value="reglamento">Reglamento Interno</option>
+                    <option value="planos">Planos</option>
+                    <option value="contratos">Contratos</option>
+                    <option value="permisos">Permisos</option>
+                    <option value="otro">Otro</option>
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label for="documento-nombre">Nombre del Documento:</label>
+                  <input type="text" id="documento-nombre" required>
+                </div>
+                
+                <div class="form-group">
+                  <label for="documento-archivo">Archivo:</label>
+                  <input type="file" id="documento-archivo" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
+                </div>
+                
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-upload"></i> Subir Documento
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Modal for adding/editing proyecto -->
+        <div id="proyecto-modal" class="modal">
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="proyecto-modal-title">Nuevo Proyecto</h2>
+            
+            <form id="proyecto-form">
+              <input type="hidden" id="proyecto-id">
+              
+              <div class="form-group">
+                <label for="proyecto-nombre">Nombre del Proyecto:</label>
+                <input type="text" id="proyecto-nombre" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="proyecto-monto">Monto Total:</label>
+                <input type="number" id="proyecto-monto" min="0" step="0.01" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="proyecto-prioridad">Prioridad:</label>
+                <select id="proyecto-prioridad" required>
+                  <option value="URGENTE">URGENTE</option>
+                  <option value="ALTA">ALTA</option>
+                  <option value="MEDIA">MEDIA</option>
+                  <option value="BAJA">BAJA</option>
+                </select>
+              </div>
+              
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="button" class="close-modal btn btn-outline">Cancelar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
     </main>
   </div>
   
@@ -852,6 +1083,8 @@
   <script src="js/modules/cuotas/cuotas.js?v=4"></script>
   <script src="js/modules/gastos/gastos.js?v=4"></script>
   <!-- <script src="js/modules/fondos/fondos.js?v=4"></script> -->
+  <script src="js/shared/proyectos-loader.js?v=1"></script>
+  <script src="js/modules/configuracion/configuracion.js?v=1" type="module"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       console.log('✓ Sistema ChispartBuilding - Operacional');

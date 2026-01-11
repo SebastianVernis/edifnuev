@@ -19,6 +19,7 @@ import parcialidadesRoutes from './routes/parcialidades.routes.js';
 import onboardingRoutes from './routes/onboarding.routes.js';
 import invitationsRoutes from './routes/invitations.routes.js';
 import themeRoutes from './routes/theme.routes.js';
+import proyectosRoutes from './routes/proyectos.routes.js';
 import { inicializarCuotasAnuales, actualizarCuotasVencidas } from './utils/cuotasInicializacion.js';
 import { getTransporter } from './utils/smtp.js';
 
@@ -59,6 +60,7 @@ app.use('/api/parcialidades', parcialidadesRoutes);
 app.use('/api/onboarding', onboardingRoutes);
 app.use('/api/invitations', invitationsRoutes);
 app.use('/api/theme', themeRoutes);
+app.use('/api/proyectos', proyectosRoutes);
 
 // Ruta para servir la aplicación frontend
 app.get('/', (req, res) => {

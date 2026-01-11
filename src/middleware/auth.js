@@ -72,7 +72,10 @@ export const verifyToken = (req, res, next) => {
     
     // Verificar token
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'edificio-admin-secret-key-2025');
-    req.usuario = decoded;
+    
+    // Si el token tiene la estructura {usuario: {...}}, extraer el usuario
+    // Si no, asumir que el decoded ya es el usuario
+    req.usuario = decoded.usuario || decoded;
     
     // Log de autenticación exitosa
     logAccess('AUTH_SUCCESS', req.usuario.id, req.usuario.rol, req.path, null, true, ip, userAgent);

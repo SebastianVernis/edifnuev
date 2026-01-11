@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Build Script - Verificación de archivos estáticos
- * El proyecto usa archivos estáticos directos, no build
+ * Build Script - Copia archivos estáticos a dist/ para GitHub Pages
  */
 
 import fs from 'fs/promises';
@@ -12,36 +11,49 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
+const distDir = path.join(rootDir, 'dist');
 
-console.log('✅ Build: Usando archivos estáticos directos');
-console.log('📁 Verificando estructura...');
+console.log('🏗️  Building for GitHub Pages...');
 
-const requiredPaths = [
-  'public/js/auth/auth.js',
-  'public/js/components',
-  'public/js/modules',
-  'public/js/utils',
-  'public/css',
-  'public/index.html'
-];
+// Limpiar dist
+try {
+  await fs.rm(distDir, { recursive: true, force: true });
+} catch {}
 
-let allOk = true;
+// Crear dist
+await fs.mkdir(distDir, { recursive: true });
 
-for (const p of requiredPaths) {
-  const fullPath = path.join(rootDir, p);
-  try {
-    await fs.access(fullPath);
-    console.log(`✅ ${p}`);
-  } catch {
-    console.error(`❌ Missing: ${p}`);
-    allOk = false;
+// Copiar archivos públicos
+async function copyDir(src, dest) {
+  await fs.mkdir(dest, { recursive: true });
+  const entries = await fs.readdir(src, { withFileTypes: true });
+  
+  for (const entry of entries) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+    
+    if (entry.isDirectory()) {
+      await copyDir(srcPath, destPath);
+    } else {
+      await fs.copyFile(srcPath, destPath);
+    }
   }
 }
 
-if (allOk) {
-  console.log('\n✅ Build verificado: Todos los archivos estáticos presentes');
-  process.exit(0);
-} else {
-  console.error('\n❌ Build fallido: Archivos faltantes');
-  process.exit(1);
-}
+console.log('📦 Copying public files...');
+const publicDir = path.join(rootDir, 'public');
+await copyDir(publicDir, distDir);
+
+// Crear archivo de configuración para GitHub Pages
+const config = {
+  apiUrl: 'https://edificio-admin-production.up.railway.app/api',
+  environment: 'production'
+};
+
+await fs.writeFile(
+  path.join(distDir, 'config.json'),
+  JSON.stringify(config, null, 2)
+);
+
+console.log('✅ Build complete! Output: dist/');
+console.log('📁 Files ready for GitHub Pages deployment');
