@@ -1030,6 +1030,58 @@ export default {
         }
       }
 
+      // === PROYECTOS ENDPOINTS ===
+      
+      // GET /api/proyectos - Obtener proyectos críticos
+      if (method === 'GET' && path === '/api/proyectos') {
+        const authResult = await verifyAuth(request, env);
+        if (authResult instanceof Response) return authResult;
+
+        const buildingId = authResult.payload.buildingId;
+        
+        // Por ahora retornar array vacío (falta implementar tabla proyectos en D1)
+        return new Response(JSON.stringify({
+          ok: true,
+          proyectos: [],
+          resumen: {
+            total: 0,
+            porDepartamento: 0,
+            totalUnidades: 0
+          }
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // POST /api/proyectos - Crear proyecto
+      if (method === 'POST' && path === '/api/proyectos') {
+        const authResult = await verifyAuth(request, env);
+        if (authResult instanceof Response) return authResult;
+
+        const buildingId = authResult.payload.buildingId;
+        const body = await request.json();
+        const { nombre, monto, prioridad } = body;
+
+        if (!nombre || !monto || !prioridad) {
+          return new Response(JSON.stringify({
+            ok: false,
+            msg: 'Datos incompletos'
+          }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Por ahora retornar éxito (falta implementar tabla proyectos en D1)
+        return new Response(JSON.stringify({
+          ok: true,
+          msg: 'Proyecto creado exitosamente',
+          proyecto: { id: Date.now(), nombre, monto, prioridad }
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
       // === STATIC ASSETS ===
       
       // Mapear rutas HTML

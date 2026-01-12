@@ -1,5 +1,5 @@
 name = "edificio-admin"
-pages_build_output_dir = "dist"
+main = "workers-build/index.js"
 compatibility_date = "2024-01-01"
 
 # Variables de entorno
