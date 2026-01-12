@@ -426,10 +426,37 @@ async function cargarInfoEdificio() {
       document.getElementById('edificio-cuota-mensual').value = info.cuotaMensual || 1500;
       document.getElementById('edificio-dia-corte').value = info.diaCorte || 1;
       document.getElementById('edificio-politicas').value = info.politicas || '';
+      
+      // Renderizar fondos
+      renderFondos(info.funds || []);
     }
   } catch (error) {
     console.error('Error al cargar información del edificio:', error);
   }
+}
+
+// Renderizar fondos patrimoniales
+function renderFondos(funds) {
+  const container = document.getElementById('fondos-list');
+  if (!container) return;
+  
+  if (funds.length === 0) {
+    container.innerHTML = '<p class="empty-message">No hay fondos configurados</p>';
+    return;
+  }
+  
+  container.innerHTML = `
+    <div class="fondos-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
+      ${funds.map(fund => `
+        <div class="fondo-card" style="padding: 1rem; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9;">
+          <h5 style="margin: 0 0 0.5rem 0; color: #333;">${fund.name}</h5>
+          <p style="margin: 0; font-size: 1.2rem; font-weight: bold; color: var(--color-primary);">
+            $${(fund.amount || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN
+          </p>
+        </div>
+      `).join('')}
+    </div>
+  `;
 }
 
 // Guardar información del edificio

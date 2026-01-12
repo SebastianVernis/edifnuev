@@ -239,6 +239,54 @@ export default {
         });
       }
 
+      // POST /api/usuarios - Crear usuario
+      if (method === 'POST' && path === '/api/usuarios') {
+        const authResult = await verifyAuth(request, env);
+        if (authResult instanceof Response) return authResult;
+
+        const buildingId = authResult.payload.buildingId;
+        const body = await request.json();
+        const { nombre, email, password, rol, departamento, telefono } = body;
+
+        // Validar campos requeridos
+        if (!nombre || !email || !password || !departamento) {
+          return new Response(JSON.stringify({
+            success: false,
+            message: 'Faltan campos requeridos'
+          }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Verificar si el email ya existe
+        const existingUser = await env.DB.prepare(
+          'SELECT id FROM usuarios WHERE email = ? AND building_id = ?'
+        ).bind(email, buildingId).first();
+
+        if (existingUser) {
+          return new Response(JSON.stringify({
+            success: false,
+            message: 'El email ya está registrado'
+          }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Insertar nuevo usuario
+        await env.DB.prepare(
+          'INSERT INTO usuarios (nombre, email, password, rol, departamento, telefono, building_id, activo) VALUES (?, ?, ?, ?, ?, ?, ?, 1)'
+        ).bind(nombre, email, password, rol || 'Inquilino', departamento, telefono || '', buildingId).run();
+
+        return new Response(JSON.stringify({
+          success: true,
+          message: 'Usuario creado exitosamente'
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
       // Get cuotas
       if (method === 'GET' && path === '/api/cuotas') {
         const authResult = await verifyAuth(request, env);
@@ -953,6 +1001,10 @@ export default {
           const buildingName = buildingData?.name || 'Mi Edificio';
           const address = buildingData?.address || '';
           const unitsCount = buildingData?.totalUnits || 20;
+          const monthlyFee = buildingData?.monthlyFee || 0;
+          const extraFee = buildingData?.extraFee || 0;
+          const cutoffDay = buildingData?.cutoffDay || 1;
+          const reglamento = buildingData?.reglamento || '';
           
           // Obtener plan desde KV
           let selectedPlan = 'profesional';
@@ -979,12 +1031,28 @@ export default {
             }
           }
 
-          // Crear building primero
+          // Crear building con configuración completa
           const insertBuilding = await env.DB.prepare(
-            'INSERT INTO buildings (name, address, units_count, plan, active) VALUES (?, ?, ?, ?, ?)'
-          ).bind(buildingName, address, unitsCount, selectedPlan, 1).run();
+            `INSERT INTO buildings (
+              name, address, units_count, plan, active,
+              monthly_fee, extraordinary_fee, cutoff_day, reglamento,
+              updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`
+          ).bind(
+            buildingName, address, unitsCount, selectedPlan, 1,
+            monthlyFee, extraFee, cutoffDay, reglamento
+          ).run();
 
           const buildingId = insertBuilding.meta.last_row_id;
+
+          // Crear patrimonios/fondos iniciales
+          const patrimonies = buildingData?.funds || [];
+          for (const fund of patrimonies) {
+            await env.DB.prepare(
+              `INSERT INTO fondos (building_id, nombre, tipo, saldo, descripcion, created_at)
+               VALUES (?, ?, ?, ?, ?, datetime('now'))`
+            ).bind(buildingId, fund.name, 'RESERVA', fund.amount || 0, fund.name).run();
+          }
 
           // Crear usuario admin del edificio con building_id
           const password = 'admin123'; // Temporal
@@ -1023,6 +1091,115 @@ export default {
             msg: 'Error al completar setup',
             error: error.message,
             stack: error.stack
+          }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+      }
+
+      // GET /api/onboarding/building-info - Obtener información del edificio
+      if (method === 'GET' && path === '/api/onboarding/building-info') {
+        const authResult = await verifyAuth(request, env);
+        if (authResult instanceof Response) return authResult;
+
+        const buildingId = authResult.payload.buildingId;
+
+        try {
+          // Obtener info del building
+          const building = await env.DB.prepare(
+            `SELECT name, address, units_count as totalUnidades, 
+                    monthly_fee as cuotaMensual, extraordinary_fee as extraFee,
+                    cutoff_day as diaCorte, reglamento as politicas
+             FROM buildings WHERE id = ?`
+          ).bind(buildingId).first();
+
+          if (!building) {
+            return new Response(JSON.stringify({
+              ok: false,
+              msg: 'Edificio no encontrado'
+            }), {
+              status: 404,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          // Obtener patrimonios/fondos
+          const patrimoniesResult = await env.DB.prepare(
+            'SELECT nombre as name, saldo as amount FROM fondos WHERE building_id = ?'
+          ).bind(buildingId).all();
+
+          const funds = patrimoniesResult.results || [];
+
+          return new Response(JSON.stringify({
+            ok: true,
+            buildingInfo: {
+              nombre: building.name,
+              direccion: building.address || '',
+              totalUnidades: building.totalUnidades || 20,
+              cuotaMensual: building.cuotaMensual || 0,
+              extraFee: building.extraFee || 0,
+              diaCorte: building.diaCorte || 1,
+              politicas: building.politicas || '',
+              funds: funds
+            }
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        } catch (error) {
+          return new Response(JSON.stringify({
+            ok: false,
+            msg: 'Error al obtener información',
+            error: error.message
+          }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+      }
+
+      // PUT /api/onboarding/building-info - Actualizar información del edificio
+      if (method === 'PUT' && path === '/api/onboarding/building-info') {
+        const authResult = await verifyAuth(request, env);
+        if (authResult instanceof Response) return authResult;
+
+        const buildingId = authResult.payload.buildingId;
+        const userRole = authResult.payload.rol;
+
+        // Solo ADMIN puede actualizar
+        if (userRole !== 'ADMIN') {
+          return new Response(JSON.stringify({
+            ok: false,
+            msg: 'No tienes permisos para actualizar'
+          }), {
+            status: 403,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        try {
+          const body = await request.json();
+          const { nombre, direccion, totalUnidades, cuotaMensual, diaCorte, politicas } = body;
+
+          await env.DB.prepare(
+            `UPDATE buildings SET 
+               name = ?, address = ?, units_count = ?,
+               monthly_fee = ?, cutoff_day = ?, reglamento = ?,
+               updated_at = datetime('now')
+             WHERE id = ?`
+          ).bind(nombre, direccion, totalUnidades, cuotaMensual, diaCorte, politicas, buildingId).run();
+
+          return new Response(JSON.stringify({
+            ok: true,
+            msg: 'Información actualizada exitosamente'
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        } catch (error) {
+          return new Response(JSON.stringify({
+            ok: false,
+            msg: 'Error al actualizar información',
+            error: error.message
           }), {
             status: 500,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
