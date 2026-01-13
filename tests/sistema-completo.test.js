@@ -136,7 +136,7 @@ class SistemaCompletoTest {
             'src/data.js',
             'src/models/Cuota.js',
             'src/utils/cuotasInicializacion.js',
-            'public/js/auth.js',
+            'public/js/auth/auth.js',
             'package.json',
             '.env'
         ];

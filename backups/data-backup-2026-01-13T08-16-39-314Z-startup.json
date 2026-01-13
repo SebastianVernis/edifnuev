@@ -4,7 +4,7 @@
       "id": 1,
       "nombre": "Administrador Principal",
       "email": "admin@edificio205.com",
-      "password": "$2a$10$3.d.N2.0uT5.8z.9lJ2.Euxs7v1V.i9.t.t.t.t.t.t.t.t.t.t",
+      "password": "$2b$10$6EriEfXXggZG.VeZmW/wkO9WrFnDPu4uA6o/VbsqX70sL1P4vtQPC",
       "departamento": "ADMIN",
       "rol": "ADMIN",
       "telefono": "+52 55 1234 5678",
@@ -1386,54 +1386,6 @@
       "comprobantePago": null,
       "fechaCreacion": "2026-01-13T08:16:39.195Z",
       "id": 108
-    },
-    {
-      "mes": "Enero",
-      "anio": 2025,
-      "monto": 550,
-      "fechaVencimiento": "2025-01-31T23:59:59.000Z",
-      "departamento": "TEST-101",
-      "estado": "VENCIDO",
-      "fechaPago": null,
-      "comprobantePago": null,
-      "fechaCreacion": "2026-01-13T08:17:23.062Z",
-      "id": 109
-    },
-    {
-      "mes": "Test",
-      "anio": 2024,
-      "monto": 550,
-      "fechaVencimiento": "2026-01-12T08:17:23.074Z",
-      "departamento": "TEST-VENCIDA",
-      "estado": "VENCIDO",
-      "fechaPago": null,
-      "comprobantePago": null,
-      "fechaCreacion": "2026-01-13T08:17:23.074Z",
-      "id": 110
-    },
-    {
-      "mes": "Enero",
-      "anio": 2025,
-      "monto": 550,
-      "fechaVencimiento": "2025-01-31T23:59:59.000Z",
-      "departamento": "TEST-101",
-      "estado": "VENCIDO",
-      "fechaPago": null,
-      "comprobantePago": null,
-      "fechaCreacion": "2026-01-13T08:18:25.373Z",
-      "id": 111
-    },
-    {
-      "mes": "Test",
-      "anio": 2024,
-      "monto": 550,
-      "fechaVencimiento": "2026-01-12T08:18:25.385Z",
-      "departamento": "TEST-VENCIDA",
-      "estado": "VENCIDO",
-      "fechaPago": null,
-      "comprobantePago": null,
-      "fechaCreacion": "2026-01-13T08:18:25.385Z",
-      "id": 112
     }
   ],
   "gastos": [],

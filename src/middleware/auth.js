@@ -77,7 +77,7 @@ export const verifyToken = (req, res, next) => {
     }
     
     // Verificar token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'edificio-admin-secret-key-2025');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'edificio205_secret_key_2025');
     req.usuario = decoded;
     
     // Log de autenticación exitosa

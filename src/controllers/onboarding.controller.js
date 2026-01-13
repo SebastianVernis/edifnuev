@@ -725,6 +725,97 @@ export async function getOnboardingStatus(req, res) {
 }
 
 // Limpiar registros pendientes expirados cada hora
+
+/**
+ * GET /api/onboarding/building-info
+ * Obtener información del edificio del usuario autenticado
+ */
+export async function getBuildingInfo(req, res) {
+  try {
+    const userId = req.usuario.id;
+    const data = readData();
+    const user = data.usuarios.find(u => u.id === userId);
+
+    if (!user || !user.building) {
+      return res.status(404).json({
+        ok: false,
+        msg: 'Información del edificio no encontrada.'
+      });
+    }
+
+    res.json({
+      ok: true,
+      buildingInfo: user.building
+    });
+
+  } catch (error) {
+    console.error('Error en getBuildingInfo:', error);
+    res.status(500).json({
+      ok: false,
+      msg: 'Error interno del servidor'
+    });
+  }
+}
+
+/**
+ * GET /api/onboarding/documents
+ * Obtener documentos del edificio del usuario autenticado
+ */
+export async function getDocuments(req, res) {
+  try {
+    const userId = req.usuario.id;
+    const data = readData();
+    const user = data.usuarios.find(u => u.id === userId);
+
+    if (!user || !user.building) {
+      return res.status(404).json({
+        ok: false,
+        msg: 'Información del edificio no encontrada.'
+      });
+    }
+
+    const building = user.building;
+    const documents = [];
+
+    if (building.reglamento) {
+      documents.push({
+        id: 'reglamento',
+        name: 'Reglamento Interno',
+        url: building.reglamento,
+        type: 'pdf'
+      });
+    }
+    if (building.privacyPolicy) {
+      documents.push({
+        id: 'privacy',
+        name: 'Política de Privacidad',
+        url: building.privacyPolicy,
+        type: 'pdf'
+      });
+    }
+    if (building.paymentPolicies) {
+        documents.push({
+          id: 'payment',
+          name: 'Políticas de Pago',
+          url: building.paymentPolicies,
+          type: 'pdf'
+        });
+    }
+
+    res.json({
+      ok: true,
+      documents
+    });
+
+  } catch (error) {
+    console.error('Error en getDocuments:', error);
+    res.status(500).json({
+      ok: false,
+      msg: 'Error interno del servidor'
+    });
+  }
+}
+
 setInterval(() => {
   const now = Date.now();
   const expirationTime = 24 * 60 * 60 * 1000; // 24 horas
