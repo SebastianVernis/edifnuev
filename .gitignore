@@ -5,3 +5,6 @@ test-results/
 # Cookies
 cookie.txt
 dist/
+
+# Wrangler local state
+.wrangler/
