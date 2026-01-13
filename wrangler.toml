@@ -5,6 +5,9 @@ compatibility_date = "2024-01-01"
 # Variables de entorno
 [vars]
 NODE_ENV = "production"
+APP_URL = "https://edificio-admin.sebastianvernis.workers.dev"
+FRONTEND_URL = "https://chispartbuilding.pages.dev"
+OTP_DEV_MODE = "false"
 
 # D1 Database binding
 [[d1_databases]]
@@ -17,7 +20,7 @@ database_id = "a571aea0-d80d-4846-a31c-9936bddabdf5"
 binding = "KV"
 id = "0b84d7b28cec4d66939634b383e71ea7"
 
-# R2 para uploads/archivos (descomentar después de crear)
-# [[r2_buckets]]
-# binding = "UPLOADS"
-# bucket_name = "edificio-admin-uploads"
+# R2 para uploads/archivos
+[[r2_buckets]]
+binding = "UPLOADS"
+bucket_name = "edificio-admin-uploads"
