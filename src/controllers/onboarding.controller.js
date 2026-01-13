@@ -444,57 +444,52 @@ export async function completeSetup(req, res) {
 
     data.usuarios.push(nuevoUsuario);
 
-    // Inicializar fondos si se proporcionaron patrimonios
-    if (patrimonies && patrimonies.length > 0) {
-      if (!data.fondos) {
-        data.fondos = {
-          ahorroAcumulado: 0,
-          gastosMayores: 0,
-          dineroOperacional: 0,
-          patrimonioTotal: 0
-        };
-      }
+    // Inicializar fondos - SIEMPRE resetear para nuevo edificio
+    data.fondos = {
+      ahorroAcumulado: 0,
+      gastosMayores: 0,
+      dineroOperacional: 0,
+      patrimonioTotal: 0
+    };
 
-      // Sumar patrimonios al fondo correspondiente
+    // Inicializar movimientos si no existe
+    if (!data.movimientos) {
+      data.movimientos = [];
+    }
+
+    // Procesar patrimonios si se proporcionaron
+    if (patrimonies && Array.isArray(patrimonies) && patrimonies.length > 0) {
       patrimonies.forEach(patrimony => {
         const amount = parseFloat(patrimony.amount) || 0;
-        // Por defecto, agregar al dinero operacional
-        data.fondos.dineroOperacional += amount;
-      });
+        const fondoDestino = patrimony.fund || 'dineroOperacional';
+        
+        // Agregar al fondo correspondiente
+        if (fondoDestino === 'ahorroAcumulado') {
+          data.fondos.ahorroAcumulado += amount;
+        } else if (fondoDestino === 'gastosMayores') {
+          data.fondos.gastosMayores += amount;
+        } else {
+          data.fondos.dineroOperacional += amount;
+        }
 
-      // Actualizar patrimonio total
-      data.fondos.patrimonioTotal = 
-        (data.fondos.ahorroAcumulado || 0) + 
-        (data.fondos.gastosMayores || 0) + 
-        (data.fondos.dineroOperacional || 0);
-
-      // Registrar movimientos de fondos iniciales
-      if (!data.movimientos) {
-        data.movimientos = [];
-      }
-
-      patrimonies.forEach(patrimony => {
+        // Registrar movimiento inicial
         data.movimientos.push({
           id: data.movimientos.length + 1,
           tipo: 'ingreso',
-          concepto: `Patrimonio inicial: ${patrimony.name}`,
-          monto: parseFloat(patrimony.amount) || 0,
-          fondo: 'dineroOperacional',
+          concepto: `Patrimonio inicial: ${patrimony.name || 'Sin nombre'}`,
+          monto: amount,
+          fondo: fondoDestino,
           fecha: new Date().toISOString(),
           usuarioId: nuevoUsuario.id,
           usuarioNombre: nuevoUsuario.nombre
         });
       });
-    } else {
-      // Asegurar que fondos existe con valores iniciales
-      if (!data.fondos) {
-        data.fondos = {
-          ahorroAcumulado: 0,
-          gastosMayores: 0,
-          dineroOperacional: 0,
-          patrimonioTotal: 0
-        };
-      }
+
+      // Actualizar patrimonio total
+      data.fondos.patrimonioTotal = 
+        data.fondos.ahorroAcumulado + 
+        data.fondos.gastosMayores + 
+        data.fondos.dineroOperacional;
     }
 
     writeData(data);
