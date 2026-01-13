@@ -17,6 +17,8 @@ import auditRoutes from './routes/audit.routes.js';
 import solicitudesRoutes from './routes/solicitudes.routes.js';
 import parcialidadesRoutes from './routes/parcialidades.routes.js';
 import onboardingRoutes from './routes/onboarding.routes.js';
+import protectedOnboardingRoutes from './routes/protected.onboarding.routes.js';
+import proyectosRoutes from './routes/proyectos.routes.js';
 import invitationsRoutes from './routes/invitations.routes.js';
 import themeRoutes from './routes/theme.routes.js';
 import { inicializarCuotasAnuales, actualizarCuotasVencidas } from './utils/cuotasInicializacion.js';
@@ -92,6 +94,8 @@ app.use('/api/audit', auditRoutes);
 app.use('/api/solicitudes', solicitudesRoutes);
 app.use('/api/parcialidades', parcialidadesRoutes);
 app.use('/api/onboarding', onboardingRoutes);
+app.use('/api/onboarding', protectedOnboardingRoutes);
+app.use('/api/proyectos', proyectosRoutes);
 app.use('/api/invitations', invitationsRoutes);
 app.use('/api/theme', themeRoutes);
 

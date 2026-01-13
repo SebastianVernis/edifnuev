@@ -1928,9 +1928,10 @@ function renderProgresoParcialidades(data) {
   const objetivoPorDepto = 14250; // $285,000 / 20 departamentos
   
   // estadoPagos es un array con objetos {departamento, pagado, porcentaje}
-  estadoPagos.forEach(item => {
-    const monto = item.pagado || 0;
-    const porcentaje = item.porcentaje || Math.min((monto / objetivoPorDepto) * 100, 100);
+  if (Array.isArray(estadoPagos)) {
+    estadoPagos.forEach(item => {
+      const monto = item.pagado || 0;
+      const porcentaje = item.porcentaje || Math.min((monto / objetivoPorDepto) * 100, 100);
     const faltante = Math.max(objetivoPorDepto - monto, 0);
     
     console.log(`Depto ${item.departamento}: $${monto} (${porcentaje.toFixed(1)}%)`);
@@ -1953,9 +1954,13 @@ function renderProgresoParcialidades(data) {
     `;
     
     container.appendChild(div);
-  });
+    });
   
-  console.log(`✅ Progreso de ${estadoPagos.length} departamentos renderizado`);
+    console.log(`✅ Progreso de ${estadoPagos.length} departamentos renderizado`);
+  } else {
+    console.error('estadoPagos no es un array:', estadoPagos);
+    container.innerHTML = '<p class="text-center">Error al cargar el progreso de pagos.</p>';
+  }
 }
 
 // Variables globales para los charts
