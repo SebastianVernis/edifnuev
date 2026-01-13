@@ -368,6 +368,182 @@ export async function checkout(req, res) {
 }
 
 /**
+ * POST /api/onboarding/complete-setup
+ * Configuración completa del edificio con todos los datos (nuevo endpoint)
+ */
+export async function completeSetup(req, res) {
+  try {
+    const { 
+      email, 
+      adminPassword,
+      adminData,
+      buildingData,
+      smtpConfig,
+      patrimonies
+    } = req.body;
+
+    // Validar datos
+    if (!email || !adminPassword || !adminData || !buildingData) {
+      return res.status(400).json({
+        ok: false,
+        msg: 'Datos incompletos'
+      });
+    }
+
+    // Verificar registro pendiente
+    const pendingReg = pendingRegistrations.get(email);
+    if (!pendingReg) {
+      return res.status(404).json({
+        ok: false,
+        msg: 'No se encontró un registro pendiente para este email'
+      });
+    }
+
+    if (!pendingReg.checkoutCompleted) {
+      return res.status(403).json({
+        ok: false,
+        msg: 'Completa el pago primero'
+      });
+    }
+
+    // Crear usuario administrador
+    const data = readData();
+    const hashedPassword = await bcrypt.hash(adminPassword, 10);
+    
+    const nuevoUsuario = {
+      id: data.usuarios.length + 1,
+      nombre: adminData.name,
+      email: pendingReg.email,
+      password: hashedPassword,
+      telefono: adminData.phone || '',
+      departamento: 'Admin',
+      rol: 'ADMIN',
+      activo: true,
+      fechaRegistro: new Date().toISOString(),
+      subscription: {
+        plan: pendingReg.selectedPlan,
+        transactionId: pendingReg.transactionId,
+        startDate: new Date().toISOString(),
+      },
+      building: {
+        name: buildingData.name,
+        address: buildingData.address,
+        totalUnits: buildingData.totalUnits,
+        type: buildingData.type || 'edificio',
+        monthlyFee: buildingData.monthlyFee || 0,
+        extraordinaryFee: buildingData.extraordinaryFee || 0,
+        cutoffDay: buildingData.cutoffDay || 1,
+        paymentDueDays: buildingData.paymentDueDays || 5,
+        lateFeePercent: buildingData.lateFeePercent || 2,
+        reglamento: buildingData.reglamento || '',
+        privacyPolicy: buildingData.privacyPolicy || '',
+        paymentPolicies: buildingData.paymentPolicies || ''
+      },
+      smtpConfig: smtpConfig || {}
+    };
+
+    data.usuarios.push(nuevoUsuario);
+
+    // Inicializar fondos - SIEMPRE resetear para nuevo edificio
+    data.fondos = {
+      ahorroAcumulado: 0,
+      gastosMayores: 0,
+      dineroOperacional: 0,
+      patrimonioTotal: 0
+    };
+
+    // Inicializar movimientos si no existe
+    if (!data.movimientos) {
+      data.movimientos = [];
+    }
+
+    // Procesar patrimonios si se proporcionaron
+    if (patrimonies && Array.isArray(patrimonies) && patrimonies.length > 0) {
+      patrimonies.forEach(patrimony => {
+        const amount = parseFloat(patrimony.amount) || 0;
+        const fondoDestino = patrimony.fund || 'dineroOperacional';
+        
+        // Agregar al fondo correspondiente
+        if (fondoDestino === 'ahorroAcumulado') {
+          data.fondos.ahorroAcumulado += amount;
+        } else if (fondoDestino === 'gastosMayores') {
+          data.fondos.gastosMayores += amount;
+        } else {
+          data.fondos.dineroOperacional += amount;
+        }
+
+        // Registrar movimiento inicial
+        data.movimientos.push({
+          id: data.movimientos.length + 1,
+          tipo: 'ingreso',
+          concepto: `Patrimonio inicial: ${patrimony.name || 'Sin nombre'}`,
+          monto: amount,
+          fondo: fondoDestino,
+          fecha: new Date().toISOString(),
+          usuarioId: nuevoUsuario.id,
+          usuarioNombre: nuevoUsuario.nombre
+        });
+      });
+
+      // Actualizar patrimonio total
+      data.fondos.patrimonioTotal = 
+        data.fondos.ahorroAcumulado + 
+        data.fondos.gastosMayores + 
+        data.fondos.dineroOperacional;
+    }
+
+    writeData(data);
+
+    // Generar token JWT
+    const token = jwt.sign(
+      { 
+        id: nuevoUsuario.id, 
+        email: nuevoUsuario.email,
+        rol: nuevoUsuario.rol 
+      },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    // Eliminar registro pendiente
+    pendingRegistrations.delete(email);
+
+    // Enviar email de bienvenida
+    await sendWelcomeEmail({
+      name: nuevoUsuario.nombre,
+      email: nuevoUsuario.email,
+      buildingName: buildingData.name,
+    });
+
+    res.json({
+      ok: true,
+      msg: 'Configuración completada exitosamente',
+      token,
+      usuario: {
+        id: nuevoUsuario.id,
+        nombre: nuevoUsuario.nombre,
+        email: nuevoUsuario.email,
+        rol: nuevoUsuario.rol,
+        departamento: nuevoUsuario.departamento,
+        building: nuevoUsuario.building
+      },
+      credentials: {
+        email: nuevoUsuario.email,
+        password: adminPassword // Solo para mostrar en activate page
+      }
+    });
+
+  } catch (error) {
+    console.error('Error en completeSetup:', error);
+    res.status(500).json({
+      ok: false,
+      msg: 'Error en la configuración',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+}
+
+/**
  * POST /api/onboarding/setup-building
  * Configurar edificio y crear usuario admin (primer login)
  */

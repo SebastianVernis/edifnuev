@@ -56,8 +56,14 @@ setInterval(cleanExpiredCache, 10 * 60 * 1000);
 // Middleware para verificar token JWT
 export const verifyToken = (req, res, next) => {
   try {
-    // Obtener token del header
-    const token = req.header('Authorization')?.replace('Bearer ', '');
+    // Obtener token del header - BLACKBOX STANDARD: x-auth-token
+    // También soportar Authorization Bearer para compatibilidad
+    let token = req.header('x-auth-token');
+    
+    if (!token) {
+      token = req.header('Authorization')?.replace('Bearer ', '');
+    }
+    
     const ip = req.ip || req.connection.remoteAddress;
     const userAgent = req.get('User-Agent');
     
@@ -65,8 +71,8 @@ export const verifyToken = (req, res, next) => {
     if (!token) {
       logAccess('AUTH_FAILED', null, null, req.path, null, false, ip, userAgent);
       return res.status(401).json({
-        success: false,
-        message: 'Acceso denegado. No se proporcionó token de autenticación.'
+        ok: false,
+        msg: 'Acceso denegado. No se proporcionó token de autenticación.'
       });
     }
     
@@ -84,8 +90,8 @@ export const verifyToken = (req, res, next) => {
     logAccess('AUTH_FAILED', null, null, req.path, null, false, ip, userAgent);
     
     return res.status(401).json({
-      success: false,
-      message: 'Token inválido o expirado'
+      ok: false,
+      msg: 'Token inválido o expirado'
     });
   }
 };
@@ -101,8 +107,8 @@ export const isAdmin = (req, res, next) => {
   } else {
     logAccess('ADMIN_ACCESS_DENIED', req.usuario?.id, req.usuario?.rol, req.path, 'admin', false, ip, userAgent);
     return res.status(403).json({
-      success: false,
-      message: 'Acceso denegado. Se requiere rol de administrador.'
+      ok: false,
+      msg: 'Acceso denegado. Se requiere rol de administrador.'
     });
   }
 };
@@ -118,8 +124,8 @@ export const isComiteOrAdmin = (req, res, next) => {
   } else {
     logAccess('COMITE_ADMIN_ACCESS_DENIED', req.usuario?.id, req.usuario?.rol, req.path, 'comite_admin', false, ip, userAgent);
     return res.status(403).json({
-      success: false,
-      message: 'Acceso denegado. Se requiere rol de administrador o comité.'
+      ok: false,
+      msg: 'Acceso denegado. Se requiere rol de administrador o comité.'
     });
   }
 };
@@ -141,8 +147,8 @@ export const hasPermission = (permiso) => {
       } else {
         logAccess('PERMISSION_DENIED_CACHED', userId, req.usuario.rol, req.path, permiso, false, ip, userAgent);
         return res.status(403).json({
-          success: false,
-          message: `Acceso denegado. No tiene permiso para ${permiso}.`
+          ok: false,
+          msg: `Acceso denegado. No tiene permiso para ${permiso}.`
         });
       }
     }
@@ -154,8 +160,8 @@ export const hasPermission = (permiso) => {
     if (!usuarioCompleto) {
       logAccess('USER_NOT_FOUND', userId, req.usuario.rol, req.path, permiso, false, ip, userAgent);
       return res.status(404).json({
-        success: false,
-        message: 'Usuario no encontrado'
+        ok: false,
+        msg: 'Usuario no encontrado'
       });
     }
     
@@ -174,8 +180,8 @@ export const hasPermission = (permiso) => {
     } else {
       logAccess('PERMISSION_DENIED', userId, req.usuario.rol, req.path, permiso, false, ip, userAgent);
       return res.status(403).json({
-        success: false,
-        message: `Acceso denegado. No tiene permiso para ${permiso}.`
+        ok: false,
+        msg: `Acceso denegado. No tiene permiso para ${permiso}.`
       });
     }
   };
@@ -193,8 +199,8 @@ export const isOwner = (req, res, next) => {
   } else {
     logAccess('OWNER_ACCESS_DENIED', req.usuario.id, req.usuario.rol, req.path, 'owner', false, ip, userAgent);
     return res.status(403).json({
-      success: false,
-      message: 'Acceso denegado. No tiene permisos para acceder a este recurso.'
+      ok: false,
+      msg: 'Acceso denegado. No tiene permisos para acceder a este recurso.'
     });
   }
 };

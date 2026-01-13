@@ -1908,11 +1908,19 @@ function renderProgresoParcialidades(data) {
   
   container.innerHTML = '';
   
-  const estadoPagos = data.estadoPagos || data;
+  // Extraer estadoPagos correctamente del response
+  let estadoPagos = data.estadoPagos || data;
+  
+  // Si data tiene ok: true, entonces estadoPagos está en data.estadoPagos
+  if (data.ok === true && data.estadoPagos) {
+    estadoPagos = data.estadoPagos;
+  }
   
   console.log('📊 Procesando estado pagos:', estadoPagos);
+  console.log('📊 Tipo de estadoPagos:', typeof estadoPagos, Array.isArray(estadoPagos));
   
-  if (!estadoPagos || estadoPagos.length === 0) {
+  // Validar que estadoPagos sea un array
+  if (!estadoPagos || !Array.isArray(estadoPagos) || estadoPagos.length === 0) {
     container.innerHTML = '<p class="text-center">No hay datos de progreso</p>';
     return;
   }
