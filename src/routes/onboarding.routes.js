@@ -9,6 +9,7 @@ import {
   verifyOtp,
   checkout,
   setupBuilding,
+  completeSetup,
   getPlans,
   getOnboardingStatus
 } from '../controllers/onboarding.controller.js';
@@ -22,6 +23,7 @@ router.post('/send-otp', sendOtp);
 router.post('/verify-otp', verifyOtp);
 router.post('/checkout', checkout);
 router.post('/setup-building', setupBuilding);
+router.post('/complete-setup', completeSetup);
 router.get('/status/:email', getOnboardingStatus);
 
 export default router;

@@ -28,8 +28,43 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// CORS Configuration - Support for Cloudflare Pages deployment
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // List of allowed origins
+    const allowedOrigins = [
+      'http://localhost:3001',
+      'http://localhost:3000',
+      'https://chispartbuilding.pages.dev',
+      'https://edificio-admin.sebastianvernis.workers.dev',
+      process.env.FRONTEND_URL,
+      process.env.APP_URL
+    ].filter(Boolean);
+    
+    // Check if origin is allowed or if it's a subdomain of allowed domains
+    const isAllowed = allowedOrigins.some(allowed => 
+      origin === allowed || 
+      origin.endsWith('.pages.dev') || 
+      origin.endsWith('.workers.dev')
+    );
+    
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      callback(null, true); // Allow all origins in development
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'x-auth-token', 'Authorization'],
+  exposedHeaders: ['x-auth-token']
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Configuración para servir archivos estáticos
