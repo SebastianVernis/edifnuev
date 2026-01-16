@@ -32,7 +32,23 @@ function base64urlDecode(str) {
   return atob(str);
 }
 
-// Helper: Firmar con HMAC-SHA256
+// Helper: Hash password con SHA-256
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashHex;
+}
+
+// Helper: Verificar password
+async function verifyPassword(plainPassword, hashedPassword) {
+  const hash = await hashPassword(plainPassword);
+  return hash === hashedPassword;
+}
+
+// Helper: Firmar con HMAC-SHA-256
 async function signHS256(data, secret) {
   const encoder = new TextEncoder();
   const keyData = encoder.encode(secret);
@@ -188,10 +204,22 @@ export default {
         const stmt = env.DB.prepare('SELECT * FROM usuarios WHERE email = ?').bind(email);
         const user = await stmt.first();
 
-        if (!user || user.password !== password) {
+        if (!user) {
           return new Response(JSON.stringify({
-            success: false,
-            message: 'Credenciales inválidas'
+            ok: false,
+            msg: 'Credenciales inválidas'
+          }), {
+            status: 401,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Verificar password con hash
+        const isValidPassword = await verifyPassword(password, user.password);
+        if (!isValidPassword) {
+          return new Response(JSON.stringify({
+            ok: false,
+            msg: 'Credenciales inválidas'
           }), {
             status: 401,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -206,7 +234,7 @@ export default {
         }, env);
 
         return new Response(JSON.stringify({
-          success: true,
+          ok: true,
           token,
           user: {
             id: user.id,
@@ -1002,9 +1030,13 @@ export default {
           const address = buildingData?.address || '';
           const unitsCount = buildingData?.totalUnits || 20;
           const monthlyFee = buildingData?.monthlyFee || 0;
-          const extraFee = buildingData?.extraFee || 0;
+          const extraFee = buildingData?.extraordinaryFee || 0;
           const cutoffDay = buildingData?.cutoffDay || 1;
+          const paymentDueDays = buildingData?.paymentDueDays || 5;
+          const lateFeePercent = buildingData?.lateFeePercent || 2;
           const reglamento = buildingData?.reglamento || '';
+          const privacyPolicy = buildingData?.privacyPolicy || '';
+          const paymentPolicies = buildingData?.paymentPolicies || '';
           
           // Obtener plan desde KV
           let selectedPlan = 'profesional';
@@ -1035,31 +1067,40 @@ export default {
           const insertBuilding = await env.DB.prepare(
             `INSERT INTO buildings (
               name, address, units_count, plan, active,
-              monthly_fee, extraordinary_fee, cutoff_day, reglamento,
+              monthly_fee, extraordinary_fee, cutoff_day, 
+              payment_due_days, late_fee_percent,
+              reglamento, privacy_policy, payment_policies,
               updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`
           ).bind(
             buildingName, address, unitsCount, selectedPlan, 1,
-            monthlyFee, extraFee, cutoffDay, reglamento
+            monthlyFee, extraFee, cutoffDay, 
+            paymentDueDays, lateFeePercent,
+            reglamento, privacyPolicy, paymentPolicies
           ).run();
 
           const buildingId = insertBuilding.meta.last_row_id;
 
-          // Crear patrimonios/fondos iniciales
-          const patrimonies = buildingData?.funds || [];
+          // Crear patrimonios/fondos iniciales (frontend usa 'patrimonies')
+          const patrimonies = body.patrimonies || buildingData?.funds || [];
           for (const fund of patrimonies) {
-            await env.DB.prepare(
-              `INSERT INTO fondos (building_id, nombre, tipo, saldo, descripcion, created_at)
-               VALUES (?, ?, ?, ?, ?, datetime('now'))`
-            ).bind(buildingId, fund.name, 'RESERVA', fund.amount || 0, fund.name).run();
+            if (fund.name && (fund.amount || fund.amount === 0)) {
+              await env.DB.prepare(
+                `INSERT INTO fondos (building_id, nombre, tipo, saldo, descripcion, created_at)
+                 VALUES (?, ?, ?, ?, ?, datetime('now'))`
+              ).bind(buildingId, fund.name, 'RESERVA', parseFloat(fund.amount) || 0, fund.name).run();
+            }
           }
 
           // Crear usuario admin del edificio con building_id
-          const password = 'admin123'; // Temporal
+          const plainPassword = body.adminPassword || 'admin123'; // Usar password del formulario
+          const hashedPassword = await hashPassword(plainPassword);
+          const adminName = body.adminData?.name || 'Administrador';
+          const adminPhone = body.adminData?.phone || '';
           
           const insertUser = await env.DB.prepare(
-            'INSERT INTO usuarios (nombre, email, password, rol, departamento, activo, building_id) VALUES (?, ?, ?, ?, ?, ?, ?)'
-          ).bind('Administrador', email, password, 'ADMIN', 'Admin', 1, buildingId).run();
+            'INSERT INTO usuarios (nombre, email, password, telefono, rol, departamento, activo, building_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+          ).bind(adminName, email, hashedPassword, adminPhone, 'ADMIN', 'Admin', 1, buildingId).run();
 
           const userId = insertUser.meta.last_row_id;
 
@@ -1080,7 +1121,7 @@ export default {
             userId: userId,
             credentials: {
               email,
-              password // REMOVER EN PRODUCCIÓN, enviar por email
+              password: plainPassword // Password temporal para activación
             }
           }), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }

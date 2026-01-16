@@ -411,6 +411,12 @@
         <strong>Último paso:</strong> Proporciona toda la información para configurar tu sistema. Los campos opcionales pueden completarse después.
       </div>
 
+      <div id="planInfo" class="info-box" style="background: #EFF6FF; border-left-color: var(--primary); margin-bottom: 1rem;">
+        <i class="fas fa-check-circle"></i>
+        <strong>Plan seleccionado:</strong> <span id="planName"></span><br>
+        <strong>Unidades disponibles:</strong> <span id="planUnits"></span>
+      </div>
+
       <div id="alert" class="alert"></div>
 
       <form id="setupForm">
@@ -432,8 +438,9 @@
 
         <div class="form-grid">
           <div class="form-group">
-            <label for="totalUnits">Total de unidades *</label>
-            <input type="number" id="totalUnits" name="totalUnits" min="1" required>
+            <label for="totalUnits">Total de unidades</label>
+            <input type="number" id="totalUnits" name="totalUnits" min="1" readonly style="background-color: #f3f4f6; cursor: not-allowed;">
+            <p class="help-text">Definido por tu plan seleccionado</p>
           </div>
 
           <div class="form-group">
@@ -684,6 +691,7 @@
   <script>
     const email = localStorage.getItem('onboarding_email');
     const buildingNameStorage = localStorage.getItem('building_name');
+    const selectedPlan = localStorage.getItem('onboarding_plan');
 
     if (!email) {
       window.location.href = '/register';
@@ -693,6 +701,40 @@
     if (buildingNameStorage) {
       document.getElementById('buildingName').value = buildingNameStorage;
     }
+
+    // Define plans with maxUnits
+    const PLANS = {
+      basico: { name: 'Plan Básico', maxUnits: 20 },
+      profesional: { name: 'Plan Profesional', maxUnits: 50 },
+      empresarial: { name: 'Plan Empresarial', maxUnits: 200 },
+      personalizado: { name: 'Plan Personalizado', maxUnits: -1 }
+    };
+
+    // Get total units from plan or custom package
+    let totalUnits = 20; // Default
+    
+    if (selectedPlan) {
+      const customPackage = localStorage.getItem('custom_package');
+      
+      if (selectedPlan === 'personalizado' && customPackage) {
+        // Use units from custom package
+        const pkg = JSON.parse(customPackage);
+        totalUnits = pkg.units || 20;
+      } else if (PLANS[selectedPlan]) {
+        // Use maxUnits from selected plan
+        totalUnits = PLANS[selectedPlan].maxUnits;
+      }
+    }
+
+    // Set the total units field (readonly)
+    document.getElementById('totalUnits').value = totalUnits;
+
+    // Update plan info display
+    const planName = selectedPlan ? PLANS[selectedPlan]?.name || 'Plan Profesional' : 'Plan Profesional';
+    const planUnitsText = totalUnits === -1 ? 'Ilimitadas' : `${totalUnits} unidades`;
+    
+    document.getElementById('planName').textContent = planName;
+    document.getElementById('planUnits').textContent = planUnitsText;
 
     // File upload handlers
     function setupFileUpload(uploadId, inputId, listId) {
