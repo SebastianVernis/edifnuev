@@ -4,7 +4,7 @@
  */
 export default {
   async fetch(request, env) {
-    const workerUrl = 'https://edificio-admin-saas-adapted.sebastianvernis.workers.dev';
+    const workerUrl = 'https://edificio-admin.sebastianvernis.workers.dev';
     const url = new URL(request.url);
     
     // Construir URL destino manteniendo path y query
