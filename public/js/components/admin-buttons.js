@@ -1107,18 +1107,20 @@ function setupFormHandlers() {
       e.preventDefault();
       console.log('💾 Guardando gasto...');
       
+      const fondoValue = document.getElementById('gasto-fondo').value;
       const formData = {
         concepto: document.getElementById('gasto-concepto').value,
         monto: parseFloat(document.getElementById('gasto-monto').value),
         categoria: document.getElementById('gasto-categoria').value,
         proveedor: document.getElementById('gasto-proveedor').value,
         fecha: document.getElementById('gasto-fecha').value,
-        fondo: document.getElementById('gasto-fondo').value,
+        fondoId: fondoValue ? parseInt(fondoValue) : null, // ID del fondo
         comprobante: document.getElementById('gasto-comprobante').value,
-        notas: document.getElementById('gasto-notas').value
+        descripcion: document.getElementById('gasto-notas').value
       };
       
-      console.log('Datos gasto:', formData);
+      console.log('💾 Datos del gasto:', formData);
+      console.log('   Fondo seleccionado ID:', formData.fondoId);
       
       try {
         const token = localStorage.getItem('edificio_token');
@@ -1133,12 +1135,21 @@ function setupFormHandlers() {
         
         if (response.ok) {
           const data = await response.json();
-          alert('✅ Gasto creado exitosamente');
+          alert(`✅ ${data.message}`);
           hideModal('gasto-modal');
+          
+          // Recargar gastos y fondos para reflejar cambios
           filtrarGastos();
+          cargarFondos(); // Actualizar saldos de fondos
+          
+          // Si estamos en dashboard, actualizar también
+          const dashboardSection = document.getElementById('dashboard-section');
+          if (dashboardSection && !dashboardSection.classList.contains('hidden')) {
+            cargarDashboard();
+          }
         } else {
           const error = await response.json();
-          alert(`❌ Error: ${error.msg || 'No se pudo crear el gasto'}`);
+          alert(`❌ Error: ${error.message || 'No se pudo crear el gasto'}`);
         }
       } catch (error) {
         console.error('Error creando gasto:', error);

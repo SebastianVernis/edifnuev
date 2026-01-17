@@ -5,51 +5,82 @@
 
 class FondosSaaSManager {
   constructor() {
+    console.log('🏗️ [Fondos] Constructor llamado');
     this.fondos = [];
     this.init();
   }
 
   async init() {
+    console.log('🚀 [Fondos] Inicializando módulo...');
     await this.loadFondos();
     this.renderFondos();
+    console.log('✅ [Fondos] Inicialización completada');
   }
 
   async loadFondos() {
     try {
+      const token = localStorage.getItem('token');
+      console.log('🔍 [Fondos] Iniciando carga...');
+      console.log('   Token presente:', !!token);
+
+      if (!token) {
+        console.error('❌ [Fondos] No hay token en localStorage');
+        this.fondos = [];
+        return;
+      }
+
       const response = await fetch('/api/onboarding/building-info', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
 
+      console.log('   Respuesta status:', response.status);
+
       if (response.ok) {
         const data = await response.json();
+        console.log('   Datos recibidos:', data);
+        
         if (data.ok && data.buildingInfo) {
           this.fondos = data.buildingInfo.funds || [];
-          console.log('✓ Fondos cargados:', this.fondos.length);
+          console.log('✅ [Fondos] Cargados:', this.fondos.length, 'fondos');
+          console.log('   Fondos:', this.fondos);
+        } else {
+          console.warn('⚠️ [Fondos] Respuesta OK pero sin buildingInfo');
+          this.fondos = [];
         }
+      } else {
+        const errorData = await response.json();
+        console.error('❌ [Fondos] Error en API:', errorData);
+        this.fondos = [];
       }
     } catch (error) {
-      console.error('Error loading fondos:', error);
+      console.error('❌ [Fondos] Error loading fondos:', error);
       this.fondos = [];
     }
   }
 
   renderFondos() {
+    console.log('🎨 [Fondos] Renderizando...');
     const container = document.querySelector('.fondos-summary');
+    
     if (!container) {
-      console.warn('Container .fondos-summary no encontrado');
+      console.error('❌ [Fondos] Container .fondos-summary no encontrado');
       return;
     }
+
+    console.log('   Container encontrado');
+    console.log('   Fondos a renderizar:', this.fondos.length);
 
     // Limpiar contenido actual
     container.innerHTML = '';
 
     // Si no hay fondos, mostrar mensaje
     if (this.fondos.length === 0) {
+      console.log('⚠️ [Fondos] No hay fondos para mostrar');
       container.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--gray);">
+        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #6B7280;">
           <i class="fas fa-piggy-bank" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
           <p>No hay fondos registrados</p>
           <p style="font-size: 0.875rem; margin-top: 0.5rem;">Los fondos se crean automáticamente durante el setup del edificio</p>

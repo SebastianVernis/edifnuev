@@ -524,7 +524,7 @@ export default {
 
         const buildingId = authResult.payload.buildingId;
         const body = await request.json();
-        const { concepto, monto, categoria, fecha, descripcion } = body;
+        const { concepto, monto, categoria, fecha, descripcion, fondoId, proveedor } = body;
 
         if (!concepto || !monto || !categoria) {
           return new Response(JSON.stringify({
@@ -536,21 +536,64 @@ export default {
           });
         }
 
+        // Validar que el fondo existe y pertenece al building (si se especificó)
+        if (fondoId) {
+          const fondo = await env.DB.prepare(
+            'SELECT id, nombre, saldo FROM fondos WHERE id = ? AND building_id = ?'
+          ).bind(fondoId, buildingId).first();
+
+          if (!fondo) {
+            return new Response(JSON.stringify({
+              success: false,
+              message: 'Fondo no encontrado o no pertenece a este edificio'
+            }), {
+              status: 404,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          // Validar que hay saldo suficiente
+          if (parseFloat(fondo.saldo) < parseFloat(monto)) {
+            return new Response(JSON.stringify({
+              success: false,
+              message: `Saldo insuficiente en ${fondo.nombre}. Disponible: $${parseFloat(fondo.saldo).toLocaleString('es-MX')}`
+            }), {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          // Descontar del fondo
+          await env.DB.prepare(
+            'UPDATE fondos SET saldo = saldo - ? WHERE id = ?'
+          ).bind(monto, fondoId).run();
+
+          // Registrar movimiento en el fondo
+          await env.DB.prepare(
+            'INSERT INTO movimientos_fondos (fondo_id, tipo, monto, concepto, fecha, building_id) VALUES (?, ?, ?, ?, ?, ?)'
+          ).bind(fondoId, 'EGRESO', monto, `Gasto: ${concepto}`, fecha || new Date().toISOString().split('T')[0], buildingId).run();
+        }
+
+        // Crear el gasto
         const result = await env.DB.prepare(
-          'INSERT INTO gastos (concepto, monto, categoria, fecha, descripcion, building_id) VALUES (?, ?, ?, ?, ?, ?)'
+          'INSERT INTO gastos (concepto, monto, categoria, fecha, descripcion, proveedor, fondo_id, building_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
         ).bind(
           concepto, 
           monto, 
           categoria, 
           fecha || new Date().toISOString().split('T')[0],
           descripcion || '',
+          proveedor || null,
+          fondoId || null,
           buildingId
         ).run();
 
         return new Response(JSON.stringify({
           success: true,
           id: result.meta.last_row_id,
-          message: 'Gasto registrado exitosamente'
+          message: fondoId ? 
+            `Gasto registrado y descontado del fondo exitosamente` : 
+            'Gasto registrado exitosamente (sin afectar fondos)'
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
