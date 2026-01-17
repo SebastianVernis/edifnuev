@@ -425,7 +425,27 @@ async function cargarInfoEdificio() {
       document.getElementById('edificio-total-unidades').value = info.totalUnidades || 20;
       document.getElementById('edificio-cuota-mensual').value = info.cuotaMensual || 1500;
       document.getElementById('edificio-dia-corte').value = info.diaCorte || 1;
-      document.getElementById('edificio-politicas').value = info.politicas || '';
+      
+      // Nuevos campos de configuración de cuotas
+      const diasGraciaEl = document.getElementById('edificio-dias-gracia');
+      if (diasGraciaEl) diasGraciaEl.value = info.diasGracia || 5;
+      
+      const porcentajeMoraEl = document.getElementById('edificio-porcentaje-mora');
+      if (porcentajeMoraEl) porcentajeMoraEl.value = info.porcentajeMora || 2;
+      
+      // Políticas separadas
+      const reglamentoEl = document.getElementById('edificio-reglamento');
+      if (reglamentoEl) reglamentoEl.value = info.reglamento || info.politicas || '';
+      
+      const privacyPolicyEl = document.getElementById('edificio-privacy-policy');
+      if (privacyPolicyEl) privacyPolicyEl.value = info.privacyPolicy || '';
+      
+      const paymentPoliciesEl = document.getElementById('edificio-payment-policies');
+      if (paymentPoliciesEl) paymentPoliciesEl.value = info.paymentPolicies || '';
+      
+      // Retrocompatibilidad
+      const politicasEl = document.getElementById('edificio-politicas');
+      if (politicasEl) politicasEl.value = info.politicas || info.reglamento || '';
       
       // Renderizar fondos
       renderFondos(info.funds || []);
@@ -466,7 +486,27 @@ async function guardarInfoEdificio() {
   const totalUnidades = parseInt(document.getElementById('edificio-total-unidades').value);
   const cuotaMensual = parseFloat(document.getElementById('edificio-cuota-mensual').value);
   const diaCorte = parseInt(document.getElementById('edificio-dia-corte').value);
-  const politicas = document.getElementById('edificio-politicas').value;
+  
+  // Nuevos campos
+  const diasGraciaEl = document.getElementById('edificio-dias-gracia');
+  const diasGracia = diasGraciaEl ? parseInt(diasGraciaEl.value) : 5;
+  
+  const porcentajeMoraEl = document.getElementById('edificio-porcentaje-mora');
+  const porcentajeMora = porcentajeMoraEl ? parseFloat(porcentajeMoraEl.value) : 2;
+  
+  // Políticas separadas
+  const reglamentoEl = document.getElementById('edificio-reglamento');
+  const reglamento = reglamentoEl ? reglamentoEl.value : '';
+  
+  const privacyPolicyEl = document.getElementById('edificio-privacy-policy');
+  const privacyPolicy = privacyPolicyEl ? privacyPolicyEl.value : '';
+  
+  const paymentPoliciesEl = document.getElementById('edificio-payment-policies');
+  const paymentPolicies = paymentPoliciesEl ? paymentPoliciesEl.value : '';
+  
+  // Retrocompatibilidad
+  const politicasEl = document.getElementById('edificio-politicas');
+  const politicas = politicasEl ? politicasEl.value : reglamento;
   
   try {
     const token = localStorage.getItem('edificio_token') || localStorage.getItem('token');
@@ -482,7 +522,11 @@ async function guardarInfoEdificio() {
         totalUnidades,
         cuotaMensual,
         diaCorte,
-        politicas
+        diasGracia,
+        porcentajeMora,
+        politicas: reglamento, // Reglamento principal
+        politicasPrivacidad: privacyPolicy,
+        politicasPago: paymentPolicies
       })
     });
     

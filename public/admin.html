@@ -1022,6 +1022,18 @@
                 <label for="edificio-dia-corte">Día de Corte:</label>
                 <input type="number" id="edificio-dia-corte" min="1" max="31" required>
               </div>
+
+              <div class="form-group">
+                <label for="edificio-dias-gracia">Días de Gracia:</label>
+                <input type="number" id="edificio-dias-gracia" min="0" max="30" required>
+                <small style="color: #6B7280;">Días después del corte antes de aplicar mora</small>
+              </div>
+
+              <div class="form-group">
+                <label for="edificio-porcentaje-mora">Porcentaje de Mora (%):</label>
+                <input type="number" id="edificio-porcentaje-mora" min="0" max="100" step="0.1" required>
+                <small style="color: #6B7280;">Porcentaje mensual de recargo por mora</small>
+              </div>
               
               <h4 style="margin-top: 2rem;">Fondos Patrimoniales</h4>
               <p class="description">Fondos configurados durante el setup inicial</p>
@@ -1033,14 +1045,24 @@
               <h4 style="margin-top: 2rem;">Políticas del Condominio</h4>
               
               <div class="form-group">
-                <label for="edificio-politicas">Políticas y Reglamento:</label>
-                <textarea id="edificio-politicas" rows="8" placeholder="Ingresa las políticas del condominio..."></textarea>
+                <label for="edificio-reglamento">Reglamento Interno:</label>
+                <textarea id="edificio-reglamento" rows="6" placeholder="Reglamento del condominio..."></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="edificio-privacy-policy">Política de Privacidad:</label>
+                <textarea id="edificio-privacy-policy" rows="6" placeholder="Política de privacidad y protección de datos..."></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="edificio-payment-policies">Políticas de Pago:</label>
+                <textarea id="edificio-payment-policies" rows="6" placeholder="Políticas de vencimiento y mora..."></textarea>
               </div>
               
               <div class="form-actions">
                 <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                 <button type="button" id="descargar-politicas-btn" class="btn btn-secondary">
-                  <i class="fas fa-download"></i> Descargar Políticas
+                  <i class="fas fa-download"></i> Descargar Todas las Políticas
                 </button>
               </div>
             </form>

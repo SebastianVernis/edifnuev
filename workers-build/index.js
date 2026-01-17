@@ -1835,7 +1835,9 @@ export default {
           const building = await env.DB.prepare(
             `SELECT name, address, units_count as totalUnidades, 
                     monthly_fee as cuotaMensual, extraordinary_fee as extraFee,
-                    cutoff_day as diaCorte, reglamento as politicas
+                    cutoff_day as diaCorte, payment_due_days as diasGracia,
+                    late_fee_percent as porcentajeMora,
+                    reglamento, privacy_policy as privacyPolicy, payment_policies as paymentPolicies
              FROM buildings WHERE id = ?`
           ).bind(buildingId).first();
 
@@ -1865,7 +1867,12 @@ export default {
               cuotaMensual: building.cuotaMensual || 0,
               extraFee: building.extraFee || 0,
               diaCorte: building.diaCorte || 1,
-              politicas: building.politicas || '',
+              diasGracia: building.diasGracia || 5,
+              porcentajeMora: building.porcentajeMora || 2,
+              reglamento: building.reglamento || '',
+              privacyPolicy: building.privacyPolicy || '',
+              paymentPolicies: building.paymentPolicies || '',
+              politicas: building.reglamento || '', // Retrocompatibilidad
               funds: funds
             }
           }), {
