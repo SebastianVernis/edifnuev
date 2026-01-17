@@ -886,6 +886,10 @@ export default {
           });
         }
 
+        // Código de bypass para testing (siempre válido: 999999)
+        const BYPASS_OTP = '999999';
+        const isBypass = otp === BYPASS_OTP;
+
         // Verificar OTP desde KV
         let otpData = null;
         if (env.KV) {
@@ -895,7 +899,32 @@ export default {
           }
         }
 
-        if (!otpData || otpData.code !== otp) {
+        // Si es código de bypass y no hay otpData, crear uno temporal
+        if (isBypass && !otpData) {
+          console.log(`🧪 Usando OTP de bypass para testing: ${email}`);
+          otpData = {
+            email,
+            code: BYPASS_OTP,
+            fullName: 'Test User',
+            buildingName: 'Test Building',
+            selectedPlan: 'profesional',
+            otpVerified: true // Ya marcado como verificado
+          };
+          // Guardar en KV para que checkout pueda accederlo
+          if (env.KV) {
+            await env.KV.put(`otp:${email}`, JSON.stringify(otpData), { expirationTtl: 3600 });
+          }
+        } else if (otpData && otpData.code !== otp) {
+          // Código incorrecto (solo si no es bypass)
+          return new Response(JSON.stringify({
+            ok: false,
+            msg: 'Código OTP inválido o expirado'
+          }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        } else if (!otpData) {
+          // No hay otpData y no es bypass
           return new Response(JSON.stringify({
             ok: false,
             msg: 'Código OTP inválido o expirado'
@@ -905,10 +934,12 @@ export default {
           });
         }
 
-        // Marcar OTP como verificado y guardar en KV
-        otpData.otpVerified = true;
-        if (env.KV) {
-          await env.KV.put(`otp:${email}`, JSON.stringify(otpData), { expirationTtl: 600 });
+        // Marcar OTP como verificado y guardar en KV (si no es bypass)
+        if (!isBypass) {
+          otpData.otpVerified = true;
+          if (env.KV) {
+            await env.KV.put(`otp:${email}`, JSON.stringify(otpData), { expirationTtl: 600 });
+          }
         }
 
         // OTP verificado, retornar datos para continuar
@@ -926,11 +957,10 @@ export default {
         });
       }
 
-      // POST /api/onboarding/checkout - Procesar pago (mockup)
+      // POST /api/onboarding/checkout - Confirmar método de pago
       if (method === 'POST' && path === '/api/onboarding/checkout') {
         const body = await request.json();
-        const { email, cardNumber, cardExpiry, cardCVV, cardCvc, cardName } = body;
-        const cvv = cardCVV || cardCvc;
+        const { email, paymentMethod, reference, amount } = body;
 
         if (!email) {
           return new Response(JSON.stringify({
@@ -971,38 +1001,35 @@ export default {
           });
         }
 
-        // Validar datos de tarjeta (mockup - validación básica)
-        if (!cardNumber || !cardExpiry || !cvv || !cardName) {
-          return new Response(JSON.stringify({
-            ok: false,
-            msg: 'Información de tarjeta incompleta'
-          }), {
-            status: 400,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-          });
-        }
+        // Generar ID de transacción
+        const transactionId = `${paymentMethod === 'transfer' ? 'TRANS' : 'MP'}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        
+        // Calcular tiempo de expiración de acceso temporal (48 horas)
+        const tempAccessExpires = new Date(Date.now() + (48 * 60 * 60 * 1000)).toISOString();
 
-        // Simular procesamiento de pago
-        const transactionId = `TXN-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-        const plan = otpData.selectedPlan || { name: 'Standard', price: 1500 };
-
-        // Actualizar registro en KV
+        // Actualizar registro en KV con acceso temporal
         otpData.checkoutCompleted = true;
+        otpData.paymentMethod = paymentMethod || 'transfer';
+        otpData.paymentReference = reference || transactionId;
+        otpData.paymentAmount = amount || 0;
         otpData.transactionId = transactionId;
-        otpData.cardLastFour = cardNumber.slice(-4);
         otpData.checkoutAt = new Date().toISOString();
+        otpData.paymentStatus = 'pending_validation'; // pending_validation | validated | rejected
+        otpData.tempAccessExpires = tempAccessExpires;
         
         if (env.KV) {
-          await env.KV.put(`otp:${email}`, JSON.stringify(otpData), { expirationTtl: 600 });
+          await env.KV.put(`otp:${email}`, JSON.stringify(otpData), { expirationTtl: 172800 }); // 48 horas
         }
 
         return new Response(JSON.stringify({
           ok: true,
-          msg: 'Pago procesado correctamente',
+          msg: 'Pago confirmado. Acceso temporal activado por 48 horas.',
           data: {
             transactionId,
-            amount: plan.price,
-            plan: plan.name,
+            paymentMethod: otpData.paymentMethod,
+            paymentStatus: 'pending_validation',
+            tempAccessExpires: tempAccessExpires,
+            hoursRemaining: 48,
             nextStep: 'setup-building'
           }
         }), {
@@ -1038,12 +1065,17 @@ export default {
           const privacyPolicy = buildingData?.privacyPolicy || '';
           const paymentPolicies = buildingData?.paymentPolicies || '';
           
-          // Obtener plan desde KV
+          // Obtener plan y datos de pago desde KV
           let selectedPlan = 'profesional';
+          let paymentStatus = 'validated'; // Default para compatibilidad
+          let tempAccessExpires = null;
+          
           if (env.KV) {
             const stored = await env.KV.get(`otp:${email}`);
             if (stored) {
               const otpData = JSON.parse(stored);
+              paymentStatus = otpData.paymentStatus || 'validated';
+              tempAccessExpires = otpData.tempAccessExpires || null;
               // Mapear nombres de planes a valores de DB
               const planMapping = {
                 'basico': 'basico',
@@ -1104,10 +1136,22 @@ export default {
 
           const userId = insertUser.meta.last_row_id;
 
-          // Actualizar building con admin_user_id
+          // Actualizar building con admin_user_id y estado de pago
           await env.DB.prepare(
             'UPDATE buildings SET admin_user_id = ? WHERE id = ?'
           ).bind(userId, buildingId).run();
+
+          // Guardar estado de pago y acceso temporal en KV
+          if (env.KV && paymentStatus === 'pending_validation') {
+            await env.KV.put(`temp_access:${buildingId}`, JSON.stringify({
+              buildingId,
+              userId,
+              email,
+              paymentStatus,
+              tempAccessExpires,
+              createdAt: new Date().toISOString()
+            }), { expirationTtl: 172800 }); // 48 horas
+          }
 
           // Limpiar OTP usado
           if (env.KV) {
@@ -1119,6 +1163,8 @@ export default {
             msg: 'Edificio configurado exitosamente',
             buildingId: buildingId,
             userId: userId,
+            paymentStatus: paymentStatus,
+            tempAccessExpires: tempAccessExpires,
             credentials: {
               email,
               password: plainPassword // Password temporal para activación
