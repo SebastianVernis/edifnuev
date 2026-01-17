@@ -1487,44 +1487,117 @@ export default {
         });
       }
 
-      // POST /api/cierres - Crear cierre
+      // POST /api/cierres - Generar cierre automático
       if (method === 'POST' && path === '/api/cierres') {
         const authResult = await verifyAuth(request, env);
         if (authResult instanceof Response) return authResult;
 
         const buildingId = authResult.payload.buildingId;
         const body = await request.json();
-        const { anio, total_ingresos, total_egresos, saldo_final, detalles } = body;
+        const { tipo, mes, anio } = body;
 
-        if (!anio) {
+        if (!tipo || !anio) {
           return new Response(JSON.stringify({
             success: false,
-            message: 'Año es requerido'
+            message: 'Tipo y año son requeridos'
           }), {
             status: 400,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           });
         }
 
-        const result = await env.DB.prepare(
-          'INSERT INTO cierres (anio, total_ingresos, total_egresos, saldo_final, detalles, created_by, building_id) VALUES (?, ?, ?, ?, ?, ?, ?)'
-        ).bind(
-          anio,
-          total_ingresos || 0,
-          total_egresos || 0,
-          saldo_final || 0,
-          JSON.stringify(detalles || {}),
-          authResult.user.userId,
-          buildingId
-        ).run();
+        if (tipo === 'MENSUAL' && !mes) {
+          return new Response(JSON.stringify({
+            success: false,
+            message: 'Mes es requerido para cierre mensual'
+          }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
 
-        return new Response(JSON.stringify({
-          success: true,
-          id: result.meta.last_row_id,
-          message: 'Cierre creado exitosamente'
-        }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        });
+        try {
+          // Calcular totales automáticamente
+          let ingresos = 0;
+          let egresos = 0;
+
+          if (tipo === 'MENSUAL') {
+            // Ingresos: cuotas pagadas del mes
+            const cuotasPagadas = await env.DB.prepare(
+              'SELECT SUM(monto + monto_extraordinario + monto_mora) as total FROM cuotas WHERE building_id = ? AND mes = ? AND anio = ? AND pagado = 1'
+            ).bind(buildingId, mes, anio).first();
+            
+            ingresos = parseFloat(cuotasPagadas?.total || 0);
+
+            // Egresos: gastos del mes
+            const mesIndex = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                             'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'].indexOf(mes);
+            
+            const gastosDelMes = await env.DB.prepare(
+              `SELECT SUM(monto) as total FROM gastos 
+               WHERE building_id = ? 
+               AND strftime('%Y', fecha) = ? 
+               AND strftime('%m', fecha) = ?`
+            ).bind(buildingId, anio.toString(), (mesIndex + 1).toString().padStart(2, '0')).first();
+            
+            egresos = parseFloat(gastosDelMes?.total || 0);
+          } else {
+            // ANUAL: todos los ingresos y egresos del año
+            const cuotasAnuales = await env.DB.prepare(
+              'SELECT SUM(monto + monto_extraordinario + monto_mora) as total FROM cuotas WHERE building_id = ? AND anio = ? AND pagado = 1'
+            ).bind(buildingId, anio).first();
+            
+            ingresos = parseFloat(cuotasAnuales?.total || 0);
+
+            const gastosAnuales = await env.DB.prepare(
+              `SELECT SUM(monto) as total FROM gastos 
+               WHERE building_id = ? 
+               AND strftime('%Y', fecha) = ?`
+            ).bind(buildingId, anio.toString()).first();
+            
+            egresos = parseFloat(gastosAnuales?.total || 0);
+          }
+
+          const saldoFinal = ingresos - egresos;
+
+          const result = await env.DB.prepare(
+            'INSERT INTO cierres (tipo, mes, anio, total_ingresos, total_egresos, saldo_final, created_by, building_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+          ).bind(
+            tipo,
+            mes || null,
+            anio,
+            ingresos,
+            egresos,
+            saldoFinal,
+            authResult.payload.userId,
+            buildingId
+          ).run();
+
+          return new Response(JSON.stringify({
+            success: true,
+            id: result.meta.last_row_id,
+            message: `Cierre ${tipo.toLowerCase()} generado exitosamente`,
+            cierre: {
+              tipo,
+              mes,
+              anio,
+              ingresos,
+              egresos,
+              saldo: saldoFinal
+            }
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        } catch (error) {
+          return new Response(JSON.stringify({
+            success: false,
+            message: 'Error al generar cierre',
+            error: error.message
+          }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
       }
 
       // === PARCIALIDADES ENDPOINTS ===
