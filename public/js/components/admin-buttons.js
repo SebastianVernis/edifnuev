@@ -1,6 +1,12 @@
 // Admin Buttons Handler - Funcionalidad completa para todos los botones
+// Variable global para almacenar fondos
+let fondosGlobales = [];
+
 document.addEventListener('DOMContentLoaded', () => {
   console.log('🔧 Admin Buttons Handler cargado');
+  
+  // Cargar fondos al inicio para tenerlos disponibles en selectores
+  cargarFondosGlobales();
   
   // ========== USUARIOS ==========
   const nuevoUsuarioBtn = document.getElementById('nuevo-usuario-btn');
@@ -85,6 +91,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (nuevoGastoBtn) {
     nuevoGastoBtn.addEventListener('click', () => {
       console.log('💸 Nuevo Gasto');
+      // Actualizar selectores de fondos antes de mostrar modal
+      actualizarSelectoresFondos();
       showModal('gasto-modal');
       resetGastoForm();
     });
@@ -121,6 +129,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (transferirFondosBtn) {
     transferirFondosBtn.addEventListener('click', () => {
       console.log('💸 Transferir Fondos');
+      // Actualizar selectores antes de mostrar modal
+      actualizarSelectoresFondos();
       showModal('transferir-modal');
     });
   }
@@ -1529,6 +1539,60 @@ async function eliminarUsuario(userId) {
   }
 }
 
+// Función para cargar fondos y almacenarlos globalmente
+async function cargarFondosGlobales() {
+  console.log('🌐 Cargando fondos globales...');
+  
+  try {
+    const token = localStorage.getItem('edificio_token');
+    const response = await fetch('/api/fondos', {
+      headers: { 'x-auth-token': token }
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      if (Array.isArray(data.fondos)) {
+        fondosGlobales = data.fondos;
+        console.log('✅ Fondos globales cargados:', fondosGlobales.length);
+        
+        // Actualizar todos los selectores de fondos
+        actualizarSelectoresFondos();
+      }
+    }
+  } catch (error) {
+    console.error('Error cargando fondos globales:', error);
+  }
+}
+
+// Función para actualizar todos los selectores de fondos dinámicamente
+function actualizarSelectoresFondos() {
+  console.log('🔄 Actualizando selectores de fondos...');
+  
+  const selectores = [
+    'gasto-fondo',
+    'transferir-origen',
+    'transferir-destino'
+  ];
+  
+  selectores.forEach(selectorId => {
+    const select = document.getElementById(selectorId);
+    if (select && fondosGlobales.length > 0) {
+      // Limpiar opciones actuales
+      select.innerHTML = '';
+      
+      // Agregar fondos dinámicos
+      fondosGlobales.forEach(fondo => {
+        const option = document.createElement('option');
+        option.value = fondo.id;
+        option.textContent = `${fondo.nombre} ($${parseFloat(fondo.saldo || 0).toLocaleString('es-MX')})`;
+        select.appendChild(option);
+      });
+      
+      console.log(`   ✓ Selector ${selectorId} actualizado con ${fondosGlobales.length} fondos`);
+    }
+  });
+}
+
 async function cargarFondos() {
   console.log('💰 Cargando fondos...');
   
@@ -1699,28 +1763,40 @@ async function cargarDashboard() {
       const fondosData = await fondosRes.json();
       console.log('💰 Fondos data:', fondosData);
       const fondos = fondosData.fondos;
-      const patrimonioTotal = fondos.patrimonioTotal || 
-        (fondos.ahorroAcumulado + fondos.gastosMayores + fondos.dineroOperacional);
       
-      console.log('💵 Patrimonio total calculado:', patrimonioTotal);
+      let patrimonioTotal = 0;
+      
+      // Si fondos es array (nueva estructura), calcular suma
+      if (Array.isArray(fondos)) {
+        patrimonioTotal = fondos.reduce((sum, f) => sum + parseFloat(f.saldo || 0), 0);
+        console.log('💵 Patrimonio total (array):', patrimonioTotal, 'de', fondos.length, 'fondos');
+      } else {
+        // Estructura antigua (objeto)
+        patrimonioTotal = fondos.patrimonioTotal || 
+          (fondos.ahorroAcumulado + fondos.gastosMayores + fondos.dineroOperacional);
+        console.log('💵 Patrimonio total (objeto):', patrimonioTotal);
+      }
       
       const elemPatrimonio = document.getElementById('patrimonio-total');
-      console.log('🎯 Elemento patrimonio-total:', elemPatrimonio);
       
       if (elemPatrimonio) {
-        elemPatrimonio.textContent = `$${patrimonioTotal.toLocaleString()}`;
-        console.log('✅ Patrimonio actualizado en DOM');
+        elemPatrimonio.textContent = `$${patrimonioTotal.toLocaleString('es-MX')}`;
+        console.log('✅ Patrimonio actualizado en dashboard');
       } else {
         console.error('❌ Elemento patrimonio-total no encontrado');
       }
       
       // Gráfico de distribución de fondos con datos actualizados
-      renderFondosChart(fondos);
+      if (Array.isArray(fondos)) {
+        renderFondosChartDynamic(fondos);
+      } else {
+        renderFondosChart(fondos);
+      }
       
       // También actualizar el patrimonio en fondos si existe
       const elemPatrimonioFondos = document.getElementById('patrimonio-total-fondos');
       if (elemPatrimonioFondos) {
-        elemPatrimonioFondos.textContent = `$${patrimonioTotal.toLocaleString()}`;
+        elemPatrimonioFondos.textContent = `$${patrimonioTotal.toLocaleString('es-MX')}`;
       }
     }
     
@@ -2061,6 +2137,69 @@ function renderFondosChart(fondos) {
   });
   
   console.log('✅ Gráfico de fondos renderizado');
+}
+
+// Función para renderizar gráfico con fondos dinámicos (array)
+function renderFondosChartDynamic(fondosArray) {
+  const container = document.getElementById('fondos-chart');
+  if (!container) {
+    console.log('⚠️ Container fondos-chart no encontrado');
+    return;
+  }
+  
+  // Crear canvas si no existe
+  let canvas = container.querySelector('canvas');
+  if (!canvas) {
+    canvas = document.createElement('canvas');
+    container.innerHTML = '';
+    container.appendChild(canvas);
+  }
+  
+  // Destruir chart anterior si existe
+  if (fondosChartInstance) {
+    fondosChartInstance.destroy();
+  }
+  
+  const ctx = canvas.getContext('2d');
+  
+  // Preparar datos del chart
+  const labels = fondosArray.map(f => f.nombre);
+  const data = fondosArray.map(f => parseFloat(f.saldo || 0));
+  const colors = [
+    '#28a745', '#007bff', '#ffc107', '#dc3545', '#6f42c1', 
+    '#20c997', '#fd7e14', '#e83e8c', '#17a2b8', '#6c757d'
+  ];
+  
+  fondosChartInstance = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: data,
+        backgroundColor: colors.slice(0, fondosArray.length)
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const label = context.label || '';
+              const value = context.parsed || 0;
+              return `${label}: $${value.toLocaleString('es-MX')}`;
+            }
+          }
+        }
+      }
+    }
+  });
+  
+  console.log('✅ Gráfico de fondos dinámico renderizado con', fondosArray.length, 'fondos');
 }
 
 function renderCuotasChart(cuotas) {
