@@ -755,7 +755,16 @@ export default {
 
           // Subir a R2
           if (env.UPLOADS) {
-            await env.UPLOADS.put(key, file.stream());
+            // Convertir a ArrayBuffer para R2
+            const fileBuffer = await file.arrayBuffer();
+            
+            await env.UPLOADS.put(key, fileBuffer, {
+              httpMetadata: {
+                contentType: file.type
+              }
+            });
+
+            console.log(`✅ Archivo subido a R2: ${key}`);
 
             return new Response(JSON.stringify({
               success: true,
