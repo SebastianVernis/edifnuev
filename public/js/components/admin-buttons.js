@@ -2505,23 +2505,31 @@ function renderCuotasChart(cuotas) {
     cuotasChartInstance.destroy();
   }
   
-  // Contar cuotas por estado
-  const pagadas = cuotas.filter(c => c.estado === 'PAGADO').length;
-  const pendientes = cuotas.filter(c => c.estado === 'PENDIENTE').length;
-  const vencidas = cuotas.filter(c => c.estado === 'VENCIDO').length;
+  // Contar cuotas por estado (usar campos reales)
+  const pagadas = cuotas.filter(c => c.pagado === 1).length;
+  const vencidas = cuotas.filter(c => c.vencida === 1 && c.pagado !== 1).length;
+  const pendientes = cuotas.filter(c => c.pagado !== 1 && c.vencida !== 1).length;
+  
+  console.log('📊 Cuotas para gráfico:', { pagadas, pendientes, vencidas, total: cuotas.length });
+  
+  // Si no hay cuotas, mostrar mensaje
+  if (cuotas.length === 0) {
+    container.innerHTML = '<p style="text-align: center; color: #6B7280; padding: 2rem;">No hay cuotas del mes actual</p>';
+    return;
+  }
   
   const ctx = canvas.getContext('2d');
   
   cuotasChartInstance = new Chart(ctx, {
-    type: 'pie',
+    type: 'doughnut',
     data: {
       labels: ['Pagadas', 'Pendientes', 'Vencidas'],
       datasets: [{
         data: [pagadas, pendientes, vencidas],
         backgroundColor: [
-          '#28a745',
-          '#ffc107',
-          '#dc3545'
+          '#10B981',
+          '#F59E0B',
+          '#EF4444'
         ]
       }]
     },
@@ -2531,6 +2539,17 @@ function renderCuotasChart(cuotas) {
       plugins: {
         legend: {
           position: 'bottom'
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const label = context.label || '';
+              const value = context.parsed || 0;
+              const total = cuotas.length;
+              const percent = ((value / total) * 100).toFixed(1);
+              return `${label}: ${value} (${percent}%)`;
+            }
+          }
         }
       }
     }
