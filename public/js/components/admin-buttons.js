@@ -1542,20 +1542,76 @@ async function cargarFondos() {
       const data = await response.json();
       console.log('📊 Fondos recibidos:', data.fondos);
       
-      const fondos = data.fondos;
+      const fondosArray = data.fondos;
       
-      // Actualizar las 4 tarjetas
-      const elemAhorro = document.getElementById('ahorro-acumulado');
-      const elemGastosMayores = document.getElementById('gastos-mayores');
-      const elemDineroOp = document.getElementById('dinero-operacional');
-      const elemPatrimonio = document.getElementById('patrimonio-total-fondos');
-      
-      if (elemAhorro) elemAhorro.textContent = `$${(fondos.ahorroAcumulado || 0).toLocaleString()}`;
-      if (elemGastosMayores) elemGastosMayores.textContent = `$${(fondos.gastosMayores || 0).toLocaleString()}`;
-      if (elemDineroOp) elemDineroOp.textContent = `$${(fondos.dineroOperacional || 0).toLocaleString()}`;
-      if (elemPatrimonio) elemPatrimonio.textContent = `$${(fondos.patrimonioTotal || 0).toLocaleString()}`;
-      
-      console.log('✅ Fondos actualizados en tarjetas');
+      // Si fondos es un array (nueva estructura), renderizar dinámicamente
+      if (Array.isArray(fondosArray)) {
+        console.log('✅ Fondos en formato array (SaaS):', fondosArray.length);
+        
+        const container = document.querySelector('.fondos-summary');
+        if (!container) {
+          console.error('❌ Container .fondos-summary no encontrado');
+          return;
+        }
+        
+        // Limpiar contenedor
+        container.innerHTML = '';
+        
+        if (fondosArray.length === 0) {
+          container.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #6B7280;">
+              <i class="fas fa-piggy-bank" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+              <p style="margin-bottom: 0.5rem; font-size: 1.125rem; font-weight: 500;">No hay fondos registrados</p>
+              <p style="font-size: 0.875rem;">Los fondos se crean automáticamente durante el setup del edificio</p>
+            </div>
+          `;
+          return;
+        }
+        
+        // Calcular patrimonio total
+        let patrimonioTotal = 0;
+        
+        // Renderizar cada fondo
+        fondosArray.forEach(fondo => {
+          const saldo = parseFloat(fondo.saldo || 0);
+          patrimonioTotal += saldo;
+          
+          const card = document.createElement('div');
+          card.className = 'fondo-card';
+          card.innerHTML = `
+            <h3>${fondo.nombre}</h3>
+            <p class="amount">$${saldo.toLocaleString('es-MX')}</p>
+            <p class="description">${fondo.descripcion || 'Fondo del edificio'}</p>
+          `;
+          container.appendChild(card);
+        });
+        
+        // Agregar card de patrimonio total
+        const totalCard = document.createElement('div');
+        totalCard.className = 'fondo-card total';
+        totalCard.innerHTML = `
+          <h3>Patrimonio Total</h3>
+          <p class="amount" id="patrimonio-total-fondos">$${patrimonioTotal.toLocaleString('es-MX')}</p>
+          <p class="description">Actualizado: ${new Date().toLocaleDateString('es-MX')}</p>
+        `;
+        container.appendChild(totalCard);
+        
+        console.log('✅ Fondos renderizados dinámicamente:', fondosArray.length, '- Total: $' + patrimonioTotal.toLocaleString());
+        
+      } else {
+        // Estructura antigua (objeto) - mantener compatibilidad
+        const elemAhorro = document.getElementById('ahorro-acumulado');
+        const elemGastosMayores = document.getElementById('gastos-mayores');
+        const elemDineroOp = document.getElementById('dinero-operacional');
+        const elemPatrimonio = document.getElementById('patrimonio-total-fondos');
+        
+        if (elemAhorro) elemAhorro.textContent = `$${(fondosArray.ahorroAcumulado || 0).toLocaleString()}`;
+        if (elemGastosMayores) elemGastosMayores.textContent = `$${(fondosArray.gastosMayores || 0).toLocaleString()}`;
+        if (elemDineroOp) elemDineroOp.textContent = `$${(fondosArray.dineroOperacional || 0).toLocaleString()}`;
+        if (elemPatrimonio) elemPatrimonio.textContent = `$${(fondosArray.patrimonioTotal || 0).toLocaleString()}`;
+        
+        console.log('✅ Fondos actualizados en tarjetas (estructura antigua)');
+      }
     }
   } catch (error) {
     console.error('Error cargando fondos:', error);
