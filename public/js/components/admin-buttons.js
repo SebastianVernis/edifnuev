@@ -3306,8 +3306,15 @@ async function eliminarProyectoMainReal(id) {
     });
     
     if (response.ok) {
-      alert('✅ Proyecto eliminado');
+      const data = await response.json();
+      alert(`✅ ${data.msg}\n\n${data.cuotasLimpiadas > 0 ? `Se limpiaron ${data.cuotasLimpiadas} cuotas extraordinarias.` : 'No había cuotas asociadas.'}`);
       cargarProyectosMain();
+      
+      // Si hay cuotas visibles, recargarlas para ver los cambios
+      const cuotasSection = document.getElementById('cuotas-section');
+      if (cuotasSection && cuotasSection.style.display !== 'none') {
+        filtrarCuotas();
+      }
     } else {
       const error = await response.json();
       alert('❌ Error: ' + (error.msg || error.message));

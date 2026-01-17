@@ -2256,14 +2256,32 @@ export default {
           });
         }
 
-        // Soft delete
+        // Buscar cuotas que tienen el concepto de este proyecto
+        const conceptoBuscar = `Proyecto: ${proyecto.nombre}`;
+        
+        const cuotasAfectadas = await env.DB.prepare(
+          'SELECT id, monto_extraordinario FROM cuotas WHERE concepto_extraordinario = ? AND building_id = ?'
+        ).bind(conceptoBuscar, buildingId).all();
+
+        let cuotasLimpiadas = 0;
+
+        // Limpiar el monto extraordinario de las cuotas asociadas
+        for (const cuota of cuotasAfectadas.results || []) {
+          await env.DB.prepare(
+            'UPDATE cuotas SET monto_extraordinario = 0, concepto_extraordinario = NULL WHERE id = ?'
+          ).bind(cuota.id).run();
+          cuotasLimpiadas++;
+        }
+
+        // Soft delete del proyecto
         await env.DB.prepare(
           'UPDATE proyectos SET activo = 0 WHERE id = ?'
         ).bind(proyectoId).run();
 
         return new Response(JSON.stringify({
           ok: true,
-          msg: 'Proyecto eliminado exitosamente'
+          msg: `Proyecto eliminado exitosamente. ${cuotasLimpiadas} cuotas actualizadas (monto extraordinario removido).`,
+          cuotasLimpiadas
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
