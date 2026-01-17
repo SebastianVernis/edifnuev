@@ -670,6 +670,7 @@ export default {
 
         // Actualizar estado de la cuota
         const pagado = estado === 'PAGADO' ? 1 : 0;
+        const estabaPagado = cuota.pagado === 1;
         
         await env.DB.prepare(
           'UPDATE cuotas SET pagado = ?, fecha_pago = ?, metodo_pago = ?, referencia = ? WHERE id = ?'
@@ -681,9 +682,37 @@ export default {
           cuotaId
         ).run();
 
+        // Si se marca como pagado y no estaba pagado antes, sumar al fondo de ingresos
+        if (pagado && !estabaPagado) {
+          const building = await env.DB.prepare(
+            'SELECT fondo_ingresos_id FROM buildings WHERE id = ?'
+          ).bind(buildingId).first();
+
+          if (building && building.fondo_ingresos_id) {
+            const montoTotal = parseFloat(cuota.monto) + parseFloat(cuota.monto_mora || 0);
+            
+            // Sumar al fondo
+            await env.DB.prepare(
+              'UPDATE fondos SET saldo = saldo + ? WHERE id = ?'
+            ).bind(montoTotal, building.fondo_ingresos_id).run();
+
+            // Registrar movimiento
+            await env.DB.prepare(
+              'INSERT INTO movimientos_fondos (fondo_id, tipo, monto, concepto, fecha, building_id) VALUES (?, ?, ?, ?, ?, ?)'
+            ).bind(
+              building.fondo_ingresos_id,
+              'INGRESO',
+              montoTotal,
+              `Pago de cuota: ${cuota.mes} ${cuota.anio} - Depto ${cuota.departamento}`,
+              fechaPago || new Date().toISOString().split('T')[0],
+              buildingId
+            ).run();
+          }
+        }
+
         return new Response(JSON.stringify({
           success: true,
-          message: pagado ? 'Pago validado exitosamente' : 'Cuota marcada como pendiente'
+          message: pagado ? 'Pago validado y agregado al fondo exitosamente' : 'Cuota marcada como pendiente'
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
@@ -1799,13 +1828,30 @@ export default {
 
           // Crear patrimonios/fondos iniciales (frontend usa 'patrimonies')
           const patrimonies = body.patrimonies || buildingData?.funds || [];
+          const fondosIds = [];
+          
           for (const fund of patrimonies) {
             if (fund.name && (fund.amount || fund.amount === 0)) {
-              await env.DB.prepare(
+              const insertFondo = await env.DB.prepare(
                 `INSERT INTO fondos (building_id, nombre, tipo, saldo, descripcion, created_at)
                  VALUES (?, ?, ?, ?, ?, datetime('now'))`
               ).bind(buildingId, fund.name, 'RESERVA', parseFloat(fund.amount) || 0, fund.name).run();
+              
+              fondosIds.push(insertFondo.meta.last_row_id);
             }
+          }
+
+          // Asignar fondo de ingresos si se seleccionó
+          const fondoIngresosIndex = body.fondoIngresosIndex;
+          let fondoIngresosId = null;
+          
+          if (fondoIngresosIndex !== undefined && fondosIds[fondoIngresosIndex]) {
+            fondoIngresosId = fondosIds[fondoIngresosIndex];
+            
+            // Actualizar building con fondo de ingresos
+            await env.DB.prepare(
+              'UPDATE buildings SET fondo_ingresos_id = ? WHERE id = ?'
+            ).bind(fondoIngresosId, buildingId).run();
           }
 
           // Crear usuario admin del edificio con building_id
@@ -1883,6 +1929,7 @@ export default {
                     monthly_fee as cuotaMensual, extraordinary_fee as extraFee,
                     cutoff_day as diaCorte, payment_due_days as diasGracia,
                     late_fee_percent as porcentajeMora,
+                    fondo_ingresos_id as fondoIngresosId,
                     reglamento, privacy_policy as privacyPolicy, payment_policies as paymentPolicies
              FROM buildings WHERE id = ?`
           ).bind(buildingId).first();
@@ -1915,6 +1962,7 @@ export default {
               diaCorte: building.diaCorte || 1,
               diasGracia: building.diasGracia || 5,
               porcentajeMora: building.porcentajeMora || 2,
+              fondoIngresosId: building.fondoIngresosId || null,
               reglamento: building.reglamento || '',
               privacyPolicy: building.privacyPolicy || '',
               paymentPolicies: building.paymentPolicies || '',
@@ -1959,7 +2007,8 @@ export default {
           const body = await request.json();
           const { 
             nombre, direccion, totalUnidades, cuotaMensual, cuotaExtraordinaria,
-            diaCorte, diasGracia, porcentajeMora, politicas, politicasPrivacidad, politicasPago
+            diaCorte, diasGracia, porcentajeMora, politicas, politicasPrivacidad, politicasPago,
+            fondoIngresosId
           } = body;
 
           await env.DB.prepare(
@@ -1967,6 +2016,7 @@ export default {
                name = ?, address = ?, units_count = ?,
                monthly_fee = ?, extraordinary_fee = ?, cutoff_day = ?,
                payment_due_days = ?, late_fee_percent = ?,
+               fondo_ingresos_id = ?,
                reglamento = ?, privacy_policy = ?, payment_policies = ?,
                updated_at = datetime('now')
              WHERE id = ?`
@@ -1979,6 +2029,7 @@ export default {
             diaCorte,
             diasGracia || 5,
             porcentajeMora || 2,
+            fondoIngresosId || null,
             politicas || '',
             politicasPrivacidad || '',
             politicasPago || '',

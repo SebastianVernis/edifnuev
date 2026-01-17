@@ -447,8 +447,26 @@ async function cargarInfoEdificio() {
       const politicasEl = document.getElementById('edificio-politicas');
       if (politicasEl) politicasEl.value = info.politicas || info.reglamento || '';
       
-      // Renderizar fondos
-      renderFondos(info.funds || []);
+      // Renderizar fondos y poblar selector de fondo de ingresos
+      const funds = info.funds || [];
+      renderFondos(funds);
+      
+      // Poblar selector de fondo de ingresos
+      const fondoIngresosSelect = document.getElementById('edificio-fondo-ingresos');
+      if (fondoIngresosSelect && funds.length > 0) {
+        fondoIngresosSelect.innerHTML = '<option value="">Sin asignar</option>';
+        funds.forEach((fund, index) => {
+          const option = document.createElement('option');
+          option.value = fund.id || index;
+          option.textContent = \`\${fund.name} ($\${parseFloat(fund.amount || 0).toLocaleString('es-MX')})\`;
+          fondoIngresosSelect.appendChild(option);
+        });
+        
+        // Seleccionar el fondo actual si existe
+        if (info.fondoIngresosId) {
+          fondoIngresosSelect.value = info.fondoIngresosId;
+        }
+      }
     }
   } catch (error) {
     console.error('Error al cargar información del edificio:', error);
@@ -508,6 +526,10 @@ async function guardarInfoEdificio() {
   const politicasEl = document.getElementById('edificio-politicas');
   const politicas = politicasEl ? politicasEl.value : reglamento;
   
+  // Fondo de ingresos
+  const fondoIngresosEl = document.getElementById('edificio-fondo-ingresos');
+  const fondoIngresosId = fondoIngresosEl && fondoIngresosEl.value ? parseInt(fondoIngresosEl.value) : null;
+  
   try {
     const token = localStorage.getItem('edificio_token') || localStorage.getItem('token');
     const response = await fetch(`${API_BASE}/onboarding/building-info`, {
@@ -524,6 +546,7 @@ async function guardarInfoEdificio() {
         diaCorte,
         diasGracia,
         porcentajeMora,
+        fondoIngresosId,
         politicas: reglamento, // Reglamento principal
         politicasPrivacidad: privacyPolicy,
         politicasPago: paymentPolicies

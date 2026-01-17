@@ -629,6 +629,14 @@
           </button>
         </div>
 
+        <div class="form-group">
+          <label for="fondoIngresos">Fondo para Ingresos de Cuotas</label>
+          <select id="fondoIngresos" name="fondoIngresos">
+            <option value="">Seleccionar después</option>
+          </select>
+          <p class="help-text">El fondo seleccionado recibirá automáticamente los pagos de cuotas. Puedes cambiarlo después en Configuración.</p>
+        </div>
+
         <!-- Cuotas -->
         <div class="section-title">
           <i class="fas fa-dollar-sign"></i>
@@ -1065,12 +1073,22 @@ En caso de venta, debe notificar y liquidar adeudos.`
 
       // Collect patrimonies
       const patrimonies = [];
-      document.querySelectorAll('.patrimony-item').forEach(item => {
+      document.querySelectorAll('.patrimony-item').forEach((item, index) => {
         const name = item.querySelector('[data-patrimony-name]').value;
         const amount = item.querySelector('[data-patrimony-amount]').value;
         if (name && amount) {
-          patrimonies.push({ name, amount: parseFloat(amount) });
+          patrimonies.push({ name, amount: parseFloat(amount), index });
         }
+      });
+
+      // Actualizar selector de fondo de ingresos
+      const fondoIngresosSelect = document.getElementById('fondoIngresos');
+      fondoIngresosSelect.innerHTML = '<option value="">Seleccionar fondo...</option>';
+      patrimonies.forEach((p, idx) => {
+        const option = document.createElement('option');
+        option.value = idx;
+        option.textContent = p.name;
+        fondoIngresosSelect.appendChild(option);
       });
       
       const data = {
@@ -1100,7 +1118,8 @@ En caso de venta, debe notificar y liquidar adeudos.`
           user: document.getElementById('smtpUser').value,
           password: document.getElementById('smtpPassword').value
         },
-        patrimonies: patrimonies
+        patrimonies: patrimonies,
+        fondoIngresosIndex: parseInt(document.getElementById('fondoIngresos').value) || 0
       };
 
       try {
