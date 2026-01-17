@@ -694,7 +694,7 @@ export default {
 
         const buildingId = authResult.payload.buildingId;
         const body = await request.json();
-        const { titulo, contenido, prioridad } = body;
+        const { titulo, contenido, prioridad, tipo, imagen } = body;
 
         if (!titulo || !contenido) {
           return new Response(JSON.stringify({
@@ -706,9 +706,19 @@ export default {
           });
         }
 
+        // Usar 'tipo' o 'prioridad' (compatibilidad)
+        const prioridadFinal = prioridad || tipo || 'NORMAL';
+
         const result = await env.DB.prepare(
-          'INSERT INTO anuncios (titulo, contenido, prioridad, created_by, building_id) VALUES (?, ?, ?, ?, ?)'
-        ).bind(titulo, contenido, prioridad || 'NORMAL', authResult.user.userId, buildingId).run();
+          'INSERT INTO anuncios (titulo, contenido, prioridad, archivo, created_by, building_id) VALUES (?, ?, ?, ?, ?, ?)'
+        ).bind(
+          titulo, 
+          contenido, 
+          prioridadFinal, 
+          imagen || null,
+          authResult.payload.userId || authResult.user?.userId,
+          buildingId
+        ).run();
 
         return new Response(JSON.stringify({
           success: true,
@@ -774,6 +784,42 @@ export default {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           });
         }
+      }
+
+      // DELETE /api/anuncios/:id - Eliminar anuncio
+      if (method === 'DELETE' && path.startsWith('/api/anuncios/')) {
+        const authResult = await verifyAuth(request, env);
+        if (authResult instanceof Response) return authResult;
+
+        const buildingId = authResult.payload.buildingId;
+        const anuncioId = parseInt(path.split('/').pop());
+
+        // Verificar que el anuncio existe y pertenece al building
+        const anuncio = await env.DB.prepare(
+          'SELECT * FROM anuncios WHERE id = ? AND building_id = ?'
+        ).bind(anuncioId, buildingId).first();
+
+        if (!anuncio) {
+          return new Response(JSON.stringify({
+            success: false,
+            message: 'Anuncio no encontrado'
+          }), {
+            status: 404,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Soft delete (marcar como inactivo)
+        await env.DB.prepare(
+          'UPDATE anuncios SET activo = 0 WHERE id = ?'
+        ).bind(anuncioId).run();
+
+        return new Response(JSON.stringify({
+          success: true,
+          message: 'Anuncio eliminado exitosamente'
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
       }
 
       // === CIERRES ENDPOINTS ===

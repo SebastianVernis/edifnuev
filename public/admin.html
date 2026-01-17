@@ -162,16 +162,14 @@
           <div class="filter-group">
             <label for="cuotas-mes">Mes:</label>
             <select id="cuotas-mes">
-              <option value="Noviembre">Noviembre</option>
-              <option value="Diciembre">Diciembre</option>
+              <!-- Se llenará dinámicamente con todos los meses -->
             </select>
           </div>
           
           <div class="filter-group">
             <label for="cuotas-año">Año:</label>
             <select id="cuotas-año">
-              <option value="2025">2025</option>
-              <option value="2026">2026</option>
+              <!-- Se llenará dinámicamente con rango de años -->
             </select>
           </div>
           
@@ -312,8 +310,7 @@
           <div class="filter-group">
             <label for="gastos-mes">Mes:</label>
             <select id="gastos-mes">
-              <option value="11">Noviembre</option>
-              <option value="12">Diciembre</option>
+              <!-- Se llenará dinámicamente con todos los meses -->
             </select>
           </div>
           
@@ -526,12 +523,12 @@
         
         <div class="filter-controls">
           <div class="filter-group">
-            <label for="anuncios-tipo">Tipo:</label>
+            <label for="anuncios-tipo">Prioridad:</label>
             <select id="anuncios-tipo">
               <option value="TODOS">Todos</option>
-              <option value="GENERAL">General</option>
-              <option value="IMPORTANTE">Importante</option>
-              <option value="URGENTE">Urgente</option>
+              <option value="BAJA">Baja</option>
+              <option value="NORMAL">Normal</option>
+              <option value="ALTA">Alta</option>
             </select>
           </div>
         </div>
@@ -555,11 +552,11 @@
               </div>
               
               <div class="form-group">
-                <label for="anuncio-tipo">Tipo:</label>
+                <label for="anuncio-tipo">Prioridad:</label>
                 <select id="anuncio-tipo" required>
-                  <option value="GENERAL">General</option>
-                  <option value="IMPORTANTE">Importante</option>
-                  <option value="URGENTE">Urgente</option>
+                  <option value="BAJA">Baja</option>
+                  <option value="NORMAL" selected>Normal</option>
+                  <option value="ALTA">Alta</option>
                 </select>
               </div>
               

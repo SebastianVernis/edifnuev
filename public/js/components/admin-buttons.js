@@ -903,17 +903,23 @@ function renderAnunciosContainer(anuncios) {
     const div = document.createElement('div');
     div.className = 'anuncio-card';
     
+    // Usar 'prioridad' de la BD
+    const prioridad = anuncio.prioridad || anuncio.tipo || 'NORMAL';
     let tipoClass = 'bg-secondary';
-    if (anuncio.tipo === 'URGENTE') tipoClass = 'bg-danger';
-    else if (anuncio.tipo === 'IMPORTANTE') tipoClass = 'bg-warning';
+    if (prioridad === 'ALTA') tipoClass = 'bg-danger';
+    else if (prioridad === 'NORMAL') tipoClass = 'bg-warning';
+    else if (prioridad === 'BAJA') tipoClass = 'bg-secondary';
     
-    const fecha = new Date(anuncio.fechaPublicacion || anuncio.createdAt).toLocaleDateString('es-MX');
+    const fecha = new Date(anuncio.created_at || anuncio.createdAt).toLocaleDateString('es-MX');
+    
+    // Usar 'archivo' de la BD o 'imagen' del frontend
+    const archivoUrl = anuncio.archivo || anuncio.imagen;
     
     div.innerHTML = `
       <div class="anuncio-header">
         <div>
           <h4>${anuncio.titulo}</h4>
-          <span class="badge ${tipoClass}">${anuncio.tipo}</span>
+          <span class="badge ${tipoClass}">${prioridad}</span>
         </div>
         <div class="anuncio-actions">
           <button class="btn btn-sm btn-secondary" data-action="editar-anuncio" data-id="${anuncio.id}">
@@ -926,13 +932,13 @@ function renderAnunciosContainer(anuncios) {
       </div>
       <div class="anuncio-body">
         <p>${anuncio.contenido}</p>
-        ${anuncio.imagen ? `
+        ${archivoUrl ? `
           <div class="anuncio-imagen">
-            ${anuncio.imagen.endsWith('.pdf') ? 
-              `<a href="${anuncio.imagen}" target="_blank" class="btn btn-sm btn-outline-primary">
+            ${archivoUrl.endsWith('.pdf') ? 
+              `<a href="${archivoUrl}" target="_blank" class="btn btn-sm btn-outline-primary">
                 <i class="fas fa-file-pdf"></i> Ver PDF
               </a>` :
-              `<img src="${anuncio.imagen}" alt="${anuncio.titulo}" style="max-width: 100%; margin-top: 10px; border-radius: 4px;">`
+              `<img src="${archivoUrl}" alt="${anuncio.titulo}" style="max-width: 100%; margin-top: 10px; border-radius: 4px;">`
             }
           </div>
         ` : ''}
@@ -1293,7 +1299,7 @@ function setupFormHandlers() {
           console.log('📤 Subiendo archivo:', imagenFile.name);
           
           const uploadFormData = new FormData();
-          uploadFormData.append('imagen', imagenFile);
+          uploadFormData.append('file', imagenFile); // Nombre correcto del campo
           
           const uploadResponse = await fetch('/api/anuncios/upload', {
             method: 'POST',
@@ -1305,18 +1311,18 @@ function setupFormHandlers() {
           
           if (uploadResponse.ok) {
             const uploadData = await uploadResponse.json();
-            imagenUrl = uploadData.url || uploadData.filename;
+            imagenUrl = uploadData.url || uploadData.fileName;
             console.log('✅ Archivo subido:', imagenUrl);
           } else {
             const error = await uploadResponse.json();
-            alert(`⚠️ Error al subir archivo: ${error.msg}. El anuncio se creará sin imagen.`);
+            alert(`⚠️ Error al subir archivo: ${error.message}. El anuncio se creará sin imagen.`);
           }
         }
         
         // Crear/actualizar anuncio
         const anuncioData = {
           titulo: document.getElementById('anuncio-titulo').value,
-          tipo: document.getElementById('anuncio-tipo').value,
+          prioridad: document.getElementById('anuncio-tipo').value, // El select tiene id="anuncio-tipo" pero enviamos como "prioridad"
           contenido: document.getElementById('anuncio-contenido').value,
           imagen: imagenUrl
         };
