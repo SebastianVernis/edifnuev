@@ -180,6 +180,22 @@ document.addEventListener('DOMContentLoaded', () => {
       await calcularMoraAutomatica();
     });
   }
+
+  const reporteCuotasBtn = document.getElementById('reporte-cuotas-btn');
+  if (reporteCuotasBtn) {
+    reporteCuotasBtn.addEventListener('click', () => {
+      console.log('📄 Generar Reporte de Cuotas');
+      generarReporteCuotas();
+    });
+  }
+
+  const reporteBalanceBtn = document.getElementById('reporte-balance-btn');
+  if (reporteBalanceBtn) {
+    reporteBalanceBtn.addEventListener('click', () => {
+      console.log('📊 Generar Reporte de Balance');
+      generarReporteBalance();
+    });
+  }
   
   const verificarVencimientosBtn = document.getElementById('verificar-vencimientos-btn');
   if (verificarVencimientosBtn) {
@@ -3066,4 +3082,39 @@ async function calcularMoraAutomatica() {
     console.error('Error calculando mora:', error);
     alert('❌ Error al calcular mora');
   }
+}
+
+// ========== REPORTES PDF ==========
+
+function generarReporteCuotas() {
+  // Obtener filtros actuales
+  const mes = document.getElementById('cuotas-mes')?.value;
+  const anio = document.getElementById('cuotas-año')?.value;
+  
+  let url = '/reporte-estado-cuenta.html?depto=TODOS';
+  
+  if (mes) url += `&mes=${mes}`;
+  if (anio) url += `&anio=${anio}`;
+  
+  // Abrir en nueva ventana
+  window.open(url, '_blank', 'width=1024,height=768');
+}
+
+function generarReporteBalance() {
+  // Obtener filtros actuales si existen
+  const mes = document.getElementById('cuotas-mes')?.value;
+  const anio = document.getElementById('cuotas-año')?.value;
+  
+  let url = '/reporte-balance.html';
+  const params = new URLSearchParams();
+  
+  if (mes) params.append('mes', mes);
+  if (anio) params.append('anio', anio);
+  
+  if (params.toString()) {
+    url += '?' + params.toString();
+  }
+  
+  // Abrir en nueva ventana
+  window.open(url, '_blank', 'width=1024,height=768');
 }

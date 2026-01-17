@@ -155,9 +155,10 @@
       <section id="cuotas-section" class="content-section">
         <div class="section-header">
           <h2>Gestión de Cuotas</h2>
-          <div style="display: flex; gap: 0.5rem;">
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
             <button id="generar-masivo-btn" class="btn btn-primary"><i class="fas fa-layer-group"></i> Generar Cuotas Masivas</button>
             <button id="calcular-mora-btn" class="btn" style="background: #F59E0B; color: white;"><i class="fas fa-calculator"></i> Calcular Mora</button>
+            <button id="reporte-cuotas-btn" class="btn" style="background: #EF4444; color: white;"><i class="fas fa-file-pdf"></i> Reporte PDF</button>
             <button id="nueva-cuota-btn" class="btn btn-secondary"><i class="fas fa-plus"></i> Nueva Cuota Individual</button>
           </div>
         </div>
@@ -487,7 +488,10 @@
       <section id="fondos-section" class="content-section">
         <div class="section-header">
           <h2>Gestión de Fondos</h2>
-          <button id="transferir-fondos-btn" class="btn btn-primary"><i class="fas fa-exchange-alt"></i> Transferir Fondos</button>
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="transferir-fondos-btn" class="btn btn-primary"><i class="fas fa-exchange-alt"></i> Transferir Fondos</button>
+            <button id="reporte-balance-btn" class="btn" style="background: #EF4444; color: white;"><i class="fas fa-file-pdf"></i> Balance PDF</button>
+          </div>
         </div>
         
         <div class="fondos-summary">
