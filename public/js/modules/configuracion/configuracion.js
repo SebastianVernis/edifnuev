@@ -122,11 +122,14 @@ async function cargarInfoGeneral() {
 
 // Setup tabs
 function setupTabs() {
+  console.log('🔧 Configurando tabs...');
   const tabBtns = document.querySelectorAll('.tab-btn');
+  console.log(`   Botones encontrados: ${tabBtns.length}`);
   
   tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const tabName = btn.dataset.tab;
+      console.log(`   📑 Cambiando a tab: ${tabName}`);
       
       // Remover active de todos los botones
       tabBtns.forEach(b => b.classList.remove('active'));
@@ -135,12 +138,17 @@ function setupTabs() {
       // Remover active de todos los contenidos
       document.querySelectorAll('.config-tab-content').forEach(content => {
         content.classList.remove('active');
+        content.style.display = 'none';
       });
       
       // Activar el contenido correspondiente
       const tabContent = document.getElementById(`tab-${tabName}`);
       if (tabContent) {
         tabContent.classList.add('active');
+        tabContent.style.display = 'block';
+        console.log(`   ✅ Tab ${tabName} activado`);
+      } else {
+        console.error(`   ❌ Tab content #tab-${tabName} no encontrado`);
       }
     });
   });
