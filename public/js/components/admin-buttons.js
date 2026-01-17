@@ -1924,37 +1924,31 @@ function renderMovimientosTable(movimientos) {
     return;
   }
   
-  // Últimos 20 movimientos más recientes
-  const recientes = movimientos.slice(-20).reverse();
+  // Los movimientos ya vienen ordenados del más reciente al más antiguo
+  const recientes = movimientos.slice(0, 50);
   
   recientes.forEach(mov => {
     const tr = document.createElement('tr');
     
-    const fecha = new Date(mov.fecha).toLocaleDateString('es-MX');
-    const tipoClass = mov.tipo === 'ingreso' ? 'text-success' : mov.tipo === 'egreso' ? 'text-danger' : '';
+    // Evitar problema de timezone en fechas
+    const fecha = mov.fecha ? mov.fecha.split('T')[0].split('-').reverse().join('/') : '-';
+    const tipoClass = mov.tipo === 'INGRESO' ? 'text-success' : mov.tipo === 'EGRESO' ? 'text-danger' : '';
+    const tipoIcon = mov.tipo === 'INGRESO' ? '↑' : '↓';
     
     tr.innerHTML = `
       <td>${fecha}</td>
-      <td class="${tipoClass}">${(mov.tipo || 'transferencia').toUpperCase()}</td>
-      <td>${formatFondoName(mov.origen)}</td>
-      <td>${formatFondoName(mov.destino)}</td>
-      <td>$${mov.monto.toLocaleString()}</td>
-      <td>${mov.descripcion || '-'}</td>
+      <td class="${tipoClass}">
+        <strong>${tipoIcon}</strong> ${mov.tipo}
+      </td>
+      <td>${mov.fondo_nombre || '-'}</td>
+      <td>$${parseFloat(mov.monto || 0).toLocaleString('es-MX')}</td>
+      <td>${mov.concepto || '-'}</td>
     `;
     
     tbody.appendChild(tr);
   });
   
   console.log(`✅ ${recientes.length} movimientos renderizados`);
-}
-
-function formatFondoName(fondo) {
-  const nombres = {
-    'ahorroAcumulado': 'Ahorro Acumulado',
-    'gastosMayores': 'Gastos Mayores',
-    'dineroOperacional': 'Dinero Operacional'
-  };
-  return nombres[fondo] || fondo || '-';
 }
 
 async function cargarDashboard() {

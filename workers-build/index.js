@@ -890,19 +890,32 @@ export default {
 
       // === FONDOS ENDPOINTS ===
       
-      // GET /api/fondos - Obtener fondos
+      // GET /api/fondos - Obtener fondos y movimientos
       if (method === 'GET' && path === '/api/fondos') {
         const authResult = await verifyAuth(request, env);
         if (authResult instanceof Response) return authResult;
 
         const buildingId = authResult.payload.buildingId;
-        const { results } = await env.DB.prepare(
+        
+        // Obtener fondos
+        const { results: fondos } = await env.DB.prepare(
           'SELECT * FROM fondos WHERE building_id = ?'
+        ).bind(buildingId).all();
+
+        // Obtener movimientos con nombre del fondo
+        const { results: movimientos } = await env.DB.prepare(
+          `SELECT mf.*, f.nombre as fondo_nombre 
+           FROM movimientos_fondos mf
+           JOIN fondos f ON mf.fondo_id = f.id
+           WHERE mf.building_id = ?
+           ORDER BY mf.fecha DESC, mf.id DESC
+           LIMIT 50`
         ).bind(buildingId).all();
 
         return new Response(JSON.stringify({
           success: true,
-          fondos: results
+          fondos: fondos,
+          movimientos: movimientos || []
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
