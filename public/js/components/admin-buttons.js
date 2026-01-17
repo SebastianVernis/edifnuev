@@ -102,6 +102,10 @@ function actualizarFechasDinamicas() {
         if (index === mesActualIndex) option.selected = true; // Mes actual seleccionado
         select.appendChild(option);
       });
+      
+      console.log(`   ✓ Selector ${selectorId} poblado con ${meses.length} meses`);
+    } else {
+      console.warn(`   ⚠️  Selector ${selectorId} no encontrado`);
     }
   });
   
