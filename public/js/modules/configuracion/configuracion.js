@@ -543,25 +543,106 @@ async function guardarInfoEdificio() {
   }
 }
 
-// Descargar políticas
+// Descargar políticas como PDF
 function descargarPoliticas() {
-  const politicas = document.getElementById('edificio-politicas').value;
-  const nombre = document.getElementById('edificio-nombre').value || 'Edificio';
+  const reglamentoEl = document.getElementById('edificio-reglamento');
+  const privacyPolicyEl = document.getElementById('edificio-privacy-policy');
+  const paymentPoliciesEl = document.getElementById('edificio-payment-policies');
+  const politicasEl = document.getElementById('edificio-politicas');
   
-  if (!politicas) {
+  const reglamento = reglamentoEl ? reglamentoEl.value : '';
+  const privacyPolicy = privacyPolicyEl ? privacyPolicyEl.value : '';
+  const paymentPolicies = paymentPoliciesEl ? paymentPoliciesEl.value : '';
+  const politicas = politicasEl ? politicasEl.value : '';
+  
+  // Si no hay ninguna política, usar la retrocompatible
+  const hasContent = reglamento || privacyPolicy || paymentPolicies || politicas;
+  
+  if (!hasContent) {
     alert('No hay políticas para descargar');
     return;
   }
   
-  const blob = new Blob([politicas], { type: 'text/plain' });
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `Politicas_${nombre.replace(/\s+/g, '_')}.txt`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  window.URL.revokeObjectURL(url);
+  // Crear ventana con HTML imprimible
+  const nombre = document.getElementById('edificio-nombre').value || 'Edificio';
+  const direccion = document.getElementById('edificio-direccion').value || '';
+  
+  const html = `
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <meta charset="UTF-8">
+      <title>Políticas - ${nombre}</title>
+      <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; padding: 2rem; line-height: 1.6; }
+        .header { text-align: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 3px solid #4F46E5; }
+        .header h1 { color: #1F2937; margin-bottom: 0.5rem; }
+        .section { margin: 2rem 0; page-break-inside: avoid; }
+        .section h2 { color: #4F46E5; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #E5E7EB; }
+        .content { white-space: pre-wrap; color: #374151; }
+        .footer { margin-top: 3rem; padding-top: 1rem; border-top: 2px solid #E5E7EB; text-align: center; color: #6B7280; font-size: 0.875rem; }
+        .no-print { text-align: center; margin-bottom: 2rem; }
+        .btn { padding: 0.75rem 1.5rem; background: #4F46E5; color: white; border: none; border-radius: 0.5rem; cursor: pointer; margin: 0 0.5rem; }
+        @media print { 
+          .no-print { display: none !important; }
+          body { padding: 0; }
+          @page { margin: 1cm; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="no-print">
+        <button class="btn" onclick="window.print()">📄 Descargar PDF</button>
+        <button class="btn" style="background: #6B7280;" onclick="window.close()">✖ Cerrar</button>
+      </div>
+      
+      <div class="header">
+        <h1>Políticas y Reglamentos</h1>
+        <p style="color: #6B7280;">${nombre}</p>
+        <p style="color: #6B7280; font-size: 0.875rem;">${direccion}</p>
+      </div>
+      
+      ${reglamento ? `
+        <div class="section">
+          <h2>Reglamento Interno del Condominio</h2>
+          <div class="content">${reglamento}</div>
+        </div>
+      ` : ''}
+      
+      ${privacyPolicy ? `
+        <div class="section">
+          <h2>Política de Privacidad y Protección de Datos</h2>
+          <div class="content">${privacyPolicy}</div>
+        </div>
+      ` : ''}
+      
+      ${paymentPolicies ? `
+        <div class="section">
+          <h2>Políticas de Vencimiento y Mora en Pagos</h2>
+          <div class="content">${paymentPolicies}</div>
+        </div>
+      ` : ''}
+      
+      ${!reglamento && !privacyPolicy && !paymentPolicies && politicas ? `
+        <div class="section">
+          <h2>Políticas del Condominio</h2>
+          <div class="content">${politicas}</div>
+        </div>
+      ` : ''}
+      
+      <div class="footer">
+        <p>ChispartBuilding - Sistema de Administración de Edificios</p>
+        <p>Generado el ${new Date().toLocaleDateString('es-MX')} a las ${new Date().toLocaleTimeString('es-MX')}</p>
+      </div>
+    </body>
+    </html>
+  `;
+  
+  // Abrir en nueva ventana
+  const ventana = window.open('', '_blank', 'width=1024,height=768');
+  ventana.document.write(html);
+  ventana.document.close();
 }
 
 // Cargar documentos
