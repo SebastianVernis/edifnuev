@@ -339,12 +339,29 @@ async function eliminarProyecto(id) {
 
 // Cargar perfil de usuario
 async function cargarPerfilUsuario() {
-  if (!currentUser) return;
-  
-  document.getElementById('perfil-nombre').value = currentUser.nombre || '';
-  document.getElementById('perfil-email').value = currentUser.email || '';
-  document.getElementById('perfil-telefono').value = currentUser.telefono || '';
-  document.getElementById('perfil-departamento').value = currentUser.departamento || '';
+  try {
+    // Obtener usuario actual del token
+    const authUser = window.Auth?.getCurrentUser();
+    if (authUser) {
+      currentUser = authUser;
+    }
+    
+    if (!currentUser) {
+      console.warn('No hay usuario actual');
+      return;
+    }
+    
+    console.log('👤 Cargando perfil:', currentUser.nombre);
+    
+    document.getElementById('perfil-nombre').value = currentUser.nombre || '';
+    document.getElementById('perfil-email').value = currentUser.email || '';
+    document.getElementById('perfil-telefono').value = currentUser.telefono || '';
+    document.getElementById('perfil-departamento').value = currentUser.departamento || '';
+    
+    console.log('✅ Perfil cargado');
+  } catch (error) {
+    console.error('Error al cargar perfil:', error);
+  }
 }
 
 // Guardar perfil de usuario
@@ -374,43 +391,64 @@ async function guardarPerfil() {
   
   try {
     const token = localStorage.getItem('edificio_token') || localStorage.getItem('token');
-    const payload = { nombre, email, telefono };
     
-    if (passwordNueva) {
-      payload.passwordActual = passwordActual;
-      payload.passwordNueva = passwordNueva;
-    }
-    
-    const response = await fetch(`${API_BASE}/usuarios/${currentUser.id}`, {
+    // 1. Actualizar datos del perfil
+    const updateRes = await fetch(`${API_BASE}/usuarios/${currentUser.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        'x-auth-token': token
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({ nombre, email, telefono })
     });
     
-    const data = await response.json();
+    if (!updateRes.ok) {
+      const error = await updateRes.json();
+      alert('❌ ' + (error.message || 'Error al actualizar datos'));
+      return;
+    }
     
-    if (data.ok || data.success) {
-      alert('Perfil actualizado exitosamente');
+    console.log('✅ Datos actualizados');
+    
+    // 2. Cambiar contraseña si se proporcionó
+    if (passwordNueva) {
+      const passwordRes = await fetch(`${API_BASE}/usuarios/cambiar-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token
+        },
+        body: JSON.stringify({
+          passwordActual,
+          passwordNueva
+        })
+      });
       
-      // Actualizar usuario en localStorage
-      if (data.usuario) {
-        localStorage.setItem('usuario', JSON.stringify(data.usuario));
-        currentUser = data.usuario;
+      const passwordData = await passwordRes.json();
+      
+      if (!passwordData.success) {
+        alert('⚠️ Datos actualizados pero error al cambiar contraseña: ' + passwordData.message);
+        return;
       }
+      
+      console.log('✅ Contraseña actualizada');
       
       // Limpiar campos de contraseña
       document.getElementById('perfil-password-actual').value = '';
       document.getElementById('perfil-password-nueva').value = '';
       document.getElementById('perfil-password-confirmar').value = '';
+      
+      alert('✅ Perfil y contraseña actualizados exitosamente');
     } else {
-      alert(data.msg || data.message || 'Error al actualizar perfil');
+      alert('✅ Datos del perfil actualizados exitosamente');
     }
+    
+    // Recargar perfil
+    await cargarPerfilUsuario();
+    
   } catch (error) {
     console.error('Error al guardar perfil:', error);
-    alert('Error al guardar perfil');
+    alert('❌ Error al guardar perfil');
   }
 }
 
