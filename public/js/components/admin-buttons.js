@@ -826,24 +826,22 @@ function renderCuotasTable(cuotas) {
     const fechaPago = cuota.fecha_pago ? 
       cuota.fecha_pago.split('T')[0].split('-').reverse().join('/') : '-';
     
-    // Calcular total con mora
+    // Calcular total con mora y extraordinario
     const montoBase = parseFloat(cuota.monto || 0);
+    const montoExtra = parseFloat(cuota.monto_extraordinario || 0);
     const mora = parseFloat(cuota.monto_mora || 0);
-    const total = montoBase + mora;
-    
-    const tipoLabel = cuota.tipo === 'EXTRAORDINARIA' ? 
-      '<span style="background: #F59E0B; color: white; padding: 0.125rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem;">EXTRAORDINARIA</span>' : '';
+    const total = montoBase + montoExtra + mora;
     
     tr.innerHTML = `
       <td>${cuota.departamento}</td>
       <td>
         <div>${cuota.mes} ${cuota.anio}</div>
-        ${tipoLabel}
-        ${cuota.concepto ? `<small style="color: #6B7280; display: block; margin-top: 0.25rem;">${cuota.concepto}</small>` : ''}
+        ${cuota.concepto_extraordinario ? `<small style="color: #F59E0B; display: block; margin-top: 0.25rem;"><i class="fas fa-star"></i> ${cuota.concepto_extraordinario}</small>` : ''}
       </td>
       <td>
         <div>$${montoBase.toLocaleString('es-MX')}</div>
-        ${mora > 0 ? `<small style="color: #F59E0B;">+ $${mora.toLocaleString('es-MX')} mora</small>` : ''}
+        ${montoExtra > 0 ? `<small style="color: #F59E0B;">+ $${montoExtra.toLocaleString('es-MX')} extra</small>` : ''}
+        ${mora > 0 ? `<small style="color: #EF4444; display: block;">+ $${mora.toLocaleString('es-MX')} mora</small>` : ''}
       </td>
       <td>
         <strong>$${total.toLocaleString('es-MX')}</strong>
@@ -3367,9 +3365,9 @@ async function generarCuotasProyecto(proyectoId, nombreProyecto, montoTotal) {
     const anio = prompt(`¿Qué año?`, anioActual);
     if (!anio) return;
     
-    console.log(`⚡ Generando cuotas extraordinarias para proyecto ${proyectoId}...`);
+    console.log(`⚡ Agregando monto extraordinario a cuotas de ${mes} ${anio}...`);
     
-    const response = await fetch('/api/cuotas/generar-masivo', {
+    const response = await fetch('/api/cuotas/agregar-extraordinaria', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -3378,25 +3376,26 @@ async function generarCuotasProyecto(proyectoId, nombreProyecto, montoTotal) {
       body: JSON.stringify({
         mes: mes,
         anio: parseInt(anio),
-        monto: montoPorUnidad,
-        departamentos: 'TODOS',
-        concepto: `Cuota extraordinaria: ${nombreProyecto}`,
-        tipo: 'EXTRAORDINARIA'
+        montoTotal: montoTotal,
+        concepto: `Proyecto: ${nombreProyecto}`
       })
     });
     
     if (response.ok) {
       const data = await response.json();
       alert(
-        `✅ Cuotas extraordinarias generadas\n\n` +
-        `Creadas: ${data.cuotasCreadas}\n` +
-        `Ya existían: ${data.cuotasExistentes}\n\n` +
-        `Monto por unidad: $${montoPorUnidad.toFixed(2)}\n` +
-        `Total recaudado: $${(data.cuotasCreadas * montoPorUnidad).toLocaleString('es-MX')}`
+        `✅ ${data.message}\n\n` +
+        `Cuotas actualizadas: ${data.cuotasActualizadas}\n` +
+        `Monto por unidad: $${parseFloat(data.montoPorUnidad).toLocaleString('es-MX')}\n` +
+        `Total proyecto: $${montoTotal.toLocaleString('es-MX')}\n\n` +
+        `Las cuotas ahora incluyen el monto extraordinario del proyecto.`
       );
+      
+      // Recargar cuotas para ver actualizadas
+      filtrarCuotas();
     } else {
       const error = await response.json();
-      alert('❌ Error: ' + (error.message || 'No se pudieron generar las cuotas'));
+      alert('❌ Error: ' + (error.message || 'No se pudo agregar el monto extraordinario'));
     }
   } catch (error) {
     console.error('Error:', error);

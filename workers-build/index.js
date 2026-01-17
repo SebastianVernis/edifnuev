@@ -695,7 +695,7 @@ export default {
           ).bind(buildingId).first();
 
           if (building && building.fondo_ingresos_id) {
-            const montoTotal = parseFloat(cuota.monto) + parseFloat(cuota.monto_mora || 0);
+            const montoTotal = parseFloat(cuota.monto) + parseFloat(cuota.monto_extraordinario || 0) + parseFloat(cuota.monto_mora || 0);
             
             // Sumar al fondo
             await env.DB.prepare(
@@ -722,6 +722,74 @@ export default {
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
+      }
+
+      // POST /api/cuotas/agregar-extraordinaria - Agregar monto extraordinario a cuotas
+      if (method === 'POST' && path === '/api/cuotas/agregar-extraordinaria') {
+        const authResult = await verifyAuth(request, env);
+        if (authResult instanceof Response) return authResult;
+
+        const buildingId = authResult.payload.buildingId;
+        const body = await request.json();
+        const { mes, anio, montoTotal, concepto } = body;
+
+        if (!mes || !anio || !montoTotal) {
+          return new Response(JSON.stringify({
+            success: false,
+            message: 'Datos incompletos'
+          }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        try {
+          const building = await env.DB.prepare(
+            'SELECT units_count FROM buildings WHERE id = ?'
+          ).bind(buildingId).first();
+
+          const totalUnits = building.units_count || 20;
+          const montoPorUnidad = montoTotal / totalUnits;
+
+          let cuotasActualizadas = 0;
+
+          for (let i = 1; i <= totalUnits; i++) {
+            const depto = i.toString().padStart(3, '0');
+            
+            const cuota = await env.DB.prepare(
+              'SELECT id, monto_extraordinario FROM cuotas WHERE mes = ? AND anio = ? AND departamento = ? AND building_id = ?'
+            ).bind(mes, anio, depto, buildingId).first();
+
+            if (cuota) {
+              const nuevoMontoExtra = parseFloat(cuota.monto_extraordinario || 0) + montoPorUnidad;
+              
+              await env.DB.prepare(
+                'UPDATE cuotas SET monto_extraordinario = ?, concepto_extraordinario = ? WHERE id = ?'
+              ).bind(nuevoMontoExtra, concepto, cuota.id).run();
+              
+              cuotasActualizadas++;
+            }
+          }
+
+          return new Response(JSON.stringify({
+            success: true,
+            message: `Monto extraordinario agregado a ${cuotasActualizadas} cuotas`,
+            cuotasActualizadas,
+            montoPorUnidad: montoPorUnidad.toFixed(2)
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+
+        } catch (error) {
+          return new Response(JSON.stringify({
+            success: false,
+            message: 'Error al agregar monto extraordinario',
+            error: error.message
+          }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
       }
 
       // POST /api/cuotas/calcular-mora - Calcular mora para cuotas vencidas
