@@ -527,7 +527,7 @@ export default {
 
         const buildingId = authResult.payload.buildingId;
         const body = await request.json();
-        const { mes, anio, monto, departamentos } = body;
+        const { mes, anio, monto, departamentos, concepto, tipo } = body;
 
         if (!mes || !anio || !monto) {
           return new Response(JSON.stringify({
@@ -582,8 +582,8 @@ export default {
                   const fechaVencimiento = new Date(anio, mesIndex, cutoffDay).toISOString().split('T')[0];
 
                   await env.DB.prepare(
-                    'INSERT INTO cuotas (mes, anio, departamento, monto, pagado, fecha_vencimiento, building_id) VALUES (?, ?, ?, ?, 0, ?, ?)'
-                  ).bind(mes, anio, depto, monto, fechaVencimiento, buildingId).run();
+                    'INSERT INTO cuotas (mes, anio, departamento, monto, pagado, fecha_vencimiento, tipo, concepto, building_id) VALUES (?, ?, ?, ?, 0, ?, ?, ?, ?)'
+                  ).bind(mes, anio, depto, monto, fechaVencimiento, tipo || 'ORDINARIA', concepto || null, buildingId).run();
                   
                   cuotasCreadas++;
                 }
@@ -610,8 +610,8 @@ export default {
                   const fechaVencimiento = new Date(anio, mesIndex, cutoffDay).toISOString().split('T')[0];
 
                   await env.DB.prepare(
-                    'INSERT INTO cuotas (mes, anio, departamento, monto, pagado, fecha_vencimiento, building_id) VALUES (?, ?, ?, ?, 0, ?, ?)'
-                  ).bind(mes, anio, depto, monto, fechaVencimiento, buildingId).run();
+                    'INSERT INTO cuotas (mes, anio, departamento, monto, pagado, fecha_vencimiento, tipo, concepto, building_id) VALUES (?, ?, ?, ?, 0, ?, ?, ?, ?)'
+                  ).bind(mes, anio, depto, monto, fechaVencimiento, tipo || 'ORDINARIA', concepto || null, buildingId).run();
                   
                   cuotasCreadas++;
                 }

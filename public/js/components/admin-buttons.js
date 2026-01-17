@@ -3188,13 +3188,18 @@ function renderProyectosMain(proyectos, resumen) {
               </span>
             </div>
           </div>
-          <div style="display: flex; gap: 0.5rem;">
-            <button class="btn btn-sm btn-secondary" onclick="editarProyectoMain(${p.id})">
-              <i class="fas fa-edit"></i>
+          <div style="display: flex; gap: 0.5rem; flex-direction: column;">
+            <button class="btn btn-sm" style="background: #10B981; color: white;" onclick="generarCuotasProyecto(${p.id}, '${p.nombre}', ${p.monto})">
+              <i class="fas fa-money-bill-wave"></i> Generar Cuotas
             </button>
-            <button class="btn btn-sm btn-danger" onclick="eliminarProyectoMain(${p.id})">
-              <i class="fas fa-trash"></i>
-            </button>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-sm btn-secondary" onclick="editarProyectoMain(${p.id})">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn btn-sm btn-danger" onclick="eliminarProyectoMain(${p.id})">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -3295,5 +3300,84 @@ async function eliminarProyectoMainReal(id) {
   } catch (error) {
     console.error('Error:', error);
     alert('❌ Error al eliminar');
+  }
+}
+
+// Generar cuotas extraordinarias para un proyecto
+async function generarCuotasProyecto(proyectoId, nombreProyecto, montoTotal) {
+  try {
+    // Obtener info del building para saber cuántas unidades
+    const token = localStorage.getItem('edificio_token');
+    const buildingRes = await fetch('/api/onboarding/building-info', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    
+    if (!buildingRes.ok) {
+      alert('Error al obtener información del edificio');
+      return;
+    }
+    
+    const buildingData = await buildingRes.json();
+    const totalUnidades = buildingData.buildingInfo.totalUnidades || 20;
+    const montoPorUnidad = montoTotal / totalUnidades;
+    
+    const confirmar = confirm(
+      `¿Generar cuotas extraordinarias para el proyecto?\n\n` +
+      `Proyecto: ${nombreProyecto}\n` +
+      `Monto total: $${montoTotal.toLocaleString('es-MX')}\n` +
+      `Total unidades: ${totalUnidades}\n` +
+      `Monto por unidad: $${montoPorUnidad.toLocaleString('es-MX')}\n\n` +
+      `Se generarán ${totalUnidades} cuotas extraordinarias.`
+    );
+    
+    if (!confirmar) return;
+    
+    // Solicitar mes y año
+    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const hoy = new Date();
+    const mesActual = meses[hoy.getMonth()];
+    const anioActual = hoy.getFullYear();
+    
+    const mes = prompt(`¿Para qué mes generar las cuotas?`, mesActual);
+    if (!mes) return;
+    
+    const anio = prompt(`¿Qué año?`, anioActual);
+    if (!anio) return;
+    
+    console.log(`⚡ Generando cuotas extraordinarias para proyecto ${proyectoId}...`);
+    
+    const response = await fetch('/api/cuotas/generar-masivo', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-auth-token': token
+      },
+      body: JSON.stringify({
+        mes: mes,
+        anio: parseInt(anio),
+        monto: montoPorUnidad,
+        departamentos: 'TODOS',
+        concepto: `Cuota extraordinaria: ${nombreProyecto}`,
+        tipo: 'EXTRAORDINARIA'
+      })
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      alert(
+        `✅ Cuotas extraordinarias generadas\n\n` +
+        `Creadas: ${data.cuotasCreadas}\n` +
+        `Ya existían: ${data.cuotasExistentes}\n\n` +
+        `Monto por unidad: $${montoPorUnidad.toFixed(2)}\n` +
+        `Total recaudado: $${(data.cuotasCreadas * montoPorUnidad).toLocaleString('es-MX')}`
+      );
+    } else {
+      const error = await response.json();
+      alert('❌ Error: ' + (error.message || 'No se pudieron generar las cuotas'));
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('❌ Error al generar cuotas del proyecto');
   }
 }
