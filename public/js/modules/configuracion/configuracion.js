@@ -564,13 +564,26 @@ async function guardarInfoEdificio() {
     const data = await response.json();
     
     if (data.ok) {
-      alert('Información del edificio actualizada exitosamente');
+      alert('✅ Información del edificio actualizada exitosamente');
+      
+      // Recargar información para mostrar los cambios guardados
+      await cargarInfoEdificio();
+      
+      // Actualizar dashboard si está visible
+      if (typeof cargarDashboard === 'function') {
+        cargarDashboard();
+      }
+      
+      // Actualizar fondos globales si cambió el fondo de ingresos
+      if (typeof cargarFondosGlobales === 'function') {
+        cargarFondosGlobales();
+      }
     } else {
-      alert(data.msg || 'Error al actualizar información');
+      alert('❌ ' + (data.msg || 'Error al actualizar información'));
     }
   } catch (error) {
     console.error('Error al guardar información del edificio:', error);
-    alert('Error al guardar información');
+    alert('❌ Error al guardar información');
   }
 }
 
