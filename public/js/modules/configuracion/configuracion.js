@@ -462,17 +462,25 @@ async function cargarInfoEdificio() {
       // Poblar selector de fondo de ingresos
       const fondoIngresosSelect = document.getElementById('edificio-fondo-ingresos');
       if (fondoIngresosSelect && funds.length > 0) {
+        console.log('🔄 Poblando selector de fondo de ingresos...');
+        console.log('   Fondos disponibles:', funds.length);
+        console.log('   Fondo actual configurado:', info.fondoIngresosId);
+        
         fondoIngresosSelect.innerHTML = '<option value="">Sin asignar</option>';
         funds.forEach((fund, index) => {
           const option = document.createElement('option');
           option.value = fund.id || index;
           option.textContent = `${fund.name} ($${parseFloat(fund.amount || 0).toLocaleString('es-MX')})`;
           fondoIngresosSelect.appendChild(option);
+          console.log(`   Opción: value=${option.value}, text=${fund.name}`);
         });
         
         // Seleccionar el fondo actual si existe
         if (info.fondoIngresosId) {
           fondoIngresosSelect.value = info.fondoIngresosId;
+          console.log(`   ✅ Fondo seleccionado: ${info.fondoIngresosId}`);
+        } else {
+          console.log('   ℹ️  No hay fondo de ingresos configurado');
         }
       }
     }
@@ -537,6 +545,9 @@ async function guardarInfoEdificio() {
   // Fondo de ingresos
   const fondoIngresosEl = document.getElementById('edificio-fondo-ingresos');
   const fondoIngresosId = fondoIngresosEl && fondoIngresosEl.value ? parseInt(fondoIngresosEl.value) : null;
+  
+  console.log('💾 Guardando configuración...');
+  console.log('   Fondo de ingresos seleccionado:', fondoIngresosId);
   
   try {
     const token = localStorage.getItem('edificio_token') || localStorage.getItem('token');
