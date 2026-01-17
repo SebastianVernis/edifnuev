@@ -209,6 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const cuotasMes = document.getElementById('cuotas-mes');
   const cuotasAnio = document.getElementById('cuotas-año');
   const cuotasEstado = document.getElementById('cuotas-estado');
+  const cuotasTipo = document.getElementById('cuotas-tipo');
   
   if (cuotasMes) {
     cuotasMes.addEventListener('change', () => {
@@ -220,6 +221,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (cuotasAnio) {
     cuotasAnio.addEventListener('change', () => {
       console.log('🔍 Filtrando cuotas por año:', cuotasAnio.value);
+      filtrarCuotas();
+    });
+  }
+
+  if (cuotasTipo) {
+    cuotasTipo.addEventListener('change', () => {
+      console.log('🔍 Filtrando cuotas por tipo:', cuotasTipo.value);
       filtrarCuotas();
     });
   }
@@ -759,6 +767,7 @@ async function filtrarCuotas() {
   const mes = document.getElementById('cuotas-mes')?.value;
   const anio = document.getElementById('cuotas-año')?.value;
   const estado = document.getElementById('cuotas-estado')?.value;
+  const tipo = document.getElementById('cuotas-tipo')?.value;
   
   try {
     const token = localStorage.getItem('edificio_token');
@@ -768,6 +777,7 @@ async function filtrarCuotas() {
     if (mes) params.append('mes', mes);
     if (anio) params.append('anio', anio);
     if (estado && estado !== 'TODOS') params.append('estado', estado);
+    if (tipo && tipo !== 'TODOS') params.append('tipo', tipo);
     
     if (params.toString()) url += '?' + params.toString();
     
@@ -777,6 +787,10 @@ async function filtrarCuotas() {
     
     if (response.ok) {
       const data = await response.json();
+      console.log(`   📊 Cuotas encontradas: ${data.cuotas.length}`);
+      if (tipo === 'EXTRAORDINARIA') {
+        console.log('   🎯 Mostrando solo cuotas extraordinarias');
+      }
       renderCuotasTable(data.cuotas);
     }
   } catch (error) {
@@ -817,9 +831,16 @@ function renderCuotasTable(cuotas) {
     const mora = parseFloat(cuota.monto_mora || 0);
     const total = montoBase + mora;
     
+    const tipoLabel = cuota.tipo === 'EXTRAORDINARIA' ? 
+      '<span style="background: #F59E0B; color: white; padding: 0.125rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem;">EXTRAORDINARIA</span>' : '';
+    
     tr.innerHTML = `
       <td>${cuota.departamento}</td>
-      <td>${cuota.mes} ${cuota.anio}</td>
+      <td>
+        <div>${cuota.mes} ${cuota.anio}</div>
+        ${tipoLabel}
+        ${cuota.concepto ? `<small style="color: #6B7280; display: block; margin-top: 0.25rem;">${cuota.concepto}</small>` : ''}
+      </td>
       <td>
         <div>$${montoBase.toLocaleString('es-MX')}</div>
         ${mora > 0 ? `<small style="color: #F59E0B;">+ $${mora.toLocaleString('es-MX')} mora</small>` : ''}

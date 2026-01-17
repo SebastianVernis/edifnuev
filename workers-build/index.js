@@ -498,6 +498,7 @@ export default {
         const buildingId = authResult.payload.buildingId;
         const mes = url.searchParams.get('mes');
         const anio = url.searchParams.get('anio');
+        const tipo = url.searchParams.get('tipo');
 
         let query = 'SELECT * FROM cuotas WHERE building_id = ?';
         const params = [buildingId];
@@ -505,6 +506,11 @@ export default {
         if (mes && anio) {
           query += ' AND mes = ? AND anio = ?';
           params.push(mes, anio);
+        }
+
+        if (tipo && tipo !== 'TODOS') {
+          query += ' AND tipo = ?';
+          params.push(tipo);
         }
 
         query += ' ORDER BY departamento';
