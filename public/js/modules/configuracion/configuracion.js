@@ -2,9 +2,16 @@
 const API_BASE = '/api';
 let proyectos = [];
 let currentUser = null;
+let moduloInicializado = false;
 
 // Cargar proyectos al mostrar la sección
 export async function initConfiguracion() {
+  if (moduloInicializado) {
+    console.log('⚠️ Módulo ya inicializado, omitiendo...');
+    return;
+  }
+  
+  moduloInicializado = true;
   console.log('Inicializando módulo de configuración...');
   
   // Obtener usuario actual
@@ -552,7 +559,16 @@ function renderFondos(funds) {
 }
 
 // Guardar información del edificio
+let guardandoEdificio = false;
+
 async function guardarInfoEdificio() {
+  if (guardandoEdificio) {
+    console.log('⚠️ Ya se está guardando, omitiendo...');
+    return;
+  }
+  
+  guardandoEdificio = true;
+  
   const nombre = document.getElementById('edificio-nombre').value;
   const direccion = document.getElementById('edificio-direccion').value;
   const totalUnidades = parseInt(document.getElementById('edificio-total-unidades').value);
@@ -633,6 +649,8 @@ async function guardarInfoEdificio() {
   } catch (error) {
     console.error('Error al guardar información del edificio:', error);
     alert('❌ Error al guardar información');
+  } finally {
+    guardandoEdificio = false;
   }
 }
 
