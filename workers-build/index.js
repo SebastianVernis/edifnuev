@@ -719,6 +719,63 @@ export default {
         });
       }
 
+      // POST /api/anuncios/upload - Subir archivo para anuncio
+      if (method === 'POST' && path === '/api/anuncios/upload') {
+        const authResult = await verifyAuth(request, env);
+        if (authResult instanceof Response) return authResult;
+
+        try {
+          const formData = await request.formData();
+          const file = formData.get('file');
+
+          if (!file) {
+            return new Response(JSON.stringify({
+              success: false,
+              message: 'No se recibió ningún archivo'
+            }), {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          // Generar nombre único para el archivo
+          const timestamp = Date.now();
+          const fileName = `${timestamp}_${file.name}`;
+          const key = `anuncios/${fileName}`;
+
+          // Subir a R2
+          if (env.UPLOADS) {
+            await env.UPLOADS.put(key, file.stream());
+
+            return new Response(JSON.stringify({
+              success: true,
+              url: `/uploads/${key}`,
+              fileName: fileName,
+              message: 'Archivo subido exitosamente'
+            }), {
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          } else {
+            return new Response(JSON.stringify({
+              success: false,
+              message: 'Servicio de almacenamiento no disponible'
+            }), {
+              status: 503,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+        } catch (error) {
+          return new Response(JSON.stringify({
+            success: false,
+            message: 'Error al subir archivo',
+            error: error.message
+          }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+      }
+
       // === CIERRES ENDPOINTS ===
       
       // GET /api/cierres - Obtener cierres
