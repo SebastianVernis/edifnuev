@@ -546,6 +546,10 @@ export default {
         }
 
         try {
+          console.log('📝 Iniciando generación masiva de cuotas');
+          console.log('   Building ID:', buildingId);
+          console.log('   Mes:', mes, 'Año:', anio);
+          
           // Obtener configuración del building
           const building = await env.DB.prepare(
             'SELECT units_count, cutoff_day FROM buildings WHERE id = ?'
@@ -561,13 +565,15 @@ export default {
             });
           }
 
+          console.log('   Total unidades:', building.units_count);
+
           let cuotasCreadas = 0;
           let cuotasExistentes = 0;
           let errores = [];
+          const totalUnits = building.units_count || 20;
 
           // Si se especificó "TODOS", generar para todas las unidades
           if (departamentos === 'TODOS') {
-            const totalUnits = building.units_count || 20;
             const cutoffDay = building.cutoff_day || 5;
             const mesIndex = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
                              'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'].indexOf(mes);
@@ -599,10 +605,24 @@ export default {
             // Ejecutar batch
             if (batch.length > 0) {
               try {
-                await env.DB.batch(batch);
+                console.log(`   Ejecutando batch de ${batch.length} inserts...`);
+                const results = await env.DB.batch(batch);
                 cuotasCreadas = batch.length;
+                console.log(`   ✅ Batch completado: ${cuotasCreadas} cuotas creadas`);
               } catch (error) {
+                console.error('   ❌ Error en batch:', error);
                 errores.push(`Error en batch: ${error.message}`);
+                
+                // Intentar insertar una por una si batch falla
+                console.log('   🔄 Intentando inserts individuales...');
+                for (const stmt of batch) {
+                  try {
+                    await stmt.run();
+                    cuotasCreadas++;
+                  } catch (e) {
+                    errores.push(`Error individual: ${e.message}`);
+                  }
+                }
               }
             }
           } else {
