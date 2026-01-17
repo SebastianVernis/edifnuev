@@ -74,6 +74,16 @@ function loadSectionData(sectionId) {
     case 'parcialidades':
       if (typeof cargarParcialidades === 'function') cargarParcialidades();
       break;
+    case 'configuracion':
+      // Importar y ejecutar el módulo de configuración
+      import('./js/modules/configuracion/configuracion.js')
+        .then(module => {
+          if (module.initConfiguracion) {
+            module.initConfiguracion();
+          }
+        })
+        .catch(err => console.error('Error cargando configuración:', err));
+      break;
   }
 }
 
