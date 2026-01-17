@@ -599,6 +599,61 @@ export default {
         });
       }
 
+      // DELETE /api/gastos/:id - Eliminar gasto y revertir descuento
+      if (method === 'DELETE' && path.startsWith('/api/gastos/')) {
+        const authResult = await verifyAuth(request, env);
+        if (authResult instanceof Response) return authResult;
+
+        const buildingId = authResult.payload.buildingId;
+        const gastoId = parseInt(path.split('/').pop());
+
+        // Obtener el gasto para verificar si tiene fondo asociado
+        const gasto = await env.DB.prepare(
+          'SELECT * FROM gastos WHERE id = ? AND building_id = ?'
+        ).bind(gastoId, buildingId).first();
+
+        if (!gasto) {
+          return new Response(JSON.stringify({
+            success: false,
+            message: 'Gasto no encontrado'
+          }), {
+            status: 404,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Si el gasto afectó un fondo, revertir el descuento
+        if (gasto.fondo_id) {
+          await env.DB.prepare(
+            'UPDATE fondos SET saldo = saldo + ? WHERE id = ?'
+          ).bind(gasto.monto, gasto.fondo_id).run();
+
+          // Registrar movimiento de reversión
+          await env.DB.prepare(
+            'INSERT INTO movimientos_fondos (fondo_id, tipo, monto, concepto, fecha, building_id) VALUES (?, ?, ?, ?, ?, ?)'
+          ).bind(
+            gasto.fondo_id, 
+            'INGRESO', 
+            gasto.monto, 
+            `Reversión de gasto: ${gasto.concepto}`, 
+            new Date().toISOString().split('T')[0], 
+            buildingId
+          ).run();
+        }
+
+        // Eliminar el gasto
+        await env.DB.prepare('DELETE FROM gastos WHERE id = ?').bind(gastoId).run();
+
+        return new Response(JSON.stringify({
+          success: true,
+          message: gasto.fondo_id ? 
+            'Gasto eliminado y monto revertido al fondo exitosamente' : 
+            'Gasto eliminado exitosamente'
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
       // === ANUNCIOS ENDPOINTS ===
       
       // GET /api/anuncios - Obtener anuncios
