@@ -627,12 +627,19 @@ export default {
             }
           }
 
+          // Log para debug
+          console.log(`Generación masiva: ${cuotasCreadas} creadas, ${cuotasExistentes} existentes, ${errores.length} errores`);
+          if (errores.length > 0) {
+            console.log('Errores:', errores.slice(0, 5)); // Primeros 5 errores
+          }
+
           return new Response(JSON.stringify({
             success: true,
-            message: `Generación completada: ${cuotasCreadas} cuotas creadas, ${cuotasExistentes} ya existían`,
+            message: `Generación completada: ${cuotasCreadas} cuotas creadas, ${cuotasExistentes} ya existían${errores.length > 0 ? `, ${errores.length} errores` : ''}`,
             cuotasCreadas,
             cuotasExistentes,
-            errores: errores.length > 0 ? errores : null
+            totalUnidades: totalUnits,
+            errores: errores.length > 0 ? errores.slice(0, 10) : null
           }), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           });

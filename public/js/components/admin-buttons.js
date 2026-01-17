@@ -3032,9 +3032,20 @@ if (generarMasivoForm) {
       
       if (response.ok) {
         const data = await response.json();
-        alert(`✅ ${data.message}\n\n` +
+        let mensaje = `✅ ${data.message}\n\n` +
               `Cuotas creadas: ${data.cuotasCreadas}\n` +
-              `Ya existían: ${data.cuotasExistentes}`);
+              `Ya existían: ${data.cuotasExistentes}\n` +
+              `Total unidades: ${data.totalUnidades || totalUnidades}`;
+        
+        if (data.errores && data.errores.length > 0) {
+          mensaje += `\n\n⚠️ Errores: ${data.errores.length}\n`;
+          mensaje += data.errores.slice(0, 3).join('\n');
+          if (data.errores.length > 3) {
+            mensaje += `\n... y ${data.errores.length - 3} más`;
+          }
+        }
+        
+        alert(mensaje);
         hideModal('generar-masivo-modal');
         filtrarCuotas();
       } else {
