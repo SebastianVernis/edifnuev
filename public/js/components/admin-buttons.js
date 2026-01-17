@@ -2035,18 +2035,37 @@ async function cargarDashboard() {
       
       console.log('⏳ Cuotas pendientes:', cuotasPendientes);
       
-      const elemCuotasPendientes = document.getElementById('cuotas-pendientes');
-      console.log('🎯 Elemento cuotas-pendientes:', elemCuotasPendientes);
+      // Cuotas del mes actual (todas)
+      const cuotasMesActual = cuotas.filter(c => 
+        c.mes.toLowerCase() === mesActual.toLowerCase() && c.anio === anioActual
+      );
       
+      const cuotasPendientesMes = cuotasMesActual.filter(c => !c.pagado).length;
+      const cuotasPagadasMes = cuotasMesActual.filter(c => c.pagado).length;
+      
+      // Ingresos del mes (cuotas pagadas)
+      const ingresosMes = cuotasMesActual
+        .filter(c => c.pagado)
+        .reduce((sum, c) => sum + parseFloat(c.monto || 0) + parseFloat(c.monto_extraordinario || 0) + parseFloat(c.monto_mora || 0), 0);
+      
+      // Actualizar elementos
+      const elemCuotasPendientes = document.getElementById('cuotas-pendientes');
       if (elemCuotasPendientes) {
-        elemCuotasPendientes.textContent = cuotasPendientes;
-        console.log('✅ Cuotas pendientes actualizado en DOM');
-      } else {
-        console.error('❌ Elemento cuotas-pendientes no encontrado');
+        elemCuotasPendientes.textContent = cuotasPendientesMes;
+      }
+      
+      const elemCuotasPagadas = document.getElementById('cuotas-pagadas');
+      if (elemCuotasPagadas) {
+        elemCuotasPagadas.textContent = cuotasPagadasMes;
+      }
+      
+      const elemIngresosMes = document.getElementById('ingresos-mes');
+      if (elemIngresosMes) {
+        elemIngresosMes.textContent = `$${ingresosMes.toLocaleString('es-MX')}`;
       }
       
       // Gráfico de estado de cuotas
-      renderCuotasChart(cuotas);
+      renderCuotasChart(cuotasMesActual);
     }
     
     // Procesar gastos del mes
@@ -2062,39 +2081,89 @@ async function cargarDashboard() {
                fechaGasto.getFullYear() === fecha.getFullYear();
       });
       
-      const totalGastosMes = gastosMes.reduce((sum, g) => sum + g.monto, 0);
+      const totalGastosMes = gastosMes.reduce((sum, g) => sum + parseFloat(g.monto || 0), 0);
       
-      const elemGastosMes = document.getElementById('gastos-mes');
-      if (elemGastosMes) {
-        elemGastosMes.textContent = `$${totalGastosMes.toLocaleString()}`;
+      const elemGastosMesTotal = document.getElementById('gastos-mes-total');
+      if (elemGastosMesTotal) {
+        elemGastosMesTotal.textContent = `$${totalGastosMes.toLocaleString('es-MX')}`;
+      }
+      
+      // Calcular balance del mes (ingresos - gastos)
+      const ingresosMesVal = parseFloat(document.getElementById('ingresos-mes')?.textContent.replace(/[$,]/g, '') || 0);
+      const balanceMes = ingresosMesVal - totalGastosMes;
+      
+      const elemBalanceMes = document.getElementById('balance-mes');
+      if (elemBalanceMes) {
+        elemBalanceMes.textContent = `$${balanceMes.toLocaleString('es-MX')}`;
+        elemBalanceMes.style.color = balanceMes >= 0 ? '#10B981' : '#EF4444';
       }
       
       // Últimos gastos
       const recentGastos = document.getElementById('recent-gastos');
       if (recentGastos) {
         const ultimos = gastos.slice(-5).reverse();
-        recentGastos.innerHTML = ultimos.map(g => `
-          <div class="recent-item">
-            <span>${g.concepto}</span>
-            <span class="amount">$${g.monto.toLocaleString()}</span>
-          </div>
-        `).join('');
+        if (ultimos.length === 0) {
+          recentGastos.innerHTML = '<p style="color: #6B7280; text-align: center; padding: 1rem;">No hay gastos registrados</p>';
+        } else {
+          recentGastos.innerHTML = ultimos.map(g => `
+            <div class="recent-item">
+              <span>${g.concepto}</span>
+              <span class="amount" style="color: #EF4444;">$${parseFloat(g.monto || 0).toLocaleString('es-MX')}</span>
+            </div>
+          `).join('');
+        }
       }
     }
     
-    // Procesar anuncios
-    if (anunciosRes.ok) {
-      const anunciosData = await anunciosRes.json();
-      const anuncios = anunciosData.anuncios || [];
+    // Cargar movimientos recientes (desde fondos)
+    if (fondosRes.ok) {
+      const fondosData = await fondosRes.json();
+      const movimientos = fondosData.movimientos || [];
       
-      const recentAnuncios = document.getElementById('recent-anuncios');
-      if (recentAnuncios) {
-        recentAnuncios.innerHTML = anuncios.slice(0, 5).map(a => `
-          <div class="recent-item">
-            <span>${a.titulo}</span>
-            <span class="badge badge-${a.tipo?.toLowerCase() || 'secondary'}">${a.tipo || 'GENERAL'}</span>
-          </div>
-        `).join('');
+      const recentMovimientos = document.getElementById('recent-movimientos');
+      if (recentMovimientos) {
+        const ultimos = movimientos.slice(0, 5);
+        if (ultimos.length === 0) {
+          recentMovimientos.innerHTML = '<p style="color: #6B7280; text-align: center; padding: 1rem;">No hay movimientos</p>';
+        } else {
+          recentMovimientos.innerHTML = ultimos.map(m => {
+            const tipo = m.tipo === 'INGRESO' ? '↑' : '↓';
+            const color = m.tipo === 'INGRESO' ? '#10B981' : '#EF4444';
+            return `
+              <div class="recent-item">
+                <div>
+                  <strong style="color: ${color};">${tipo}</strong> ${m.fondo_nombre || 'Fondo'}
+                  <br><small style="color: #6B7280;">${m.concepto || 'Sin concepto'}</small>
+                </div>
+                <span class="amount" style="color: ${color};">$${parseFloat(m.monto || 0).toLocaleString('es-MX')}</span>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+    }
+    
+    // Cargar proyectos activos
+    const proyectosRes = await fetch('/api/proyectos', { headers: { 'x-auth-token': localStorage.getItem('edificio_token') } });
+    if (proyectosRes.ok) {
+      const proyectosData = await proyectosRes.json();
+      const proyectos = proyectosData.proyectos || [];
+      
+      const recentProyectos = document.getElementById('recent-proyectos');
+      if (recentProyectos) {
+        if (proyectos.length === 0) {
+          recentProyectos.innerHTML = '<p style="color: #6B7280; text-align: center; padding: 1rem;">No hay proyectos activos</p>';
+        } else {
+          recentProyectos.innerHTML = proyectos.slice(0, 5).map(p => `
+            <div class="recent-item">
+              <div>
+                ${p.nombre}
+                <br><small style="background: #F59E0B; color: white; padding: 0.125rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem;">${p.prioridad}</small>
+              </div>
+              <span class="amount">$${parseFloat(p.monto || 0).toLocaleString('es-MX')}</span>
+            </div>
+          `).join('');
+        }
       }
     }
     
