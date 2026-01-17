@@ -50,26 +50,80 @@
       
       <!-- Dashboard Section -->
       <section id="dashboard-section" class="content-section active">
+        <!-- Métricas principales -->
         <div class="dashboard-summary">
-          <div class="summary-card">
-            <h3>Patrimonio Total</h3>
-            <p class="amount" id="patrimonio-total">$240,500</p>
-            <p class="description">Fondos acumulados</p>
+          <div class="summary-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+              <div>
+                <h3 style="color: white; opacity: 0.9;">Patrimonio Total</h3>
+                <p class="amount" id="patrimonio-total" style="color: white;">$0</p>
+                <p class="description" style="color: white; opacity: 0.8;">Fondos acumulados</p>
+              </div>
+              <i class="fas fa-piggy-bank" style="font-size: 2.5rem; opacity: 0.3;"></i>
+            </div>
           </div>
           
           <div class="summary-card">
-            <h3>Cuotas Pendientes</h3>
-            <p class="amount" id="cuotas-pendientes">12</p>
-            <p class="description" id="cuotas-pendientes-mes">Cargando...</p>
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+              <div>
+                <h3>Cuotas Pendientes</h3>
+                <p class="amount" id="cuotas-pendientes" style="color: #F59E0B;">0</p>
+                <p class="description" id="cuotas-pendientes-mes">Cargando...</p>
+              </div>
+              <i class="fas fa-exclamation-triangle" style="font-size: 2.5rem; color: #F59E0B; opacity: 0.2;"></i>
+            </div>
           </div>
           
           <div class="summary-card">
-            <h3>Gastos del Mes</h3>
-            <p class="amount" id="gastos-mes">$15,200</p>
-            <p class="description" id="gastos-mes-fecha">Cargando...</p>
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+              <div>
+                <h3>Cuotas Pagadas</h3>
+                <p class="amount" id="cuotas-pagadas" style="color: #10B981;">0</p>
+                <p class="description" id="cuotas-pagadas-mes">Del mes actual</p>
+              </div>
+              <i class="fas fa-check-circle" style="font-size: 2.5rem; color: #10B981; opacity: 0.2;"></i>
+            </div>
+          </div>
+          
+          <div class="summary-card">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+              <div>
+                <h3>Ingresos del Mes</h3>
+                <p class="amount" id="ingresos-mes" style="color: #10B981;">$0</p>
+                <p class="description" id="ingresos-mes-fecha">Cargando...</p>
+              </div>
+              <i class="fas fa-arrow-up" style="font-size: 2.5rem; color: #10B981; opacity: 0.2;"></i>
+            </div>
+          </div>
+          
+          <div class="summary-card">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+              <div>
+                <h3>Gastos del Mes</h3>
+                <p class="amount" id="gastos-mes-total" style="color: #EF4444;">$0</p>
+                <p class="description" id="gastos-mes-fecha">Cargando...</p>
+              </div>
+              <i class="fas fa-arrow-down" style="font-size: 2.5rem; color: #EF4444; opacity: 0.2;"></i>
+            </div>
+          </div>
+          
+          <div class="summary-card">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+              <div>
+                <h3>Balance del Mes</h3>
+                <p class="amount" id="balance-mes">$0</p>
+                <p class="description">Ingresos - Gastos</p>
+              </div>
+              <i class="fas fa-balance-scale" style="font-size: 2.5rem; color: #6B7280; opacity: 0.2;"></i>
+            </div>
           </div>
         </div>
         
+        <!-- Alertas y notificaciones -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-bottom: 2rem;" id="dashboard-alerts">
+          <!-- Alertas se cargarán aquí -->
+        </div>
+
         <div class="dashboard-charts">
           <div class="chart-container">
             <h3>Distribución de Fondos</h3>
@@ -79,8 +133,22 @@
           </div>
           
           <div class="chart-container">
-            <h3>Estado de Cuotas</h3>
+            <h3>Estado de Cuotas del Mes</h3>
             <div class="chart" id="cuotas-chart">
+              <!-- Chart will be rendered here -->
+            </div>
+          </div>
+
+          <div class="chart-container">
+            <h3>Ingresos vs Egresos (Últimos 6 Meses)</h3>
+            <div class="chart" id="balance-chart">
+              <!-- Chart will be rendered here -->
+            </div>
+          </div>
+          
+          <div class="chart-container">
+            <h3>Gastos por Categoría</h3>
+            <div class="chart" id="gastos-categoria-chart">
               <!-- Chart will be rendered here -->
             </div>
           </div>
@@ -88,16 +156,32 @@
         
         <div class="dashboard-recent">
           <div class="recent-container">
-            <h3>Anuncios Recientes</h3>
-            <div id="recent-anuncios" class="recent-list">
-              <!-- Recent announcements will be loaded here -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h3>Últimos Movimientos de Fondos</h3>
+              <a href="#fondos" style="color: #4F46E5; text-decoration: none; font-size: 0.875rem;">Ver todos →</a>
+            </div>
+            <div id="recent-movimientos" class="recent-list">
+              <!-- Recent movements will be loaded here -->
             </div>
           </div>
           
           <div class="recent-container">
-            <h3>Últimos Gastos</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h3>Últimos Gastos</h3>
+              <a href="#gastos" style="color: #4F46E5; text-decoration: none; font-size: 0.875rem;">Ver todos →</a>
+            </div>
             <div id="recent-gastos" class="recent-list">
               <!-- Recent expenses will be loaded here -->
+            </div>
+          </div>
+
+          <div class="recent-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h3>Proyectos Activos</h3>
+              <a href="#proyectos" style="color: #4F46E5; text-decoration: none; font-size: 0.875rem;">Ver todos →</a>
+            </div>
+            <div id="recent-proyectos" class="recent-list">
+              <!-- Recent projects will be loaded here -->
             </div>
           </div>
         </div>
