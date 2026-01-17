@@ -643,6 +643,52 @@ export default {
         }
       }
 
+      // PUT /api/cuotas/:id/estado - Validar pago de cuota
+      if (method === 'PUT' && path.match(/^\/api\/cuotas\/\d+\/estado$/)) {
+        const authResult = await verifyAuth(request, env);
+        if (authResult instanceof Response) return authResult;
+
+        const buildingId = authResult.payload.buildingId;
+        const cuotaId = parseInt(path.split('/')[3]);
+        const body = await request.json();
+        const { estado, fechaPago, comprobante, metodoPago } = body;
+
+        // Verificar que la cuota existe y pertenece al building
+        const cuota = await env.DB.prepare(
+          'SELECT * FROM cuotas WHERE id = ? AND building_id = ?'
+        ).bind(cuotaId, buildingId).first();
+
+        if (!cuota) {
+          return new Response(JSON.stringify({
+            success: false,
+            message: 'Cuota no encontrada'
+          }), {
+            status: 404,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Actualizar estado de la cuota
+        const pagado = estado === 'PAGADO' ? 1 : 0;
+        
+        await env.DB.prepare(
+          'UPDATE cuotas SET pagado = ?, fecha_pago = ?, metodo_pago = ?, referencia = ? WHERE id = ?'
+        ).bind(
+          pagado,
+          fechaPago || null,
+          metodoPago || null,
+          comprobante || null,
+          cuotaId
+        ).run();
+
+        return new Response(JSON.stringify({
+          success: true,
+          message: pagado ? 'Pago validado exitosamente' : 'Cuota marcada como pendiente'
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
       // POST /api/cuotas/calcular-mora - Calcular mora para cuotas vencidas
       if (method === 'POST' && path === '/api/cuotas/calcular-mora') {
         const authResult = await verifyAuth(request, env);
