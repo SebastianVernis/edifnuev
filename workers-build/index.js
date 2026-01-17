@@ -302,14 +302,189 @@ export default {
           });
         }
 
+        // Hashear contraseña
+        const hashedPassword = await hashPassword(password);
+
         // Insertar nuevo usuario
         await env.DB.prepare(
           'INSERT INTO usuarios (nombre, email, password, rol, departamento, telefono, building_id, activo) VALUES (?, ?, ?, ?, ?, ?, ?, 1)'
-        ).bind(nombre, email, password, rol || 'Inquilino', departamento, telefono || '', buildingId).run();
+        ).bind(nombre, email, hashedPassword, rol || 'INQUILINO', departamento, telefono || '', buildingId).run();
 
         return new Response(JSON.stringify({
           success: true,
           message: 'Usuario creado exitosamente'
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // PUT /api/usuarios/:id - Actualizar usuario
+      if (method === 'PUT' && path.startsWith('/api/usuarios/')) {
+        const authResult = await verifyAuth(request, env);
+        if (authResult instanceof Response) return authResult;
+
+        const buildingId = authResult.payload.buildingId;
+        const userId = parseInt(path.split('/').pop());
+        const body = await request.json();
+        const { nombre, email, rol, departamento, telefono, activo } = body;
+
+        // Validar que el usuario existe y pertenece al building
+        const user = await env.DB.prepare(
+          'SELECT * FROM usuarios WHERE id = ? AND building_id = ?'
+        ).bind(userId, buildingId).first();
+
+        if (!user) {
+          return new Response(JSON.stringify({
+            success: false,
+            message: 'Usuario no encontrado'
+          }), {
+            status: 404,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Si se cambia el email, verificar que no exista
+        if (email && email !== user.email) {
+          const existingEmail = await env.DB.prepare(
+            'SELECT id FROM usuarios WHERE email = ? AND building_id = ? AND id != ?'
+          ).bind(email, buildingId, userId).first();
+
+          if (existingEmail) {
+            return new Response(JSON.stringify({
+              success: false,
+              message: 'El email ya está en uso'
+            }), {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+        }
+
+        // Actualizar usuario
+        await env.DB.prepare(
+          'UPDATE usuarios SET nombre = ?, email = ?, rol = ?, departamento = ?, telefono = ?, activo = ? WHERE id = ?'
+        ).bind(
+          nombre || user.nombre,
+          email || user.email,
+          rol || user.rol,
+          departamento || user.departamento,
+          telefono !== undefined ? telefono : user.telefono,
+          activo !== undefined ? activo : user.activo,
+          userId
+        ).run();
+
+        return new Response(JSON.stringify({
+          success: true,
+          message: 'Usuario actualizado exitosamente'
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // DELETE /api/usuarios/:id - Eliminar usuario (soft delete)
+      if (method === 'DELETE' && path.startsWith('/api/usuarios/')) {
+        const authResult = await verifyAuth(request, env);
+        if (authResult instanceof Response) return authResult;
+
+        const buildingId = authResult.payload.buildingId;
+        const userId = parseInt(path.split('/').pop());
+
+        // Validar que el usuario existe y pertenece al building
+        const user = await env.DB.prepare(
+          'SELECT * FROM usuarios WHERE id = ? AND building_id = ?'
+        ).bind(userId, buildingId).first();
+
+        if (!user) {
+          return new Response(JSON.stringify({
+            success: false,
+            message: 'Usuario no encontrado'
+          }), {
+            status: 404,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // No permitir eliminar al admin principal
+        if (user.rol === 'ADMIN' && user.id === authResult.payload.userId) {
+          return new Response(JSON.stringify({
+            success: false,
+            message: 'No puedes eliminar tu propio usuario'
+          }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Soft delete
+        await env.DB.prepare(
+          'UPDATE usuarios SET activo = 0 WHERE id = ?'
+        ).bind(userId).run();
+
+        return new Response(JSON.stringify({
+          success: true,
+          message: 'Usuario desactivado exitosamente'
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // POST /api/usuarios/cambiar-password - Cambiar contraseña
+      if (method === 'POST' && path === '/api/usuarios/cambiar-password') {
+        const authResult = await verifyAuth(request, env);
+        if (authResult instanceof Response) return authResult;
+
+        const userId = authResult.payload.userId;
+        const body = await request.json();
+        const { passwordActual, passwordNueva } = body;
+
+        if (!passwordActual || !passwordNueva) {
+          return new Response(JSON.stringify({
+            success: false,
+            message: 'Se requiere contraseña actual y nueva'
+          }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Obtener usuario
+        const user = await env.DB.prepare(
+          'SELECT * FROM usuarios WHERE id = ?'
+        ).bind(userId).first();
+
+        if (!user) {
+          return new Response(JSON.stringify({
+            success: false,
+            message: 'Usuario no encontrado'
+          }), {
+            status: 404,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Verificar contraseña actual
+        const isValidPassword = await verifyPassword(passwordActual, user.password);
+        if (!isValidPassword) {
+          return new Response(JSON.stringify({
+            success: false,
+            message: 'Contraseña actual incorrecta'
+          }), {
+            status: 401,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Hashear nueva contraseña
+        const hashedPassword = await hashPassword(passwordNueva);
+
+        // Actualizar contraseña
+        await env.DB.prepare(
+          'UPDATE usuarios SET password = ? WHERE id = ?'
+        ).bind(hashedPassword, userId).run();
+
+        return new Response(JSON.stringify({
+          success: true,
+          message: 'Contraseña actualizada exitosamente'
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
