@@ -162,6 +162,16 @@ document.addEventListener('DOMContentLoaded', () => {
       resetCuotaForm();
     });
   }
+
+  const generarMasivoBtn = document.getElementById('generar-masivo-btn');
+  if (generarMasivoBtn) {
+    generarMasivoBtn.addEventListener('click', async () => {
+      console.log('⚡ Generar Cuotas Masivas');
+      await cargarInfoEdificio(); // Cargar info para mostrar total de unidades
+      showModal('generar-masivo-modal');
+      resetGenerarMasivoForm();
+    });
+  }
   
   const verificarVencimientosBtn = document.getElementById('verificar-vencimientos-btn');
   if (verificarVencimientosBtn) {
@@ -2871,4 +2881,112 @@ async function eliminarGasto(gastoId) {
     console.error('Error:', error);
     alert('❌ Error al eliminar gasto');
   }
+}
+
+// ========== GENERACIÓN MASIVA DE CUOTAS ==========
+
+let buildingInfo = null;
+
+async function cargarInfoEdificio() {
+  try {
+    const token = localStorage.getItem('edificio_token');
+    const response = await fetch('/api/onboarding/building-info', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data.ok && data.buildingInfo) {
+        buildingInfo = data.buildingInfo;
+        
+        // Actualizar info en el modal
+        const infoEl = document.getElementById('total-unidades-info');
+        if (infoEl) {
+          infoEl.textContent = buildingInfo.totalUnidades || 20;
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error cargando info edificio:', error);
+  }
+}
+
+function resetGenerarMasivoForm() {
+  const form = document.getElementById('generar-masivo-form');
+  if (form) {
+    form.reset();
+    
+    // Establecer mes y año actual
+    const today = new Date();
+    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const mesActual = meses[today.getMonth()];
+    const anioActual = today.getFullYear();
+    
+    const masivoMesSelect = document.getElementById('masivo-mes');
+    const masivoAnioInput = document.getElementById('masivo-año');
+    const masivoMontoInput = document.getElementById('masivo-monto');
+    
+    if (masivoMesSelect) masivoMesSelect.value = mesActual;
+    if (masivoAnioInput) masivoAnioInput.value = anioActual;
+    
+    // Pre-llenar con cuota mensual del edificio si está disponible
+    if (buildingInfo && buildingInfo.cuotaMensual) {
+      if (masivoMontoInput) masivoMontoInput.value = buildingInfo.cuotaMensual;
+    }
+  }
+}
+
+// Event listener para el formulario de generación masiva
+const generarMasivoForm = document.getElementById('generar-masivo-form');
+if (generarMasivoForm) {
+  generarMasivoForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    console.log('⚡ Generando cuotas masivas...');
+    
+    const mes = document.getElementById('masivo-mes').value;
+    const anio = parseInt(document.getElementById('masivo-año').value);
+    const monto = parseFloat(document.getElementById('masivo-monto').value);
+    
+    const totalUnidades = buildingInfo?.totalUnidades || 20;
+    
+    if (!confirm(`¿Generar ${totalUnidades} cuotas de $${monto.toLocaleString('es-MX')} para ${mes} ${anio}?`)) {
+      return;
+    }
+    
+    try {
+      const token = localStorage.getItem('edificio_token');
+      const response = await fetch('/api/cuotas/generar-masivo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token
+        },
+        body: JSON.stringify({
+          mes,
+          anio,
+          monto,
+          departamentos: 'TODOS'
+        })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        alert(`✅ ${data.message}\n\n` +
+              `Cuotas creadas: ${data.cuotasCreadas}\n` +
+              `Ya existían: ${data.cuotasExistentes}`);
+        hideModal('generar-masivo-modal');
+        filtrarCuotas();
+      } else {
+        const error = await response.json();
+        alert(`❌ Error: ${error.message || 'No se pudieron generar las cuotas'}`);
+      }
+    } catch (error) {
+      console.error('Error generando cuotas:', error);
+      alert('❌ Error al generar cuotas');
+    }
+  });
 }

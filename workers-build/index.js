@@ -7,7 +7,7 @@
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-auth-token',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-auth-token, Accept',
 };
 
 // Helper: Base64 URL encode
@@ -343,6 +343,129 @@ export default {
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
+      }
+
+      // POST /api/cuotas/generar-masivo - Generar cuotas masivamente
+      if (method === 'POST' && path === '/api/cuotas/generar-masivo') {
+        const authResult = await verifyAuth(request, env);
+        if (authResult instanceof Response) return authResult;
+
+        const buildingId = authResult.payload.buildingId;
+        const body = await request.json();
+        const { mes, anio, monto, departamentos } = body;
+
+        if (!mes || !anio || !monto) {
+          return new Response(JSON.stringify({
+            success: false,
+            message: 'Datos incompletos. Se requiere mes, año y monto.'
+          }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        try {
+          // Obtener configuración del building
+          const building = await env.DB.prepare(
+            'SELECT units_count, cutoff_day FROM buildings WHERE id = ?'
+          ).bind(buildingId).first();
+
+          if (!building) {
+            return new Response(JSON.stringify({
+              success: false,
+              message: 'Edificio no encontrado'
+            }), {
+              status: 404,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          let cuotasCreadas = 0;
+          let cuotasExistentes = 0;
+          let errores = [];
+
+          // Si se especificó "TODOS", generar para todas las unidades
+          if (departamentos === 'TODOS') {
+            const totalUnits = building.units_count || 20;
+            
+            for (let i = 1; i <= totalUnits; i++) {
+              const depto = i.toString().padStart(3, '0'); // 001, 002, 003...
+              
+              try {
+                // Verificar si ya existe
+                const existe = await env.DB.prepare(
+                  'SELECT id FROM cuotas WHERE mes = ? AND anio = ? AND departamento = ? AND building_id = ?'
+                ).bind(mes, anio, depto, buildingId).first();
+
+                if (existe) {
+                  cuotasExistentes++;
+                } else {
+                  // Calcular fecha de vencimiento
+                  const cutoffDay = building.cutoff_day || 5;
+                  const mesIndex = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                                   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'].indexOf(mes);
+                  const fechaVencimiento = new Date(anio, mesIndex, cutoffDay).toISOString().split('T')[0];
+
+                  await env.DB.prepare(
+                    'INSERT INTO cuotas (mes, anio, departamento, monto, pagado, fecha_vencimiento, building_id) VALUES (?, ?, ?, ?, 0, ?, ?)'
+                  ).bind(mes, anio, depto, monto, fechaVencimiento, buildingId).run();
+                  
+                  cuotasCreadas++;
+                }
+              } catch (error) {
+                errores.push(`Depto ${depto}: ${error.message}`);
+              }
+            }
+          } else {
+            // Generar para departamentos específicos
+            const deptos = Array.isArray(departamentos) ? departamentos : [departamentos];
+            
+            for (const depto of deptos) {
+              try {
+                const existe = await env.DB.prepare(
+                  'SELECT id FROM cuotas WHERE mes = ? AND anio = ? AND departamento = ? AND building_id = ?'
+                ).bind(mes, anio, depto, buildingId).first();
+
+                if (existe) {
+                  cuotasExistentes++;
+                } else {
+                  const cutoffDay = building.cutoff_day || 5;
+                  const mesIndex = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                                   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'].indexOf(mes);
+                  const fechaVencimiento = new Date(anio, mesIndex, cutoffDay).toISOString().split('T')[0];
+
+                  await env.DB.prepare(
+                    'INSERT INTO cuotas (mes, anio, departamento, monto, pagado, fecha_vencimiento, building_id) VALUES (?, ?, ?, ?, 0, ?, ?)'
+                  ).bind(mes, anio, depto, monto, fechaVencimiento, buildingId).run();
+                  
+                  cuotasCreadas++;
+                }
+              } catch (error) {
+                errores.push(`Depto ${depto}: ${error.message}`);
+              }
+            }
+          }
+
+          return new Response(JSON.stringify({
+            success: true,
+            message: `Generación completada: ${cuotasCreadas} cuotas creadas, ${cuotasExistentes} ya existían`,
+            cuotasCreadas,
+            cuotasExistentes,
+            errores: errores.length > 0 ? errores : null
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+
+        } catch (error) {
+          return new Response(JSON.stringify({
+            success: false,
+            message: 'Error al generar cuotas',
+            error: error.message
+          }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
       }
 
       // === FONDOS ENDPOINTS ===
@@ -735,13 +858,29 @@ export default {
         if (authResult instanceof Response) return authResult;
 
         try {
+          console.log('📤 Upload request recibida');
+          console.log('   Content-Type:', request.headers.get('content-type'));
+          
           const formData = await request.formData();
+          console.log('   FormData parseado correctamente');
+          
+          // Debug: ver todos los campos del FormData
+          const fields = [];
+          for (const [key, value] of formData.entries()) {
+            fields.push(key);
+            console.log(`   Campo: ${key}, Tipo: ${typeof value}, Es File: ${value instanceof File}`);
+          }
+          
           const file = formData.get('file');
+          console.log('   Archivo obtenido:', !!file);
 
           if (!file) {
+            console.log('❌ No se encontró campo "file" en FormData');
+            console.log('   Campos recibidos:', fields);
+            
             return new Response(JSON.stringify({
               success: false,
-              message: 'No se recibió ningún archivo'
+              message: 'No se recibió ningún archivo. Campos recibidos: ' + fields.join(', ')
             }), {
               status: 400,
               headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -755,26 +894,44 @@ export default {
 
           // Subir a R2
           if (env.UPLOADS) {
-            // Convertir a ArrayBuffer para R2
-            const fileBuffer = await file.arrayBuffer();
+            console.log(`📦 Preparando para subir a R2: ${key}`);
+            console.log(`   Tamaño del archivo: ${file.size} bytes`);
+            console.log(`   Tipo: ${file.type}`);
             
-            await env.UPLOADS.put(key, fileBuffer, {
-              httpMetadata: {
-                contentType: file.type
-              }
-            });
+            try {
+              // Convertir a ArrayBuffer para R2
+              const fileBuffer = await file.arrayBuffer();
+              console.log(`   ArrayBuffer creado: ${fileBuffer.byteLength} bytes`);
+              
+              await env.UPLOADS.put(key, fileBuffer, {
+                httpMetadata: {
+                  contentType: file.type
+                }
+              });
 
-            console.log(`✅ Archivo subido a R2: ${key}`);
+              console.log(`✅ Archivo subido a R2: ${key}`);
 
-            return new Response(JSON.stringify({
-              success: true,
-              url: `/uploads/${key}`,
-              fileName: fileName,
-              message: 'Archivo subido exitosamente'
-            }), {
-              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-            });
+              return new Response(JSON.stringify({
+                success: true,
+                url: `/uploads/${key}`,
+                fileName: fileName,
+                message: 'Archivo subido exitosamente'
+              }), {
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+              });
+            } catch (r2Error) {
+              console.error('❌ Error subiendo a R2:', r2Error);
+              return new Response(JSON.stringify({
+                success: false,
+                message: 'Error al guardar archivo en almacenamiento',
+                error: r2Error.message
+              }), {
+                status: 500,
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+              });
+            }
           } else {
+            console.log('❌ env.UPLOADS no está disponible');
             return new Response(JSON.stringify({
               success: false,
               message: 'Servicio de almacenamiento no disponible'
