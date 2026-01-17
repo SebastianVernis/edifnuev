@@ -1548,6 +1548,55 @@ export default {
       }
 
       // === STATIC ASSETS ===
+      // Servir archivos subidos desde R2
+      if (method === 'GET' && path.startsWith('/uploads/')) {
+        try {
+          const key = path.substring(9); // Remover '/uploads/' del inicio
+          
+          if (env.UPLOADS) {
+            const object = await env.UPLOADS.get(key);
+            
+            if (object === null) {
+              return new Response('Archivo no encontrado', { 
+                status: 404,
+                headers: { 'Content-Type': 'text/plain' }
+              });
+            }
+
+            const headers = new Headers();
+            object.writeHttpMetadata(headers);
+            headers.set('etag', object.httpEtag);
+            headers.set('Cache-Control', 'public, max-age=31536000'); // 1 año
+            
+            // Determinar Content-Type por extensión
+            const ext = key.split('.').pop().toLowerCase();
+            const contentTypes = {
+              'png': 'image/png',
+              'jpg': 'image/jpeg',
+              'jpeg': 'image/jpeg',
+              'gif': 'image/gif',
+              'webp': 'image/webp',
+              'pdf': 'application/pdf',
+              'svg': 'image/svg+xml'
+            };
+            
+            headers.set('Content-Type', contentTypes[ext] || 'application/octet-stream');
+            headers.set('Access-Control-Allow-Origin', '*'); // CORS para imágenes
+
+            return new Response(object.body, { headers });
+          } else {
+            return new Response('Almacenamiento no disponible', { 
+              status: 503,
+              headers: { 'Content-Type': 'text/plain' }
+            });
+          }
+        } catch (error) {
+          return new Response('Error al servir archivo: ' + error.message, { 
+            status: 500,
+            headers: { 'Content-Type': 'text/plain' }
+          });
+        }
+      }
       
       // Mapear rutas HTML
       const htmlRoutes = {
