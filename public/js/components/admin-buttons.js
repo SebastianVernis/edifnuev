@@ -2,8 +2,119 @@
 // Variable global para almacenar fondos
 let fondosGlobales = [];
 
+// Función para actualizar todas las fechas dinámicamente
+function actualizarFechasDinamicas() {
+  const ahora = new Date();
+  const mesActual = ahora.toLocaleString('es-MX', { month: 'long', year: 'numeric' });
+  const mesActualCapitalizado = mesActual.charAt(0).toUpperCase() + mesActual.slice(1);
+  const fechaActual = ahora.toLocaleDateString('es-MX');
+  
+  console.log('📅 Actualizando fechas dinámicas...');
+  console.log('   Fecha actual:', mesActualCapitalizado);
+  
+  // Header principal
+  const currentDateEl = document.getElementById('current-date');
+  if (currentDateEl) {
+    currentDateEl.textContent = mesActualCapitalizado;
+  }
+  
+  // Dashboard - Cuotas Pendientes
+  const cuotasPendientesMes = document.getElementById('cuotas-pendientes-mes');
+  if (cuotasPendientesMes) {
+    cuotasPendientesMes.textContent = mesActualCapitalizado;
+  }
+  
+  // Dashboard - Gastos del Mes
+  const gastosMesFecha = document.getElementById('gastos-mes-fecha');
+  if (gastosMesFecha) {
+    gastosMesFecha.textContent = mesActualCapitalizado;
+  }
+  
+  // Fondos - Actualizado
+  const fondosActualizacion = document.getElementById('fondos-actualizacion');
+  if (fondosActualizacion) {
+    fondosActualizacion.textContent = fechaActual;
+  }
+  
+  // Actualizar campos de año en formularios (inputs type="number")
+  const anioActual = ahora.getFullYear();
+  const camposAnio = [
+    'cuota-año',
+    'cierre-año',
+    'cierre-anual-año'
+  ];
+  
+  camposAnio.forEach(campoId => {
+    const campo = document.getElementById(campoId);
+    if (campo) {
+      campo.value = anioActual;
+      campo.min = anioActual - 1; // Permitir año anterior
+      campo.max = anioActual + 5;  // Permitir 5 años futuros
+    }
+  });
+  
+  // Actualizar selectores de año (select con options)
+  const selectoresAnio = [
+    'cuotas-año',
+    'gastos-año',
+    'anuncios-año'
+  ];
+  
+  selectoresAnio.forEach(selectorId => {
+    const select = document.getElementById(selectorId);
+    if (select) {
+      select.innerHTML = ''; // Limpiar opciones
+      
+      // Agregar opciones dinámicas: año anterior, actual, y 3 años futuros
+      for (let i = -1; i <= 3; i++) {
+        const anio = anioActual + i;
+        const option = document.createElement('option');
+        option.value = anio;
+        option.textContent = anio;
+        if (i === 0) option.selected = true; // Año actual seleccionado
+        select.appendChild(option);
+      }
+    }
+  });
+  
+  // Actualizar selectores de mes
+  const meses = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
+  
+  const mesActualIndex = ahora.getMonth(); // 0-11
+  const selectoresMes = [
+    'cuotas-mes',
+    'gastos-mes'
+  ];
+  
+  selectoresMes.forEach(selectorId => {
+    const select = document.getElementById(selectorId);
+    if (select) {
+      select.innerHTML = ''; // Limpiar opciones
+      
+      // Agregar todos los meses
+      meses.forEach((mes, index) => {
+        const option = document.createElement('option');
+        option.value = mes;
+        option.textContent = mes;
+        if (index === mesActualIndex) option.selected = true; // Mes actual seleccionado
+        select.appendChild(option);
+      });
+    }
+  });
+  
+  console.log('✅ Fechas actualizadas a:', mesActualCapitalizado);
+  console.log('✅ Campos de año actualizados a:', anioActual);
+  console.log('✅ Selectores de mes actualizados - Mes actual:', meses[mesActualIndex]);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   console.log('🔧 Admin Buttons Handler cargado');
+  
+  // Actualizar fechas al inicio
+  actualizarFechasDinamicas();
   
   // Cargar fondos al inicio para tenerlos disponibles en selectores
   cargarFondosGlobales();
@@ -319,6 +430,18 @@ function resetCuotaForm() {
     const today = new Date();
     const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
     document.getElementById('cuota-vencimiento').value = lastDay.toISOString().split('T')[0];
+    
+    // Seleccionar mes y año actual
+    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const mesActual = meses[today.getMonth()];
+    const anioActual = today.getFullYear();
+    
+    const cuotaMesSelect = document.getElementById('cuota-mes');
+    const cuotaAnioInput = document.getElementById('cuota-año');
+    
+    if (cuotaMesSelect) cuotaMesSelect.value = mesActual;
+    if (cuotaAnioInput) cuotaAnioInput.value = anioActual;
   }
 }
 
