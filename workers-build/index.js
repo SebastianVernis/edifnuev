@@ -568,33 +568,41 @@ export default {
           // Si se especificó "TODOS", generar para todas las unidades
           if (departamentos === 'TODOS') {
             const totalUnits = building.units_count || 20;
+            const cutoffDay = building.cutoff_day || 5;
+            const mesIndex = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                             'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'].indexOf(mes);
+            const fechaVencimiento = new Date(anio, mesIndex, cutoffDay).toISOString().split('T')[0];
             
+            // Obtener cuotas existentes en batch
+            const existentes = await env.DB.prepare(
+              'SELECT departamento FROM cuotas WHERE mes = ? AND anio = ? AND building_id = ?'
+            ).bind(mes, anio, buildingId).all();
+            
+            const deptosExistentes = new Set(existentes.results.map(c => c.departamento));
+            
+            // Preparar batch insert
+            const batch = [];
             for (let i = 1; i <= totalUnits; i++) {
-              const depto = i.toString().padStart(3, '0'); // 001, 002, 003...
+              const depto = i.toString().padStart(3, '0');
               
-              try {
-                // Verificar si ya existe
-                const existe = await env.DB.prepare(
-                  'SELECT id FROM cuotas WHERE mes = ? AND anio = ? AND departamento = ? AND building_id = ?'
-                ).bind(mes, anio, depto, buildingId).first();
-
-                if (existe) {
-                  cuotasExistentes++;
-                } else {
-                  // Calcular fecha de vencimiento
-                  const cutoffDay = building.cutoff_day || 5;
-                  const mesIndex = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
-                                   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'].indexOf(mes);
-                  const fechaVencimiento = new Date(anio, mesIndex, cutoffDay).toISOString().split('T')[0];
-
-                  await env.DB.prepare(
+              if (deptosExistentes.has(depto)) {
+                cuotasExistentes++;
+              } else {
+                batch.push(
+                  env.DB.prepare(
                     'INSERT INTO cuotas (mes, anio, departamento, monto, pagado, fecha_vencimiento, tipo, concepto, building_id) VALUES (?, ?, ?, ?, 0, ?, ?, ?, ?)'
-                  ).bind(mes, anio, depto, monto, fechaVencimiento, tipo || 'ORDINARIA', concepto || null, buildingId).run();
-                  
-                  cuotasCreadas++;
-                }
+                  ).bind(mes, anio, depto, monto, fechaVencimiento, tipo || 'ORDINARIA', concepto || null, buildingId)
+                );
+              }
+            }
+            
+            // Ejecutar batch
+            if (batch.length > 0) {
+              try {
+                await env.DB.batch(batch);
+                cuotasCreadas = batch.length;
               } catch (error) {
-                errores.push(`Depto ${depto}: ${error.message}`);
+                errores.push(`Error en batch: ${error.message}`);
               }
             }
           } else {
