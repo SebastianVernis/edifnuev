@@ -1904,15 +1904,33 @@ export default {
 
         try {
           const body = await request.json();
-          const { nombre, direccion, totalUnidades, cuotaMensual, diaCorte, politicas } = body;
+          const { 
+            nombre, direccion, totalUnidades, cuotaMensual, cuotaExtraordinaria,
+            diaCorte, diasGracia, porcentajeMora, politicas, politicasPrivacidad, politicasPago
+          } = body;
 
           await env.DB.prepare(
             `UPDATE buildings SET 
                name = ?, address = ?, units_count = ?,
-               monthly_fee = ?, cutoff_day = ?, reglamento = ?,
+               monthly_fee = ?, extraordinary_fee = ?, cutoff_day = ?,
+               payment_due_days = ?, late_fee_percent = ?,
+               reglamento = ?, privacy_policy = ?, payment_policies = ?,
                updated_at = datetime('now')
              WHERE id = ?`
-          ).bind(nombre, direccion, totalUnidades, cuotaMensual, diaCorte, politicas, buildingId).run();
+          ).bind(
+            nombre, 
+            direccion, 
+            totalUnidades, 
+            cuotaMensual, 
+            cuotaExtraordinaria || 0,
+            diaCorte,
+            diasGracia || 5,
+            porcentajeMora || 2,
+            politicas || '',
+            politicasPrivacidad || '',
+            politicasPago || '',
+            buildingId
+          ).run();
 
           return new Response(JSON.stringify({
             ok: true,

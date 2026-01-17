@@ -23,7 +23,7 @@ export async function initConfiguracion() {
 // Cargar proyectos críticos
 async function cargarProyectos() {
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('edificio_token') || localStorage.getItem('token');
     const response = await fetch(`${API_BASE}/proyectos`, {
       headers: {
         'Authorization': `Bearer ${token}`
@@ -101,7 +101,7 @@ function renderProyectos(proyectosData, resumen) {
 // Cargar información general
 async function cargarInfoGeneral() {
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('edificio_token') || localStorage.getItem('token');
     const response = await fetch(`${API_BASE}/usuarios`, {
       headers: {
         'Authorization': `Bearer ${token}`
@@ -272,7 +272,7 @@ async function guardarProyecto() {
   }
   
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('edificio_token') || localStorage.getItem('token');
     const url = id ? `${API_BASE}/proyectos/${id}` : `${API_BASE}/proyectos`;
     const method = id ? 'PUT' : 'POST';
     
@@ -307,7 +307,7 @@ async function eliminarProyecto(id) {
   }
   
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('edificio_token') || localStorage.getItem('token');
     const response = await fetch(`${API_BASE}/proyectos/${id}`, {
       method: 'DELETE',
       headers: {
@@ -365,7 +365,7 @@ async function guardarPerfil() {
   }
   
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('edificio_token') || localStorage.getItem('token');
     const payload = { nombre, email, telefono };
     
     if (passwordNueva) {
@@ -409,7 +409,7 @@ async function guardarPerfil() {
 // Cargar información del edificio
 async function cargarInfoEdificio() {
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('edificio_token') || localStorage.getItem('token');
     const response = await fetch(`${API_BASE}/onboarding/building-info`, {
       headers: {
         'Authorization': `Bearer ${token}`
@@ -469,7 +469,7 @@ async function guardarInfoEdificio() {
   const politicas = document.getElementById('edificio-politicas').value;
   
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('edificio_token') || localStorage.getItem('token');
     const response = await fetch(`${API_BASE}/onboarding/building-info`, {
       method: 'PUT',
       headers: {
@@ -523,7 +523,7 @@ function descargarPoliticas() {
 // Cargar documentos
 async function cargarDocumentos() {
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('edificio_token') || localStorage.getItem('token');
     const response = await fetch(`${API_BASE}/onboarding/documents`, {
       headers: {
         'Authorization': `Bearer ${token}`
@@ -619,7 +619,7 @@ async function subirDocumento() {
   }
   
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('edificio_token') || localStorage.getItem('token');
     const formData = new FormData();
     formData.append('tipo', tipo);
     formData.append('nombre', nombre);
@@ -651,7 +651,7 @@ async function subirDocumento() {
 // Funciones globales para los botones de documentos
 window.descargarDocumento = async function(id, nombre) {
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('edificio_token') || localStorage.getItem('token');
     const response = await fetch(`${API_BASE}/onboarding/documents/${id}`, {
       headers: {
         'Authorization': `Bearer ${token}`
@@ -683,7 +683,7 @@ window.eliminarDocumento = async function(id) {
   }
   
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('edificio_token') || localStorage.getItem('token');
     const response = await fetch(`${API_BASE}/onboarding/documents/${id}`, {
       method: 'DELETE',
       headers: {
