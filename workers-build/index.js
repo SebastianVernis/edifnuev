@@ -946,13 +946,13 @@ export default {
           });
         }
 
-        // Buscar fondos por nombre y building_id
+        // Buscar fondos por ID y building_id
         const fondoOrigen = await env.DB.prepare(
-          'SELECT * FROM fondos WHERE nombre = ? AND building_id = ?'
-        ).bind(origen, buildingId).first();
+          'SELECT * FROM fondos WHERE id = ? AND building_id = ?'
+        ).bind(parseInt(origen), buildingId).first();
         const fondoDestino = await env.DB.prepare(
-          'SELECT * FROM fondos WHERE nombre = ? AND building_id = ?'
-        ).bind(destino, buildingId).first();
+          'SELECT * FROM fondos WHERE id = ? AND building_id = ?'
+        ).bind(parseInt(destino), buildingId).first();
 
         if (!fondoOrigen || !fondoDestino) {
           return new Response(JSON.stringify({

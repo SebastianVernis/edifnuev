@@ -1327,23 +1327,20 @@ function setupFormHandlers() {
           alert('✅ Transferencia realizada exitosamente');
           hideModal('transferir-modal');
           
-          // Actualizar valores en el DOM directamente
-          if (data.fondos) {
-            const elemAhorro = document.getElementById('ahorro-acumulado');
-            const elemGastosMayores = document.getElementById('gastos-mayores');
-            const elemDineroOp = document.getElementById('dinero-operacional');
-            const elemPatrimonio = document.getElementById('patrimonio-total-fondos');
-            
-            if (elemAhorro) elemAhorro.textContent = `$${(data.fondos.ahorroAcumulado || 0).toLocaleString()}`;
-            if (elemGastosMayores) elemGastosMayores.textContent = `$${(data.fondos.gastosMayores || 0).toLocaleString()}`;
-            if (elemDineroOp) elemDineroOp.textContent = `$${(data.fondos.dineroOperacional || 0).toLocaleString()}`;
-            if (elemPatrimonio) elemPatrimonio.textContent = `$${(data.fondos.patrimonioTotal || 0).toLocaleString()}`;
-            
-            console.log('✅ Fondos actualizados en UI');
-          }
+          // Recargar fondos para ver los nuevos saldos
+          cargarFondos();
+          
+          // Recargar fondos globales para actualizar selectores
+          cargarFondosGlobales();
           
           // Recargar movimientos
           cargarMovimientosFondos();
+          
+          // Actualizar dashboard si está visible
+          const dashboardSection = document.getElementById('dashboard-section');
+          if (dashboardSection && dashboardSection.style.display !== 'none') {
+            cargarDashboard();
+          }
         } else {
           const error = await response.json();
           console.error('❌ Error del servidor:', error);
