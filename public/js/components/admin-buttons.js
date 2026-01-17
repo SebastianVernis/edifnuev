@@ -3118,3 +3118,161 @@ function generarReporteBalance() {
   // Abrir en nueva ventana
   window.open(url, '_blank', 'width=1024,height=768');
 }
+
+// ========== PROYECTOS CRÍTICOS ==========
+
+async function cargarProyectosMain() {
+  console.log('📋 Cargando proyectos...');
+  
+  try {
+    const token = localStorage.getItem('edificio_token');
+    const response = await fetch('/api/proyectos', {
+      headers: { 
+        'Authorization': `Bearer ${token}`,
+        'x-auth-token': token
+      }
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      const proyectos = data.proyectos || [];
+      const resumen = data.resumen || {};
+      
+      renderProyectosMain(proyectos, resumen);
+    }
+  } catch (error) {
+    console.error('Error cargando proyectos:', error);
+  }
+}
+
+function renderProyectosMain(proyectos, resumen) {
+  const container = document.getElementById('proyectos-list-main');
+  if (!container) return;
+  
+  if (proyectos.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 3rem; color: #6B7280;">
+        <i class="fas fa-project-diagram" style="font-size: 3rem; opacity: 0.3; margin-bottom: 1rem;"></i>
+        <p>No hay proyectos registrados</p>
+        <p style="font-size: 0.875rem; margin-top: 0.5rem;">Agrega proyectos críticos del condominio</p>
+      </div>
+    `;
+    
+    // Actualizar resumen en 0
+    document.getElementById('proyectos-total-main').textContent = '$0';
+    document.getElementById('proyectos-por-depto-main').textContent = '$0';
+    document.getElementById('proyectos-unidades-main').textContent = '0';
+    return;
+  }
+  
+  container.innerHTML = proyectos.map(p => {
+    const prioridadColors = {
+      'URGENTE': '#EF4444',
+      'ALTA': '#F59E0B',
+      'MEDIA': '#3B82F6',
+      'BAJA': '#6B7280'
+    };
+    
+    return `
+      <div style="border: 2px solid #E5E7EB; border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 1rem; background: white;">
+        <div style="display: flex; justify-content: space-between; align-items: start;">
+          <div style="flex: 1;">
+            <h4 style="color: #1F2937; margin-bottom: 0.5rem;">${p.nombre}</h4>
+            <p style="color: #6B7280; font-size: 0.875rem; margin-bottom: 1rem;">${p.descripcion || 'Sin descripción'}</p>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              <span style="background: ${prioridadColors[p.prioridad] || '#6B7280'}; color: white; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.75rem; font-weight: 600;">
+                ${p.prioridad}
+              </span>
+              <span style="color: #1F2937; font-size: 1.25rem; font-weight: bold;">
+                $${parseFloat(p.monto || 0).toLocaleString('es-MX')}
+              </span>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-sm btn-secondary" onclick="editarProyectoMain(${p.id})">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn btn-sm btn-danger" onclick="eliminarProyectoMain(${p.id})">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  // Actualizar resumen
+  document.getElementById('proyectos-total-main').textContent = `$${(resumen.total || 0).toLocaleString('es-MX')}`;
+  document.getElementById('proyectos-por-depto-main').textContent = `$${(resumen.porDepartamento || 0).toLocaleString('es-MX')}`;
+  document.getElementById('proyectos-unidades-main').textContent = resumen.totalUnidades || 0;
+}
+
+// Botón nuevo proyecto en sección principal
+const nuevoProyectoMainBtn = document.getElementById('nuevo-proyecto-btn-main');
+if (nuevoProyectoMainBtn) {
+  nuevoProyectoMainBtn.addEventListener('click', () => {
+    console.log('➕ Nuevo Proyecto');
+    showModal('proyecto-modal-main');
+    resetProyectoMainForm();
+  });
+}
+
+function resetProyectoMainForm() {
+  const form = document.getElementById('proyecto-form-main');
+  if (form) {
+    form.reset();
+    document.getElementById('proyecto-id-main').value = '';
+    document.getElementById('proyecto-modal-title-main').textContent = 'Nuevo Proyecto';
+  }
+}
+
+async function editarProyectoMain(id) {
+  console.log('✏️ Editar proyecto:', id);
+  alert('Función de edición en desarrollo');
+}
+
+async function eliminarProyectoMain(id) {
+  if (!confirm('¿Eliminar este proyecto?')) return;
+  
+  console.log('🗑️ Eliminar proyecto:', id);
+  alert('Función de eliminación en desarrollo');
+}
+
+// Form de proyecto principal
+const proyectoFormMain = document.getElementById('proyecto-form-main');
+if (proyectoFormMain) {
+  proyectoFormMain.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    console.log('💾 Guardando proyecto...');
+    
+    const nombre = document.getElementById('proyecto-nombre-main').value;
+    const monto = parseFloat(document.getElementById('proyecto-monto-main').value);
+    const prioridad = document.getElementById('proyecto-prioridad-main').value;
+    const descripcion = document.getElementById('proyecto-descripcion-main').value;
+    
+    try {
+      const token = localStorage.getItem('edificio_token');
+      const response = await fetch('/api/proyectos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token
+        },
+        body: JSON.stringify({ nombre, monto, prioridad, descripcion })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        alert('✅ ' + (data.msg || data.message || 'Proyecto creado'));
+        hideModal('proyecto-modal-main');
+        cargarProyectosMain();
+      } else {
+        const error = await response.json();
+        alert('❌ Error: ' + (error.msg || error.message));
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('❌ Error al guardar proyecto');
+    }
+  });
+}

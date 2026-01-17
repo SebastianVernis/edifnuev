@@ -28,7 +28,7 @@
           <li><a href="#fondos"><i class="fas fa-piggy-bank"></i> Fondos</a></li>
           <li><a href="#anuncios"><i class="fas fa-bullhorn"></i> Anuncios</a></li>
           <li><a href="#cierres"><i class="fas fa-calendar-check"></i> Cierres</a></li>
-          <li><a href="#parcialidades"><i class="fas fa-percentage"></i> Parcialidades 2026</a></li>
+          <li><a href="#proyectos"><i class="fas fa-project-diagram"></i> Proyectos</a></li>
           <li><a href="#configuracion"><i class="fas fa-cog"></i> Configuración</a></li>
         </ul>
       </nav>
@@ -802,89 +802,78 @@
         </div>
       </section>
       
-      <!-- Parcialidades Section -->
-      <section id="parcialidades-section" class="content-section">
+      <!-- Proyectos Section -->
+      <section id="proyectos-section" class="content-section">
         <div class="section-header">
-          <h2>Parcialidades 2026</h2>
-          <button id="nuevo-pago-btn" class="btn btn-primary"><i class="fas fa-plus"></i> Registrar Pago</button>
+          <h2>Proyectos Críticos</h2>
+          <button id="nuevo-proyecto-btn-main" class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo Proyecto</button>
+        </div>
+
+        <div style="background: #EFF6FF; padding: 1rem; border-radius: 0.5rem; margin-bottom: 2rem; border-left: 4px solid #4F46E5;">
+          <p style="margin: 0; color: #1F2937;">
+            <i class="fas fa-info-circle" style="color: #4F46E5;"></i>
+            <strong>Proyectos Críticos:</strong> Gestiona proyectos importantes del condominio como remodelaciones, reparaciones mayores, actualizaciones legales, etc.
+          </p>
         </div>
         
-        <div class="parcialidades-info">
-          <div class="info-card">
-            <h3>Proyectos Críticos 2026</h3>
-            <ul id="proyectos-criticos-list-admin">
-              <li>Cargando proyectos...</li>
-            </ul>
-            <p><strong>Total:</strong> <span id="proyectos-total-admin">$0</span></p>
-            <p><strong>Por Departamento:</strong> <span id="proyectos-por-depto-admin">$0</span></p>
+        <div class="proyectos-list" id="proyectos-list-main" style="margin-bottom: 2rem;">
+          <!-- Proyectos will be loaded here -->
+        </div>
+
+        <div style="background: #F9FAFB; padding: 1.5rem; border-radius: 0.5rem; border: 2px solid #E5E7EB;">
+          <h3 style="margin-bottom: 1rem; color: #1F2937;">Resumen</h3>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+            <div>
+              <p style="color: #6B7280; font-size: 0.875rem;">Total Proyectos</p>
+              <p style="color: #1F2937; font-size: 1.5rem; font-weight: bold;" id="proyectos-total-main">$0</p>
+            </div>
+            <div>
+              <p style="color: #6B7280; font-size: 0.875rem;">Por Departamento</p>
+              <p style="color: #1F2937; font-size: 1.5rem; font-weight: bold;" id="proyectos-por-depto-main">$0</p>
+            </div>
+            <div>
+              <p style="color: #6B7280; font-size: 0.875rem;">Total Unidades</p>
+              <p style="color: #1F2937; font-size: 1.5rem; font-weight: bold;" id="proyectos-unidades-main">0</p>
+            </div>
           </div>
         </div>
         
-        <div class="parcialidades-progress">
-          <h3>Estado de Pagos por Departamento</h3>
-          <div id="parcialidades-progress-container">
-            <!-- Progress bars will be loaded here -->
-          </div>
-        </div>
-        
-        <div class="parcialidades-pagos">
-          <h3>Historial de Pagos</h3>
-          <div class="table-container">
-            <table id="parcialidades-table" class="data-table">
-              <thead>
-                <tr>
-                  <th>Fecha</th>
-                  <th>Departamento</th>
-                  <th>Monto</th>
-                  <th>Comprobante</th>
-                  <th>Estado</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Pagos will be loaded here -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-        
-        <!-- Modal for registering payment -->
-        <div id="parcialidad-modal" class="modal">
+        <!-- Modal for new/edit proyecto -->
+        <div id="proyecto-modal-main" class="modal">
           <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Registrar Pago de Parcialidad</h2>
+            <h2 id="proyecto-modal-title-main">Nuevo Proyecto</h2>
             
-            <form id="parcialidad-form">
+            <form id="proyecto-form-main">
+              <input type="hidden" id="proyecto-id-main">
+              
               <div class="form-group">
-                <label for="parcialidad-departamento">Departamento:</label>
-                <select id="parcialidad-departamento" required>
-                  <option value="">Seleccionar...</option>
-                  <!-- Departamentos will be loaded here -->
+                <label for="proyecto-nombre-main">Nombre del Proyecto:</label>
+                <input type="text" id="proyecto-nombre-main" required placeholder="ej: Reparación de elevador">
+              </div>
+              
+              <div class="form-group">
+                <label for="proyecto-monto-main">Monto Total:</label>
+                <input type="number" id="proyecto-monto-main" min="0" step="0.01" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="proyecto-prioridad-main">Prioridad:</label>
+                <select id="proyecto-prioridad-main" required>
+                  <option value="BAJA">Baja</option>
+                  <option value="MEDIA">Media</option>
+                  <option value="ALTA">Alta</option>
+                  <option value="URGENTE">Urgente</option>
                 </select>
               </div>
-              
+
               <div class="form-group">
-                <label for="parcialidad-monto">Monto:</label>
-                <input type="number" id="parcialidad-monto" min="0" step="0.01" required>
+                <label for="proyecto-descripcion-main">Descripción:</label>
+                <textarea id="proyecto-descripcion-main" rows="4" placeholder="Describe el proyecto..."></textarea>
               </div>
               
               <div class="form-group">
-                <label for="parcialidad-fecha">Fecha:</label>
-                <input type="date" id="parcialidad-fecha" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="parcialidad-comprobante">Comprobante:</label>
-                <input type="text" id="parcialidad-comprobante" placeholder="Referencia de pago">
-              </div>
-              
-              <div class="form-group">
-                <label for="parcialidad-notas">Notas:</label>
-                <textarea id="parcialidad-notas" rows="3"></textarea>
-              </div>
-              
-              <div class="form-group">
-                <button type="submit" class="btn btn-primary">Registrar Pago</button>
+                <button type="submit" class="btn btn-primary">Guardar Proyecto</button>
                 <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
               </div>
             </form>
@@ -900,48 +889,13 @@
         
         <!-- Tabs de configuración -->
         <div class="config-tabs">
-          <button class="tab-btn active" data-tab="proyectos">Proyectos Críticos</button>
-          <button class="tab-btn" data-tab="perfil">Mi Perfil</button>
+          <button class="tab-btn active" data-tab="perfil">Mi Perfil</button>
           <button class="tab-btn" data-tab="edificio">Información del Edificio</button>
           <button class="tab-btn" data-tab="documentos">Documentos</button>
         </div>
         
-        <!-- Tab: Proyectos Críticos -->
-        <div class="config-tab-content active" id="tab-proyectos">
-          <div class="config-container">
-            <div class="config-card">
-              <h3>Proyectos Críticos 2026</h3>
-              <p class="description">Gestiona los proyectos críticos del condominio y sus montos</p>
-              
-              <div class="proyectos-list" id="proyectos-list">
-                <!-- Proyectos will be loaded here -->
-              </div>
-              
-              <button id="nuevo-proyecto-btn" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Agregar Proyecto
-              </button>
-            </div>
-            
-            <div class="config-card">
-              <h3>Información General</h3>
-              <div class="info-item">
-                <label>Total de Departamentos:</label>
-                <p id="config-total-deptos">20</p>
-              </div>
-              <div class="info-item">
-                <label>Cuota Mensual:</label>
-                <p id="config-cuota-mensual">$1,500 MXN</p>
-              </div>
-              <div class="info-item">
-                <label>Día de Corte:</label>
-                <p id="config-dia-corte">1</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        
         <!-- Tab: Mi Perfil -->
-        <div class="config-tab-content" id="tab-perfil">
+        <div class="config-tab-content active" id="tab-perfil">
           <div class="config-card" style="max-width: 600px; margin: 0 auto;">
             <h3>Mi Información</h3>
             <p class="description">Actualiza tu información personal</p>

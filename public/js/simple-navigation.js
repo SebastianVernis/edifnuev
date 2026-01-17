@@ -68,6 +68,9 @@ function loadSectionData(sectionId) {
     case 'usuarios':
       if (typeof filtrarUsuarios === 'function') filtrarUsuarios();
       break;
+    case 'proyectos':
+      if (typeof cargarProyectosMain === 'function') cargarProyectosMain();
+      break;
     case 'parcialidades':
       if (typeof cargarParcialidades === 'function') cargarParcialidades();
       break;
