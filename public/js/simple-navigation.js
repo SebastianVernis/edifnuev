@@ -2,16 +2,13 @@
 document.addEventListener('DOMContentLoaded', () => {
   console.log('✓ Navegación simple cargada');
   
-  // Mostrar sección por defecto
-  showSection('cuotas');
+  // Mostrar sección por defecto (dashboard)
+  showSection('dashboard');
   
-  // Cargar datos de cuotas al inicio
+  // Cargar datos del dashboard al inicio
   setTimeout(() => {
-    if (typeof filtrarCuotas === 'function') {
-      filtrarCuotas();
-    }
-    if (typeof cargarCuotasInquilino === 'function') {
-      cargarCuotasInquilino();
+    if (typeof cargarDashboard === 'function') {
+      cargarDashboard();
     }
   }, 500);
   
