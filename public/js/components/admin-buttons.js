@@ -1450,13 +1450,17 @@ function setupFormHandlers() {
       
       try {
         const token = localStorage.getItem('edificio_token');
-        const response = await fetch('/api/cierres/mensual', {
+        const response = await fetch('/api/cierres', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'x-auth-token': token
           },
-          body: JSON.stringify(formData)
+          body: JSON.stringify({
+            tipo: 'MENSUAL',
+            mes: formData.mes,
+            anio: formData.año
+          })
         });
         
         if (response.ok) {
@@ -1492,13 +1496,16 @@ function setupFormHandlers() {
       
       try {
         const token = localStorage.getItem('edificio_token');
-        const response = await fetch('/api/cierres/anual', {
+        const response = await fetch('/api/cierres', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'x-auth-token': token
           },
-          body: JSON.stringify({ año })
+          body: JSON.stringify({
+            tipo: 'ANUAL',
+            anio: año
+          })
         });
         
         if (response.ok) {
