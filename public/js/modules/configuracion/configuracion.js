@@ -466,7 +466,7 @@ async function cargarInfoEdificio() {
         funds.forEach((fund, index) => {
           const option = document.createElement('option');
           option.value = fund.id || index;
-          option.textContent = \`\${fund.name} ($\${parseFloat(fund.amount || 0).toLocaleString('es-MX')})\`;
+          option.textContent = `${fund.name} ($${parseFloat(fund.amount || 0).toLocaleString('es-MX')})`;
           fondoIngresosSelect.appendChild(option);
         });
         

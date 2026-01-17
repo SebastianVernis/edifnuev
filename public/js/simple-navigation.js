@@ -76,7 +76,7 @@ function loadSectionData(sectionId) {
       break;
     case 'configuracion':
       // Importar y ejecutar el módulo de configuración
-      import('./js/modules/configuracion/configuracion.js')
+      import('/js/modules/configuracion/configuracion.js')
         .then(module => {
           if (module.initConfiguracion) {
             module.initConfiguracion();
