@@ -172,6 +172,14 @@ document.addEventListener('DOMContentLoaded', () => {
       resetGenerarMasivoForm();
     });
   }
+
+  const calcularMoraBtn = document.getElementById('calcular-mora-btn');
+  if (calcularMoraBtn) {
+    calcularMoraBtn.addEventListener('click', async () => {
+      console.log('🧮 Calcular Mora');
+      await calcularMoraAutomatica();
+    });
+  }
   
   const verificarVencimientosBtn = document.getElementById('verificar-vencimientos-btn');
   if (verificarVencimientosBtn) {
@@ -774,25 +782,43 @@ function renderCuotasTable(cuotas) {
   cuotas.forEach(cuota => {
     const tr = document.createElement('tr');
     
+    // Determinar estado
     let estadoClass = '';
-    if (cuota.estado === 'PAGADO') estadoClass = 'text-success';
-    else if (cuota.estado === 'VENCIDO') estadoClass = 'text-danger';
+    let estadoTexto = cuota.estado || (cuota.pagado ? 'PAGADO' : (cuota.vencida ? 'VENCIDO' : 'PENDIENTE'));
+    
+    if (estadoTexto === 'PAGADO' || cuota.pagado) estadoClass = 'text-success';
+    else if (estadoTexto === 'VENCIDO' || cuota.vencida) estadoClass = 'text-danger';
     else estadoClass = 'text-warning';
     
-    const vencimiento = new Date(cuota.fechaVencimiento).toLocaleDateString('es-MX');
-    const fechaPago = cuota.fechaPago ? new Date(cuota.fechaPago).toLocaleDateString('es-MX') : '-';
+    const vencimiento = cuota.fecha_vencimiento ? 
+      new Date(cuota.fecha_vencimiento).toLocaleDateString('es-MX') : '-';
+    const fechaPago = cuota.fecha_pago ? 
+      new Date(cuota.fecha_pago).toLocaleDateString('es-MX') : '-';
+    
+    // Calcular total con mora
+    const montoBase = parseFloat(cuota.monto || 0);
+    const mora = parseFloat(cuota.monto_mora || 0);
+    const total = montoBase + mora;
     
     tr.innerHTML = `
       <td>${cuota.departamento}</td>
       <td>${cuota.mes} ${cuota.anio}</td>
-      <td>$${cuota.monto.toLocaleString()}</td>
-      <td class="${estadoClass}">${cuota.estado}</td>
+      <td>
+        <div>$${montoBase.toLocaleString('es-MX')}</div>
+        ${mora > 0 ? `<small style="color: #F59E0B;">+ $${mora.toLocaleString('es-MX')} mora</small>` : ''}
+      </td>
+      <td>
+        <strong>$${total.toLocaleString('es-MX')}</strong>
+      </td>
+      <td class="${estadoClass}">${estadoTexto}</td>
       <td>${vencimiento}</td>
       <td>${fechaPago}</td>
       <td>
-        <button class="btn btn-sm btn-primary" data-action="validar-cuota" data-id="${cuota.id}">
-          Validar
-        </button>
+        ${!cuota.pagado ? `
+          <button class="btn btn-sm btn-primary" data-action="validar-cuota" data-id="${cuota.id}">
+            Validar
+          </button>
+        ` : '<span style="color: #10B981;">✓ Pagado</span>'}
       </td>
     `;
     
@@ -2989,4 +3015,55 @@ if (generarMasivoForm) {
       alert('❌ Error al generar cuotas');
     }
   });
+}
+
+// ========== CÁLCULO AUTOMÁTICO DE MORA ==========
+
+async function calcularMoraAutomatica() {
+  if (!confirm('¿Calcular mora automáticamente para todas las cuotas vencidas?\n\nSe aplicará el recargo configurado en el edificio.')) {
+    return;
+  }
+
+  try {
+    const token = localStorage.getItem('edificio_token');
+    
+    console.log('🧮 Calculando mora...');
+    
+    const response = await fetch('/api/cuotas/calcular-mora', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-auth-token': token
+      }
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      
+      alert(
+        `✅ ${data.message}\n\n` +
+        `Cuotas con mora: ${data.cuotasActualizadas}\n` +
+        `Mora total aplicada: $${parseFloat(data.moraTotal).toLocaleString('es-MX')}\n\n` +
+        `Configuración aplicada:\n` +
+        `• Día de corte: ${data.configuracion.cutoffDay}\n` +
+        `• Días de gracia: ${data.configuracion.graceDays}\n` +
+        `• Tasa de mora: ${data.configuracion.latePercent}`
+      );
+      
+      // Recargar cuotas para ver las actualizadas
+      filtrarCuotas();
+      
+      // Actualizar dashboard si está visible
+      const dashboardSection = document.getElementById('dashboard-section');
+      if (dashboardSection && dashboardSection.style.display !== 'none') {
+        cargarDashboard();
+      }
+    } else {
+      const error = await response.json();
+      alert(`❌ Error: ${error.message || 'No se pudo calcular la mora'}`);
+    }
+  } catch (error) {
+    console.error('Error calculando mora:', error);
+    alert('❌ Error al calcular mora');
+  }
 }

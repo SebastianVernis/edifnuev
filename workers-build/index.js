@@ -468,6 +468,102 @@ export default {
         }
       }
 
+      // POST /api/cuotas/calcular-mora - Calcular mora para cuotas vencidas
+      if (method === 'POST' && path === '/api/cuotas/calcular-mora') {
+        const authResult = await verifyAuth(request, env);
+        if (authResult instanceof Response) return authResult;
+
+        const buildingId = authResult.payload.buildingId;
+
+        try {
+          // Obtener configuración del building
+          const building = await env.DB.prepare(
+            'SELECT cutoff_day, payment_due_days, late_fee_percent FROM buildings WHERE id = ?'
+          ).bind(buildingId).first();
+
+          if (!building) {
+            return new Response(JSON.stringify({
+              success: false,
+              message: 'Edificio no encontrado'
+            }), {
+              status: 404,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          const cutoffDay = building.cutoff_day || 5;
+          const graceDays = building.payment_due_days || 5;
+          const latePercent = building.late_fee_percent || 2;
+
+          // Obtener todas las cuotas pendientes
+          const cuotasPendientes = await env.DB.prepare(
+            'SELECT * FROM cuotas WHERE building_id = ? AND pagado = 0'
+          ).bind(buildingId).all();
+
+          const cuotas = cuotasPendientes.results || [];
+          const hoy = new Date();
+          
+          let cuotasActualizadas = 0;
+          let moraTotal = 0;
+
+          for (const cuota of cuotas) {
+            // Calcular fecha límite de pago (cutoff_day + grace_days)
+            const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                          'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            const mesIndex = meses.indexOf(cuota.mes);
+            
+            if (mesIndex === -1) continue; // Mes inválido
+            
+            const fechaCorte = new Date(cuota.anio, mesIndex, cutoffDay);
+            const fechaLimite = new Date(fechaCorte);
+            fechaLimite.setDate(fechaLimite.getDate() + graceDays);
+
+            // Si ya pasó la fecha límite, calcular mora
+            if (hoy > fechaLimite) {
+              // Calcular meses de atraso
+              const mesesAtraso = Math.floor(
+                (hoy.getTime() - fechaLimite.getTime()) / (1000 * 60 * 60 * 24 * 30)
+              ) + 1; // Al menos 1 mes
+
+              // Calcular mora: monto * (porcentaje/100) * meses
+              const mora = cuota.monto * (latePercent / 100) * mesesAtraso;
+
+              // Actualizar cuota
+              await env.DB.prepare(
+                'UPDATE cuotas SET monto_mora = ?, vencida = 1 WHERE id = ?'
+              ).bind(mora, cuota.id).run();
+
+              cuotasActualizadas++;
+              moraTotal += mora;
+            }
+          }
+
+          return new Response(JSON.stringify({
+            success: true,
+            message: `Cálculo completado: ${cuotasActualizadas} cuotas con mora aplicada`,
+            cuotasActualizadas,
+            moraTotal: moraTotal.toFixed(2),
+            configuracion: {
+              cutoffDay,
+              graceDays,
+              latePercent: `${latePercent}%`
+            }
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+
+        } catch (error) {
+          return new Response(JSON.stringify({
+            success: false,
+            message: 'Error al calcular mora',
+            error: error.message
+          }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+      }
+
       // === FONDOS ENDPOINTS ===
       
       // GET /api/fondos - Obtener fondos
