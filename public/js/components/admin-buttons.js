@@ -3235,7 +3235,7 @@ async function eliminarProyectoMain(id) {
   if (!confirm('¿Eliminar este proyecto?')) return;
   
   console.log('🗑️ Eliminar proyecto:', id);
-  alert('Función de eliminación en desarrollo');
+  eliminarProyectoMainReal(id); return;
 }
 
 // Form de proyecto principal
@@ -3275,4 +3275,25 @@ if (proyectoFormMain) {
       alert('❌ Error al guardar proyecto');
     }
   });
+}
+
+async function eliminarProyectoMainReal(id) {
+  try {
+    const token = localStorage.getItem('edificio_token');
+    const response = await fetch(`/api/proyectos/${id}`, {
+      method: 'DELETE',
+      headers: { 'x-auth-token': token }
+    });
+    
+    if (response.ok) {
+      alert('✅ Proyecto eliminado');
+      cargarProyectosMain();
+    } else {
+      const error = await response.json();
+      alert('❌ Error: ' + (error.msg || error.message));
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('❌ Error al eliminar');
+  }
 }

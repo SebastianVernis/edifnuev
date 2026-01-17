@@ -1966,18 +1966,45 @@ export default {
 
         const buildingId = authResult.payload.buildingId;
         
-        // Por ahora retornar array vacío (falta implementar tabla proyectos en D1)
-        return new Response(JSON.stringify({
-          ok: true,
-          proyectos: [],
-          resumen: {
-            total: 0,
-            porDepartamento: 0,
-            totalUnidades: 0
-          }
-        }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        });
+        try {
+          const { results } = await env.DB.prepare(
+            'SELECT * FROM proyectos WHERE building_id = ? AND activo = 1 ORDER BY prioridad DESC, created_at DESC'
+          ).bind(buildingId).all();
+
+          const proyectos = results || [];
+          
+          // Calcular resumen
+          const total = proyectos.reduce((sum, p) => sum + parseFloat(p.monto || 0), 0);
+          
+          // Obtener total de unidades del building
+          const building = await env.DB.prepare(
+            'SELECT units_count FROM buildings WHERE id = ?'
+          ).bind(buildingId).first();
+          
+          const totalUnidades = building?.units_count || 20;
+          const porDepartamento = totalUnidades > 0 ? total / totalUnidades : 0;
+
+          return new Response(JSON.stringify({
+            ok: true,
+            proyectos: proyectos,
+            resumen: {
+              total: total,
+              porDepartamento: porDepartamento,
+              totalUnidades: totalUnidades
+            }
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        } catch (error) {
+          return new Response(JSON.stringify({
+            ok: false,
+            msg: 'Error al cargar proyectos',
+            error: error.message
+          }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
       }
 
       // POST /api/proyectos - Crear proyecto
@@ -1987,7 +2014,7 @@ export default {
 
         const buildingId = authResult.payload.buildingId;
         const body = await request.json();
-        const { nombre, monto, prioridad } = body;
+        const { nombre, monto, prioridad, descripcion } = body;
 
         if (!nombre || !monto || !prioridad) {
           return new Response(JSON.stringify({
@@ -1999,11 +2026,60 @@ export default {
           });
         }
 
-        // Por ahora retornar éxito (falta implementar tabla proyectos en D1)
+        try {
+          const result = await env.DB.prepare(
+            'INSERT INTO proyectos (nombre, descripcion, monto, prioridad, building_id) VALUES (?, ?, ?, ?, ?)'
+          ).bind(nombre, descripcion || '', monto, prioridad, buildingId).run();
+
+          return new Response(JSON.stringify({
+            ok: true,
+            msg: 'Proyecto creado exitosamente',
+            id: result.meta.last_row_id
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        } catch (error) {
+          return new Response(JSON.stringify({
+            ok: false,
+            msg: 'Error al crear proyecto',
+            error: error.message
+          }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+      }
+
+      // DELETE /api/proyectos/:id - Eliminar proyecto
+      if (method === 'DELETE' && path.startsWith('/api/proyectos/')) {
+        const authResult = await verifyAuth(request, env);
+        if (authResult instanceof Response) return authResult;
+
+        const buildingId = authResult.payload.buildingId;
+        const proyectoId = parseInt(path.split('/').pop());
+
+        const proyecto = await env.DB.prepare(
+          'SELECT * FROM proyectos WHERE id = ? AND building_id = ?'
+        ).bind(proyectoId, buildingId).first();
+
+        if (!proyecto) {
+          return new Response(JSON.stringify({
+            ok: false,
+            msg: 'Proyecto no encontrado'
+          }), {
+            status: 404,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Soft delete
+        await env.DB.prepare(
+          'UPDATE proyectos SET activo = 0 WHERE id = ?'
+        ).bind(proyectoId).run();
+
         return new Response(JSON.stringify({
           ok: true,
-          msg: 'Proyecto creado exitosamente',
-          proyecto: { id: Date.now(), nombre, monto, prioridad }
+          msg: 'Proyecto eliminado exitosamente'
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
