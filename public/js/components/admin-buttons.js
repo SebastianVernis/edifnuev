@@ -806,10 +806,11 @@ function renderCuotasTable(cuotas) {
     else if (estadoTexto === 'VENCIDO' || cuota.vencida) estadoClass = 'text-danger';
     else estadoClass = 'text-warning';
     
+    // Evitar problema de timezone usando split en lugar de Date
     const vencimiento = cuota.fecha_vencimiento ? 
-      new Date(cuota.fecha_vencimiento).toLocaleDateString('es-MX') : '-';
+      cuota.fecha_vencimiento.split('T')[0].split('-').reverse().join('/') : '-';
     const fechaPago = cuota.fecha_pago ? 
-      new Date(cuota.fecha_pago).toLocaleDateString('es-MX') : '-';
+      cuota.fecha_pago.split('T')[0].split('-').reverse().join('/') : '-';
     
     // Calcular total con mora
     const montoBase = parseFloat(cuota.monto || 0);
