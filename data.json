@@ -4,7 +4,7 @@
       "id": 1,
       "nombre": "Administrador Principal",
       "email": "admin@edificio205.com",
-      "password": "$2b$10$p.hcjksAI/bvcEQXQjipaeXXGMUEk41stjGM2/gbDyPgfB16CEnA.",
+      "password": "$2a$10$TP7DL2fGl.dY6tZ1V./YKupbyP5vB8pPSamTn9DroDIgvUnzAVdCa",
       "departamento": "ADMIN",
       "rol": "ADMIN",
       "telefono": "+52 55 1234 5678",
