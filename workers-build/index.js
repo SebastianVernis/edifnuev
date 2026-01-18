@@ -2540,6 +2540,139 @@ export default {
         });
       }
 
+
+      // === DOCUMENTOS ENDPOINTS ===
+      // GET /api/documentos - Obtener documentos del edificio
+      if (method === 'GET' && path === '/api/documentos') {
+        const authResult = await verifyAuth(request, env);
+        if (authResult instanceof Response) return authResult;
+
+        const buildingId = authResult.payload.buildingId;
+        const { results } = await env.DB.prepare(
+          'SELECT * FROM documentos WHERE building_id = ? ORDER BY created_at DESC'
+        ).bind(buildingId).all();
+
+        return new Response(JSON.stringify({
+          success: true,
+          documentos: results
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // POST /api/documentos - Subir documento
+      if (method === 'POST' && path === '/api/documentos') {
+        const authResult = await verifyAuth(request, env);
+        if (authResult instanceof Response) return authResult;
+
+        const buildingId = authResult.payload.buildingId;
+        
+        try {
+          const formData = await request.formData();
+          const file = formData.get('file');
+          const tipo = formData.get('tipo');
+          const nombre = formData.get('nombre');
+          const descripcion = formData.get('descripcion');
+
+          if (!file || !tipo || !nombre) {
+            return new Response(JSON.stringify({
+              success: false,
+              message: 'Datos incompletos'
+            }), {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          // Subir a R2
+          const timestamp = Date.now();
+          const fileName = `${timestamp}_${file.name}`;
+          const key = `documentos/${fileName}`;
+
+          if (env.UPLOADS) {
+            const fileBuffer = await file.arrayBuffer();
+            
+            await env.UPLOADS.put(key, fileBuffer, {
+              httpMetadata: {
+                contentType: file.type
+              }
+            });
+
+            // Guardar en BD
+            const result = await env.DB.prepare(
+              'INSERT INTO documentos (building_id, tipo, nombre, archivo_url, descripcion, created_by) VALUES (?, ?, ?, ?, ?, ?)'
+            ).bind(
+              buildingId,
+              tipo,
+              nombre,
+              `/uploads/${key}`,
+              descripcion || '',
+              authResult.payload.userId
+            ).run();
+
+            return new Response(JSON.stringify({
+              success: true,
+              id: result.meta.last_row_id,
+              message: 'Documento subido exitosamente'
+            }), {
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          } else {
+            return new Response(JSON.stringify({
+              success: false,
+              message: 'Servicio de almacenamiento no disponible'
+            }), {
+              status: 503,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+        } catch (error) {
+          return new Response(JSON.stringify({
+            success: false,
+            message: 'Error al subir documento',
+            error: error.message
+          }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+      }
+
+      // DELETE /api/documentos/:id - Eliminar documento
+      if (method === 'DELETE' && path.startsWith('/api/documentos/')) {
+        const authResult = await verifyAuth(request, env);
+        if (authResult instanceof Response) return authResult;
+
+        const buildingId = authResult.payload.buildingId;
+        const docId = parseInt(path.split('/').pop());
+
+        const doc = await env.DB.prepare(
+          'SELECT * FROM documentos WHERE id = ? AND building_id = ?'
+        ).bind(docId, buildingId).first();
+
+        if (!doc) {
+          return new Response(JSON.stringify({
+            success: false,
+            message: 'Documento no encontrado'
+          }), {
+            status: 404,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        await env.DB.prepare(
+          'DELETE FROM documentos WHERE id = ?'
+        ).bind(docId).run();
+
+        return new Response(JSON.stringify({
+          success: true,
+          message: 'Documento eliminado exitosamente'
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+
       // === STATIC ASSETS ===
       // Servir archivos subidos desde R2
       if (method === 'GET' && path.startsWith('/uploads/')) {

@@ -760,19 +760,22 @@ function descargarPoliticas() {
 async function cargarDocumentos() {
   try {
     const token = localStorage.getItem('edificio_token') || localStorage.getItem('token');
-    const response = await fetch(`${API_BASE}/onboarding/documents`, {
+    const response = await fetch(`${API_BASE}/documentos`, {
       headers: {
-        'Authorization': `Bearer ${token}`
+        'x-auth-token': token
       }
     });
     
-    const data = await response.json();
-    
-    if (data.ok) {
-      renderDocumentos(data.documents || []);
+    if (response.ok) {
+      const data = await response.json();
+      renderDocumentos(data.documentos || []);
+    } else {
+      console.log('No hay documentos o error al cargar');
+      renderDocumentos([]);
     }
   } catch (error) {
     console.error('Error al cargar documentos:', error);
+    renderDocumentos([]);
   }
 }
 
