@@ -22,8 +22,11 @@
         <ul>
           <li class="active"><a href="#dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
           <li><a href="#cuotas"><i class="fas fa-money-bill-wave"></i> Mis Cuotas</a></li>
+          <li><a href="#fondos"><i class="fas fa-piggy-bank"></i> Fondos del Edificio</a></li>
+          <li><a href="#gastos"><i class="fas fa-file-invoice-dollar"></i> Gastos del Edificio</a></li>
+          <li><a href="#proyectos"><i class="fas fa-project-diagram"></i> Proyectos</a></li>
           <li><a href="#anuncios"><i class="fas fa-bullhorn"></i> Anuncios</a></li>
-          <li><a href="#parcialidades"><i class="fas fa-percentage"></i> Parcialidades 2026</a></li>
+          <li><a href="#documentos"><i class="fas fa-file-alt"></i> Documentos</a></li>
         </ul>
       </nav>
       
@@ -45,30 +48,80 @@
       
       <!-- Dashboard Section -->
       <section id="dashboard-section" class="content-section active">
+        <!-- Métricas del inquilino -->
         <div class="dashboard-summary">
           <div class="summary-card">
-            <h3>Cuota Actual</h3>
-            <p class="amount" id="cuota-actual-estado">PENDIENTE</p>
-            <p class="description" id="cuota-actual-info">Noviembre 2025 - $550</p>
+            <h3>Mi Cuota del Mes</h3>
+            <p class="amount" id="mi-cuota-mes">$0</p>
+            <p class="description" id="mi-cuota-estado">Cargando...</p>
           </div>
           
           <div class="summary-card">
-            <h3>Próximo Vencimiento</h3>
-            <p class="amount" id="proximo-vencimiento">01/12/2025</p>
-            <p class="description">Faltan <span id="dias-vencimiento">35</span> días</p>
+            <h3>Cuotas Pendientes</h3>
+            <p class="amount" id="mis-cuotas-pendientes" style="color: #F59E0B;">0</p>
+            <p class="description">De mi departamento</p>
           </div>
           
           <div class="summary-card">
-            <h3>Parcialidades 2026</h3>
-            <p class="amount" id="parcialidades-progreso">0%</p>
-            <p class="description">Progreso de pago</p>
+            <h3>Cuotas Pagadas</h3>
+            <p class="amount" id="mis-cuotas-pagadas" style="color: #10B981;">0</p>
+            <p class="description">Este año</p>
           </div>
         </div>
-        
-        <div class="dashboard-anuncios">
-          <h3>Anuncios Importantes</h3>
-          <div id="dashboard-anuncios-list" class="anuncios-container">
-            <!-- Anuncios will be loaded here -->
+
+        <!-- Métricas del edificio (transparencia) -->
+        <h3 style="margin: 2rem 0 1rem;">Transparencia del Edificio</h3>
+        <div class="dashboard-summary">
+          <div class="summary-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <div style="display: flex; justify-content: space-between;">
+              <div>
+                <h3 style="color: white; opacity: 0.9;">Patrimonio Total</h3>
+                <p class="amount" id="patrimonio-edificio" style="color: white;">$0</p>
+                <p class="description" style="color: white; opacity: 0.8;">Fondos del edificio</p>
+              </div>
+              <i class="fas fa-building" style="font-size: 2.5rem; opacity: 0.3;"></i>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <h3>Cuotas del Edificio</h3>
+            <p class="amount" id="cuotas-edificio-mes">0</p>
+            <p class="description">Total del mes actual</p>
+          </div>
+
+          <div class="summary-card">
+            <h3>Gastos del Mes</h3>
+            <p class="amount" id="gastos-edificio-mes" style="color: #EF4444;">$0</p>
+            <p class="description">Del edificio</p>
+          </div>
+
+          <div class="summary-card">
+            <h3>Proyectos Activos</h3>
+            <p class="amount" id="proyectos-activos-count">0</p>
+            <p class="description">En curso</p>
+          </div>
+        </div>
+
+        <!-- Actividad reciente del edificio -->
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 2rem;">
+          <div class="recent-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h3>Anuncios Recientes</h3>
+              <a href="#anuncios" style="color: #4F46E5; text-decoration: none; font-size: 0.875rem;">Ver todos →</a>
+            </div>
+            <div id="recent-anuncios">
+              <!-- Anuncios will be loaded here -->
+            </div>
+          </div>
+
+          <div class="recent-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h3>Últimos Gastos del Edificio</h3>
+              <a href="#gastos" style="color: #4F46E5; text-decoration: none; font-size: 0.875rem;">Ver todos →</a>
+            </div>
+            <div id="recent-gastos-edificio">
+              <!-- Gastos will be loaded here -->
+            </div>
           </div>
         </div>
       </section>
