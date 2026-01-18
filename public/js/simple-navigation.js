@@ -53,10 +53,12 @@ function loadSectionData(sectionId) {
       break;
     case 'gastos':
       if (typeof filtrarGastos === 'function') filtrarGastos();
+      if (typeof cargarGastosInquilino === 'function') cargarGastosInquilino();
       break;
     case 'fondos':
       if (typeof cargarFondos === 'function') cargarFondos();
       if (typeof cargarMovimientosFondos === 'function') cargarMovimientosFondos();
+      if (typeof cargarFondosInquilino === 'function') cargarFondosInquilino();
       break;
     case 'anuncios':
       if (typeof filtrarAnuncios === 'function') filtrarAnuncios();
