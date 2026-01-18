@@ -293,18 +293,45 @@
   
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="js/auth/auth.js?v=5"></script>
-  <script src="js/simple-navigation.js?v=5"></script>
-  <script src="js/modules/inquilino/inquilino-buttons.js?v=5"></script>
-  <script src="js/shared/proyectos-loader.js?v=1"></script>
-  <!-- <script src="js/modules/inquilino/inquilino.js?v=4"></script> -->
+  <script src="js/simple-navigation.js?v=7"></script>
+  <script src="js/modules/inquilino/inquilino-buttons.js?v=7"></script>
+  <script src="js/shared/proyectos-loader.js?v=7"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       console.log('✓ Panel Inquilino - Operacional');
       const user = Auth.getCurrentUser();
       if (user) {
         console.log('✓ Inquilino:', user.nombre, '- Depto', user.departamento);
         const userName = document.getElementById('user-name');
         if (userName) userName.textContent = user.nombre;
+        
+        const userDepto = document.getElementById('user-depto');
+        if (userDepto) userDepto.textContent = 'Departamento: ' + user.departamento;
+      }
+
+      // Cargar nombre del edificio
+      const token = localStorage.getItem('edificio_token') || localStorage.getItem('token');
+      if (token) {
+        try {
+          const response = await fetch('/api/onboarding/building-info', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            if (data.ok && data.buildingInfo) {
+              const buildingName = data.buildingInfo.nombre || 'ChispartBuilding';
+              
+              const buildingNameEl = document.getElementById('building-name');
+              if (buildingNameEl) buildingNameEl.textContent = buildingName;
+              
+              const titleEl = document.querySelector('title');
+              if (titleEl) titleEl.textContent = `${buildingName} | Panel de Inquilino`;
+            }
+          }
+        } catch (error) {
+          console.error('Error cargando nombre del edificio:', error);
+        }
       }
     });
   </script>
