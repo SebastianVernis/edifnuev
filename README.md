@@ -171,6 +171,54 @@ Ver [.env.example](.env.example) para configuración completa.
 - ✅ Documentación organizada
 - ✅ Listo para producción
 
+## 🖼️ Visual Gallery
+
+### Login
+| Desktop | Mobile |
+| :---: | :---: |
+| <img src="docs/screenshots/auth/login-page-desktop.png" width="400"> | <img src="docs/screenshots/auth/login-page-mobile.png" width="200"> |
+
+### Register
+| Desktop | Mobile |
+| :---: | :---: |
+| <img src="docs/screenshots/auth/register-page-desktop.png" width="400"> | <img src="docs/screenshots/auth/register-page-mobile.png" width="200"> |
+
+## 🖼️ Visual Gallery
+
+### Login
+| Desktop | Mobile |
+| :---: | :---: |
+| <img src="docs/screenshots/auth/login-page-desktop.png" width="400"> | <img src="docs/screenshots/auth/login-page-mobile.png" width="200"> |
+
+### Register
+| Desktop | Mobile |
+| :---: | :---: |
+| <img src="docs/screenshots/auth/register-page-desktop.png" width="400"> | <img src="docs/screenshots/auth/register-page-mobile.png" width="200"> |
+
+## 🖼️ Visual Gallery
+
+### Login
+| Desktop | Mobile |
+| :---: | :---: |
+| <img src="docs/screenshots/auth/login-page-desktop.png" width="400"> | <img src="docs/screenshots/auth/login-page-mobile.png" width="200"> |
+
+### Register
+| Desktop | Mobile |
+| :---: | :---: |
+| <img src="docs/screenshots/auth/register-page-desktop.png" width="400"> | <img src="docs/screenshots/auth/register-page-mobile.png" width="200"> |
+
+## 🖼️ Visual Gallery
+
+### Login
+| Desktop | Mobile |
+| :---: | :---: |
+| <img src="docs/screenshots/auth/login-page-desktop.png" width="400"> | <img src="docs/screenshots/auth/login-page-mobile.png" width="200"> |
+
+### Register
+| Desktop | Mobile |
+| :---: | :---: |
+| <img src="docs/screenshots/auth/register-page-desktop.png" width="400"> | <img src="docs/screenshots/auth/register-page-mobile.png" width="200"> |
+
 ## 🤝 Contribución
 
 1. Fork el proyecto
