@@ -8,6 +8,84 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Sistema de Temas con CSS Variables */
+    :root,
+    [data-theme="default"] {
+      --color-primary: #4F46E5;
+      --color-primary-dark: #4338CA;
+      --color-secondary: #10B981;
+    }
+
+    [data-theme="green"] {
+      --color-primary: #059669;
+      --color-primary-dark: #047857;
+      --color-secondary: #10B981;
+    }
+
+    [data-theme="purple"] {
+      --color-primary: #7C3AED;
+      --color-primary-dark: #6D28D9;
+      --color-secondary: #A78BFA;
+    }
+
+    [data-theme="orange"] {
+      --color-primary: #EA580C;
+      --color-primary-dark: #C2410C;
+      --color-secondary: #FB923C;
+    }
+
+    [data-theme="dark"] {
+      --color-primary: #1F2937;
+      --color-primary-dark: #111827;
+      --color-secondary: #374151;
+      --bg-primary: #111827;
+      --bg-secondary: #1F2937;
+      --text-primary: #F9FAFB;
+      --text-secondary: #D1D5DB;
+    }
+
+    /* Aplicar colores primarios */
+    .sidebar,
+    .btn-primary,
+    .sidebar-nav a.active {
+      background-color: var(--color-primary) !important;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--color-primary-dark) !important;
+    }
+
+    /* Modo oscuro */
+    [data-theme="dark"] body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    [data-theme="dark"] .sidebar {
+      background: var(--bg-secondary);
+      border-right: 1px solid #374151;
+    }
+
+    [data-theme="dark"] .main-content {
+      background: var(--bg-primary);
+    }
+
+    [data-theme="dark"] .summary-card,
+    [data-theme="dark"] .chart-container,
+    [data-theme="dark"] .recent-container,
+    [data-theme="dark"] .data-table {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border-color: #374151;
+    }
+
+    [data-theme="dark"] h1,
+    [data-theme="dark"] h2,
+    [data-theme="dark"] h3 {
+      color: var(--text-primary);
+    }
+  </style>
   <script src="/config.js"></script>
 </head>
 <body>
@@ -1024,11 +1102,25 @@
                 <input type="text" id="perfil-departamento" readonly>
               </div>
               
+              <h4 style="margin-top: 2rem;">Personalización</h4>
+              
+              <div class="form-group">
+                <label for="perfil-tema">Tema de Color:</label>
+                <select id="perfil-tema">
+                  <option value="default">Azul Índigo (Predeterminado)</option>
+                  <option value="green">Verde Esmeralda</option>
+                  <option value="purple">Púrpura Profundo</option>
+                  <option value="orange">Naranja Vibrante</option>
+                  <option value="dark">Modo Oscuro</option>
+                </select>
+                <small style="color: #6B7280;">El tema se aplicará en toda la plataforma</small>
+              </div>
+
               <h4 style="margin-top: 2rem;">Cambiar Contraseña</h4>
               
               <div class="form-group">
                 <label for="perfil-password-actual">Contraseña Actual:</label>
-                <input type="password" id="perfil-password-actual">
+                <input type="password" id="perfil-password-actual" autocomplete="current-password">
               </div>
               
               <div class="form-group">
@@ -1375,3 +1467,21 @@
   </script>
 </body>
 </html>
+  <script>
+    // Aplicar tema guardado al cargar
+    const temaGuardado = localStorage.getItem('tema_usuario') || 'default';
+    document.documentElement.setAttribute('data-theme', temaGuardado);
+    
+    // Seleccionar en el selector
+    const selectorTema = document.getElementById('perfil-tema');
+    if (selectorTema) {
+      selectorTema.value = temaGuardado;
+      
+      selectorTema.addEventListener('change', (e) => {
+        const nuevoTema = e.target.value;
+        document.documentElement.setAttribute('data-theme', nuevoTema);
+        localStorage.setItem('tema_usuario', nuevoTema);
+        console.log('🎨 Tema cambiado a:', nuevoTema);
+      });
+    }
+  </script>
