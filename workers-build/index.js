@@ -2523,3 +2523,143 @@ export default {
     }
   }
 };
+
+      // === SUPER ADMIN ENDPOINTS ===
+      
+      // POST /api/super-admin/login - Login de super admin
+      if (method === 'POST' && path === '/api/super-admin/login') {
+        const body = await request.json();
+        const { email, password } = body;
+
+        const superAdmin = await env.DB.prepare(
+          'SELECT * FROM super_admins WHERE email = ? AND activo = 1'
+        ).bind(email).first();
+
+        if (!superAdmin) {
+          return new Response(JSON.stringify({
+            ok: false,
+            msg: 'Credenciales incorrectas'
+          }), {
+            status: 401,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        const isValid = await verifyPassword(password, superAdmin.password);
+        if (!isValid) {
+          return new Response(JSON.stringify({
+            ok: false,
+            msg: 'Credenciales incorrectas'
+          }), {
+            status: 401,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        const token = await generateJWT({
+          superAdminId: superAdmin.id,
+          email: superAdmin.email,
+          rol: 'SUPER_ADMIN'
+        }, env);
+
+        return new Response(JSON.stringify({
+          ok: true,
+          token,
+          superAdmin: {
+            id: superAdmin.id,
+            nombre: superAdmin.nombre,
+            email: superAdmin.email
+          }
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // GET /api/super-admin/stats - Estadísticas globales
+      if (method === 'GET' && path === '/api/super-admin/stats') {
+        const authHeader = request.headers.get('Authorization');
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+          return new Response(JSON.stringify({ ok: false, msg: 'No autorizado' }), {
+            status: 401,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        const buildingsTotal = await env.DB.prepare('SELECT COUNT(*) as total FROM buildings').first();
+        const usuariosTotal = await env.DB.prepare('SELECT COUNT(*) as total FROM usuarios').first();
+        const buildingsActivos = await env.DB.prepare('SELECT COUNT(*) as total FROM buildings WHERE active = 1').first();
+
+        return new Response(JSON.stringify({
+          ok: true,
+          stats: {
+            totalBuildings: buildingsTotal?.total || 0,
+            totalUsuarios: usuariosTotal?.total || 0,
+            buildingsActivos: buildingsActivos?.total || 0,
+            pagosPendientes: 0
+          }
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // GET /api/super-admin/buildings - Listar todos los buildings
+      if (method === 'GET' && path === '/api/super-admin/buildings') {
+        const authHeader = request.headers.get('Authorization');
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+          return new Response(JSON.stringify({ ok: false, msg: 'No autorizado' }), {
+            status: 401,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        const { results } = await env.DB.prepare(`
+          SELECT b.*, u.email as admin_email, u.nombre as admin_nombre
+          FROM buildings b
+          LEFT JOIN usuarios u ON b.admin_user_id = u.id
+          ORDER BY b.id DESC
+        `).all();
+
+        return new Response(JSON.stringify({
+          ok: true,
+          buildings: results
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // PUT /api/super-admin/buildings/:id/limits - Actualizar límites
+      if (method === 'PUT' && path.match(/^\/api\/super-admin\/buildings\/\d+\/limits$/)) {
+        const buildingId = parseInt(path.split('/')[4]);
+        const body = await request.json();
+        const { units_count } = body;
+
+        await env.DB.prepare(
+          'UPDATE buildings SET units_count = ? WHERE id = ?'
+        ).bind(units_count, buildingId).run();
+
+        return new Response(JSON.stringify({
+          ok: true,
+          msg: 'Límites actualizados'
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // PUT /api/super-admin/buildings/:id/status - Activar/Desactivar
+      if (method === 'PUT' && path.match(/^\/api\/super-admin\/buildings\/\d+\/status$/)) {
+        const buildingId = parseInt(path.split('/')[4]);
+        const body = await request.json();
+        const { active } = body;
+
+        await env.DB.prepare(
+          'UPDATE buildings SET active = ? WHERE id = ?'
+        ).bind(active, buildingId).run();
+
+        return new Response(JSON.stringify({
+          ok: true,
+          msg: active ? 'Building activado' : 'Building desactivado'
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
