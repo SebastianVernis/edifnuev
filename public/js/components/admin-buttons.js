@@ -1973,17 +1973,19 @@ async function cargarDashboard() {
   try {
     const token = localStorage.getItem('edificio_token');
     
-    // Cargar datos en paralelo
-    const [fondosRes, cuotasRes, gastosRes, anunciosRes] = await Promise.all([
-      fetch('/api/fondos', { headers: { 'x-auth-token': token } }),
-      fetch('/api/cuotas', { headers: { 'x-auth-token': token } }),
-      fetch('/api/gastos', { headers: { 'x-auth-token': token } }),
-      fetch('/api/anuncios?limit=5', { headers: { 'x-auth-token': token } })
+    // Cargar datos en paralelo y parsear
+    const [fondosData, cuotasData, gastosData, anunciosData] = await Promise.all([
+      fetch('/api/fondos', { headers: { 'x-auth-token': token } }).then(r => r.json()),
+      fetch('/api/cuotas', { headers: { 'x-auth-token': token } }).then(r => r.json()),
+      fetch('/api/gastos', { headers: { 'x-auth-token': token } }).then(r => r.json()),
+      fetch('/api/anuncios?limit=5', { headers: { 'x-auth-token': token } }).then(r => r.json())
     ]);
     
+    const cuotas = cuotasData.cuotas || [];
+    const gastos = gastosData.gastos || [];
+    
     // Procesar fondos
-    if (fondosRes.ok) {
-      const fondosData = await fondosRes.json();
+    if (fondosData.success) {
       console.log('💰 Fondos data:', fondosData);
       const fondos = fondosData.fondos;
       
@@ -2024,9 +2026,7 @@ async function cargarDashboard() {
     }
     
     // Procesar cuotas
-    if (cuotasRes.ok) {
-      const cuotasData = await cuotasRes.json();
-      const cuotas = cuotasData.cuotas || [];
+    if (cuotasData.success) {
       console.log('📋 Total cuotas:', cuotas.length);
       
       // Contar cuotas pendientes del mes actual
@@ -2078,9 +2078,7 @@ async function cargarDashboard() {
     }
     
     // Procesar gastos del mes
-    if (gastosRes.ok) {
-      const gastosData = await gastosRes.json();
-      const gastos = gastosData.gastos || [];
+    if (gastosData.success) {
       
       // Gastos del mes actual
       const fecha = new Date();
@@ -2178,13 +2176,8 @@ async function cargarDashboard() {
     }
     
     // Renderizar gráficos adicionales
-    if (cuotasRes.ok && gastosRes.ok) {
-      const cuotasData = await cuotasRes.json();
-      const gastosData = await gastosRes.json();
-      
-      renderBalanceChart(cuotasData.cuotas || [], gastosData.gastos || []);
-      renderGastosCategoria(gastosData.gastos || []);
-    }
+    renderBalanceChart(cuotas, gastos);
+    renderGastosCategoria(gastos);
     
     console.log('✅ Dashboard cargado');
     
