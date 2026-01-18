@@ -351,19 +351,29 @@ function renderCuotasTable(cuotas) {
   cuotas.forEach(cuota => {
     const tr = document.createElement('tr');
     
-    const vencimiento = new Date(cuota.fechaVencimiento);
-    const fechaPago = cuota.fechaPago ? new Date(cuota.fechaPago).toLocaleDateString('es-MX') : '-';
+    // Evitar timezone usando split
+    const vencimiento = cuota.fecha_vencimiento ? 
+      cuota.fecha_vencimiento.split('T')[0].split('-').reverse().join('/') : '-';
+    const fechaPago = cuota.fecha_pago ? 
+      cuota.fecha_pago.split('T')[0].split('-').reverse().join('/') : '-';
     
+    // Determinar estado basado en campos reales
+    const estado = cuota.pagado ? 'PAGADO' : (cuota.vencida ? 'VENCIDO' : 'PENDIENTE');
     let estadoClass = '';
-    if (cuota.estado === 'PAGADO') estadoClass = 'text-success';
-    else if (cuota.estado === 'VENCIDO') estadoClass = 'text-danger';
+    if (cuota.pagado) estadoClass = 'text-success';
+    else if (cuota.vencida) estadoClass = 'text-danger';
     else estadoClass = 'text-warning';
+    
+    // Calcular monto total
+    const montoTotal = parseFloat(cuota.monto || 0) + 
+                       parseFloat(cuota.monto_extraordinario || 0) + 
+                       parseFloat(cuota.monto_mora || 0);
     
     tr.innerHTML = `
       <td>${cuota.mes} ${cuota.anio}</td>
-      <td>$${cuota.monto.toLocaleString()}</td>
-      <td class="${estadoClass}">${cuota.estado}</td>
-      <td>${vencimiento.toLocaleDateString('es-MX')}</td>
+      <td>$${montoTotal.toLocaleString('es-MX')}</td>
+      <td class="${estadoClass}">${estado}</td>
+      <td>${vencimiento}</td>
       <td>${fechaPago}</td>
     `;
     

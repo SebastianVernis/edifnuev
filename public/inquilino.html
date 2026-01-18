@@ -42,7 +42,7 @@
       <header class="main-header">
         <h1 id="page-title">Dashboard</h1>
         <div class="date-display">
-          <p id="current-date">Noviembre 2025</p>
+          <p id="current-date">Cargando...</p>
         </div>
       </header>
       
@@ -432,6 +432,16 @@
         } catch (error) {
           console.error('Error cargando nombre del edificio:', error);
         }
+      }
+
+      // Actualizar fecha actual
+      const hoy = new Date();
+      const mesActual = hoy.toLocaleString('es-MX', { month: 'long', year: 'numeric' });
+      const mesCapitalizado = mesActual.charAt(0).toUpperCase() + mesActual.slice(1);
+      
+      const currentDateEl = document.getElementById('current-date');
+      if (currentDateEl) {
+        currentDateEl.textContent = mesCapitalizado;
       }
     });
   </script>
