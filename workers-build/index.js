@@ -2395,135 +2395,6 @@ export default {
         });
       }
 
-      // === STATIC ASSETS ===
-      // Servir archivos subidos desde R2
-      if (method === 'GET' && path.startsWith('/uploads/')) {
-        try {
-          const key = path.substring(9); // Remover '/uploads/' del inicio
-          
-          if (env.UPLOADS) {
-            const object = await env.UPLOADS.get(key);
-            
-            if (object === null) {
-              return new Response('Archivo no encontrado', { 
-                status: 404,
-                headers: { 'Content-Type': 'text/plain' }
-              });
-            }
-
-            const headers = new Headers();
-            object.writeHttpMetadata(headers);
-            headers.set('etag', object.httpEtag);
-            headers.set('Cache-Control', 'public, max-age=31536000'); // 1 año
-            
-            // Determinar Content-Type por extensión
-            const ext = key.split('.').pop().toLowerCase();
-            const contentTypes = {
-              'png': 'image/png',
-              'jpg': 'image/jpeg',
-              'jpeg': 'image/jpeg',
-              'gif': 'image/gif',
-              'webp': 'image/webp',
-              'pdf': 'application/pdf',
-              'svg': 'image/svg+xml'
-            };
-            
-            headers.set('Content-Type', contentTypes[ext] || 'application/octet-stream');
-            headers.set('Access-Control-Allow-Origin', '*'); // CORS para imágenes
-
-            return new Response(object.body, { headers });
-          } else {
-            return new Response('Almacenamiento no disponible', { 
-              status: 503,
-              headers: { 'Content-Type': 'text/plain' }
-            });
-          }
-        } catch (error) {
-          return new Response('Error al servir archivo: ' + error.message, { 
-            status: 500,
-            headers: { 'Content-Type': 'text/plain' }
-          });
-        }
-      }
-      
-      // Mapear rutas HTML
-      const htmlRoutes = {
-        '/': 'index.html',
-        '/login': 'login.html',
-        '/admin': 'admin.html',
-        '/inquilino': 'inquilino.html',
-        '/landing': 'landing.html',
-        '/register': 'register.html',
-        '/registro': 'register.html',
-        '/verify-otp': 'verify-otp.html',
-        '/verificar-otp': 'verify-otp.html',
-        '/checkout': 'checkout.html',
-        '/setup': 'setup.html',
-        '/setup-edificio': 'setup.html',
-        '/activate': 'activate.html',
-        '/theme-customizer': 'theme-customizer.html',
-        '/crear-paquete': 'crear-paquete.html',
-        '/admin-optimized': 'admin-optimized.html'
-      };
-
-      let assetPath = path;
-      if (htmlRoutes[path]) {
-        assetPath = '/' + htmlRoutes[path];
-      }
-
-      // Servir desde Workers Sites KV
-      if (env.__STATIC_CONTENT) {
-        const MANIFEST = JSON.parse(env.__STATIC_CONTENT_MANIFEST || '{}');
-        const assetKey = assetPath.startsWith('/') ? assetPath.slice(1) : assetPath;
-        const manifestKey = MANIFEST[assetKey];
-
-        if (manifestKey) {
-          const asset = await env.__STATIC_CONTENT.get(manifestKey, 'arrayBuffer');
-          
-          if (asset) {
-            const headers = new Headers();
-            
-            // Content type
-            const ext = assetKey.split('.').pop();
-            const contentTypes = {
-              'html': 'text/html; charset=utf-8',
-              'js': 'application/javascript',
-              'css': 'text/css',
-              'json': 'application/json',
-              'png': 'image/png',
-              'jpg': 'image/jpeg',
-              'jpeg': 'image/jpeg',
-              'svg': 'image/svg+xml',
-              'ico': 'image/x-icon'
-            };
-
-            headers.set('Content-Type', contentTypes[ext] || 'application/octet-stream');
-            headers.set('Cache-Control', 'public, max-age=3600');
-
-            return new Response(asset, { headers });
-          }
-        }
-      }
-
-      return new Response('Not Found', { 
-        status: 404,
-        headers: { 'Content-Type': 'text/plain' }
-      });
-
-    } catch (error) {
-      return new Response(JSON.stringify({
-        success: false,
-        message: 'Internal Server Error',
-        error: error.message,
-        stack: error.stack
-      }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
-  }
-};
-
       // === SUPER ADMIN ENDPOINTS ===
       
       // POST /api/super-admin/login - Login de super admin
@@ -2663,3 +2534,131 @@ export default {
         });
       }
 
+      // === STATIC ASSETS ===
+      // Servir archivos subidos desde R2
+      if (method === 'GET' && path.startsWith('/uploads/')) {
+        try {
+          const key = path.substring(9); // Remover '/uploads/' del inicio
+          
+          if (env.UPLOADS) {
+            const object = await env.UPLOADS.get(key);
+            
+            if (object === null) {
+              return new Response('Archivo no encontrado', { 
+                status: 404,
+                headers: { 'Content-Type': 'text/plain' }
+              });
+            }
+
+            const headers = new Headers();
+            object.writeHttpMetadata(headers);
+            headers.set('etag', object.httpEtag);
+            headers.set('Cache-Control', 'public, max-age=31536000'); // 1 año
+            
+            // Determinar Content-Type por extensión
+            const ext = key.split('.').pop().toLowerCase();
+            const contentTypes = {
+              'png': 'image/png',
+              'jpg': 'image/jpeg',
+              'jpeg': 'image/jpeg',
+              'gif': 'image/gif',
+              'webp': 'image/webp',
+              'pdf': 'application/pdf',
+              'svg': 'image/svg+xml'
+            };
+            
+            headers.set('Content-Type', contentTypes[ext] || 'application/octet-stream');
+            headers.set('Access-Control-Allow-Origin', '*'); // CORS para imágenes
+
+            return new Response(object.body, { headers });
+          } else {
+            return new Response('Almacenamiento no disponible', { 
+              status: 503,
+              headers: { 'Content-Type': 'text/plain' }
+            });
+          }
+        } catch (error) {
+          return new Response('Error al servir archivo: ' + error.message, { 
+            status: 500,
+            headers: { 'Content-Type': 'text/plain' }
+          });
+        }
+      }
+      
+      // Mapear rutas HTML
+      const htmlRoutes = {
+        '/': 'index.html',
+        '/login': 'login.html',
+        '/admin': 'admin.html',
+        '/inquilino': 'inquilino.html',
+        '/landing': 'landing.html',
+        '/register': 'register.html',
+        '/registro': 'register.html',
+        '/verify-otp': 'verify-otp.html',
+        '/verificar-otp': 'verify-otp.html',
+        '/checkout': 'checkout.html',
+        '/setup': 'setup.html',
+        '/setup-edificio': 'setup.html',
+        '/activate': 'activate.html',
+        '/theme-customizer': 'theme-customizer.html',
+        '/crear-paquete': 'crear-paquete.html',
+        '/admin-optimized': 'admin-optimized.html'
+      };
+
+      let assetPath = path;
+      if (htmlRoutes[path]) {
+        assetPath = '/' + htmlRoutes[path];
+      }
+
+      // Servir desde Workers Sites KV
+      if (env.__STATIC_CONTENT) {
+        const MANIFEST = JSON.parse(env.__STATIC_CONTENT_MANIFEST || '{}');
+        const assetKey = assetPath.startsWith('/') ? assetPath.slice(1) : assetPath;
+        const manifestKey = MANIFEST[assetKey];
+
+        if (manifestKey) {
+          const asset = await env.__STATIC_CONTENT.get(manifestKey, 'arrayBuffer');
+          
+          if (asset) {
+            const headers = new Headers();
+            
+            // Content type
+            const ext = assetKey.split('.').pop();
+            const contentTypes = {
+              'html': 'text/html; charset=utf-8',
+              'js': 'application/javascript',
+              'css': 'text/css',
+              'json': 'application/json',
+              'png': 'image/png',
+              'jpg': 'image/jpeg',
+              'jpeg': 'image/jpeg',
+              'svg': 'image/svg+xml',
+              'ico': 'image/x-icon'
+            };
+
+            headers.set('Content-Type', contentTypes[ext] || 'application/octet-stream');
+            headers.set('Cache-Control', 'public, max-age=3600');
+
+            return new Response(asset, { headers });
+          }
+        }
+      }
+
+      return new Response('Not Found', { 
+        status: 404,
+        headers: { 'Content-Type': 'text/plain' }
+      });
+
+    } catch (error) {
+      return new Response(JSON.stringify({
+        success: false,
+        message: 'Internal Server Error',
+        error: error.message,
+        stack: error.stack
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+  }
+};
