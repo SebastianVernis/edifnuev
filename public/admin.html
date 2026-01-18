@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Edificio-Admin | Panel de Administración</title>
+  <title><span id="title-building">ChispartBuilding</span> | Panel de Administración</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/dashboard.css">
@@ -15,7 +15,7 @@
     <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-header">
-        <h2>Edificio-Admin</h2>
+        <h2 id="building-name">Cargando...</h2>
         <p>Panel de Administración</p>
       </div>
       
@@ -1243,13 +1243,38 @@
   <script src="js/shared/proyectos-loader.js?v=6"></script>
   <script src="js/modules/configuracion/configuracion.js?v=7" type="module"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       console.log('✓ Sistema ChispartBuilding - Operacional');
       const user = Auth.getCurrentUser();
       if (user) {
         console.log('✓ Usuario:', user.nombre, '(' + user.rol + ')');
         const userName = document.getElementById('user-name');
         if (userName) userName.textContent = user.nombre;
+      }
+
+      // Cargar nombre del edificio
+      const token = localStorage.getItem('edificio_token') || localStorage.getItem('token');
+      if (token) {
+        try {
+          const response = await fetch('/api/onboarding/building-info', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            if (data.ok && data.buildingInfo) {
+              const buildingName = data.buildingInfo.nombre || 'ChispartBuilding';
+              
+              const buildingNameEl = document.getElementById('building-name');
+              if (buildingNameEl) buildingNameEl.textContent = buildingName;
+              
+              const titleEl = document.querySelector('title');
+              if (titleEl) titleEl.textContent = `${buildingName} | Panel de Administración`;
+            }
+          }
+        } catch (error) {
+          console.error('Error cargando nombre del edificio:', error);
+        }
       }
     });
 
