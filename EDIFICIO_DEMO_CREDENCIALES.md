@@ -24,6 +24,8 @@ Email: inquilino-demo-1768698592439@demo.com
 Password: Inquilino123!
 ```
 
+**Nota:** Password actualizado correctamente. Login funcional ✅
+
 ### Super Admin
 ```
 Usuario: sebastianvernis
