@@ -4,7 +4,7 @@
       "id": 1,
       "nombre": "Administrador Principal",
       "email": "admin@edificio205.com",
-      "password": "$2a$10$3.d.N2.0uT5.8z.9lJ2.Euxs7v1V.i9.t.t.t.t.t.t.t.t.t.t",
+      "password": "$2a$10$RiDNeOjAMMjL8fJBKhKLAO0pNu3obcGuqHyPDMmGaaxqPuD4c8cnW",
       "departamento": "ADMIN",
       "rol": "ADMIN",
       "telefono": "+52 55 1234 5678",
@@ -17,7 +17,7 @@
       "id": 3,
       "nombre": "María García",
       "email": "maria.garcia@edificio205.com",
-      "password": "$2b$10$6EriEfXXggZG.VeZmW/wkO9WrFnDPu4uA6o/VbsqX70sL1P4vtQPC",
+      "password": "$2a$10$lTfV.0c51d5kgcbnhrbJTuwHhqZUetiAUP9TcoaEOf/a/5bstqkPC",
       "departamento": "101",
       "rol": "INQUILINO",
       "telefono": "+52 55 3456 7890",
@@ -30,7 +30,7 @@
       "id": 4,
       "nombre": "Carlos López",
       "email": "carlos.lopez@edificio205.com",
-      "password": "$2b$10$6EriEfXXggZG.VeZmW/wkO9WrFnDPu4uA6o/VbsqX70sL1P4vtQPC",
+      "password": "$2a$10$TZWul1p60Ztz5FfKcaqt1.6UHk1jk9yzS12llELhuFLlbcKBNTHJa",
       "departamento": "102",
       "rol": "INQUILINO",
       "telefono": "+52 55 4567 8901",
@@ -43,7 +43,7 @@
       "id": 5,
       "nombre": "Ana Martínez",
       "email": "ana.martinez@edificio205.com",
-      "password": "$2b$10$6EriEfXXggZG.VeZmW/wkO9WrFnDPu4uA6o/VbsqX70sL1P4vtQPC",
+      "password": "$2a$10$3ibeziKAfGBV2HlreZA0UuLmMqbtAK6X8pOlDqVP91B126p4uZaLu",
       "departamento": "201",
       "rol": "INQUILINO",
       "telefono": "+52 55 5678 9012",
@@ -56,7 +56,7 @@
       "id": 6,
       "nombre": "Roberto Silva",
       "email": "roberto.silva@edificio205.com",
-      "password": "$2b$10$6EriEfXXggZG.VeZmW/wkO9WrFnDPu4uA6o/VbsqX70sL1P4vtQPC",
+      "password": "$2a$10$pUR18Ls6w8uFZlUxFEOTcuoXZl3178YIm8bi.yFB8RN4xCZ/k1du.",
       "departamento": "202",
       "rol": "INQUILINO",
       "telefono": "+52 55 6789 0123",
@@ -88,6 +88,18 @@
         "monthlyFee": 0,
         "cutoffDay": 1
       }
+    },
+    {
+      "id": 7,
+      "email": "comite@edificio205.com",
+      "password": "$2a$10$4uy4sFhzGyIFqcsuLt6CZeqtXSH8Jnae2kdvEbe6qK6y9QcDCRYym",
+      "activo": true,
+      "fechaCreacion": "2026-01-18T18:08:19.233Z",
+      "nombre": "Comité Edificio",
+      "departamento": "COMITE",
+      "rol": "COMITE",
+      "telefono": "+52 55 2345 6789",
+      "estatus_validacion": "validado"
     }
   ],
   "cuotas": [
