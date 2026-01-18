@@ -114,16 +114,63 @@ async function cargarDashboardInquilino() {
       renderAnunciosDashboard(anunciosData.anuncios || []);
     }
     
-    // Procesar fondos
+    // Procesar fondos y cargar más datos
     if (fondosRes.ok) {
       const fondosData = await fondosRes.json();
-      // Actualizar métricas del edificio en dashboard
       const fondos = fondosData.fondos || [];
       const patrimonioTotal = fondos.reduce((sum, f) => sum + parseFloat(f.saldo || 0), 0);
       
       const patrimonioEl = document.getElementById('patrimonio-edificio');
       if (patrimonioEl) {
         patrimonioEl.textContent = `$${patrimonioTotal.toLocaleString('es-MX')}`;
+      }
+      
+      // Cargar gastos y proyectos para métricas
+      const gastosRes2 = await fetch('/api/gastos', { headers: { 'x-auth-token': token } });
+      if (gastosRes2.ok) {
+        const gastosData = await gastosRes2.json();
+        const gastos = gastosData.gastos || [];
+        
+        // Gastos del mes actual
+        const hoy = new Date();
+        const gastosMes = gastos.filter(g => {
+          const fechaG = new Date(g.fecha);
+          return fechaG.getMonth() === hoy.getMonth() && fechaG.getFullYear() === hoy.getFullYear();
+        });
+        const totalGastosMes = gastosMes.reduce((sum, g) => sum + parseFloat(g.monto || 0), 0);
+        
+        const gastosEl = document.getElementById('gastos-edificio-mes');
+        if (gastosEl) {
+          gastosEl.textContent = `$${totalGastosMes.toLocaleString('es-MX')}`;
+        }
+        
+        // Renderizar últimos gastos
+        const recentGastos = document.getElementById('recent-gastos-edificio');
+        if (recentGastos) {
+          const ultimos = gastos.slice(-5).reverse();
+          if (ultimos.length === 0) {
+            recentGastos.innerHTML = '<p style="color: #6B7280; text-align: center; padding: 1rem;">No hay gastos</p>';
+          } else {
+            recentGastos.innerHTML = ultimos.map(g => `
+              <div class="recent-item">
+                <span>${g.concepto}</span>
+                <span class="amount" style="color: #EF4444;">$${parseFloat(g.monto || 0).toLocaleString('es-MX')}</span>
+              </div>
+            `).join('');
+          }
+        }
+      }
+      
+      // Cargar proyectos
+      const proyectosRes = await fetch('/api/proyectos', { headers: { 'x-auth-token': token } });
+      if (proyectosRes.ok) {
+        const proyectosData = await proyectosRes.json();
+        const proyectos = proyectosData.proyectos || [];
+        
+        const proyectosCountEl = document.getElementById('proyectos-activos-count');
+        if (proyectosCountEl) {
+          proyectosCountEl.textContent = proyectos.length;
+        }
       }
     }
     
