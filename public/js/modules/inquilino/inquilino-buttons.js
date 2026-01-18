@@ -180,38 +180,66 @@ async function cargarDashboardInquilino() {
 }
 
 function actualizarDashboardCuotas(cuotas) {
-  if (!cuotas || cuotas.length === 0) return;
+  if (!cuotas || cuotas.length === 0) {
+    console.log('⚠️ No hay cuotas para mostrar');
+    return;
+  }
+  
+  console.log('📊 Actualizando dashboard con', cuotas.length, 'cuotas');
   
   // Buscar cuota del mes actual
   const fecha = new Date();
   const mesActual = fecha.toLocaleString('es-MX', { month: 'long' });
+  const mesActualCapitalizado = mesActual.charAt(0).toUpperCase() + mesActual.slice(1);
   const anioActual = fecha.getFullYear();
   
   const cuotaActual = cuotas.find(c => 
-    c.mes.toLowerCase() === mesActual.toLowerCase() && 
+    c.mes.toLowerCase() === mesActualCapitalizado.toLowerCase() && 
     c.anio === anioActual
   );
   
+  // Calcular métricas
+  const cuotasPendientes = cuotas.filter(c => !c.pagado).length;
+  const cuotasPagadas = cuotas.filter(c => c.pagado).length;
+  
+  // Actualizar Mi Cuota del Mes
+  const miCuotaMesEl = document.getElementById('mi-cuota-mes');
+  const miCuotaEstadoEl = document.getElementById('mi-cuota-estado');
+  
   if (cuotaActual) {
-    const estadoElem = document.getElementById('cuota-actual-estado');
-    const infoElem = document.getElementById('cuota-actual-info');
+    const montoTotal = parseFloat(cuotaActual.monto || 0) + 
+                       parseFloat(cuotaActual.monto_extraordinario || 0) + 
+                       parseFloat(cuotaActual.monto_mora || 0);
+    const estado = cuotaActual.pagado ? 'PAGADO' : (cuotaActual.vencida ? 'VENCIDO' : 'PENDIENTE');
     
-    if (estadoElem) {
-      estadoElem.textContent = cuotaActual.estado;
-      estadoElem.className = 'amount';
-      
-      if (cuotaActual.estado === 'PAGADO') {
-        estadoElem.style.color = '#28a745';
-      } else if (cuotaActual.estado === 'VENCIDO') {
-        estadoElem.style.color = '#dc3545';
-      } else {
-        estadoElem.style.color = '#ffc107';
-      }
+    if (miCuotaMesEl) {
+      miCuotaMesEl.textContent = `$${montoTotal.toLocaleString('es-MX')}`;
     }
     
-    if (infoElem) {
-      infoElem.textContent = `${cuotaActual.mes} ${cuotaActual.anio} - $${cuotaActual.monto}`;
+    if (miCuotaEstadoEl) {
+      miCuotaEstadoEl.textContent = `${mesActualCapitalizado} ${anioActual} - ${estado}`;
+      miCuotaEstadoEl.style.color = cuotaActual.pagado ? '#10B981' : (cuotaActual.vencida ? '#EF4444' : '#F59E0B');
     }
+  } else {
+    if (miCuotaMesEl) miCuotaMesEl.textContent = '$0';
+    if (miCuotaEstadoEl) miCuotaEstadoEl.textContent = `No hay cuota de ${mesActualCapitalizado}`;
+  }
+  
+  // Actualizar Cuotas Pendientes
+  const misCuotasPendientesEl = document.getElementById('mis-cuotas-pendientes');
+  if (misCuotasPendientesEl) {
+    misCuotasPendientesEl.textContent = cuotasPendientes;
+  }
+  
+  // Actualizar Cuotas Pagadas
+  const misCuotasPagadasEl = document.getElementById('mis-cuotas-pagadas');
+  if (misCuotasPagadasEl) {
+    misCuotasPagadasEl.textContent = cuotasPagadas;
+  }
+  
+  // Actualizar Total de Cuotas del Edificio (todas las unidades del mes)
+  const cuotasEdificioEl = document.getElementById('cuotas-edificio-mes');
+  if (cuotasEdificioEl) {
     
     // Próximo vencimiento
     const vencimientoElem = document.getElementById('proximo-vencimiento');
