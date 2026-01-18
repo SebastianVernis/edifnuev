@@ -574,3 +574,186 @@ function setupModalClosers() {
   // Click fuera del modal (usar once para cada modal que se abre)
   // Removido para evitar conflictos - se maneja individualmente
 }
+
+// Cargar fondos del edificio (solo lectura)
+async function cargarFondosInquilino() {
+  try {
+    const token = localStorage.getItem('edificio_token');
+    const response = await fetch('/api/fondos', {
+      headers: { 'x-auth-token': token }
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      const fondos = data.fondos || [];
+      const movimientos = data.movimientos || [];
+      
+      // Renderizar fondos
+      const container = document.getElementById('fondos-summary-inquilino');
+      if (container && fondos.length > 0) {
+        let patrimonioTotal = 0;
+        
+        container.innerHTML = fondos.map(f => {
+          const saldo = parseFloat(f.saldo || 0);
+          patrimonioTotal += saldo;
+          return `
+            <div class="fondo-card">
+              <h3>${f.nombre}</h3>
+              <p class="amount">$${saldo.toLocaleString('es-MX')}</p>
+              <p class="description">Fondo del edificio</p>
+            </div>
+          `;
+        }).join('') + `
+          <div class="fondo-card total">
+            <h3>Patrimonio Total</h3>
+            <p class="amount">$${patrimonioTotal.toLocaleString('es-MX')}</p>
+            <p class="description">Actualizado: ${new Date().toLocaleDateString('es-MX')}</p>
+          </div>
+        `;
+      }
+      
+      // Renderizar movimientos
+      const tbody = document.getElementById('movimientos-fondos-tbody');
+      if (tbody) {
+        if (movimientos.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #6B7280;">No hay movimientos</td></tr>';
+        } else {
+          tbody.innerHTML = movimientos.slice(0, 20).map(m => {
+            const fecha = m.fecha ? m.fecha.split('T')[0].split('-').reverse().join('/') : '-';
+            const tipo = m.tipo === 'INGRESO' ? '↑' : '↓';
+            const color = m.tipo === 'INGRESO' ? '#10B981' : '#EF4444';
+            return `
+              <tr>
+                <td>${fecha}</td>
+                <td style="color: ${color};">${tipo} ${m.tipo}</td>
+                <td>${m.fondo_nombre || '-'}</td>
+                <td>$${parseFloat(m.monto || 0).toLocaleString('es-MX')}</td>
+                <td>${m.concepto || '-'}</td>
+              </tr>
+            `;
+          }).join('');
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error cargando fondos:', error);
+  }
+}
+
+// Cargar gastos del edificio (solo lectura)
+async function cargarGastosInquilino() {
+  try {
+    const token = localStorage.getItem('edificio_token');
+    const response = await fetch('/api/gastos', {
+      headers: { 'x-auth-token': token }
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      const gastos = data.gastos || [];
+      
+      const tbody = document.getElementById('gastos-edificio-tbody');
+      if (tbody) {
+        if (gastos.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #6B7280;">No hay gastos registrados</td></tr>';
+        } else {
+          tbody.innerHTML = gastos.slice(0, 50).map(g => {
+            const fecha = g.fecha ? g.fecha.split('T')[0].split('-').reverse().join('/') : '-';
+            return `
+              <tr>
+                <td>${fecha}</td>
+                <td>${g.concepto}</td>
+                <td><span class="badge">${g.categoria}</span></td>
+                <td>${g.proveedor || '-'}</td>
+                <td>$${parseFloat(g.monto || 0).toLocaleString('es-MX')}</td>
+              </tr>
+            `;
+          }).join('');
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error cargando gastos:', error);
+  }
+}
+
+// Cargar proyectos del edificio (solo lectura)
+async function cargarProyectosInquilino() {
+  try {
+    const token = localStorage.getItem('edificio_token');
+    const response = await fetch('/api/proyectos', {
+      headers: { 'x-auth-token': token }
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      const proyectos = data.proyectos || [];
+      
+      const container = document.getElementById('proyectos-list-inquilino');
+      if (container) {
+        if (proyectos.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: #6B7280; padding: 2rem;">No hay proyectos activos</p>';
+        } else {
+          container.innerHTML = proyectos.map(p => {
+            const prioridadColors = {
+              'URGENTE': '#EF4444',
+              'ALTA': '#F59E0B',
+              'MEDIA': '#3B82F6',
+              'BAJA': '#6B7280'
+            };
+            return `
+              <div style="border: 2px solid #E5E7EB; border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 1rem; background: white;">
+                <h4 style="color: #1F2937; margin-bottom: 0.5rem;">${p.nombre}</h4>
+                <p style="color: #6B7280; font-size: 0.875rem; margin-bottom: 1rem;">${p.descripcion || 'Sin descripción'}</p>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                  <span style="background: ${prioridadColors[p.prioridad] || '#6B7280'}; color: white; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.75rem; font-weight: 600;">
+                    ${p.prioridad}
+                  </span>
+                  <span style="color: #1F2937; font-size: 1.25rem; font-weight: bold;">
+                    $${parseFloat(p.monto || 0).toLocaleString('es-MX')}
+                  </span>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error cargando proyectos:', error);
+  }
+}
+
+// Cargar documentos/políticas del edificio
+async function cargarDocumentosInquilino() {
+  try {
+    const token = localStorage.getItem('edificio_token');
+    const response = await fetch('/api/onboarding/building-info', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      if (data.ok && data.buildingInfo) {
+        const info = data.buildingInfo;
+        
+        const reglamentoEl = document.getElementById('reglamento-content');
+        if (reglamentoEl) {
+          reglamentoEl.textContent = info.reglamento || 'No hay reglamento disponible';
+        }
+        
+        const privacyEl = document.getElementById('privacy-content');
+        if (privacyEl) {
+          privacyEl.textContent = info.privacyPolicy || 'No hay política de privacidad disponible';
+        }
+        
+        const paymentEl = document.getElementById('payment-content');
+        if (paymentEl) {
+          paymentEl.textContent = info.paymentPolicies || 'No hay políticas de pago disponibles';
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error cargando documentos:', error);
+  }
+}
