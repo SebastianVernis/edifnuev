@@ -2124,10 +2124,11 @@ async function cargarDashboard() {
       }
     }
     
-    // Cargar movimientos recientes (desde fondos)
-    if (fondosRes.ok) {
-      const fondosData = await fondosRes.json();
-      const movimientos = fondosData.movimientos || [];
+    // Cargar movimientos recientes (obtener fondos de nuevo con movimientos)
+    const fondosMovRes = await fetch('/api/fondos', { headers: { 'x-auth-token': localStorage.getItem('edificio_token') } });
+    if (fondosMovRes.ok) {
+      const fondosMovData = await fondosMovRes.json();
+      const movimientos = fondosMovData.movimientos || [];
       
       const recentMovimientos = document.getElementById('recent-movimientos');
       if (recentMovimientos) {
@@ -2174,6 +2175,15 @@ async function cargarDashboard() {
           `).join('');
         }
       }
+    }
+    
+    // Renderizar gráficos adicionales
+    if (cuotasRes.ok && gastosRes.ok) {
+      const cuotasData = await cuotasRes.json();
+      const gastosData = await gastosRes.json();
+      
+      renderBalanceChart(cuotasData.cuotas || [], gastosData.gastos || []);
+      renderGastosCategoria(gastosData.gastos || []);
     }
     
     console.log('✅ Dashboard cargado');
@@ -3518,4 +3528,130 @@ async function generarCuotasProyecto(proyectoId, nombreProyecto, montoTotal) {
     console.error('Error:', error);
     alert('❌ Error al generar cuotas del proyecto');
   }
+}
+
+// Gráfico de Balance (Ingresos vs Egresos últimos 6 meses)
+function renderBalanceChart(cuotas, gastos) {
+  const container = document.getElementById('balance-chart');
+  if (!container) return;
+
+  const canvas = document.createElement('canvas');
+  container.innerHTML = '';
+  container.appendChild(canvas);
+
+  // Calcular últimos 6 meses
+  const hoy = new Date();
+  const meses = [];
+  const ingresosPorMes = [];
+  const egresosPorMes = [];
+
+  for (let i = 5; i >= 0; i--) {
+    const fecha = new Date(hoy.getFullYear(), hoy.getMonth() - i, 1);
+    const mesNombre = fecha.toLocaleString('es-MX', { month: 'short' });
+    const anio = fecha.getFullYear();
+    const mesIndex = fecha.getMonth();
+
+    meses.push(mesNombre);
+
+    // Ingresos del mes
+    const ingresos = (cuotas || [])
+      .filter(c => c.pagado && c.anio === anio && 
+        ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'][mesIndex] === c.mes)
+      .reduce((sum, c) => sum + parseFloat(c.monto || 0) + parseFloat(c.monto_extraordinario || 0), 0);
+
+    // Egresos del mes
+    const egresos = (gastos || [])
+      .filter(g => {
+        const fechaGasto = new Date(g.fecha);
+        return fechaGasto.getMonth() === mesIndex && fechaGasto.getFullYear() === anio;
+      })
+      .reduce((sum, g) => sum + parseFloat(g.monto || 0), 0);
+
+    ingresosPorMes.push(ingresos);
+    egresosPorMes.push(egresos);
+  }
+
+  new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: meses,
+      datasets: [
+        {
+          label: 'Ingresos',
+          data: ingresosPorMes,
+          backgroundColor: '#10B981'
+        },
+        {
+          label: 'Egresos',
+          data: egresosPorMes,
+          backgroundColor: '#EF4444'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom' }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+}
+
+// Gráfico de Gastos por Categoría
+function renderGastosCategoria(gastos) {
+  const container = document.getElementById('gastos-categoria-chart');
+  if (!container) return;
+
+  const canvas = document.createElement('canvas');
+  container.innerHTML = '';
+  container.appendChild(canvas);
+
+  // Agrupar por categoría
+  const categorias = {};
+  (gastos || []).forEach(g => {
+    const cat = g.categoria || 'OTROS';
+    categorias[cat] = (categorias[cat] || 0) + parseFloat(g.monto || 0);
+  });
+
+  const labels = Object.keys(categorias);
+  const data = Object.values(categorias);
+
+  const colores = {
+    'MANTENIMIENTO': '#3B82F6',
+    'SERVICIOS': '#10B981',
+    'REPARACIONES': '#F59E0B',
+    'ADMINISTRATIVO': '#8B5CF6',
+    'OTROS': '#6B7280'
+  };
+
+  new Chart(canvas, {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: data,
+        backgroundColor: labels.map(l => colores[l] || '#6B7280')
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom' },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const total = data.reduce((a, b) => a + b, 0);
+              const percent = ((context.parsed / total) * 100).toFixed(1);
+              return `${context.label}: $${context.parsed.toLocaleString('es-MX')} (${percent}%)`;
+            }
+          }
+        }
+      }
+    }
+  });
 }
