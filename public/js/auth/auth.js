@@ -130,6 +130,9 @@ const Auth = (() => {
   };
 })();
 
+// Exponer Auth globalmente
+window.Auth = Auth;
+
 // Auto-initialize cuando el DOM esté listo
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', Auth.init);

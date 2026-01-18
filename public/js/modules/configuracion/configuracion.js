@@ -373,6 +373,17 @@ async function cargarPerfilUsuario() {
 
 // Guardar perfil de usuario
 async function guardarPerfil() {
+  // Verificar si hay usuario actual
+  if (!currentUser) {
+    const authModule = window.Auth || localStorage;
+    currentUser = authModule.getCurrentUser ? authModule.getCurrentUser() : JSON.parse(localStorage.getItem('usuario'));
+  }
+  
+  if (!currentUser || !currentUser.id) {
+    alert('❌ No se pudo identificar el usuario actual. Por favor, inicia sesión nuevamente.');
+    return;
+  }
+  
   const nombre = document.getElementById('perfil-nombre').value;
   const email = document.getElementById('perfil-email').value;
   const telefono = document.getElementById('perfil-telefono').value;
