@@ -164,18 +164,11 @@
       superAdminToken = localStorage.getItem('super_admin_token');
       
       if (!superAdminToken) {
-        // Solicitar credenciales
-        const email = prompt('Email de Super Admin:');
-        const password = prompt('Password:');
-        
-        if (email && password) {
-          login(email, password);
-        } else {
-          window.location.href = '/';
-        }
-      } else {
-        cargarDatos();
+        window.location.href = '/super-admin-login';
+        return;
       }
+      
+      cargarDatos();
     }
 
     async function login(email, password) {
