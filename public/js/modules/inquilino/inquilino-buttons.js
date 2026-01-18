@@ -852,3 +852,108 @@ async function cargarDocumentosInquilino() {
     console.error('Error cargando documentos:', error);
   }
 }
+
+// Cargar perfil del inquilino
+async function cargarPerfilInquilino() {
+  console.log('👤 Cargando perfil inquilino...');
+  
+  const user = Auth.getCurrentUser();
+  if (!user) return;
+  
+  document.getElementById('inquilino-nombre').value = user.nombre || '';
+  document.getElementById('inquilino-email').value = user.email || '';
+  document.getElementById('inquilino-telefono').value = user.telefono || '';
+  document.getElementById('inquilino-departamento').value = user.departamento || '';
+  
+  console.log('✅ Perfil cargado');
+}
+
+// Event listener para formulario de perfil
+const perfilInquilinoForm = document.getElementById('perfil-inquilino-form');
+if (perfilInquilinoForm) {
+  perfilInquilinoForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const nombre = document.getElementById('inquilino-nombre').value;
+    const telefono = document.getElementById('inquilino-telefono').value;
+    const passwordActual = document.getElementById('inquilino-password-actual').value;
+    const passwordNueva = document.getElementById('inquilino-password-nueva').value;
+    const passwordConfirmar = document.getElementById('inquilino-password-confirmar').value;
+    
+    // Validar contraseñas si se están cambiando
+    if (passwordNueva || passwordConfirmar) {
+      if (!passwordActual) {
+        alert('❌ Debes ingresar tu contraseña actual');
+        return;
+      }
+      if (passwordNueva !== passwordConfirmar) {
+        alert('❌ Las contraseñas no coinciden');
+        return;
+      }
+      if (passwordNueva.length < 6) {
+        alert('❌ La contraseña debe tener al menos 6 caracteres');
+        return;
+      }
+    }
+    
+    try {
+      const token = localStorage.getItem('edificio_token');
+      const user = Auth.getCurrentUser();
+      
+      // 1. Actualizar datos básicos
+      const updateRes = await fetch(`/api/usuarios/${user.userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token
+        },
+        body: JSON.stringify({ nombre, telefono })
+      });
+      
+      if (!updateRes.ok) {
+        const error = await updateRes.json();
+        alert('❌ Error al actualizar datos: ' + error.message);
+        return;
+      }
+      
+      console.log('✅ Datos actualizados');
+      
+      // 2. Cambiar contraseña si se proporcionó
+      if (passwordNueva) {
+        const passwordRes = await fetch('/api/usuarios/cambiar-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': token
+          },
+          body: JSON.stringify({
+            passwordActual,
+            passwordNueva
+          })
+        });
+        
+        const passwordData = await passwordRes.json();
+        
+        if (!passwordData.success) {
+          alert('⚠️ Datos actualizados pero error al cambiar contraseña: ' + passwordData.message);
+          return;
+        }
+        
+        console.log('✅ Contraseña actualizada');
+        
+        // Limpiar campos
+        document.getElementById('inquilino-password-actual').value = '';
+        document.getElementById('inquilino-password-nueva').value = '';
+        document.getElementById('inquilino-password-confirmar').value = '';
+        
+        alert('✅ Perfil y contraseña actualizados exitosamente');
+      } else {
+        alert('✅ Datos del perfil actualizados exitosamente');
+      }
+      
+    } catch (error) {
+      console.error('Error guardando perfil:', error);
+      alert('❌ Error al guardar perfil');
+    }
+  });
+}

@@ -81,14 +81,20 @@ function loadSectionData(sectionId) {
       if (typeof cargarDocumentosInquilino === 'function') cargarDocumentosInquilino();
       break;
     case 'configuracion':
-      // Importar y ejecutar el módulo de configuración
-      import('/js/modules/configuracion/configuracion.js')
-        .then(module => {
-          if (module.initConfiguracion) {
-            module.initConfiguracion();
-          }
-        })
-        .catch(err => console.error('Error cargando configuración:', err));
+      // Para admin: importar módulo de configuración
+      if (typeof initConfiguracion !== 'undefined') {
+        import('/js/modules/configuracion/configuracion.js')
+          .then(module => {
+            if (module.initConfiguracion) {
+              module.initConfiguracion();
+            }
+          })
+          .catch(err => console.error('Error cargando configuración:', err));
+      }
+      // Para inquilino: cargar perfil
+      if (typeof cargarPerfilInquilino === 'function') {
+        cargarPerfilInquilino();
+      }
       break;
   }
 }

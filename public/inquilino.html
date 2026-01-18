@@ -27,6 +27,7 @@
           <li><a href="#proyectos"><i class="fas fa-project-diagram"></i> Proyectos</a></li>
           <li><a href="#anuncios"><i class="fas fa-bullhorn"></i> Anuncios</a></li>
           <li><a href="#documentos"><i class="fas fa-file-alt"></i> Documentos</a></li>
+          <li><a href="#configuracion"><i class="fas fa-cog"></i> Mi Perfil</a></li>
         </ul>
       </nav>
       
@@ -291,6 +292,61 @@
               Cargando...
             </div>
           </div>
+        </div>
+      </section>
+
+      <!-- Configuración Section -->
+      <section id="configuracion-section" class="content-section">
+        <div class="section-header">
+          <h2>Mi Perfil</h2>
+          <p style="color: #6B7280; font-size: 0.875rem;">Actualiza tu información personal</p>
+        </div>
+        
+        <div class="config-card" style="max-width: 600px; margin: 0 auto;">
+          <form id="perfil-inquilino-form">
+            <div class="form-group">
+              <label for="inquilino-nombre">Nombre Completo:</label>
+              <input type="text" id="inquilino-nombre" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="inquilino-email">Email:</label>
+              <input type="email" id="inquilino-email" readonly style="background: #F3F4F6; cursor: not-allowed;">
+              <small style="color: #6B7280;">El email no se puede modificar</small>
+            </div>
+            
+            <div class="form-group">
+              <label for="inquilino-telefono">Teléfono:</label>
+              <input type="tel" id="inquilino-telefono">
+            </div>
+            
+            <div class="form-group">
+              <label for="inquilino-departamento">Departamento:</label>
+              <input type="text" id="inquilino-departamento" readonly style="background: #F3F4F6; cursor: not-allowed;">
+              <small style="color: #6B7280;">El departamento no se puede modificar</small>
+            </div>
+            
+            <h4 style="margin-top: 2rem;">Cambiar Contraseña</h4>
+            
+            <div class="form-group">
+              <label for="inquilino-password-actual">Contraseña Actual:</label>
+              <input type="password" id="inquilino-password-actual" autocomplete="current-password">
+            </div>
+            
+            <div class="form-group">
+              <label for="inquilino-password-nueva">Nueva Contraseña:</label>
+              <input type="password" id="inquilino-password-nueva" autocomplete="new-password">
+            </div>
+            
+            <div class="form-group">
+              <label for="inquilino-password-confirmar">Confirmar Nueva Contraseña:</label>
+              <input type="password" id="inquilino-password-confirmar" autocomplete="new-password">
+            </div>
+            
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            </div>
+          </form>
         </div>
       </section>
       
