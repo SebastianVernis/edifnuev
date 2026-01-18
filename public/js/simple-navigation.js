@@ -70,9 +70,13 @@ function loadSectionData(sectionId) {
       break;
     case 'proyectos':
       if (typeof cargarProyectosMain === 'function') cargarProyectosMain();
+      if (typeof cargarProyectosInquilino === 'function') cargarProyectosInquilino();
       break;
     case 'parcialidades':
       if (typeof cargarParcialidades === 'function') cargarParcialidades();
+      break;
+    case 'documentos':
+      if (typeof cargarDocumentosInquilino === 'function') cargarDocumentosInquilino();
       break;
     case 'configuracion':
       // Importar y ejecutar el módulo de configuración
