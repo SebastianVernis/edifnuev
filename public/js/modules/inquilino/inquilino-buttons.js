@@ -117,7 +117,14 @@ async function cargarDashboardInquilino() {
     // Procesar fondos
     if (fondosRes.ok) {
       const fondosData = await fondosRes.json();
-      renderFondosChartInquilino(fondosData.fondos);
+      // Actualizar métricas del edificio en dashboard
+      const fondos = fondosData.fondos || [];
+      const patrimonioTotal = fondos.reduce((sum, f) => sum + parseFloat(f.saldo || 0), 0);
+      
+      const patrimonioEl = document.getElementById('patrimonio-edificio');
+      if (patrimonioEl) {
+        patrimonioEl.textContent = `$${patrimonioTotal.toLocaleString('es-MX')}`;
+      }
     }
     
   } catch (error) {
