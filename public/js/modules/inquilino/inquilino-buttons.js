@@ -577,11 +577,16 @@ function setupModalClosers() {
 
 // Cargar fondos del edificio (solo lectura)
 async function cargarFondosInquilino() {
+  console.log('💰 Cargando fondos para inquilino...');
   try {
     const token = localStorage.getItem('edificio_token');
+    console.log('   Token presente:', !!token);
+    
     const response = await fetch('/api/fondos', {
       headers: { 'x-auth-token': token }
     });
+    
+    console.log('   Response status:', response.status);
     
     if (response.ok) {
       const data = await response.json();
@@ -642,11 +647,16 @@ async function cargarFondosInquilino() {
 
 // Cargar gastos del edificio (solo lectura)
 async function cargarGastosInquilino() {
+  console.log('💸 Cargando gastos para inquilino...');
   try {
     const token = localStorage.getItem('edificio_token');
+    console.log('   Token presente:', !!token);
+    
     const response = await fetch('/api/gastos', {
       headers: { 'x-auth-token': token }
     });
+    
+    console.log('   Response status:', response.status);
     
     if (response.ok) {
       const data = await response.json();
