@@ -869,7 +869,7 @@ function renderCuotasTable(cuotas) {
 async function filtrarGastos() {
   console.log('🔄 Filtrando gastos...');
   
-  const mes = document.getElementById('gastos-mes')?.value;
+  const mesNombre = document.getElementById('gastos-mes')?.value;
   const anio = document.getElementById('gastos-año')?.value;
   const categoria = document.getElementById('gastos-categoria')?.value;
   
@@ -878,7 +878,16 @@ async function filtrarGastos() {
     let url = '/api/gastos';
     const params = new URLSearchParams();
     
-    if (mes) params.append('mes', mes);
+    // Convertir nombre del mes a número (01, 02, 03...)
+    if (mesNombre) {
+      const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+      const mesIndex = meses.indexOf(mesNombre);
+      if (mesIndex !== -1) {
+        params.append('mes', (mesIndex + 1).toString());
+      }
+    }
+    
     if (anio) params.append('anio', anio);
     if (categoria && categoria !== 'TODOS') params.append('categoria', categoria);
     
