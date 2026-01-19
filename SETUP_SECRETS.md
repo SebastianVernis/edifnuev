@@ -24,7 +24,41 @@ bHLZD/nxHDJ3pQ6G+vQcxbKlPOXgi12RaJgRp66LWj0=
 
 ---
 
-### 2. SENDGRID_API_KEY (Para Issue #13 - Email OTP)
+### 2. APILAYER_API_KEY (Verificación de Email)
+
+**Propósito**: Validación de emails en tiempo real para prevenir registros con emails inválidos o desechables
+
+**Pasos**:
+
+#### A. Obtener API Key de APILayer (GRATIS)
+1. Ir a https://apilayer.com/
+2. Crear cuenta (Free tier incluido)
+3. Suscribirse a **Email Verification API** (Free Plan: 100 requests/mes)
+4. Ir a **Dashboard** → **API Keys**
+5. Copiar tu API Key
+
+#### B. Configurar en Wrangler
+```bash
+wrangler secret put APILAYER_API_KEY
+```
+
+**Cuando pregunte, pegar**: Tu API key de APILayer
+
+#### C. Para desarrollo local
+Agregar a `.env`:
+```bash
+APILAYER_API_KEY=tu-apilayer-api-key
+```
+
+**Servicios disponibles con esta key**:
+- ✅ Email Verification (validación de emails)
+- ✅ Whois API (información de dominios)
+- ✅ Currency Data API (conversión de monedas)
+- ✅ Exchange Rates Data API (tasas de cambio)
+
+---
+
+### 3. SENDGRID_API_KEY (Para Issue #13 - Email OTP)
 
 **Propósito**: Envío de emails con códigos OTP
 
@@ -60,7 +94,7 @@ wrangler secret put SENDGRID_API_KEY
 
 ---
 
-### 3. Verificar secrets configurados
+### 4. Verificar secrets configurados
 
 ```bash
 # Listar secrets (no muestra valores, solo nombres)
@@ -70,6 +104,7 @@ wrangler secret list
 **Debe mostrar**:
 ```
 JWT_SECRET
+APILAYER_API_KEY
 SENDGRID_API_KEY (si ya configuraste email)
 ```
 

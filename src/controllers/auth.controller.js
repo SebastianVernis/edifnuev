@@ -1,6 +1,7 @@
 import Usuario from '../models/Usuario.js';
 import { generarJWT } from '../middleware/auth.js';
 import { handleControllerError, validateEmail, validateRequired } from '../middleware/error-handler.js';
+import { verifyEmailWithCache } from '../utils/emailVerification.js';
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
@@ -72,10 +73,15 @@ export const registro = async (req, res) => {
       });
     }
     
-    if (!email || !email.includes('@')) {
+    // Validar email con APILayer
+    const emailVerification = await verifyEmailWithCache(email, req.env || process.env);
+    
+    if (!emailVerification.valid) {
       return res.status(400).json({
         ok: false,
-        msg: 'Email válido requerido'
+        msg: emailVerification.message,
+        reason: emailVerification.reason,
+        suggestion: emailVerification.details?.did_you_mean || null
       });
     }
     

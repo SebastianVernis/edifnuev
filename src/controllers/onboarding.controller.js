@@ -7,6 +7,7 @@ import { readData, writeData } from '../data.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { sendOtpEmail, sendWelcomeEmail, checkEmailRateLimit } from '../utils/smtp.js';
+import { verifyEmailWithCache } from '../utils/emailVerification.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'edificio-admin-secret-key-2025';
 
@@ -59,13 +60,20 @@ export async function register(req, res) {
       });
     }
 
-    // Validar email
-    if (!email.includes('@')) {
+    // Validar email con APILayer
+    const emailVerification = await verifyEmailWithCache(email, req.env || process.env);
+    
+    if (!emailVerification.valid) {
       return res.status(400).json({
         ok: false,
-        msg: 'Email inválido'
+        msg: emailVerification.message,
+        reason: emailVerification.reason,
+        suggestion: emailVerification.details?.did_you_mean || null
       });
     }
+    
+    // Log de verificación exitosa
+    console.log(`✅ Email verificado: ${email} - Score: ${emailVerification.details?.score || 'N/A'}`);
 
     // Validar que el plan existe
     if (!PLANS[selectedPlan]) {
@@ -135,11 +143,14 @@ export async function sendOtp(req, res) {
   try {
     const { email } = req.body;
 
-    // Validar email
-    if (!email || !email.includes('@')) {
+    // Validar email con APILayer antes de enviar OTP
+    const emailVerification = await verifyEmailWithCache(email, req.env || process.env);
+    
+    if (!emailVerification.valid) {
       return res.status(400).json({
         ok: false,
-        msg: 'Email inválido'
+        msg: emailVerification.message,
+        reason: emailVerification.reason
       });
     }
 

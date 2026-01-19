@@ -227,6 +227,270 @@ class Usuario {
     // Inquilinos no tienen permisos administrativos
     return false;
   }
+
+  // ========== MÉTODOS PARA INTEGRACIÓN CON CLERK ==========
+
+  /**
+   * Obtener usuario por Clerk User ID
+   * @param {string} clerkUserId - ID de usuario de Clerk
+   * @param {Object} db - Instancia de D1 database (Cloudflare Workers)
+   * @returns {Object|null} Usuario encontrado o null
+   */
+  static async getByClerkId(clerkUserId, db) {
+    try {
+      if (!db) {
+        // Fallback a data.js si no hay DB (desarrollo local)
+        const data = readData();
+        const usuario = data.usuarios.find(u => u.clerk_user_id === clerkUserId);
+        if (!usuario) return null;
+        const { password, ...usuarioSinPassword } = usuario;
+        return usuarioSinPassword;
+      }
+
+      // Query a D1
+      const result = await db.prepare(
+        'SELECT * FROM usuarios WHERE clerk_user_id = ?'
+      ).bind(clerkUserId).first();
+
+      if (!result) return null;
+
+      // No retornar password
+      const { password, ...usuarioSinPassword } = result;
+      return usuarioSinPassword;
+    } catch (error) {
+      console.error('Error al obtener usuario por Clerk ID:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Crear usuario desde webhook de Clerk
+   * @param {Object} clerkUserData - Datos del usuario de Clerk
+   * @param {Object} db - Instancia de D1 database
+   * @returns {Object} Usuario creado
+   */
+  static async createFromClerk(clerkUserData, db) {
+    try {
+      const {
+        id: clerkUserId,
+        email_addresses,
+        first_name,
+        last_name,
+        public_metadata,
+        private_metadata
+      } = clerkUserData;
+
+      // Obtener email principal
+      const primaryEmail = email_addresses.find(e => e.id === clerkUserData.primary_email_address_id);
+      const email = primaryEmail?.email_address || email_addresses[0]?.email_address;
+
+      // Obtener datos de metadata
+      const rol = public_metadata?.rol || 'INQUILINO';
+      const departamento = public_metadata?.departamento || '';
+      const buildingId = public_metadata?.buildingId || null;
+      const nombre = `${first_name || ''} ${last_name || ''}`.trim() || 'Usuario';
+
+      // Preparar permisos según rol
+      let permisos = {};
+      if (rol === 'ADMIN') {
+        permisos = {
+          anuncios: true,
+          gastos: true,
+          presupuestos: true,
+          cuotas: true,
+          usuarios: true,
+          cierres: true
+        };
+      } else if (rol === 'COMITE') {
+        permisos = public_metadata?.permisos || {
+          anuncios: false,
+          gastos: false,
+          presupuestos: false,
+          cuotas: false,
+          usuarios: false,
+          cierres: false
+        };
+      }
+
+      const userData = {
+        clerk_user_id: clerkUserId,
+        nombre,
+        email,
+        password: '', // No se usa password con Clerk
+        rol,
+        departamento,
+        telefono: public_metadata?.telefono || '',
+        buildingId,
+        permisos: JSON.stringify(permisos),
+        created_via_clerk: 1,
+        clerk_metadata: JSON.stringify(public_metadata || {}),
+        activo: 1
+      };
+
+      if (!db) {
+        // Fallback a data.js
+        return addItem('usuarios', userData);
+      }
+
+      // Insertar en D1
+      const result = await db.prepare(`
+        INSERT INTO usuarios (
+          clerk_user_id, nombre, email, password, rol, departamento, 
+          telefono, building_id, created_via_clerk, clerk_metadata, activo
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `).bind(
+        userData.clerk_user_id,
+        userData.nombre,
+        userData.email,
+        userData.password,
+        userData.rol,
+        userData.departamento,
+        userData.telefono,
+        userData.buildingId,
+        userData.created_via_clerk,
+        userData.clerk_metadata,
+        userData.activo
+      ).run();
+
+      // Obtener el usuario creado
+      const nuevoUsuario = await db.prepare(
+        'SELECT * FROM usuarios WHERE clerk_user_id = ?'
+      ).bind(clerkUserId).first();
+
+      const { password, ...usuarioSinPassword } = nuevoUsuario;
+      return usuarioSinPassword;
+    } catch (error) {
+      console.error('Error al crear usuario desde Clerk:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Actualizar usuario desde webhook de Clerk
+   * @param {string} clerkUserId - ID de usuario de Clerk
+   * @param {Object} clerkUserData - Datos actualizados del usuario
+   * @param {Object} db - Instancia de D1 database
+   * @returns {Object} Usuario actualizado
+   */
+  static async updateFromClerk(clerkUserId, clerkUserData, db) {
+    try {
+      const {
+        email_addresses,
+        first_name,
+        last_name,
+        public_metadata
+      } = clerkUserData;
+
+      // Obtener email principal
+      const primaryEmail = email_addresses.find(e => e.id === clerkUserData.primary_email_address_id);
+      const email = primaryEmail?.email_address || email_addresses[0]?.email_address;
+
+      const nombre = `${first_name || ''} ${last_name || ''}`.trim() || 'Usuario';
+      const rol = public_metadata?.rol;
+      const departamento = public_metadata?.departamento;
+      const telefono = public_metadata?.telefono;
+
+      if (!db) {
+        // Fallback a data.js
+        const data = readData();
+        const usuario = data.usuarios.find(u => u.clerk_user_id === clerkUserId);
+        if (!usuario) throw new Error('Usuario no encontrado');
+
+        const updates = {
+          nombre,
+          email,
+          clerk_metadata: JSON.stringify(public_metadata || {})
+        };
+
+        if (rol) updates.rol = rol;
+        if (departamento) updates.departamento = departamento;
+        if (telefono) updates.telefono = telefono;
+
+        return updateItem('usuarios', usuario.id, updates);
+      }
+
+      // Actualizar en D1
+      const updates = [];
+      const bindings = [];
+
+      updates.push('nombre = ?');
+      bindings.push(nombre);
+
+      updates.push('email = ?');
+      bindings.push(email);
+
+      if (rol) {
+        updates.push('rol = ?');
+        bindings.push(rol);
+      }
+
+      if (departamento) {
+        updates.push('departamento = ?');
+        bindings.push(departamento);
+      }
+
+      if (telefono) {
+        updates.push('telefono = ?');
+        bindings.push(telefono);
+      }
+
+      updates.push('clerk_metadata = ?');
+      bindings.push(JSON.stringify(public_metadata || {}));
+
+      updates.push('updated_at = CURRENT_TIMESTAMP');
+
+      bindings.push(clerkUserId);
+
+      await db.prepare(`
+        UPDATE usuarios 
+        SET ${updates.join(', ')}
+        WHERE clerk_user_id = ?
+      `).bind(...bindings).run();
+
+      // Obtener usuario actualizado
+      const usuarioActualizado = await db.prepare(
+        'SELECT * FROM usuarios WHERE clerk_user_id = ?'
+      ).bind(clerkUserId).first();
+
+      const { password, ...usuarioSinPassword } = usuarioActualizado;
+      return usuarioSinPassword;
+    } catch (error) {
+      console.error('Error al actualizar usuario desde Clerk:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Marcar usuario como inactivo (soft delete) desde webhook de Clerk
+   * @param {string} clerkUserId - ID de usuario de Clerk
+   * @param {Object} db - Instancia de D1 database
+   * @returns {boolean} True si se desactivó correctamente
+   */
+  static async deactivateFromClerk(clerkUserId, db) {
+    try {
+      if (!db) {
+        // Fallback a data.js
+        const data = readData();
+        const usuario = data.usuarios.find(u => u.clerk_user_id === clerkUserId);
+        if (!usuario) return false;
+
+        updateItem('usuarios', usuario.id, { activo: 0 });
+        return true;
+      }
+
+      // Actualizar en D1
+      await db.prepare(`
+        UPDATE usuarios 
+        SET activo = 0, updated_at = CURRENT_TIMESTAMP
+        WHERE clerk_user_id = ?
+      `).bind(clerkUserId).run();
+
+      return true;
+    } catch (error) {
+      console.error('Error al desactivar usuario desde Clerk:', error);
+      return false;
+    }
+  }
 }
 
 export default Usuario;

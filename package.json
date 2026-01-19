@@ -42,6 +42,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@clerk/backend": "^2.29.3",
+    "@clerk/clerk-js": "^5.120.0",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
@@ -52,7 +54,8 @@
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
     "node-fetch": "^3.3.2",
-    "nodemailer": "^7.0.11"
+    "nodemailer": "^7.0.11",
+    "svix": "^1.84.1"
   },
   "repository": {
     "type": "git",

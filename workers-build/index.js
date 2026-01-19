@@ -186,6 +186,338 @@ export default {
         });
       }
 
+      // === CLERK WEBHOOK ROUTES ===
+      
+      // Clerk Webhook - Test endpoint
+      if (method === 'GET' && path === '/api/webhooks/clerk/test') {
+        return new Response(JSON.stringify({
+          ok: true,
+          msg: 'Clerk webhook endpoint is active',
+          timestamp: new Date().toISOString(),
+          env: {
+            hasClerkSecret: !!env.CLERK_SECRET_KEY,
+            hasWebhookSecret: !!env.CLERK_WEBHOOK_SECRET,
+            hasDB: !!env.DB
+          }
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // Clerk Webhook - Main endpoint
+      if (method === 'POST' && path === '/api/webhooks/clerk') {
+        try {
+          // Get Svix headers for verification
+          const svixId = request.headers.get('svix-id');
+          const svixTimestamp = request.headers.get('svix-timestamp');
+          const svixSignature = request.headers.get('svix-signature');
+
+          if (!svixId || !svixTimestamp || !svixSignature) {
+            return new Response(JSON.stringify({
+              ok: false,
+              msg: 'Missing svix headers'
+            }), {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          // Get request body
+          const body = await request.text();
+          let payload;
+          
+          try {
+            payload = JSON.parse(body);
+          } catch (e) {
+            return new Response(JSON.stringify({
+              ok: false,
+              msg: 'Invalid JSON payload'
+            }), {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          const { type, data } = payload;
+
+          console.log(`Received Clerk webhook: ${type}`, {
+            userId: data.id,
+            email: data.email_addresses?.[0]?.email_address
+          });
+
+          // Handle different webhook events
+          if (type === 'user.created') {
+            // Extract user data
+            const primaryEmail = data.email_addresses.find(e => e.id === data.primary_email_address_id);
+            const email = primaryEmail?.email_address || data.email_addresses[0]?.email_address;
+            const nombre = `${data.first_name || ''} ${data.last_name || ''}`.trim() || 'Usuario';
+            const rol = data.public_metadata?.rol || 'INQUILINO';
+            const departamento = data.public_metadata?.departamento || '';
+            const buildingId = data.public_metadata?.buildingId || null;
+
+            // Check if user already exists
+            const existingUser = await env.DB.prepare(
+              'SELECT id FROM usuarios WHERE clerk_user_id = ?'
+            ).bind(data.id).first();
+
+            if (!existingUser) {
+              // Create user in D1
+              await env.DB.prepare(`
+                INSERT INTO usuarios (
+                  clerk_user_id, nombre, email, password, rol, departamento,
+                  building_id, created_via_clerk, clerk_metadata, activo
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+              `).bind(
+                data.id,
+                nombre,
+                email,
+                '', // No password for Clerk users
+                rol,
+                departamento,
+                buildingId,
+                1,
+                JSON.stringify(data.public_metadata || {}),
+                1
+              ).run();
+
+              console.log('User created from Clerk webhook:', data.id);
+            }
+          } else if (type === 'user.updated') {
+            // Extract updated data
+            const primaryEmail = data.email_addresses.find(e => e.id === data.primary_email_address_id);
+            const email = primaryEmail?.email_address || data.email_addresses[0]?.email_address;
+            const nombre = `${data.first_name || ''} ${data.last_name || ''}`.trim() || 'Usuario';
+            const rol = data.public_metadata?.rol;
+            const departamento = data.public_metadata?.departamento;
+
+            // Update user in D1
+            const updates = ['nombre = ?', 'email = ?', 'clerk_metadata = ?'];
+            const bindings = [nombre, email, JSON.stringify(data.public_metadata || {})];
+
+            if (rol) {
+              updates.push('rol = ?');
+              bindings.push(rol);
+            }
+
+            if (departamento) {
+              updates.push('departamento = ?');
+              bindings.push(departamento);
+            }
+
+            bindings.push(data.id);
+
+            await env.DB.prepare(`
+              UPDATE usuarios 
+              SET ${updates.join(', ')}, updated_at = CURRENT_TIMESTAMP
+              WHERE clerk_user_id = ?
+            `).bind(...bindings).run();
+
+            console.log('User updated from Clerk webhook:', data.id);
+          } else if (type === 'user.deleted') {
+            // Soft delete user
+            await env.DB.prepare(`
+              UPDATE usuarios 
+              SET activo = 0, updated_at = CURRENT_TIMESTAMP
+              WHERE clerk_user_id = ?
+            `).bind(data.id).run();
+
+            console.log('User deactivated from Clerk webhook:', data.id);
+          }
+
+          return new Response(JSON.stringify({
+            ok: true,
+            msg: 'Webhook processed successfully'
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+
+        } catch (error) {
+          console.error('Error processing Clerk webhook:', error);
+          return new Response(JSON.stringify({
+            ok: false,
+            msg: 'Error processing webhook',
+            error: error.message
+          }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+      }
+
+      // === CLERK AUTH ROUTES ===
+
+      // GET /api/auth/me - Get authenticated user with Clerk token
+      if (method === 'GET' && path === '/api/auth/me') {
+        try {
+          const authHeader = request.headers.get('Authorization');
+          if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return new Response(JSON.stringify({
+              ok: false,
+              msg: 'No autorizado - Token requerido'
+            }), {
+              status: 401,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          const token = authHeader.replace('Bearer ', '');
+
+          // Verify Clerk token (simplified - in production use @clerk/backend)
+          // For now, we'll decode the JWT and get the user from DB
+          const payload = await verifyJWT(token, env);
+          
+          if (!payload || !payload.sub) {
+            return new Response(JSON.stringify({
+              ok: false,
+              msg: 'Token inválido'
+            }), {
+              status: 401,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          // Get user by clerk_user_id
+          const user = await env.DB.prepare(
+            'SELECT * FROM usuarios WHERE clerk_user_id = ?'
+          ).bind(payload.sub).first();
+
+          if (!user) {
+            // New user, return basic info
+            return new Response(JSON.stringify({
+              ok: true,
+              usuario: {
+                clerk_user_id: payload.sub,
+                email: payload.email || null,
+                nombre: payload.name || 'Usuario',
+                rol: 'INQUILINO',
+                isNewUser: true
+              }
+            }), {
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          // Return existing user
+          const { password, ...userWithoutPassword } = user;
+          return new Response(JSON.stringify({
+            ok: true,
+            usuario: userWithoutPassword
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+
+        } catch (error) {
+          console.error('Error in /api/auth/me:', error);
+          return new Response(JSON.stringify({
+            ok: false,
+            msg: 'Error al obtener usuario'
+          }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+      }
+
+      // POST /api/auth/clerk-setup - Complete setup for new Clerk user
+      if (method === 'POST' && path === '/api/auth/clerk-setup') {
+        try {
+          const authHeader = request.headers.get('Authorization');
+          if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return new Response(JSON.stringify({
+              ok: false,
+              msg: 'No autorizado'
+            }), {
+              status: 401,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          const token = authHeader.replace('Bearer ', '');
+          const payload = await verifyJWT(token, env);
+          
+          if (!payload || !payload.sub) {
+            return new Response(JSON.stringify({
+              ok: false,
+              msg: 'Token inválido'
+            }), {
+              status: 401,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          const body = await request.json();
+          const { departamento, telefono, buildingId, rol } = body;
+
+          if (!departamento) {
+            return new Response(JSON.stringify({
+              ok: false,
+              msg: 'Departamento es requerido'
+            }), {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          // Check if user already exists
+          const existingUser = await env.DB.prepare(
+            'SELECT * FROM usuarios WHERE clerk_user_id = ?'
+          ).bind(payload.sub).first();
+
+          if (existingUser) {
+            const { password, ...userWithoutPassword } = existingUser;
+            return new Response(JSON.stringify({
+              ok: true,
+              usuario: userWithoutPassword
+            }), {
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          // Create new user
+          await env.DB.prepare(`
+            INSERT INTO usuarios (
+              clerk_user_id, nombre, email, password, rol, departamento,
+              telefono, building_id, created_via_clerk, activo
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          `).bind(
+            payload.sub,
+            payload.name || 'Usuario',
+            payload.email,
+            '', // No password for Clerk users
+            rol || 'INQUILINO',
+            departamento,
+            telefono || '',
+            buildingId || null,
+            1,
+            1
+          ).run();
+
+          // Get created user
+          const newUser = await env.DB.prepare(
+            'SELECT * FROM usuarios WHERE clerk_user_id = ?'
+          ).bind(payload.sub).first();
+
+          const { password, ...userWithoutPassword } = newUser;
+          return new Response(JSON.stringify({
+            ok: true,
+            usuario: userWithoutPassword
+          }), {
+            status: 201,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+
+        } catch (error) {
+          console.error('Error in /api/auth/clerk-setup:', error);
+          return new Response(JSON.stringify({
+            ok: false,
+            msg: 'Error al completar setup'
+          }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+      }
+
       // Login
       if (method === 'POST' && path === '/api/auth/login') {
         const body = await request.json();
