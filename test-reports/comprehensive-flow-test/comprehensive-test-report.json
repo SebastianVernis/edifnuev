@@ -1,0 +1,2190 @@
+{
+  "timestamp": "2026-01-18T10:49:15.783Z",
+  "baseUrl": "http://localhost:3001",
+  "summary": {
+    "total": 5,
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0
+  },
+  "flows": [
+    {
+      "user": "ADMIN",
+      "email": "admin@edificio205.com",
+      "steps": [
+        {
+          "step": 1,
+          "name": "Login",
+          "page": "/login.html",
+          "action": "Submit login form",
+          "result": {
+            "success": true,
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvIjp7ImlkIjoxLCJyb2wiOiJBRE1JTiIsImRlcGFydGFtZW50byI6IkFETUlOIiwiYnVpbGRpbmdJZCI6bnVsbH0sImlhdCI6MTc2ODczMzM1NSwiZXhwIjoxNzY4ODE5NzU1fQ.738XzXS64MGfYbR9kgZ_pRdDXMj0OTjxbeY1aAcJo2o",
+            "usuario": {
+              "id": 1,
+              "nombre": "Administrador Principal",
+              "email": "admin@edificio205.com",
+              "departamento": "ADMIN",
+              "rol": "ADMIN"
+            }
+          }
+        },
+        {
+          "step": 2,
+          "name": "Admin Dashboard",
+          "page": "/admin.html",
+          "action": "Load admin dashboard",
+          "description": "Main admin interface with all management options"
+        },
+        {
+          "step": 3,
+          "name": "Usuarios List",
+          "page": "/admin.html",
+          "section": "Usuarios",
+          "action": "Click \"Usuarios\" button",
+          "result": {
+            "name": "Get Usuarios",
+            "endpoint": "/api/usuarios",
+            "method": "GET",
+            "status": 200,
+            "success": true,
+            "response": {
+              "ok": true,
+              "usuarios": [
+                {
+                  "id": 1,
+                  "nombre": "Administrador Principal",
+                  "email": "admin@edificio205.com",
+                  "departamento": "ADMIN",
+                  "rol": "ADMIN",
+                  "telefono": "+52 55 1234 5678",
+                  "fechaCreacion": "2025-11-07T02:47:42.129Z",
+                  "activo": true,
+                  "estatus_validacion": "validado",
+                  "esEditor": true
+                },
+                {
+                  "id": 3,
+                  "nombre": "María García",
+                  "email": "maria.garcia@edificio205.com",
+                  "departamento": "101",
+                  "rol": "INQUILINO",
+                  "telefono": "+52 55 3456 7890",
+                  "legitimidad_entregada": true,
+                  "estatus_validacion": "validado",
+                  "fechaCreacion": "2025-11-07T02:47:42.129Z",
+                  "activo": true
+                },
+                {
+                  "id": 4,
+                  "nombre": "Carlos López",
+                  "email": "carlos.lopez@edificio205.com",
+                  "departamento": "102",
+                  "rol": "INQUILINO",
+                  "telefono": "+52 55 4567 8901",
+                  "legitimidad_entregada": false,
+                  "estatus_validacion": "validado",
+                  "fechaCreacion": "2025-11-07T02:47:42.129Z",
+                  "activo": true
+                },
+                {
+                  "id": 5,
+                  "nombre": "Ana Martínez",
+                  "email": "ana.martinez@edificio205.com",
+                  "departamento": "201",
+                  "rol": "INQUILINO",
+                  "telefono": "+52 55 5678 9012",
+                  "legitimidad_entregada": true,
+                  "estatus_validacion": "validado",
+                  "fechaCreacion": "2025-11-07T02:47:42.129Z",
+                  "activo": true
+                },
+                {
+                  "id": 6,
+                  "nombre": "Roberto Silva",
+                  "email": "roberto.silva@edificio205.com",
+                  "departamento": "202",
+                  "rol": "INQUILINO",
+                  "telefono": "+52 55 6789 0123",
+                  "legitimidad_entregada": false,
+                  "estatus_validacion": "validado",
+                  "fechaCreacion": "2025-11-07T02:47:42.129Z",
+                  "activo": true
+                },
+                {
+                  "id": 6,
+                  "nombre": "Test User",
+                  "email": "test.user@example.com",
+                  "telefono": "1234567890",
+                  "departamento": "Admin",
+                  "rol": "ADMIN",
+                  "activo": true,
+                  "fechaRegistro": "2025-12-13T17:18:42.763Z",
+                  "subscription": {
+                    "plan": "profesional",
+                    "transactionId": "TXN-1765646297930-0hfjxsz8b",
+                    "startDate": "2025-12-13T17:18:42.764Z"
+                  },
+                  "building": {
+                    "name": "Test Building",
+                    "address": "123 Main St",
+                    "totalUnits": 50,
+                    "type": "edificio",
+                    "monthlyFee": 0,
+                    "cutoffDay": 1
+                  }
+                }
+              ]
+            },
+            "timestamp": "2026-01-18T10:49:15.896Z"
+          }
+        },
+        {
+          "step": 4,
+          "name": "Cuotas List",
+          "page": "/admin.html",
+          "section": "Cuotas",
+          "action": "Click \"Cuotas\" button",
+          "result": {
+            "name": "Get Cuotas",
+            "endpoint": "/api/cuotas",
+            "method": "GET",
+            "status": 200,
+            "success": true,
+            "response": {
+              "ok": true,
+              "cuotas": [
+                {
+                  "mes": "Noviembre",
+                  "anio": 2025,
+                  "monto": 550,
+                  "fechaVencimiento": "2025-12-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PAGADO",
+                  "fechaPago": "2025-12-12",
+                  "comprobantePago": "",
+                  "fechaCreacion": "2025-11-23T13:29:33.733Z",
+                  "id": 1
+                },
+                {
+                  "mes": "Noviembre",
+                  "anio": 2025,
+                  "monto": 550,
+                  "fechaVencimiento": "2025-12-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "VENCIDO",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.734Z",
+                  "id": 2
+                },
+                {
+                  "mes": "Noviembre",
+                  "anio": 2025,
+                  "monto": 550,
+                  "fechaVencimiento": "2025-12-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "VENCIDO",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.734Z",
+                  "id": 3
+                },
+                {
+                  "mes": "Noviembre",
+                  "anio": 2025,
+                  "monto": 550,
+                  "fechaVencimiento": "2025-12-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "VENCIDO",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.734Z",
+                  "id": 4
+                },
+                {
+                  "mes": "Diciembre",
+                  "anio": 2025,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-01-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "VENCIDO",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.735Z",
+                  "id": 5
+                },
+                {
+                  "mes": "Diciembre",
+                  "anio": 2025,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-01-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "VENCIDO",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.735Z",
+                  "id": 6
+                },
+                {
+                  "mes": "Diciembre",
+                  "anio": 2025,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-01-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "VENCIDO",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.735Z",
+                  "id": 7
+                },
+                {
+                  "mes": "Diciembre",
+                  "anio": 2025,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-01-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "VENCIDO",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.735Z",
+                  "id": 8
+                },
+                {
+                  "mes": "Enero",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-02-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.736Z",
+                  "id": 9
+                },
+                {
+                  "mes": "Enero",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-02-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.736Z",
+                  "id": 10
+                },
+                {
+                  "mes": "Enero",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-02-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.736Z",
+                  "id": 11
+                },
+                {
+                  "mes": "Enero",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-02-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.736Z",
+                  "id": 12
+                },
+                {
+                  "mes": "Febrero",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-03-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.737Z",
+                  "id": 13
+                },
+                {
+                  "mes": "Febrero",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-03-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.737Z",
+                  "id": 14
+                },
+                {
+                  "mes": "Febrero",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-03-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.737Z",
+                  "id": 15
+                },
+                {
+                  "mes": "Febrero",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-03-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.737Z",
+                  "id": 16
+                },
+                {
+                  "mes": "Marzo",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-04-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.738Z",
+                  "id": 17
+                },
+                {
+                  "mes": "Marzo",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-04-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.738Z",
+                  "id": 18
+                },
+                {
+                  "mes": "Marzo",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-04-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.738Z",
+                  "id": 19
+                },
+                {
+                  "mes": "Marzo",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-04-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.738Z",
+                  "id": 20
+                },
+                {
+                  "mes": "Abril",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-05-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.739Z",
+                  "id": 21
+                },
+                {
+                  "mes": "Abril",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-05-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.739Z",
+                  "id": 22
+                },
+                {
+                  "mes": "Abril",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-05-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.739Z",
+                  "id": 23
+                },
+                {
+                  "mes": "Abril",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-05-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.739Z",
+                  "id": 24
+                },
+                {
+                  "mes": "Mayo",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-06-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.740Z",
+                  "id": 25
+                },
+                {
+                  "mes": "Mayo",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-06-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.740Z",
+                  "id": 26
+                },
+                {
+                  "mes": "Mayo",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-06-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.740Z",
+                  "id": 27
+                },
+                {
+                  "mes": "Mayo",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-06-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.741Z",
+                  "id": 28
+                },
+                {
+                  "mes": "Junio",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-07-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.741Z",
+                  "id": 29
+                },
+                {
+                  "mes": "Junio",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-07-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.742Z",
+                  "id": 30
+                },
+                {
+                  "mes": "Junio",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-07-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.742Z",
+                  "id": 31
+                },
+                {
+                  "mes": "Junio",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-07-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.742Z",
+                  "id": 32
+                },
+                {
+                  "mes": "Julio",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-08-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.743Z",
+                  "id": 33
+                },
+                {
+                  "mes": "Julio",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-08-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.743Z",
+                  "id": 34
+                },
+                {
+                  "mes": "Julio",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-08-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.743Z",
+                  "id": 35
+                },
+                {
+                  "mes": "Julio",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-08-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.743Z",
+                  "id": 36
+                },
+                {
+                  "mes": "Agosto",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-09-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.744Z",
+                  "id": 37
+                },
+                {
+                  "mes": "Agosto",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-09-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.744Z",
+                  "id": 38
+                },
+                {
+                  "mes": "Agosto",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-09-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.744Z",
+                  "id": 39
+                },
+                {
+                  "mes": "Agosto",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-09-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.745Z",
+                  "id": 40
+                },
+                {
+                  "mes": "Septiembre",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-10-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.745Z",
+                  "id": 41
+                },
+                {
+                  "mes": "Septiembre",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-10-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.746Z",
+                  "id": 42
+                },
+                {
+                  "mes": "Septiembre",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-10-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.746Z",
+                  "id": 43
+                },
+                {
+                  "mes": "Septiembre",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-10-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.746Z",
+                  "id": 44
+                },
+                {
+                  "mes": "Octubre",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-11-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.748Z",
+                  "id": 45
+                },
+                {
+                  "mes": "Octubre",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-11-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.748Z",
+                  "id": 46
+                },
+                {
+                  "mes": "Octubre",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-11-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.748Z",
+                  "id": 47
+                },
+                {
+                  "mes": "Octubre",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-11-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.749Z",
+                  "id": 48
+                },
+                {
+                  "mes": "Noviembre",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-12-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.749Z",
+                  "id": 49
+                },
+                {
+                  "mes": "Noviembre",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-12-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.750Z",
+                  "id": 50
+                },
+                {
+                  "mes": "Noviembre",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-12-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.750Z",
+                  "id": 51
+                },
+                {
+                  "mes": "Noviembre",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2026-12-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.750Z",
+                  "id": 52
+                },
+                {
+                  "mes": "Diciembre",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-01-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.751Z",
+                  "id": 53
+                },
+                {
+                  "mes": "Diciembre",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-01-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.751Z",
+                  "id": 54
+                },
+                {
+                  "mes": "Diciembre",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-01-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.751Z",
+                  "id": 55
+                },
+                {
+                  "mes": "Diciembre",
+                  "anio": 2026,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-01-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2025-11-23T13:29:33.752Z",
+                  "id": 56
+                },
+                {
+                  "mes": "Enero",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-02-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.982Z",
+                  "id": 57
+                },
+                {
+                  "mes": "Enero",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-02-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.982Z",
+                  "id": 58
+                },
+                {
+                  "mes": "Enero",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-02-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.983Z",
+                  "id": 59
+                },
+                {
+                  "mes": "Enero",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-02-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.983Z",
+                  "id": 60
+                },
+                {
+                  "mes": "Febrero",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-03-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.984Z",
+                  "id": 61
+                },
+                {
+                  "mes": "Febrero",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-03-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.984Z",
+                  "id": 62
+                },
+                {
+                  "mes": "Febrero",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-03-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.984Z",
+                  "id": 63
+                },
+                {
+                  "mes": "Febrero",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-03-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.984Z",
+                  "id": 64
+                },
+                {
+                  "mes": "Marzo",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-04-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.985Z",
+                  "id": 65
+                },
+                {
+                  "mes": "Marzo",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-04-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.986Z",
+                  "id": 66
+                },
+                {
+                  "mes": "Marzo",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-04-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.986Z",
+                  "id": 67
+                },
+                {
+                  "mes": "Marzo",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-04-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.986Z",
+                  "id": 68
+                },
+                {
+                  "mes": "Abril",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-05-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.987Z",
+                  "id": 69
+                },
+                {
+                  "mes": "Abril",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-05-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.987Z",
+                  "id": 70
+                },
+                {
+                  "mes": "Abril",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-05-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.987Z",
+                  "id": 71
+                },
+                {
+                  "mes": "Abril",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-05-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.988Z",
+                  "id": 72
+                },
+                {
+                  "mes": "Mayo",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-06-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.989Z",
+                  "id": 73
+                },
+                {
+                  "mes": "Mayo",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-06-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.989Z",
+                  "id": 74
+                },
+                {
+                  "mes": "Mayo",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-06-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.989Z",
+                  "id": 75
+                },
+                {
+                  "mes": "Mayo",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-06-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.990Z",
+                  "id": 76
+                },
+                {
+                  "mes": "Junio",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-07-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.990Z",
+                  "id": 77
+                },
+                {
+                  "mes": "Junio",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-07-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.991Z",
+                  "id": 78
+                },
+                {
+                  "mes": "Junio",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-07-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.991Z",
+                  "id": 79
+                },
+                {
+                  "mes": "Junio",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-07-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.991Z",
+                  "id": 80
+                },
+                {
+                  "mes": "Julio",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-08-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.993Z",
+                  "id": 81
+                },
+                {
+                  "mes": "Julio",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-08-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.993Z",
+                  "id": 82
+                },
+                {
+                  "mes": "Julio",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-08-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.993Z",
+                  "id": 83
+                },
+                {
+                  "mes": "Julio",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-08-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.993Z",
+                  "id": 84
+                },
+                {
+                  "mes": "Agosto",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-09-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.994Z",
+                  "id": 85
+                },
+                {
+                  "mes": "Agosto",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-09-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.995Z",
+                  "id": 86
+                },
+                {
+                  "mes": "Agosto",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-09-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.995Z",
+                  "id": 87
+                },
+                {
+                  "mes": "Agosto",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-09-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.995Z",
+                  "id": 88
+                },
+                {
+                  "mes": "Septiembre",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-10-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.996Z",
+                  "id": 89
+                },
+                {
+                  "mes": "Septiembre",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-10-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.996Z",
+                  "id": 90
+                },
+                {
+                  "mes": "Septiembre",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-10-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.996Z",
+                  "id": 91
+                },
+                {
+                  "mes": "Septiembre",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-10-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.997Z",
+                  "id": 92
+                },
+                {
+                  "mes": "Octubre",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-11-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.997Z",
+                  "id": 93
+                },
+                {
+                  "mes": "Octubre",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-11-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.998Z",
+                  "id": 94
+                },
+                {
+                  "mes": "Octubre",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-11-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.998Z",
+                  "id": 95
+                },
+                {
+                  "mes": "Octubre",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-11-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.998Z",
+                  "id": 96
+                },
+                {
+                  "mes": "Noviembre",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-12-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:27.999Z",
+                  "id": 97
+                },
+                {
+                  "mes": "Noviembre",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-12-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:28.000Z",
+                  "id": 98
+                },
+                {
+                  "mes": "Noviembre",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-12-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:28.000Z",
+                  "id": 99
+                },
+                {
+                  "mes": "Noviembre",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2027-12-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:28.000Z",
+                  "id": 100
+                },
+                {
+                  "mes": "Diciembre",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2028-01-01T05:59:59.000Z",
+                  "departamento": "101",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:28.001Z",
+                  "id": 101
+                },
+                {
+                  "mes": "Diciembre",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2028-01-01T05:59:59.000Z",
+                  "departamento": "102",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:28.002Z",
+                  "id": 102
+                },
+                {
+                  "mes": "Diciembre",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2028-01-01T05:59:59.000Z",
+                  "departamento": "201",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:28.002Z",
+                  "id": 103
+                },
+                {
+                  "mes": "Diciembre",
+                  "anio": 2027,
+                  "monto": 550,
+                  "fechaVencimiento": "2028-01-01T05:59:59.000Z",
+                  "departamento": "202",
+                  "estado": "PENDIENTE",
+                  "fechaPago": null,
+                  "comprobantePago": null,
+                  "fechaCreacion": "2026-01-11T11:15:28.002Z",
+                  "id": 104
+                }
+              ]
+            },
+            "timestamp": "2026-01-18T10:49:15.899Z"
+          }
+        },
+        {
+          "step": 5,
+          "name": "Gastos List",
+          "page": "/admin.html",
+          "section": "Gastos",
+          "action": "Click \"Gastos\" button",
+          "result": {
+            "name": "Get Gastos",
+            "endpoint": "/api/gastos",
+            "method": "GET",
+            "status": 200,
+            "success": true,
+            "response": {
+              "ok": true,
+              "gastos": []
+            },
+            "timestamp": "2026-01-18T10:49:15.902Z"
+          }
+        },
+        {
+          "step": 6,
+          "name": "Presupuestos List",
+          "page": "/admin.html",
+          "section": "Presupuestos",
+          "action": "Click \"Presupuestos\" button",
+          "result": {
+            "name": "Get Presupuestos",
+            "endpoint": "/api/presupuestos",
+            "method": "GET",
+            "status": 200,
+            "success": true,
+            "response": {
+              "ok": true,
+              "presupuestos": []
+            },
+            "timestamp": "2026-01-18T10:49:15.904Z"
+          }
+        },
+        {
+          "step": 7,
+          "name": "Fondos List",
+          "page": "/admin.html",
+          "section": "Fondos",
+          "action": "Click \"Fondos\" button",
+          "result": {
+            "name": "Get Fondos",
+            "endpoint": "/api/fondos",
+            "method": "GET",
+            "status": 200,
+            "success": true,
+            "response": {
+              "ok": true,
+              "fondos": {
+                "ahorroAcumulado": 66940,
+                "gastosMayores": 144377,
+                "dineroOperacional": 71750,
+                "patrimonioTotal": 283067
+              },
+              "movimientos": [
+                {
+                  "id": 1,
+                  "tipo": "transferencia",
+                  "origen": "dineroOperacional",
+                  "destino": "ahorroAcumulado",
+                  "monto": 7110,
+                  "fecha": "2025-11-23T10:30:50.811Z",
+                  "descripcion": "Transferencia de Dinero Operacional a Ahorro Acumulado"
+                },
+                {
+                  "id": 2,
+                  "tipo": "transferencia",
+                  "origen": "ahorroAcumulado",
+                  "destino": "dineroOperacional",
+                  "monto": 1000,
+                  "fecha": "2025-11-23T10:34:37.256Z",
+                  "descripcion": "Transferencia de Ahorro Acumulado a Dinero Operacional"
+                },
+                {
+                  "id": 3,
+                  "tipo": "transferencia",
+                  "origen": "ahorroAcumulado",
+                  "destino": "gastosMayores",
+                  "monto": 100,
+                  "fecha": "2025-12-15T09:14:15.790Z",
+                  "descripcion": "Transferencia de Ahorro Acumulado a Gastos Mayores"
+                },
+                {
+                  "id": 4,
+                  "tipo": "transferencia",
+                  "origen": "ahorroAcumulado",
+                  "destino": "gastosMayores",
+                  "monto": 100,
+                  "fecha": "2025-12-15T09:19:03.915Z",
+                  "descripcion": "Transferencia de Ahorro Acumulado a Gastos Mayores"
+                }
+              ]
+            },
+            "timestamp": "2026-01-18T10:49:15.906Z"
+          }
+        },
+        {
+          "step": 8,
+          "name": "Anuncios List",
+          "page": "/admin.html",
+          "section": "Anuncios",
+          "action": "Click \"Anuncios\" button",
+          "result": {
+            "name": "Get Anuncios",
+            "endpoint": "/api/anuncios",
+            "method": "GET",
+            "status": 200,
+            "success": true,
+            "response": {
+              "ok": true,
+              "anuncios": [
+                {
+                  "id": 1,
+                  "titulo": "",
+                  "contenido": "",
+                  "tipo": "GENERAL",
+                  "imagen": "/uploads/anuncios/1765597563717_516038944_remmina_10_42_0_1_3389_10_42_0_1_3389_20251210-203023.png",
+                  "createdAt": "2025-11-23T14:03:40.580Z",
+                  "autor": 1,
+                  "archivos": []
+                }
+              ]
+            },
+            "timestamp": "2026-01-18T10:49:15.908Z"
+          }
+        },
+        {
+          "step": 9,
+          "name": "Solicitudes List",
+          "page": "/admin.html",
+          "section": "Solicitudes",
+          "action": "Click \"Solicitudes\" button",
+          "result": {
+            "name": "Get Solicitudes",
+            "endpoint": "/api/solicitudes",
+            "method": "GET",
+            "status": 200,
+            "success": true,
+            "response": {
+              "ok": true,
+              "solicitudes": []
+            },
+            "timestamp": "2026-01-18T10:49:15.911Z"
+          }
+        },
+        {
+          "step": 10,
+          "name": "Audit Logs",
+          "page": "/admin.html",
+          "section": "Auditoría",
+          "action": "Click \"Auditoría\" button",
+          "result": {
+            "name": "Get Audit Logs",
+            "endpoint": "/api/audit",
+            "method": "GET",
+            "status": 0,
+            "success": false,
+            "timestamp": "2026-01-18T10:49:15.915Z"
+          }
+        },
+        {
+          "step": 11,
+          "name": "User Profile",
+          "page": "/admin.html",
+          "section": "Profile",
+          "action": "Click profile icon",
+          "result": {
+            "name": "Get Profile",
+            "endpoint": "/api/usuarios/profile",
+            "method": "GET",
+            "status": 0,
+            "success": false,
+            "timestamp": "2026-01-18T10:49:15.917Z"
+          }
+        },
+        {
+          "step": 12,
+          "name": "Logout",
+          "page": "/admin.html",
+          "action": "Click logout button",
+          "description": "User logged out successfully"
+        }
+      ],
+      "success": true
+    },
+    {
+      "user": "INQUILINO",
+      "nombre": "María García",
+      "email": "maria.garcia@edificio205.com",
+      "departamento": "101",
+      "estado": "Validado",
+      "steps": [
+        {
+          "step": 1,
+          "name": "Login",
+          "page": "/login.html",
+          "action": "Submit login form",
+          "result": {
+            "success": true,
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvIjp7ImlkIjozLCJyb2wiOiJJTlFVSUxJTk8iLCJkZXBhcnRhbWVudG8iOiIxMDEiLCJidWlsZGluZ0lkIjpudWxsfSwiaWF0IjoxNzY4NzMzMzU1LCJleHAiOjE3Njg4MTk3NTV9.wCdlRwB5bM6zf-IyOcPMGKiVF65o7xEe81EnTsE9jo8",
+            "usuario": {
+              "id": 3,
+              "nombre": "María García",
+              "email": "maria.garcia@edificio205.com",
+              "departamento": "101",
+              "rol": "INQUILINO"
+            }
+          }
+        },
+        {
+          "step": 2,
+          "name": "Inquilino Dashboard",
+          "page": "/inquilino.html",
+          "action": "Load inquilino dashboard",
+          "description": "Tenant interface with personal information"
+        },
+        {
+          "step": 3,
+          "name": "User Profile",
+          "page": "/inquilino.html",
+          "section": "Profile",
+          "action": "View profile section",
+          "result": {
+            "name": "Get Profile",
+            "endpoint": "/api/usuarios/profile",
+            "method": "GET",
+            "status": 403,
+            "success": false,
+            "response": {
+              "success": false,
+              "message": "Acceso denegado. No tiene permiso para usuarios."
+            },
+            "timestamp": "2026-01-18T10:49:15.995Z"
+          }
+        },
+        {
+          "step": 4,
+          "name": "Mis Cuotas",
+          "page": "/inquilino.html",
+          "section": "Cuotas",
+          "action": "Click \"Mis Cuotas\" button",
+          "result": {
+            "name": "Get Mis Cuotas",
+            "endpoint": "/api/cuotas/mis-cuotas",
+            "method": "GET",
+            "status": 400,
+            "success": false,
+            "response": {
+              "ok": false,
+              "msg": "ID inválido"
+            },
+            "timestamp": "2026-01-18T10:49:15.997Z"
+          }
+        },
+        {
+          "step": 5,
+          "name": "Anuncios",
+          "page": "/inquilino.html",
+          "section": "Anuncios",
+          "action": "Click \"Anuncios\" button",
+          "result": {
+            "name": "Get Anuncios",
+            "endpoint": "/api/anuncios",
+            "method": "GET",
+            "status": 200,
+            "success": true,
+            "response": {
+              "ok": true,
+              "anuncios": [
+                {
+                  "id": 1,
+                  "titulo": "",
+                  "contenido": "",
+                  "tipo": "GENERAL",
+                  "imagen": "/uploads/anuncios/1765597563717_516038944_remmina_10_42_0_1_3389_10_42_0_1_3389_20251210-203023.png",
+                  "createdAt": "2025-11-23T14:03:40.580Z",
+                  "autor": 1,
+                  "archivos": []
+                }
+              ]
+            },
+            "timestamp": "2026-01-18T10:49:15.998Z"
+          }
+        },
+        {
+          "step": 6,
+          "name": "Mis Solicitudes",
+          "page": "/inquilino.html",
+          "section": "Solicitudes",
+          "action": "Click \"Solicitudes\" button",
+          "result": {
+            "name": "Get Mis Solicitudes",
+            "endpoint": "/api/solicitudes/mis-solicitudes",
+            "method": "GET",
+            "status": 200,
+            "success": true,
+            "response": {
+              "ok": true,
+              "solicitud": null
+            },
+            "timestamp": "2026-01-18T10:49:15.999Z"
+          }
+        },
+        {
+          "step": 7,
+          "name": "Estado de Cuenta",
+          "page": "/inquilino.html",
+          "section": "Estado de Cuenta",
+          "action": "Click \"Estado de Cuenta\" button",
+          "result": {
+            "name": "Get Estado de Cuenta",
+            "endpoint": "/api/cuotas/estado-cuenta",
+            "method": "GET",
+            "status": 400,
+            "success": false,
+            "response": {
+              "ok": false,
+              "msg": "ID inválido"
+            },
+            "timestamp": "2026-01-18T10:49:16.001Z"
+          }
+        },
+        {
+          "step": 8,
+          "name": "Logout",
+          "page": "/inquilino.html",
+          "action": "Click logout button",
+          "description": "User logged out successfully"
+        }
+      ],
+      "success": true
+    },
+    {
+      "user": "INQUILINO",
+      "nombre": "Carlos López",
+      "email": "carlos.lopez@edificio205.com",
+      "departamento": "102",
+      "estado": "Pendiente",
+      "steps": [
+        {
+          "step": 1,
+          "name": "Login",
+          "page": "/login.html",
+          "action": "Submit login form",
+          "result": {
+            "success": true,
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvIjp7ImlkIjo0LCJyb2wiOiJJTlFVSUxJTk8iLCJkZXBhcnRhbWVudG8iOiIxMDIiLCJidWlsZGluZ0lkIjpudWxsfSwiaWF0IjoxNzY4NzMzMzU2LCJleHAiOjE3Njg4MTk3NTZ9.xYMZ4B0JkPEqPgr7cgxcjSsEg69zjqkIBcsz1NMvBV4",
+            "usuario": {
+              "id": 4,
+              "nombre": "Carlos López",
+              "email": "carlos.lopez@edificio205.com",
+              "departamento": "102",
+              "rol": "INQUILINO"
+            }
+          }
+        },
+        {
+          "step": 2,
+          "name": "Inquilino Dashboard",
+          "page": "/inquilino.html",
+          "action": "Load inquilino dashboard",
+          "description": "Tenant interface with personal information"
+        },
+        {
+          "step": 3,
+          "name": "User Profile",
+          "page": "/inquilino.html",
+          "section": "Profile",
+          "action": "View profile section",
+          "result": {
+            "name": "Get Profile",
+            "endpoint": "/api/usuarios/profile",
+            "method": "GET",
+            "status": 403,
+            "success": false,
+            "response": {
+              "success": false,
+              "message": "Acceso denegado. No tiene permiso para usuarios."
+            },
+            "timestamp": "2026-01-18T10:49:16.078Z"
+          }
+        },
+        {
+          "step": 4,
+          "name": "Mis Cuotas",
+          "page": "/inquilino.html",
+          "section": "Cuotas",
+          "action": "Click \"Mis Cuotas\" button",
+          "result": {
+            "name": "Get Mis Cuotas",
+            "endpoint": "/api/cuotas/mis-cuotas",
+            "method": "GET",
+            "status": 400,
+            "success": false,
+            "response": {
+              "ok": false,
+              "msg": "ID inválido"
+            },
+            "timestamp": "2026-01-18T10:49:16.079Z"
+          }
+        },
+        {
+          "step": 5,
+          "name": "Anuncios",
+          "page": "/inquilino.html",
+          "section": "Anuncios",
+          "action": "Click \"Anuncios\" button",
+          "result": {
+            "name": "Get Anuncios",
+            "endpoint": "/api/anuncios",
+            "method": "GET",
+            "status": 200,
+            "success": true,
+            "response": {
+              "ok": true,
+              "anuncios": [
+                {
+                  "id": 1,
+                  "titulo": "",
+                  "contenido": "",
+                  "tipo": "GENERAL",
+                  "imagen": "/uploads/anuncios/1765597563717_516038944_remmina_10_42_0_1_3389_10_42_0_1_3389_20251210-203023.png",
+                  "createdAt": "2025-11-23T14:03:40.580Z",
+                  "autor": 1,
+                  "archivos": []
+                }
+              ]
+            },
+            "timestamp": "2026-01-18T10:49:16.080Z"
+          }
+        },
+        {
+          "step": 6,
+          "name": "Mis Solicitudes",
+          "page": "/inquilino.html",
+          "section": "Solicitudes",
+          "action": "Click \"Solicitudes\" button",
+          "result": {
+            "name": "Get Mis Solicitudes",
+            "endpoint": "/api/solicitudes/mis-solicitudes",
+            "method": "GET",
+            "status": 200,
+            "success": true,
+            "response": {
+              "ok": true,
+              "solicitud": null
+            },
+            "timestamp": "2026-01-18T10:49:16.082Z"
+          }
+        },
+        {
+          "step": 7,
+          "name": "Estado de Cuenta",
+          "page": "/inquilino.html",
+          "section": "Estado de Cuenta",
+          "action": "Click \"Estado de Cuenta\" button",
+          "result": {
+            "name": "Get Estado de Cuenta",
+            "endpoint": "/api/cuotas/estado-cuenta",
+            "method": "GET",
+            "status": 400,
+            "success": false,
+            "response": {
+              "ok": false,
+              "msg": "ID inválido"
+            },
+            "timestamp": "2026-01-18T10:49:16.083Z"
+          }
+        },
+        {
+          "step": 8,
+          "name": "Logout",
+          "page": "/inquilino.html",
+          "action": "Click logout button",
+          "description": "User logged out successfully"
+        }
+      ],
+      "success": true
+    },
+    {
+      "user": "INQUILINO",
+      "nombre": "Ana Martínez",
+      "email": "ana.martinez@edificio205.com",
+      "departamento": "201",
+      "estado": "Validado",
+      "steps": [
+        {
+          "step": 1,
+          "name": "Login",
+          "page": "/login.html",
+          "action": "Submit login form",
+          "result": {
+            "success": true,
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvIjp7ImlkIjo1LCJyb2wiOiJJTlFVSUxJTk8iLCJkZXBhcnRhbWVudG8iOiIyMDEiLCJidWlsZGluZ0lkIjpudWxsfSwiaWF0IjoxNzY4NzMzMzU2LCJleHAiOjE3Njg4MTk3NTZ9.pWOd6W-Oku7opKAITR1rUXZhBqV4bAOyuG8zHM9NBdI",
+            "usuario": {
+              "id": 5,
+              "nombre": "Ana Martínez",
+              "email": "ana.martinez@edificio205.com",
+              "departamento": "201",
+              "rol": "INQUILINO"
+            }
+          }
+        },
+        {
+          "step": 2,
+          "name": "Inquilino Dashboard",
+          "page": "/inquilino.html",
+          "action": "Load inquilino dashboard",
+          "description": "Tenant interface with personal information"
+        },
+        {
+          "step": 3,
+          "name": "User Profile",
+          "page": "/inquilino.html",
+          "section": "Profile",
+          "action": "View profile section",
+          "result": {
+            "name": "Get Profile",
+            "endpoint": "/api/usuarios/profile",
+            "method": "GET",
+            "status": 403,
+            "success": false,
+            "response": {
+              "success": false,
+              "message": "Acceso denegado. No tiene permiso para usuarios."
+            },
+            "timestamp": "2026-01-18T10:49:16.159Z"
+          }
+        },
+        {
+          "step": 4,
+          "name": "Mis Cuotas",
+          "page": "/inquilino.html",
+          "section": "Cuotas",
+          "action": "Click \"Mis Cuotas\" button",
+          "result": {
+            "name": "Get Mis Cuotas",
+            "endpoint": "/api/cuotas/mis-cuotas",
+            "method": "GET",
+            "status": 400,
+            "success": false,
+            "response": {
+              "ok": false,
+              "msg": "ID inválido"
+            },
+            "timestamp": "2026-01-18T10:49:16.160Z"
+          }
+        },
+        {
+          "step": 5,
+          "name": "Anuncios",
+          "page": "/inquilino.html",
+          "section": "Anuncios",
+          "action": "Click \"Anuncios\" button",
+          "result": {
+            "name": "Get Anuncios",
+            "endpoint": "/api/anuncios",
+            "method": "GET",
+            "status": 200,
+            "success": true,
+            "response": {
+              "ok": true,
+              "anuncios": [
+                {
+                  "id": 1,
+                  "titulo": "",
+                  "contenido": "",
+                  "tipo": "GENERAL",
+                  "imagen": "/uploads/anuncios/1765597563717_516038944_remmina_10_42_0_1_3389_10_42_0_1_3389_20251210-203023.png",
+                  "createdAt": "2025-11-23T14:03:40.580Z",
+                  "autor": 1,
+                  "archivos": []
+                }
+              ]
+            },
+            "timestamp": "2026-01-18T10:49:16.161Z"
+          }
+        },
+        {
+          "step": 6,
+          "name": "Mis Solicitudes",
+          "page": "/inquilino.html",
+          "section": "Solicitudes",
+          "action": "Click \"Solicitudes\" button",
+          "result": {
+            "name": "Get Mis Solicitudes",
+            "endpoint": "/api/solicitudes/mis-solicitudes",
+            "method": "GET",
+            "status": 200,
+            "success": true,
+            "response": {
+              "ok": true,
+              "solicitud": null
+            },
+            "timestamp": "2026-01-18T10:49:16.163Z"
+          }
+        },
+        {
+          "step": 7,
+          "name": "Estado de Cuenta",
+          "page": "/inquilino.html",
+          "section": "Estado de Cuenta",
+          "action": "Click \"Estado de Cuenta\" button",
+          "result": {
+            "name": "Get Estado de Cuenta",
+            "endpoint": "/api/cuotas/estado-cuenta",
+            "method": "GET",
+            "status": 400,
+            "success": false,
+            "response": {
+              "ok": false,
+              "msg": "ID inválido"
+            },
+            "timestamp": "2026-01-18T10:49:16.164Z"
+          }
+        },
+        {
+          "step": 8,
+          "name": "Logout",
+          "page": "/inquilino.html",
+          "action": "Click logout button",
+          "description": "User logged out successfully"
+        }
+      ],
+      "success": true
+    },
+    {
+      "user": "INQUILINO",
+      "nombre": "Roberto Silva",
+      "email": "roberto.silva@edificio205.com",
+      "departamento": "202",
+      "estado": "Pendiente",
+      "steps": [
+        {
+          "step": 1,
+          "name": "Login",
+          "page": "/login.html",
+          "action": "Submit login form",
+          "result": {
+            "success": true,
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvIjp7ImlkIjo2LCJyb2wiOiJJTlFVSUxJTk8iLCJkZXBhcnRhbWVudG8iOiIyMDIiLCJidWlsZGluZ0lkIjpudWxsfSwiaWF0IjoxNzY4NzMzMzU2LCJleHAiOjE3Njg4MTk3NTZ9.zd_T1BxUfMbx_6Ye_CKuQ1qFVS9H_d5T4iai8_EP2Eg",
+            "usuario": {
+              "id": 6,
+              "nombre": "Roberto Silva",
+              "email": "roberto.silva@edificio205.com",
+              "departamento": "202",
+              "rol": "INQUILINO"
+            }
+          }
+        },
+        {
+          "step": 2,
+          "name": "Inquilino Dashboard",
+          "page": "/inquilino.html",
+          "action": "Load inquilino dashboard",
+          "description": "Tenant interface with personal information"
+        },
+        {
+          "step": 3,
+          "name": "User Profile",
+          "page": "/inquilino.html",
+          "section": "Profile",
+          "action": "View profile section",
+          "result": {
+            "name": "Get Profile",
+            "endpoint": "/api/usuarios/profile",
+            "method": "GET",
+            "status": 403,
+            "success": false,
+            "response": {
+              "success": false,
+              "message": "Acceso denegado. No tiene permiso para usuarios."
+            },
+            "timestamp": "2026-01-18T10:49:16.240Z"
+          }
+        },
+        {
+          "step": 4,
+          "name": "Mis Cuotas",
+          "page": "/inquilino.html",
+          "section": "Cuotas",
+          "action": "Click \"Mis Cuotas\" button",
+          "result": {
+            "name": "Get Mis Cuotas",
+            "endpoint": "/api/cuotas/mis-cuotas",
+            "method": "GET",
+            "status": 400,
+            "success": false,
+            "response": {
+              "ok": false,
+              "msg": "ID inválido"
+            },
+            "timestamp": "2026-01-18T10:49:16.241Z"
+          }
+        },
+        {
+          "step": 5,
+          "name": "Anuncios",
+          "page": "/inquilino.html",
+          "section": "Anuncios",
+          "action": "Click \"Anuncios\" button",
+          "result": {
+            "name": "Get Anuncios",
+            "endpoint": "/api/anuncios",
+            "method": "GET",
+            "status": 200,
+            "success": true,
+            "response": {
+              "ok": true,
+              "anuncios": [
+                {
+                  "id": 1,
+                  "titulo": "",
+                  "contenido": "",
+                  "tipo": "GENERAL",
+                  "imagen": "/uploads/anuncios/1765597563717_516038944_remmina_10_42_0_1_3389_10_42_0_1_3389_20251210-203023.png",
+                  "createdAt": "2025-11-23T14:03:40.580Z",
+                  "autor": 1,
+                  "archivos": []
+                }
+              ]
+            },
+            "timestamp": "2026-01-18T10:49:16.242Z"
+          }
+        },
+        {
+          "step": 6,
+          "name": "Mis Solicitudes",
+          "page": "/inquilino.html",
+          "section": "Solicitudes",
+          "action": "Click \"Solicitudes\" button",
+          "result": {
+            "name": "Get Mis Solicitudes",
+            "endpoint": "/api/solicitudes/mis-solicitudes",
+            "method": "GET",
+            "status": 200,
+            "success": true,
+            "response": {
+              "ok": true,
+              "solicitud": null
+            },
+            "timestamp": "2026-01-18T10:49:16.243Z"
+          }
+        },
+        {
+          "step": 7,
+          "name": "Estado de Cuenta",
+          "page": "/inquilino.html",
+          "section": "Estado de Cuenta",
+          "action": "Click \"Estado de Cuenta\" button",
+          "result": {
+            "name": "Get Estado de Cuenta",
+            "endpoint": "/api/cuotas/estado-cuenta",
+            "method": "GET",
+            "status": 400,
+            "success": false,
+            "response": {
+              "ok": false,
+              "msg": "ID inválido"
+            },
+            "timestamp": "2026-01-18T10:49:16.245Z"
+          }
+        },
+        {
+          "step": 8,
+          "name": "Logout",
+          "page": "/inquilino.html",
+          "action": "Click logout button",
+          "description": "User logged out successfully"
+        }
+      ],
+      "success": true
+    }
+  ],
+  "generatedAt": "2026-01-18T10:49:16.245Z",
+  "duration": "N/A"
+}
