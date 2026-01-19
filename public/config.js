@@ -34,6 +34,9 @@
     SITE_NAME: 'ChispartBuilding',
     DOMAIN: isLocalhost ? 'localhost:3001' : 'chispartbuilding.pages.dev',
     
+    // Clerk Configuration
+    CLERK_PUBLISHABLE_KEY: 'pk_test_cG9saXNoZWQtaGFnZmlzaC01OS5jbGVyay5hY2NvdW50cy5kZXYk',
+    
     // Helper para construir URLs
     apiUrl: function(endpoint) {
       // Si endpoint ya es absoluto, devolverlo
