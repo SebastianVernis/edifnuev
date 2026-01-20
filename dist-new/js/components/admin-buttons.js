@@ -1878,29 +1878,40 @@ async function actualizarUsuario(userId) {
 }
 
 async function eliminarUsuario(userId) {
+  console.log('🗑️ Intentando eliminar usuario ID:', userId);
+  
   if (!confirm('¿Está seguro de eliminar este usuario? Esta acción no se puede deshacer.')) {
+    console.log('❌ Eliminación cancelada por el usuario');
     return;
   }
   
   try {
     const token = localStorage.getItem('edificio_token');
+    console.log('📡 Enviando DELETE a /api/usuarios/' + userId);
+    
     const response = await fetch(`/api/usuarios/${userId}`, {
       method: 'DELETE',
       headers: {
+        'Authorization': `Bearer ${token}`,
         'x-auth-token': token
       }
     });
     
+    console.log('📥 Respuesta:', response.status);
+    
     if (response.ok) {
+      const data = await response.json();
+      console.log('✅ Usuario eliminado:', data);
       alert('✅ Usuario eliminado exitosamente');
       filtrarUsuarios();
     } else {
       const error = await response.json();
-      alert(`❌ Error: ${error.msg || 'No se pudo eliminar el usuario'}`);
+      console.error('❌ Error del servidor:', error);
+      alert(`❌ Error: ${error.msg || error.message || 'No se pudo eliminar el usuario'}`);
     }
   } catch (error) {
-    console.error('Error:', error);
-    alert('❌ Error al eliminar usuario');
+    console.error('❌ Error en eliminarUsuario:', error);
+    alert('❌ Error al eliminar usuario: ' + error.message);
   }
 }
 
