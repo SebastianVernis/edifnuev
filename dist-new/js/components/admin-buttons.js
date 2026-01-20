@@ -631,14 +631,13 @@ async function showNuevoUsuarioModal() {
             <select id="usuario-rol" required>
               <option value="INQUILINO">Inquilino</option>
               <option value="ADMIN">Administrador</option>
-              <option value="COMITE">Comité</option>
             </select>
           </div>
 
           <div id="password-field" class="form-group">
             <label for="usuario-password">Contraseña:</label>
             <input type="password" id="usuario-password" minlength="6">
-            <p class="help-text" style="color: #6B7280; font-size: 0.875rem; margin-top: 0.25rem;">Solo para Administradores y Comité</p>
+            <p class="help-text" style="color: #6B7280; font-size: 0.875rem; margin-top: 0.25rem;">Solo para Administradores</p>
           </div>
           
           <div class="form-group">
