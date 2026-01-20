@@ -1677,11 +1677,12 @@ export default {
             console.log(`   Campo: ${key}, Tipo: ${typeof value}, Es File: ${value instanceof File}`);
           }
           
-          const file = formData.get('file');
+          // Intentar con 'imagen' primero, luego 'file' por compatibilidad
+          const file = formData.get('imagen') || formData.get('file');
           console.log('   Archivo obtenido:', !!file);
 
           if (!file) {
-            console.log('❌ No se encontró campo "file" en FormData');
+            console.log('❌ No se encontró archivo en FormData');
             console.log('   Campos recibidos:', fields);
             
             return new Response(JSON.stringify({
