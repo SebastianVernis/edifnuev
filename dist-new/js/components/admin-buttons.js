@@ -1018,12 +1018,28 @@ function renderAnunciosContainer(anuncios) {
       <div class="anuncio-body">
         <p>${anuncio.contenido}</p>
         ${archivoUrl ? `
-          <div class="anuncio-imagen">
+          <div class="anuncio-imagen" style="margin-top: 1rem;">
             ${archivoUrl.endsWith('.pdf') ? 
               `<a href="${archivoUrl}" target="_blank" class="btn btn-sm btn-outline-primary">
                 <i class="fas fa-file-pdf"></i> Ver PDF
               </a>` :
-              `<img src="${archivoUrl}" alt="${anuncio.titulo}" style="max-width: 100%; margin-top: 10px; border-radius: 4px;">`
+              `<img 
+                src="${archivoUrl}" 
+                alt="${anuncio.titulo}" 
+                loading="lazy"
+                style="
+                  max-width: 100%; 
+                  height: auto;
+                  margin-top: 0.5rem; 
+                  border-radius: 0.5rem;
+                  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                  object-fit: cover;
+                  max-height: 400px;
+                  cursor: pointer;
+                "
+                onclick="window.open('${archivoUrl}', '_blank')"
+                onerror="this.style.display='none'; this.parentElement.innerHTML='<p style=color:#EF4444;font-size:0.875rem><i class=fas fa-exclamation-triangle></i> Error al cargar imagen</p>'"
+              >`
             }
           </div>
         ` : ''}
