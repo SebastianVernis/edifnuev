@@ -115,6 +115,9 @@ function showSection(sectionId) {
     targetSection.classList.add('active');
     targetSection.style.display = 'block';
     console.log('✓ Sección mostrada:', sectionId);
+    
+    // Cargar datos de la sección
+    loadSectionData(sectionId);
   } else {
     console.warn('Sección no encontrada:', sectionId);
     // Mostrar cuotas por defecto
