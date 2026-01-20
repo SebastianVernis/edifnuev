@@ -1368,6 +1368,13 @@
               <div class="form-group">
                 <label for="proyecto-monto">Monto Total:</label>
                 <input type="number" id="proyecto-monto" min="0" step="0.01" required>
+                <p class="help-text" style="font-size: 0.85rem; color: #666; margin-top: 0.25rem;">Se dividirá entre departamentos activos</p>
+              </div>
+              
+              <div class="form-group">
+                <label for="proyecto-meses">Diferir en meses:</label>
+                <input type="number" id="proyecto-meses" name="mesesDiferimiento" min="1" max="36" value="1" required>
+                <p class="help-text" style="font-size: 0.85rem; color: #666; margin-top: 0.25rem;">El monto por depto se dividirá en estos meses</p>
               </div>
               
               <div class="form-group">
@@ -1378,6 +1385,13 @@
                   <option value="MEDIA">MEDIA</option>
                   <option value="BAJA">BAJA</option>
                 </select>
+              </div>
+              
+              <div class="info-box" id="proyecto-calculo" style="display: none; background: #e7f3ff; padding: 1rem; border-radius: 0.5rem; margin-top: 1rem;">
+                <h4 style="margin-bottom: 0.5rem; font-size: 0.9rem;">📊 Cálculo:</h4>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><strong>Deptos activos:</strong> <span id="calc-deptos">-</span></p>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><strong>Por depto (total):</strong> $<span id="calc-por-depto">-</span></p>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><strong>Por mes/depto:</strong> $<span id="calc-por-mes">-</span></p>
               </div>
               
               <div class="form-actions">
@@ -1580,3 +1594,32 @@
       });
     });
   </script>
+
+<script>
+// Calcular costos del proyecto en tiempo real
+function calcularProyecto() {
+  const monto = parseFloat(document.getElementById('proyecto-monto')?.value) || 0;
+  const meses = parseInt(document.getElementById('proyecto-meses')?.value) || 1;
+  
+  if (monto > 0) {
+    // Obtener deptos activos del sistema
+    fetch('/api/usuarios')
+      .then(res => res.json())
+      .then(data => {
+        const deptosActivos = data.usuarios.filter(u => u.rol === 'INQUILINO' && u.activo).length;
+        const porDepto = monto / (deptosActivos || 1);
+        const porMes = porDepto / meses;
+        
+        document.getElementById('calc-deptos').textContent = deptosActivos;
+        document.getElementById('calc-por-depto').textContent = porDepto.toFixed(2);
+        document.getElementById('calc-por-mes').textContent = porMes.toFixed(2);
+        document.getElementById('proyecto-calculo').style.display = 'block';
+      })
+      .catch(err => console.error('Error calculando:', err));
+  }
+}
+
+// Agregar listeners al modal de proyectos
+document.getElementById('proyecto-monto')?.addEventListener('input', calcularProyecto);
+document.getElementById('proyecto-meses')?.addEventListener('input', calcularProyecto);
+</script>

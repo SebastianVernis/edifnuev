@@ -44,7 +44,7 @@ export async function getProyectos(req, res) {
  */
 export async function crearProyecto(req, res) {
   try {
-    const { nombre, monto, prioridad } = req.body;
+    const { nombre, monto, prioridad, mesesDiferimiento } = req.body;
     
     if (!nombre || !monto || !prioridad) {
       return res.status(400).json({
@@ -65,11 +65,28 @@ export async function crearProyecto(req, res) {
       data.proyectos = [];
     }
     
+    // Calcular cuota por depto activo
+    const deptosActivos = data.usuarios.filter(u => u.rol === 'INQUILINO' && u.activo === 1).length;
+    const mesesDif = parseInt(mesesDiferimiento) || 1;
+    const montoTotal = parseFloat(monto);
+    const montoPorDepto = montoTotal / deptosActivos;
+    const montoPorMes = montoPorDepto / mesesDif;
+    
+    console.log(`📊 Proyecto: ${nombre}`);
+    console.log(`💰 Monto total: $${montoTotal}`);
+    console.log(`🏠 Deptos activos: ${deptosActivos}`);
+    console.log(`📅 Meses diferimiento: ${mesesDif}`);
+    console.log(`💵 Por depto/mes: $${montoPorMes.toFixed(2)}`);
+    
     const nuevoProyecto = {
       id: data.proyectos.length > 0 ? Math.max(...data.proyectos.map(p => p.id)) + 1 : 1,
       nombre,
-      monto: parseFloat(monto),
-      prioridad
+      monto: montoTotal,
+      prioridad,
+      mesesDiferimiento: mesesDif,
+      deptosActivos,
+      montoPorDepto,
+      montoPorMes
     };
     
     data.proyectos.push(nuevoProyecto);

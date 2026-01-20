@@ -35,9 +35,12 @@ class Cuota {
   static generarCuotasMensuales(mes, anio, monto, fechaVencimiento) {
     try {
       const data = readData();
+      // CAMBIO: Solo generar para usuarios ACTIVOS
       const departamentos = data.usuarios
-        .filter(u => u.rol === 'INQUILINO')
+        .filter(u => u.rol === 'INQUILINO' && u.activo === 1)
         .map(u => u.departamento);
+      
+      console.log(`📋 Generando cuotas para ${departamentos.length} departamentos activos`);
       
       // Verificar si ya existen cuotas para este mes y año
       const existenCuotas = data.cuotas.some(
@@ -66,6 +69,7 @@ class Cuota {
         }
       }
       
+      console.log(`✅ ${cuotasGeneradas.length} cuotas generadas`);
       return cuotasGeneradas;
     } catch (error) {
       console.error('Error al generar cuotas mensuales:', error);
