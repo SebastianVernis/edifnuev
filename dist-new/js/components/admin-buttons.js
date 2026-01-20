@@ -1018,28 +1018,18 @@ function renderAnunciosContainer(anuncios) {
       <div class="anuncio-body">
         <p>${anuncio.contenido}</p>
         ${archivoUrl ? `
-          <div class="anuncio-imagen" style="margin-top: 1rem;">
+          <div class="anuncio-imagen">
             ${archivoUrl.endsWith('.pdf') ? 
               `<a href="${archivoUrl}" target="_blank" class="btn btn-sm btn-outline-primary">
                 <i class="fas fa-file-pdf"></i> Ver PDF
               </a>` :
               `<img 
                 src="${archivoUrl}" 
-                alt="${anuncio.titulo}" 
+                alt="${anuncio.titulo.replace(/"/g, '&quot;')}" 
                 loading="lazy"
-                style="
-                  max-width: 100%; 
-                  height: auto;
-                  margin-top: 0.5rem; 
-                  border-radius: 0.5rem;
-                  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                  object-fit: cover;
-                  max-height: 400px;
-                  cursor: pointer;
-                "
+                class="anuncio-img"
                 onclick="window.open('${archivoUrl}', '_blank')"
-                onerror="this.style.display='none'; this.parentElement.innerHTML='<p style=color:#EF4444;font-size:0.875rem><i class=fas fa-exclamation-triangle></i> Error al cargar imagen</p>'"
-              >`
+              />`
             }
           </div>
         ` : ''}
@@ -1050,42 +1040,78 @@ function renderAnunciosContainer(anuncios) {
     `;
     
     container.appendChild(div);
+    
+    // Agregar manejo de error de imagen después de agregar al DOM
+    const img = div.querySelector('.anuncio-img');
+    if (img) {
+      img.addEventListener('error', function() {
+        this.style.display = 'none';
+        const errorMsg = document.createElement('p');
+        errorMsg.style.cssText = 'color: #EF4444; font-size: 0.875rem; margin-top: 0.5rem; text-align: center;';
+        errorMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error al cargar imagen';
+        this.parentElement.appendChild(errorMsg);
+      });
+    }
   });
 }
 
 async function cargarCierres() {
   console.log('🔄 Cargando cierres...');
   
-  const anio = document.getElementById('cierres-año')?.value;
+  const anio = document.getElementById('cierres-año')?.value || new Date().getFullYear();
   
   try {
-    const token = localStorage.getItem('edificio_token');
-    let url = '/api/cierres';
+    const token = localStorage.getItem('edificio_token') || localStorage.getItem('token');
     
+    if (!token) {
+      console.error('No hay token disponible');
+      return;
+    }
+    
+    let url = '/api/cierres';
     if (anio) {
       url += '?anio=' + anio;
     }
     
+    console.log('📊 Cargando cierres desde:', url);
+    
     const response = await fetch(url, {
-      headers: { 'x-auth-token': token }
+      headers: { 
+        'Authorization': `Bearer ${token}`,
+        'x-auth-token': token 
+      }
     });
     
     if (response.ok) {
       const data = await response.json();
-      renderCierresTable(data.cierres);
+      console.log('✅ Cierres recibidos:', data.cierres?.length || 0);
+      console.log('📋 Datos:', data.cierres);
+      renderCierresTable(data.cierres || []);
+    } else {
+      const errorText = await response.text();
+      console.error('❌ Error en respuesta:', response.status, errorText);
+      renderCierresTable([]);
     }
   } catch (error) {
-    console.error('Error cargando cierres:', error);
+    console.error('❌ Error cargando cierres:', error);
+    renderCierresTable([]);
   }
 }
 
 function renderCierresTable(cierres) {
+  console.log('🎨 Renderizando cierres:', cierres.length);
+  
   const tbodyMensual = document.querySelector('#cierres-table tbody');
   const tbodyAnual = document.querySelector('#cierres-anuales-table tbody');
   
+  if (!tbodyMensual || !tbodyAnual) {
+    console.error('❌ No se encontraron las tablas de cierres');
+    return;
+  }
+  
   if (!cierres || cierres.length === 0) {
-    if (tbodyMensual) tbodyMensual.innerHTML = '<tr><td colspan="6" class="text-center">No hay cierres mensuales</td></tr>';
-    if (tbodyAnual) tbodyAnual.innerHTML = '<tr><td colspan="6" class="text-center">No hay cierres anuales</td></tr>';
+    tbodyMensual.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #6B7280;">No hay cierres mensuales registrados</td></tr>';
+    tbodyAnual.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #6B7280;">No hay cierres anuales registrados</td></tr>';
     return;
   }
   
@@ -1093,29 +1119,32 @@ function renderCierresTable(cierres) {
   const cierresMensuales = cierres.filter(c => c.tipo !== 'ANUAL' && c.mes);
   const cierresAnuales = cierres.filter(c => c.tipo === 'ANUAL');
   
+  console.log('📊 Cierres mensuales:', cierresMensuales.length, 'Anuales:', cierresAnuales.length);
+  
   // Renderizar cierres mensuales
-  if (tbodyMensual) {
-    tbodyMensual.innerHTML = '';
-    
-    if (cierresMensuales.length === 0) {
-      tbodyMensual.innerHTML = '<tr><td colspan="6" class="text-center">No hay cierres mensuales</td></tr>';
-    } else {
-      cierresMensuales.forEach(cierre => {
-        const tr = document.createElement('tr');
-        
-        const fechaCierre = new Date(cierre.fecha || cierre.createdAt).toLocaleDateString('es-MX');
-        const ingresos = typeof cierre.ingresos === 'object' ? cierre.ingresos.total : cierre.ingresos || 0;
-        const gastos = typeof cierre.gastos === 'object' ? cierre.gastos.total : cierre.gastos || 0;
-        const balance = cierre.balance || (ingresos - gastos);
-        const balanceClass = balance >= 0 ? 'text-success' : 'text-danger';
-        
-        tr.innerHTML = `
-          <td>${cierre.mes} ${cierre.año || cierre.anio}</td>
-          <td>$${ingresos.toLocaleString()}</td>
-          <td>$${gastos.toLocaleString()}</td>
-          <td class="${balanceClass}">$${balance.toLocaleString()}</td>
-          <td>${fechaCierre}</td>
-          <td>
+  tbodyMensual.innerHTML = '';
+  
+  if (cierresMensuales.length === 0) {
+    tbodyMensual.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #6B7280;">No hay cierres mensuales</td></tr>';
+  } else {
+    cierresMensuales.forEach(cierre => {
+      const tr = document.createElement('tr');
+      
+      const fechaCierre = cierre.fecha ? new Date(cierre.fecha).toLocaleDateString('es-MX') : 
+                         (cierre.createdAt ? new Date(cierre.createdAt).toLocaleDateString('es-MX') : '-');
+      
+      const ingresos = typeof cierre.ingresos === 'object' ? (cierre.ingresos.total || 0) : (parseFloat(cierre.ingresos) || 0);
+      const gastos = typeof cierre.gastos === 'object' ? (cierre.gastos.total || 0) : (parseFloat(cierre.gastos) || 0);
+      const balance = cierre.balance !== undefined ? parseFloat(cierre.balance) : (ingresos - gastos);
+      const balanceClass = balance >= 0 ? 'text-success' : 'text-danger';
+      
+      tr.innerHTML = `
+        <td>${cierre.mes} ${cierre.año || cierre.anio}</td>
+        <td>$${ingresos.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td>$${gastos.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="${balanceClass}"><strong>$${balance.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></td>
+        <td>${fechaCierre}</td>
+        <td>
             <button class="btn btn-sm btn-primary" data-action="ver-detalle-cierre" data-id="${cierre.id}">
               Ver Detalle
             </button>
@@ -1128,37 +1157,37 @@ function renderCierresTable(cierres) {
   }
   
   // Renderizar cierres anuales
-  if (tbodyAnual) {
-    tbodyAnual.innerHTML = '';
-    
-    if (cierresAnuales.length === 0) {
-      tbodyAnual.innerHTML = '<tr><td colspan="6" class="text-center">No hay cierres anuales</td></tr>';
-    } else {
-      cierresAnuales.forEach(cierre => {
-        const tr = document.createElement('tr');
-        
-        const fechaCierre = new Date(cierre.fecha || cierre.createdAt).toLocaleDateString('es-MX');
-        const ingresos = typeof cierre.ingresos === 'object' ? cierre.ingresos.total : cierre.ingresos || 0;
-        const gastos = typeof cierre.gastos === 'object' ? cierre.gastos.total : cierre.gastos || 0;
-        const balance = cierre.balance || (ingresos - gastos);
-        const balanceClass = balance >= 0 ? 'text-success' : 'text-danger';
-        
-        tr.innerHTML = `
-          <td>${cierre.año || cierre.anio}</td>
-          <td>$${ingresos.toLocaleString()}</td>
-          <td>$${gastos.toLocaleString()}</td>
-          <td class="${balanceClass}">$${balance.toLocaleString()}</td>
-          <td>${fechaCierre}</td>
-          <td>
-            <button class="btn btn-sm btn-primary" data-action="ver-detalle-cierre" data-id="${cierre.id}">
-              Ver Detalle
-            </button>
-          </td>
-        `;
-        
-        tbodyAnual.appendChild(tr);
-      });
-    }
+  tbodyAnual.innerHTML = '';
+  
+  if (cierresAnuales.length === 0) {
+    tbodyAnual.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #6B7280;">No hay cierres anuales</td></tr>';
+  } else {
+    cierresAnuales.forEach(cierre => {
+      const tr = document.createElement('tr');
+      
+      const fechaCierre = cierre.fecha ? new Date(cierre.fecha).toLocaleDateString('es-MX') : 
+                         (cierre.createdAt ? new Date(cierre.createdAt).toLocaleDateString('es-MX') : '-');
+      
+      const ingresos = typeof cierre.ingresos === 'object' ? (cierre.ingresos.total || 0) : (parseFloat(cierre.ingresos) || 0);
+      const gastos = typeof cierre.gastos === 'object' ? (cierre.gastos.total || 0) : (parseFloat(cierre.gastos) || 0);
+      const balance = cierre.balance !== undefined ? parseFloat(cierre.balance) : (ingresos - gastos);
+      const balanceClass = balance >= 0 ? 'text-success' : 'text-danger';
+      
+      tr.innerHTML = `
+        <td>${cierre.año || cierre.anio}</td>
+        <td>$${ingresos.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td>$${gastos.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        <td class="${balanceClass}"><strong>$${balance.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></td>
+        <td>${fechaCierre}</td>
+        <td>
+          <button class="btn btn-sm btn-primary" data-action="ver-detalle-cierre" data-id="${cierre.id}">
+            Ver Detalle
+          </button>
+        </td>
+      `;
+      
+      tbodyAnual.appendChild(tr);
+    });
   }
 }
 
