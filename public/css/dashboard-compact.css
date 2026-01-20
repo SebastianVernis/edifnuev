@@ -25,6 +25,22 @@
 
 .content-section {
   padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* Eliminar espacios grandes en secciones */
+.content-section > div:first-child {
+  margin-top: 0 !important;
+}
+
+.content-section .section-header {
+  margin-top: 0 !important;
+}
+
+.content-section .dashboard-charts,
+.content-section .recent-activity,
+.content-section > .table-container:first-child {
+  margin-top: 0 !important;
 }
 
 .sidebar-header {
@@ -130,4 +146,39 @@
 
 .form-grid {
   gap: 1rem !important;
+}
+
+/* Eliminar márgenes superiores innecesarios */
+#dashboard-alerts {
+  margin-bottom: 1.5rem !important;
+  margin-top: 0 !important;
+}
+
+.dashboard-charts {
+  margin-top: 0 !important;
+  margin-bottom: 1.5rem !important;
+  gap: 1.25rem !important;
+}
+
+.chart-container h3 {
+  margin-bottom: 0.75rem !important;
+  font-size: 1rem !important;
+}
+
+.recent-container h3 {
+  margin-bottom: 0.75rem !important;
+  font-size: 1rem !important;
+}
+
+/* Reducir espacios en elementos específicos */
+.usuarios-section .section-header,
+.cuotas-section .section-header,
+.gastos-section .section-header,
+.fondos-section .section-header,
+.anuncios-section .section-header,
+.cierres-section .section-header,
+.proyectos-section .section-header,
+.configuracion-section .section-header {
+  margin-top: 0 !important;
+  margin-bottom: 1rem !important;
 }
