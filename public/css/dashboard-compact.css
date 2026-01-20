@@ -6,6 +6,25 @@
 
 .main-content {
   margin-left: 220px !important;
+  padding: 1.5rem !important;
+  padding-top: 1rem !important;
+}
+
+.main-header {
+  margin-bottom: 1.5rem !important;
+  padding-bottom: 0.75rem !important;
+}
+
+.section-header {
+  margin-bottom: 1rem !important;
+}
+
+.dashboard-summary {
+  margin-bottom: 1.5rem !important;
+}
+
+.content-section {
+  padding-top: 0 !important;
 }
 
 .sidebar-header {
@@ -71,4 +90,44 @@
     font-size: 0.8rem !important;
     padding: 0.6rem 0.7rem !important;
   }
+}
+
+/* Reducir espaciado general en desktop */
+.table-container,
+.chart-container,
+.recent-container,
+.config-card {
+  margin-bottom: 1.25rem !important;
+}
+
+.filter-controls {
+  margin-bottom: 1rem !important;
+  padding: 0.75rem !important;
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.6rem 0.75rem !important;
+}
+
+/* Cards más compactas */
+.anuncio-card,
+.info-card,
+.fondo-card {
+  padding: 1.25rem !important;
+  margin-bottom: 1rem !important;
+}
+
+/* Modales */
+.modal-content {
+  padding: 1.5rem !important;
+}
+
+/* Forms más compactos */
+.form-group {
+  margin-bottom: 1rem !important;
+}
+
+.form-grid {
+  gap: 1rem !important;
 }
