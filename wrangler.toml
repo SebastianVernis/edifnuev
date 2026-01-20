@@ -1,12 +1,12 @@
-name = "edificio-admin"
+name = "edificio-production"
 main = "workers-build/index.js"
 compatibility_date = "2024-01-01"
 
 # Variables de entorno
 [vars]
 NODE_ENV = "production"
-APP_URL = "https://edificio-admin.sebastianvernis.workers.dev"
-FRONTEND_URL = "https://chispartbuilding.pages.dev"
+APP_URL = "https://edificio-production.sebastianvernis.workers.dev"
+FRONTEND_URL = "https://edificio-production.pages.dev"
 OTP_DEV_MODE = "false"
 CLERK_PUBLISHABLE_KEY = "pk_test_cG9saXNoZWQtaGFnZmlzaC01OS5jbGVyay5hY2NvdW50cy5kZXYk"
 CLERK_JWKS_URL = "https://polished-hagfish-59.clerk.accounts.dev/.well-known/jwks.json"
