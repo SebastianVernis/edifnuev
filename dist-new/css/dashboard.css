@@ -1423,9 +1423,16 @@
     height: 35px;
     border-radius: 50%;
     cursor: pointer;
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: center;
+  }
+}
+
+/* Ocultar botón X en desktop */
+@media (min-width: 769px) {
+  .sidebar-close {
+    display: none !important;
   }
   
   .main-content {
