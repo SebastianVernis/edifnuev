@@ -295,11 +295,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // ========== ANUNCIOS ==========
   const nuevoAnuncioBtn = document.getElementById('nuevo-anuncio-btn');
   if (nuevoAnuncioBtn) {
+    console.log('✅ Botón nuevo-anuncio-btn encontrado');
     nuevoAnuncioBtn.addEventListener('click', () => {
-      console.log('📢 Nuevo Anuncio');
+      console.log('📢 Click en Nuevo Anuncio');
+      const modal = document.getElementById('anuncio-modal');
+      console.log('🔍 Modal anuncio-modal:', modal ? 'Encontrado' : 'NO ENCONTRADO');
       showModal('anuncio-modal');
       resetAnuncioForm();
     });
+  } else {
+    console.error('❌ Botón nuevo-anuncio-btn NO encontrado');
   }
   
   // Filtros anuncios
