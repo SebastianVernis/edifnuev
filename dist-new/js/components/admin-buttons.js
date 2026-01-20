@@ -1784,7 +1784,6 @@ async function editarUsuario(userId) {
               <select id="editar-usuario-rol" required>
                 <option value="INQUILINO" ${user.rol === 'INQUILINO' ? 'selected' : ''}>Inquilino</option>
                 <option value="ADMIN" ${user.rol === 'ADMIN' ? 'selected' : ''}>Administrador</option>
-                <option value="COMITE" ${user.rol === 'COMITE' ? 'selected' : ''}>Comité</option>
               </select>
             </div>
             
@@ -1796,21 +1795,6 @@ async function editarUsuario(userId) {
             <div class="form-group">
               <label for="editar-usuario-telefono">Teléfono:</label>
               <input type="tel" id="editar-usuario-telefono" value="${user.telefono || ''}">
-            </div>
-            
-            <div class="form-group">
-              <label for="editar-usuario-estatus">Estado de Validación:</label>
-              <select id="editar-usuario-estatus" required>
-                <option value="pendiente" ${user.estatus_validacion === 'pendiente' ? 'selected' : ''}>Pendiente</option>
-                <option value="validado" ${user.estatus_validacion === 'validado' ? 'selected' : ''}>Validado</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label>
-                <input type="checkbox" id="editar-usuario-editor" ${user.esEditor ? 'checked' : ''}>
-                Es Editor
-              </label>
             </div>
             
             <div class="form-group">
@@ -1842,9 +1826,7 @@ async function actualizarUsuario(userId) {
     email: document.getElementById('editar-usuario-email').value,
     rol: document.getElementById('editar-usuario-rol').value,
     departamento: document.getElementById('editar-usuario-departamento').value,
-    telefono: document.getElementById('editar-usuario-telefono').value || null,
-    estatus_validacion: document.getElementById('editar-usuario-estatus').value,
-    esEditor: document.getElementById('editar-usuario-editor').checked
+    telefono: document.getElementById('editar-usuario-telefono').value || null
   };
   
   try {
@@ -1853,6 +1835,7 @@ async function actualizarUsuario(userId) {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
         'x-auth-token': token
       },
       body: JSON.stringify(formData)
