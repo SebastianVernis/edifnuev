@@ -177,7 +177,16 @@
   align-items: center;
   margin-bottom: 1.5rem;
   width: 100%;
-  flex-direction: row-reverse;
+}
+
+.section-header h2 {
+  order: 2;
+  text-align: right;
+}
+
+.section-header > div,
+.section-header > button {
+  order: 1;
 }
 
 /* Filter Controls */
@@ -1300,6 +1309,17 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
+  }
+  
+  .section-header h2 {
+    order: 0;
+    text-align: left;
+    width: 100%;
+  }
+  
+  .section-header > div,
+  .section-header > button {
+    order: 1;
   }
   
   .section-header .btn, .section-header .button-group {
