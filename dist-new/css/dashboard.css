@@ -177,6 +177,7 @@
   align-items: center;
   margin-bottom: 1.5rem;
   width: 100%;
+  flex-direction: row-reverse;
 }
 
 /* Filter Controls */
