@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balance General - ChispartBuilding</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      padding: 2rem;
+      background: white;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 3px solid #4F46E5;
+    }
+
+    .header h1 {
+      color: #1F2937;
+      margin-bottom: 0.5rem;
+    }
+
+    .info-section {
+      margin-bottom: 2rem;
+      background: #F9FAFB;
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+    }
+
+    .info-section h2 {
+      color: #1F2937;
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+    }
+
+    .balance-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+
+    .balance-section {
+      background: white;
+      padding: 1.5rem;
+      border: 2px solid #E5E7EB;
+      border-radius: 0.5rem;
+    }
+
+    .balance-section h3 {
+      color: #4F46E5;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #4F46E5;
+    }
+
+    .balance-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .balance-item:last-child {
+      border-bottom: none;
+      font-weight: bold;
+      font-size: 1.125rem;
+      padding-top: 1rem;
+      margin-top: 0.5rem;
+      border-top: 2px solid #1F2937;
+    }
+
+    .balance-label {
+      color: #4B5563;
+    }
+
+    .balance-value {
+      color: #1F2937;
+      font-weight: 600;
+    }
+
+    .ingreso {
+      color: #10B981;
+    }
+
+    .egreso {
+      color: #EF4444;
+    }
+
+    .resultado {
+      background: #EFF6FF;
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .resultado h3 {
+      color: #1F2937;
+      margin-bottom: 0.5rem;
+    }
+
+    .resultado .amount {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    .footer {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 2px solid #E5E7EB;
+      text-align: center;
+      color: #6B7280;
+      font-size: 0.875rem;
+    }
+
+    .no-print {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      background: #4F46E5;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      margin: 0 0.5rem;
+    }
+
+    .btn:hover {
+      background: #4338CA;
+    }
+
+    .btn-secondary {
+      background: #6B7280;
+    }
+
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+
+      body {
+        padding: 0;
+      }
+    }
+  </style>
+  <script src="/config.js"></script>
+</head>
+<body>
+  <div class="no-print">
+    <button class="btn" onclick="window.print()">
+      <i class="fas fa-file-pdf"></i> Descargar PDF
+    </button>
+    <button class="btn btn-secondary" onclick="window.close()">
+      <i class="fas fa-times"></i> Cerrar
+    </button>
+  </div>
+
+  <div class="header">
+    <h1>Balance General</h1>
+    <p class="subtitle" id="periodo"></p>
+  </div>
+
+  <div class="info-section">
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+      <div>
+        <strong>Edificio:</strong> <span id="edificio-nombre"></span>
+      </div>
+      <div>
+        <strong>Dirección:</strong> <span id="edificio-direccion"></span>
+      </div>
+      <div>
+        <strong>Total Unidades:</strong> <span id="total-unidades"></span>
+      </div>
+      <div>
+        <strong>Fecha:</strong> <span id="fecha-emision"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="balance-grid">
+    <!-- Ingresos -->
+    <div class="balance-section">
+      <h3>Ingresos</h3>
+      <div class="balance-item">
+        <span class="balance-label">Cuotas Cobradas</span>
+        <span class="balance-value ingreso" id="ingresos-cuotas">$0</span>
+      </div>
+      <div class="balance-item">
+        <span class="balance-label">Mora Cobrada</span>
+        <span class="balance-value ingreso" id="ingresos-mora">$0</span>
+      </div>
+      <div class="balance-item">
+        <span class="balance-label">Total Ingresos</span>
+        <span class="balance-value ingreso" id="total-ingresos">$0</span>
+      </div>
+    </div>
+
+    <!-- Egresos -->
+    <div class="balance-section">
+      <h3>Egresos</h3>
+      <div class="balance-item">
+        <span class="balance-label">Gastos Operativos</span>
+        <span class="balance-value egreso" id="egresos-gastos">$0</span>
+      </div>
+      <div class="balance-item">
+        <span class="balance-label">Mantenimiento</span>
+        <span class="balance-value egreso" id="egresos-mantenimiento">$0</span>
+      </div>
+      <div class="balance-item">
+        <span class="balance-label">Total Egresos</span>
+        <span class="balance-value egreso" id="total-egresos">$0</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="resultado">
+    <h3>Resultado del Periodo</h3>
+    <div class="amount" id="resultado-periodo">$0</div>
+    <p style="margin-top: 0.5rem; color: #6B7280; font-size: 0.875rem;">
+      Ingresos - Egresos
+    </p>
+  </div>
+
+  <div style="margin-top: 2rem; background: #F9FAFB; padding: 1.5rem; border-radius: 0.5rem;">
+    <h3 style="color: #1F2937; margin-bottom: 1rem;">Patrimonio</h3>
+    <div class="balance-item">
+      <span class="balance-label">Fondos Totales</span>
+      <span class="balance-value" id="patrimonio-total">$0</span>
+    </div>
+    <div id="fondos-detalle" style="margin-top: 1rem;"></div>
+  </div>
+
+  <div class="footer">
+    <p>ChispartBuilding - Sistema de Administración de Edificios</p>
+    <p>Generado el <span id="fecha-generacion"></span></p>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const mes = params.get('mes');
+    const anio = params.get('anio');
+
+    async function cargarBalance() {
+      try {
+        const token = localStorage.getItem('edificio_token') || localStorage.getItem('token');
+
+        // Info del edificio
+        const buildingRes = await fetch('/api/onboarding/building-info', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (buildingRes.ok) {
+          const buildingData = await buildingRes.json();
+          const info = buildingData.buildingInfo;
+          
+          document.getElementById('edificio-nombre').textContent = info.nombre;
+          document.getElementById('edificio-direccion').textContent = info.direccion || 'N/A';
+          document.getElementById('total-unidades').textContent = info.totalUnidades;
+
+          // Fondos
+          const fondos = info.funds || [];
+          let patrimonioTotal = 0;
+          let fondosHTML = '';
+
+          fondos.forEach(fondo => {
+            const saldo = parseFloat(fondo.amount || 0);
+            patrimonioTotal += saldo;
+            fondosHTML += `
+              <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #E5E7EB;">
+                <span style="color: #6B7280;">${fondo.name}</span>
+                <span style="color: #1F2937; font-weight: 600;">$${saldo.toLocaleString('es-MX')}</span>
+              </div>
+            `;
+          });
+
+          document.getElementById('fondos-detalle').innerHTML = fondosHTML;
+          document.getElementById('patrimonio-total').textContent = `$${patrimonioTotal.toLocaleString('es-MX')}`;
+        }
+
+        // Cuotas
+        let cuotasUrl = '/api/cuotas';
+        if (mes && anio) cuotasUrl += `?mes=${mes}&anio=${anio}`;
+        
+        const cuotasRes = await fetch(cuotasUrl, {
+          headers: { 'x-auth-token': token }
+        });
+
+        if (cuotasRes.ok) {
+          const cuotasData = await cuotasRes.json();
+          const cuotas = cuotasData.cuotas || [];
+          
+          let ingresosCuotas = 0;
+          let ingresosMora = 0;
+
+          cuotas.forEach(c => {
+            if (c.pagado) {
+              ingresosCuotas += parseFloat(c.monto || 0);
+              ingresosMora += parseFloat(c.monto_mora || 0);
+            }
+          });
+
+          document.getElementById('ingresos-cuotas').textContent = `$${ingresosCuotas.toLocaleString('es-MX')}`;
+          document.getElementById('ingresos-mora').textContent = `$${ingresosMora.toLocaleString('es-MX')}`;
+          document.getElementById('total-ingresos').textContent = `$${(ingresosCuotas + ingresosMora).toLocaleString('es-MX')}`;
+        }
+
+        // Gastos
+        let gastosUrl = '/api/gastos';
+        if (mes && anio) {
+          const mesIndex = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                           'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'].indexOf(mes);
+          gastosUrl += `?anio=${anio}&mes=${mesIndex + 1}`;
+        }
+        
+        const gastosRes = await fetch(gastosUrl, {
+          headers: { 'x-auth-token': token }
+        });
+
+        if (gastosRes.ok) {
+          const gastosData = await gastosRes.json();
+          const gastos = gastosData.gastos || [];
+          
+          let totalGastos = 0;
+          let mantenimiento = 0;
+
+          gastos.forEach(g => {
+            const monto = parseFloat(g.monto || 0);
+            totalGastos += monto;
+            if (g.categoria === 'MANTENIMIENTO') {
+              mantenimiento += monto;
+            }
+          });
+
+          document.getElementById('egresos-gastos').textContent = `$${(totalGastos - mantenimiento).toLocaleString('es-MX')}`;
+          document.getElementById('egresos-mantenimiento').textContent = `$${mantenimiento.toLocaleString('es-MX')}`;
+          document.getElementById('total-egresos').textContent = `$${totalGastos.toLocaleString('es-MX')}`;
+        }
+
+        // Calcular resultado
+        const ingresos = parseFloat(document.getElementById('total-ingresos').textContent.replace(/[$,]/g, ''));
+        const egresos = parseFloat(document.getElementById('total-egresos').textContent.replace(/[$,]/g, ''));
+        const resultado = ingresos - egresos;
+
+        const resultadoEl = document.getElementById('resultado-periodo');
+        resultadoEl.textContent = `$${resultado.toLocaleString('es-MX')}`;
+        resultadoEl.style.color = resultado >= 0 ? '#10B981' : '#EF4444';
+
+        // Establecer periodo
+        const periodoTexto = mes && anio ? `${mes} ${anio}` : 'Anual ' + new Date().getFullYear();
+        document.getElementById('periodo').textContent = periodoTexto;
+        document.getElementById('fecha-emision').textContent = new Date().toLocaleDateString('es-MX');
+        document.getElementById('fecha-generacion').textContent = new Date().toLocaleString('es-MX');
+
+      } catch (error) {
+        console.error('Error cargando balance:', error);
+        alert('Error al cargar el balance');
+      }
+    }
+
+    cargarBalance();
+  </script>
+</body>
+</html>

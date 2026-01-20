@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¡Cuenta Activada! - Edificio Admin</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #14b8a6 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+    }
+
+    .activation-container {
+      background: white;
+      border-radius: 20px;
+      padding: 50px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      text-align: center;
+      animation: slideUp 0.5s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .success-icon {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #14b8a6 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 30px;
+      animation: scaleIn 0.5s ease-out 0.2s both;
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0);
+      }
+      to {
+        transform: scale(1);
+      }
+    }
+
+    .success-icon i {
+      font-size: 50px;
+      color: white;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+      font-size: 32px;
+    }
+
+    p {
+      color: #666;
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    .credentials-box {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 25px;
+      margin: 30px 0;
+      text-align: left;
+    }
+
+    .credentials-box h3 {
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    .credential-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      padding: 10px;
+      background: white;
+      border-radius: 8px;
+    }
+
+    .credential-item i {
+      color: #667eea;
+      margin-right: 15px;
+      font-size: 20px;
+    }
+
+    .credential-item span {
+      color: #333;
+      font-weight: 600;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #14b8a6 100%);
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    .alert {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .alert.error {
+      background: #fee;
+      color: #c33;
+      border: 1px solid #fcc;
+      display: block;
+    }
+
+    .alert.info {
+      background: #e7f3ff;
+      color: #0066cc;
+      border: 1px solid #b3d9ff;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="activation-container">
+    <div id="alert" class="alert"></div>
+
+    <div class="success-icon">
+      <i class="fas fa-check"></i>
+    </div>
+
+    <h1>¡Cuenta Activada Exitosamente!</h1>
+    <p>Tu edificio ha sido configurado y tu cuenta de administrador está lista para usar.</p>
+
+    <div class="credentials-box" id="credentialsBox" style="display: none;">
+      <h3><i class="fas fa-key"></i> Tus credenciales de acceso:</h3>
+      <div class="credential-item">
+        <i class="fas fa-envelope"></i>
+        <div>
+          <small style="color: #999;">Email:</small><br>
+          <span id="email">-</span>
+        </div>
+      </div>
+      <div class="credential-item">
+        <i class="fas fa-lock"></i>
+        <div>
+          <small style="color: #999;">Contraseña temporal:</small><br>
+          <span id="password">-</span>
+        </div>
+      </div>
+      <p style="margin-top: 15px; font-size: 14px; color: #999;">
+        <i class="fas fa-info-circle"></i> Por seguridad, cambia tu contraseña después de iniciar sesión.
+      </p>
+    </div>
+
+    <a href="/login" class="btn-primary" id="loginBtn">
+      <i class="fas fa-sign-in-alt"></i>
+      Ir al Login
+    </a>
+  </div>
+
+  <script>
+    // Obtener credenciales desde localStorage
+    const credentials = localStorage.getItem('new_credentials');
+    const alert = document.getElementById('alert');
+
+    if (credentials) {
+      try {
+        const creds = JSON.parse(credentials);
+        document.getElementById('email').textContent = creds.email;
+        document.getElementById('password').textContent = creds.password;
+        document.getElementById('credentialsBox').style.display = 'block';
+        
+        // Limpiar después de mostrar
+        // localStorage.removeItem('new_credentials');
+      } catch (error) {
+        console.error('Error parsing credentials:', error);
+      }
+    } else {
+      // Si no hay credenciales guardadas, mostrar mensaje informativo
+      alert.className = 'alert info';
+      alert.textContent = 'Tu cuenta ha sido activada. Usa las credenciales que recibiste por email para iniciar sesión.';
+    }
+
+    // Manejar click en el botón de login
+    document.getElementById('loginBtn').addEventListener('click', (e) => {
+      // Guardar email en localStorage para pre-llenarlo en login
+      const email = document.getElementById('email').textContent;
+      if (email && email !== '-') {
+        localStorage.setItem('login_email', email);
+      }
+    });
+  </script>
+</body>
+</html>

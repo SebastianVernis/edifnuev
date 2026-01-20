@@ -1,0 +1,74 @@
+/* Sidebar compacto - Sobrescribe dashboard.css */
+
+.sidebar {
+  width: 220px !important;
+}
+
+.main-content {
+  margin-left: 220px !important;
+}
+
+.sidebar-header {
+  padding: 1rem !important;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sidebar-header img {
+  height: 45px !important;
+}
+
+.sidebar-header h2 {
+  font-size: 1rem !important;
+  margin-bottom: 0.25rem;
+}
+
+.sidebar-header p {
+  font-size: 0.75rem !important;
+}
+
+.sidebar-nav {
+  padding: 0.5rem 0 !important;
+}
+
+.sidebar-nav a {
+  padding: 0.65rem 0.8rem !important;
+  font-size: 0.85rem !important;
+}
+
+.sidebar-nav i {
+  margin-right: 0.5rem !important;
+  width: 16px !important;
+  font-size: 0.9rem !important;
+}
+
+.sidebar-footer {
+  padding: 1rem !important;
+}
+
+.sidebar-footer p {
+  font-size: 0.85rem !important;
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-footer .btn {
+  padding: 0.6rem 1rem !important;
+  font-size: 0.85rem !important;
+}
+
+@media (max-width: 1200px) {
+  .sidebar {
+    width: 200px !important;
+  }
+  
+  .main-content {
+    margin-left: 200px !important;
+  }
+  
+  .sidebar-nav a {
+    font-size: 0.8rem !important;
+    padding: 0.6rem 0.7rem !important;
+  }
+}

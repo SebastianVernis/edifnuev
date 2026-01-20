@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crear Paquete Personalizado - ChispartBuilding</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #4F46E5;
+      --primary-dark: #4338CA;
+      --secondary: #10B981;
+      --dark: #1F2937;
+      --light: #F9FAFB;
+      --gray: #6B7280;
+      --danger: #EF4444;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--light);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .header h1 {
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .header .subtitle {
+      color: var(--gray);
+    }
+
+    .builder-grid {
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      gap: 2rem;
+    }
+
+    .config-panel, .summary-panel {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: var(--dark);
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 2rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--dark);
+      font-weight: 500;
+    }
+
+    .help-text {
+      font-size: 0.875rem;
+      color: var(--gray);
+      margin-top: 0.25rem;
+    }
+
+    input[type="number"], input[type="range"] {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #E5E7EB;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    input[type="range"] {
+      padding: 0;
+      height: 8px;
+      background: #E5E7EB;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: var(--primary);
+      cursor: pointer;
+      border-radius: 50%;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: var(--primary);
+      cursor: pointer;
+      border-radius: 50%;
+      border: none;
+    }
+
+    .range-values {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.875rem;
+      color: var(--gray);
+      margin-top: 0.5rem;
+    }
+
+    .current-value {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      background: var(--light);
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .current-value .value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--primary);
+    }
+
+    .features-checklist {
+      list-style: none;
+    }
+
+    .features-checklist li {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #E5E7EB;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .features-checklist li:last-child {
+      border-bottom: none;
+    }
+
+    .features-checklist i {
+      color: var(--secondary);
+    }
+
+    .price-breakdown {
+      background: var(--light);
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      color: var(--gray);
+    }
+
+    .price-row.total {
+      border-top: 2px solid var(--dark);
+      padding-top: 1rem;
+      margin-top: 1rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--dark);
+    }
+
+    .price-row .price {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .reference-plans {
+      background: #EFF6FF;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-top: 1rem;
+      font-size: 0.875rem;
+    }
+
+    .reference-plans h4 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .reference-plans ul {
+      list-style: none;
+      color: var(--gray);
+    }
+
+    .reference-plans li {
+      padding: 0.25rem 0;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 1rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn:disabled {
+      background: var(--gray);
+      cursor: not-allowed;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--primary);
+      text-decoration: none;
+      margin-bottom: 2rem;
+      font-weight: 500;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .builder-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-panel {
+        order: -1;
+      }
+    }
+  </style>
+  <script src="/config.js"></script>
+</head>
+<body>
+  <div class="container">
+    <a href="/register" class="back-link">
+      <i class="fas fa-arrow-left"></i> Volver al registro
+    </a>
+
+    <div class="header">
+      <h1>Crea tu paquete personalizado</h1>
+      <p class="subtitle">Ajusta el número de unidades según tus necesidades</p>
+    </div>
+
+    <div class="builder-grid">
+      <div class="config-panel">
+        <h2><i class="fas fa-sliders-h"></i> Configuración</h2>
+
+        <div class="form-group">
+          <label for="units">Número de unidades/departamentos</label>
+          <div class="current-value">
+            <i class="fas fa-building"></i>
+            <span class="value" id="unitsDisplay">1</span>
+            <span>unidades</span>
+          </div>
+          <input type="range" id="units" min="1" max="500" value="1" step="1">
+          <div class="range-values">
+            <span>1</span>
+            <span>500</span>
+          </div>
+          <p class="help-text">Desliza para seleccionar el número exacto de unidades</p>
+        </div>
+
+        <div class="form-group">
+          <label>Características incluidas</label>
+          <ul class="features-checklist">
+            <li><i class="fas fa-check-circle"></i> Gestión completa de cuotas</li>
+            <li><i class="fas fa-check-circle"></i> Control de gastos y presupuestos</li>
+            <li><i class="fas fa-check-circle"></i> Portal para residentes</li>
+            <li><i class="fas fa-check-circle"></i> Fondos y reservas</li>
+            <li><i class="fas fa-check-circle"></i> Reportes y cierres mensuales</li>
+            <li><i class="fas fa-check-circle"></i> Sistema de anuncios</li>
+            <li><i class="fas fa-check-circle"></i> Solicitudes y tickets</li>
+            <li><i class="fas fa-check-circle"></i> Soporte técnico prioritario</li>
+            <li><i class="fas fa-check-circle"></i> Capacitación incluida</li>
+            <li><i class="fas fa-check-circle"></i> API personalizada</li>
+          </ul>
+        </div>
+
+        <div class="reference-plans">
+          <h4><i class="fas fa-info-circle"></i> Planes de referencia</h4>
+          <ul>
+            <li>Plan Básico: hasta 20 unidades - $499/mes</li>
+            <li>Plan Profesional: hasta 50 unidades - $999/mes</li>
+            <li>Plan Empresarial: hasta 200 unidades - $1,999/mes</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="summary-panel">
+        <h2><i class="fas fa-calculator"></i> Resumen</h2>
+
+        <div class="price-breakdown">
+          <div class="price-row">
+            <span>Unidades:</span>
+            <span id="summaryUnits">1</span>
+          </div>
+          <div class="price-row">
+            <span>Costo base:</span>
+            <span class="price" id="basePrice">$0</span>
+          </div>
+          <div class="price-row">
+            <span>Margen (10%):</span>
+            <span class="price" id="margin">$0</span>
+          </div>
+          <div class="price-row total">
+            <span>Total mensual:</span>
+            <span id="totalPrice">$0</span>
+          </div>
+        </div>
+
+        <div class="help-text" style="margin-bottom: 1.5rem; text-align: center;">
+          <i class="fas fa-shield-alt"></i> Precio fijo, sin sorpresas
+        </div>
+
+        <button class="btn" id="continueBtn">
+          <i class="fas fa-arrow-right"></i>
+          Continuar con este paquete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Pricing logic
+    const PLANS = {
+      basico: { maxUnits: 20, price: 499 },
+      profesional: { maxUnits: 50, price: 999 },
+      empresarial: { maxUnits: 200, price: 1999 }
+    };
+
+    function calculatePrice(units) {
+      let costPerUnit;
+
+      if (units <= PLANS.basico.maxUnits) {
+        // Básico: $499 / 20 unidades = $24.95 por unidad
+        costPerUnit = PLANS.basico.price / PLANS.basico.maxUnits;
+      } else if (units <= PLANS.profesional.maxUnits) {
+        // Profesional: $999 / 50 unidades = $19.98 por unidad
+        costPerUnit = PLANS.profesional.price / PLANS.profesional.maxUnits;
+      } else if (units <= PLANS.empresarial.maxUnits) {
+        // Empresarial: $1999 / 200 unidades = $9.995 por unidad
+        costPerUnit = PLANS.empresarial.price / PLANS.empresarial.maxUnits;
+      } else {
+        // Para más de 200 unidades, usar el costo del plan empresarial
+        costPerUnit = PLANS.empresarial.price / PLANS.empresarial.maxUnits;
+      }
+
+      const baseCost = costPerUnit * units;
+      const margin = baseCost * 0.10; // 10% margen
+      const total = baseCost + margin;
+
+      return {
+        baseCost: Math.round(baseCost),
+        margin: Math.round(margin),
+        total: Math.round(total)
+      };
+    }
+
+    const unitsInput = document.getElementById('units');
+    const unitsDisplay = document.getElementById('unitsDisplay');
+    const summaryUnits = document.getElementById('summaryUnits');
+    const basePriceEl = document.getElementById('basePrice');
+    const marginEl = document.getElementById('margin');
+    const totalPriceEl = document.getElementById('totalPrice');
+
+    function updatePrice() {
+      const units = parseInt(unitsInput.value);
+      const pricing = calculatePrice(units);
+
+      unitsDisplay.textContent = units;
+      summaryUnits.textContent = units + ' unidades';
+      basePriceEl.textContent = '$' + pricing.baseCost.toLocaleString('es-MX');
+      marginEl.textContent = '$' + pricing.margin.toLocaleString('es-MX');
+      totalPriceEl.textContent = '$' + pricing.total.toLocaleString('es-MX') + ' MXN';
+    }
+
+    unitsInput.addEventListener('input', updatePrice);
+
+    // Initialize
+    updatePrice();
+
+    // Continue button
+    document.getElementById('continueBtn').addEventListener('click', () => {
+      const units = parseInt(unitsInput.value);
+      const pricing = calculatePrice(units);
+
+      // Save to localStorage
+      localStorage.setItem('custom_package', JSON.stringify({
+        units: units,
+        price: pricing.total,
+        baseCost: pricing.baseCost,
+        margin: pricing.margin
+      }));
+
+      // Redirect back to registration with custom plan
+      window.location.href = '/register?plan=personalizado&units=' + units;
+    });
+  </script>
+</body>
+</html>

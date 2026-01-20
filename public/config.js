@@ -20,7 +20,7 @@
     API_BASE_URL = 'http://localhost:3001';
   } else if (isPages || isWorkers) {
     // Producción - usar Worker API
-    API_BASE_URL = 'https://edificio-admin.sebastianvernis.workers.dev';
+    API_BASE_URL = 'https://edificio-production.sebastianvernis.workers.dev';
   } else {
     // Fallback - usar rutas relativas
     API_BASE_URL = '';
