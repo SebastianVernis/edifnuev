@@ -617,18 +617,13 @@ async function showNuevoUsuarioModal() {
         
         <form id="usuario-form">
           <div class="form-group">
-            <label for="usuario-nombre">Nombre:</label>
+            <label for="usuario-nombre">Nombre completo:</label>
             <input type="text" id="usuario-nombre" required>
           </div>
           
           <div class="form-group">
             <label for="usuario-email">Email:</label>
             <input type="email" id="usuario-email" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="usuario-password">Contraseña:</label>
-            <input type="password" id="usuario-password" required minlength="6">
           </div>
           
           <div class="form-group">
@@ -639,15 +634,28 @@ async function showNuevoUsuarioModal() {
               <option value="COMITE">Comité</option>
             </select>
           </div>
+
+          <div id="password-field" class="form-group">
+            <label for="usuario-password">Contraseña:</label>
+            <input type="password" id="usuario-password" minlength="6">
+            <p class="help-text" style="color: #6B7280; font-size: 0.875rem; margin-top: 0.25rem;">Solo para Administradores y Comité</p>
+          </div>
           
           <div class="form-group">
             <label for="usuario-departamento">Departamento:</label>
-            <input type="text" id="usuario-departamento" placeholder="101-504" required>
+            <input type="text" id="usuario-departamento" placeholder="Ej: 101, 202, 304" required>
           </div>
           
           <div class="form-group">
             <label for="usuario-telefono">Teléfono:</label>
             <input type="tel" id="usuario-telefono" placeholder="Opcional">
+          </div>
+
+          <div id="inquilino-info" style="display: none; background: #EFF6FF; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; border-left: 4px solid var(--primary);">
+            <p style="margin: 0; color: #1F2937; font-size: 0.875rem;">
+              <i class="fas fa-info-circle" style="color: var(--primary);"></i>
+              <strong>Invitación por email:</strong> Se enviará un link único al inquilino para que establezca su propia contraseña.
+            </p>
           </div>
           
           <div class="form-group">
@@ -661,6 +669,26 @@ async function showNuevoUsuarioModal() {
   
   document.body.insertAdjacentHTML('beforeend', modalHTML);
   
+  const rolSelect = document.getElementById('usuario-rol');
+  const passwordField = document.getElementById('password-field');
+  const inquilinoInfo = document.getElementById('inquilino-info');
+  const passwordInput = document.getElementById('usuario-password');
+  
+  rolSelect.addEventListener('change', () => {
+    if (rolSelect.value === 'INQUILINO') {
+      passwordField.style.display = 'none';
+      inquilinoInfo.style.display = 'block';
+      passwordInput.removeAttribute('required');
+    } else {
+      passwordField.style.display = 'block';
+      inquilinoInfo.style.display = 'none';
+      passwordInput.setAttribute('required', 'required');
+    }
+  });
+  
+  // Trigger inicial
+  rolSelect.dispatchEvent(new Event('change'));
+  
   const form = document.getElementById('usuario-form');
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -669,14 +697,29 @@ async function showNuevoUsuarioModal() {
 }
 
 async function crearNuevoUsuario(form) {
+  const rol = document.getElementById('usuario-rol').value;
+  const esInquilino = rol === 'INQUILINO';
+  
   const formData = {
     nombre: document.getElementById('usuario-nombre').value,
     email: document.getElementById('usuario-email').value,
-    password: document.getElementById('usuario-password').value,
-    rol: document.getElementById('usuario-rol').value,
+    rol: rol,
     departamento: document.getElementById('usuario-departamento').value,
-    telefono: document.getElementById('usuario-telefono').value || null
+    telefono: document.getElementById('usuario-telefono').value || null,
+    enviarInvitacion: esInquilino
   };
+  
+  // Solo incluir password si no es inquilino
+  if (!esInquilino) {
+    const password = document.getElementById('usuario-password').value;
+    if (!password) {
+      alert('La contraseña es requerida para Administradores y Comité');
+      return;
+    }
+    formData.password = password;
+  }
+  
+  console.log('👤 Creando usuario:', { ...formData, password: formData.password ? '***' : 'Sin contraseña (invitación)' });
   
   try {
     const token = localStorage.getItem('edificio_token');
@@ -684,23 +727,63 @@ async function crearNuevoUsuario(form) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
         'x-auth-token': token
       },
       body: JSON.stringify(formData)
     });
     
+    const data = await response.json();
+    
     if (response.ok) {
-      alert('Usuario creado exitosamente');
-      document.getElementById('usuario-modal').remove();
-      location.reload();
+      if (esInquilino && data.invitationLink) {
+        // Mostrar link de invitación
+        mostrarLinkInvitacion(data.invitationLink, formData.email);
+      } else {
+        alert('✅ Usuario creado exitosamente');
+        document.getElementById('usuario-modal').remove();
+        filtrarUsuarios();
+      }
     } else {
-      const error = await response.json();
-      alert(`Error: ${error.msg || 'No se pudo crear el usuario'}`);
+      alert(`❌ Error: ${data.msg || 'No se pudo crear el usuario'}`);
     }
   } catch (error) {
     console.error('Error:', error);
-    alert('Error al crear usuario');
+    alert('❌ Error al crear usuario');
   }
+}
+
+function mostrarLinkInvitacion(link, email) {
+  const modal = document.getElementById('usuario-modal');
+  modal.querySelector('.modal-content').innerHTML = `
+    <span class="close" onclick="document.getElementById('usuario-modal').remove()">&times;</span>
+    <h2 style="color: var(--primary);">✅ Usuario Creado</h2>
+    
+    <div style="background: #F0F9FF; padding: 1.5rem; border-radius: 0.5rem; margin: 1.5rem 0; border-left: 4px solid var(--primary);">
+      <p style="color: #1F2937; margin-bottom: 1rem;">
+        <strong>Link de invitación generado:</strong>
+      </p>
+      <div style="background: white; padding: 1rem; border-radius: 0.5rem; border: 2px dashed var(--primary); margin-bottom: 1rem; word-break: break-all;">
+        <code style="color: var(--primary); font-size: 0.875rem;">${link}</code>
+      </div>
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <button onclick="navigator.clipboard.writeText('${link}')" class="btn btn-primary" style="flex: 1;">
+          <i class="fas fa-copy"></i> Copiar Link
+        </button>
+        <button onclick="window.open('mailto:${email}?subject=Invitación al sistema&body=Haz clic en el siguiente link para establecer tu contraseña: ${encodeURIComponent(link)}')" class="btn btn-secondary" style="flex: 1;">
+          <i class="fas fa-envelope"></i> Enviar por Email
+        </button>
+      </div>
+    </div>
+    
+    <p style="color: #6B7280; font-size: 0.875rem; text-align: center; margin-bottom: 1rem;">
+      El inquilino podrá establecer su contraseña usando este link único. El link expira en 7 días.
+    </p>
+    
+    <button onclick="document.getElementById('usuario-modal').remove(); filtrarUsuarios();" class="btn btn-primary" style="width: 100%;">
+      Cerrar
+    </button>
+  `;
 }
 
 async function filtrarUsuarios() {

@@ -606,13 +606,24 @@ export default {
 
         const buildingId = authResult.payload.buildingId;
         const body = await request.json();
-        const { nombre, email, password, rol, departamento, telefono } = body;
+        const { nombre, email, password, rol, departamento, telefono, enviarInvitacion } = body;
 
-        // Validar campos requeridos
-        if (!nombre || !email || !password || !departamento) {
+        // Validar campos requeridos básicos
+        if (!nombre || !email || !departamento) {
           return new Response(JSON.stringify({
             success: false,
-            message: 'Faltan campos requeridos'
+            message: 'Faltan campos requeridos: nombre, email, departamento'
+          }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Si no es inquilino, password es requerido
+        if (rol !== 'INQUILINO' && !password) {
+          return new Response(JSON.stringify({
+            success: false,
+            message: 'La contraseña es requerida para Administradores y Comité'
           }), {
             status: 400,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -634,18 +645,64 @@ export default {
           });
         }
 
-        // Hashear contraseña
-        const hashedPassword = await hashPassword(password);
+        let hashedPassword = null;
+        let invitationToken = null;
+        let invitationLink = null;
+
+        // Si es inquilino y se solicita enviar invitación
+        if (rol === 'INQUILINO' && enviarInvitacion && !password) {
+          // Generar token único de invitación (válido por 7 días)
+          invitationToken = crypto.randomUUID();
+          const expiresAt = new Date();
+          expiresAt.setDate(expiresAt.getDate() + 7);
+          
+          // Guardar token en KV
+          await env.KV.put(`invitation:${invitationToken}`, JSON.stringify({
+            email,
+            nombre,
+            rol,
+            departamento,
+            telefono,
+            buildingId,
+            createdAt: new Date().toISOString()
+          }), {
+            expirationTtl: 7 * 24 * 60 * 60 // 7 días
+          });
+          
+          invitationLink = `${env.FRONTEND_URL || 'https://edificio-production.pages.dev'}/establecer-password.html?token=${invitationToken}`;
+          
+          // Contraseña temporal (no podrá usarse hasta que establezca la real)
+          hashedPassword = await hashPassword(crypto.randomUUID());
+        } else {
+          // Hashear contraseña proporcionada
+          hashedPassword = await hashPassword(password);
+        }
 
         // Insertar nuevo usuario
         await env.DB.prepare(
-          'INSERT INTO usuarios (nombre, email, password, rol, departamento, telefono, building_id, activo) VALUES (?, ?, ?, ?, ?, ?, ?, 1)'
-        ).bind(nombre, email, hashedPassword, rol || 'INQUILINO', departamento, telefono || '', buildingId).run();
+          'INSERT INTO usuarios (nombre, email, password, rol, departamento, telefono, building_id, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+        ).bind(
+          nombre, 
+          email, 
+          hashedPassword, 
+          rol || 'INQUILINO', 
+          departamento, 
+          telefono || '', 
+          buildingId, 
+          invitationToken ? 0 : 1 // Inactivo hasta que establezca contraseña
+        ).run();
 
-        return new Response(JSON.stringify({
+        const response = {
           success: true,
           message: 'Usuario creado exitosamente'
-        }), {
+        };
+
+        if (invitationLink) {
+          response.invitationLink = invitationLink;
+          response.message = 'Usuario creado. Link de invitación generado.';
+        }
+
+        return new Response(JSON.stringify(response), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
       }
@@ -758,6 +815,139 @@ export default {
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
+      }
+
+      // POST /api/usuarios/verify-invitation - Verificar token de invitación
+      if (method === 'POST' && path === '/api/usuarios/verify-invitation') {
+        try {
+          const body = await request.json();
+          const { token } = body;
+
+          if (!token) {
+            return new Response(JSON.stringify({
+              ok: false,
+              msg: 'Token no proporcionado'
+            }), {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          // Buscar token en KV
+          const invitationData = await env.KV.get(`invitation:${token}`);
+
+          if (!invitationData) {
+            return new Response(JSON.stringify({
+              ok: false,
+              msg: 'Token inválido o expirado'
+            }), {
+              status: 404,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          const data = JSON.parse(invitationData);
+
+          return new Response(JSON.stringify({
+            ok: true,
+            usuario: {
+              nombre: data.nombre,
+              email: data.email,
+              departamento: data.departamento
+            }
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        } catch (error) {
+          console.error('Error verificando invitación:', error);
+          return new Response(JSON.stringify({
+            ok: false,
+            msg: 'Error al verificar invitación'
+          }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+      }
+
+      // POST /api/usuarios/set-password - Establecer contraseña con token de invitación
+      if (method === 'POST' && path === '/api/usuarios/set-password') {
+        try {
+          const body = await request.json();
+          const { token, password } = body;
+
+          if (!token || !password) {
+            return new Response(JSON.stringify({
+              ok: false,
+              msg: 'Token y contraseña son requeridos'
+            }), {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          if (password.length < 6) {
+            return new Response(JSON.stringify({
+              ok: false,
+              msg: 'La contraseña debe tener al menos 6 caracteres'
+            }), {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          // Buscar token en KV
+          const invitationData = await env.KV.get(`invitation:${token}`);
+
+          if (!invitationData) {
+            return new Response(JSON.stringify({
+              ok: false,
+              msg: 'Token inválido o expirado'
+            }), {
+              status: 404,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          const data = JSON.parse(invitationData);
+
+          // Hashear nueva contraseña
+          const hashedPassword = await hashPassword(password);
+
+          // Actualizar usuario con la nueva contraseña y activarlo
+          const updateResult = await env.DB.prepare(
+            'UPDATE usuarios SET password = ?, activo = 1 WHERE email = ? AND building_id = ?'
+          ).bind(hashedPassword, data.email, data.buildingId).run();
+
+          if (updateResult.meta.changes === 0) {
+            return new Response(JSON.stringify({
+              ok: false,
+              msg: 'Usuario no encontrado'
+            }), {
+              status: 404,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          // Eliminar token usado
+          await env.KV.delete(`invitation:${token}`);
+
+          return new Response(JSON.stringify({
+            ok: true,
+            msg: 'Contraseña establecida correctamente'
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        } catch (error) {
+          console.error('Error estableciendo contraseña:', error);
+          return new Response(JSON.stringify({
+            ok: false,
+            msg: 'Error al establecer contraseña'
+          }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
       }
 
       // POST /api/usuarios/cambiar-password - Cambiar contraseña
