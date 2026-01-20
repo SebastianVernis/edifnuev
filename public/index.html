@@ -51,6 +51,23 @@
       font-size: 1.5rem;
       font-weight: bold;
       color: var(--primary);
+      display: flex;
+      align-items: center;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.75rem;
+      color: var(--primary);
+      cursor: pointer;
+      padding: 0.5rem;
+      z-index: 1001;
+    }
+
+    .mobile-menu-btn:hover {
+      color: var(--primary-dark);
     }
 
     .nav-links {
@@ -261,6 +278,52 @@
     }
 
     @media (max-width: 768px) {
+      nav {
+        padding: 1rem;
+      }
+      
+      .logo img {
+        height: 40px !important;
+      }
+      
+      .mobile-menu-btn {
+        display: block;
+      }
+      
+      .nav-links {
+        position: fixed;
+        top: 65px;
+        left: 0;
+        right: 0;
+        background: white;
+        flex-direction: column;
+        gap: 0;
+        padding: 1rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        display: none;
+        z-index: 1000;
+      }
+      
+      .nav-links.active {
+        display: flex !important;
+      }
+      
+      .nav-links a {
+        padding: 1rem;
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid #f0f0f0;
+      }
+      
+      .nav-links a:last-child {
+        border-bottom: none;
+      }
+      
+      .hero {
+        margin-top: 65px;
+        padding: 3rem 1rem;
+      }
+      
       .hero h1 {
         font-size: 2rem;
       }
@@ -269,8 +332,9 @@
         font-size: 1.75rem;
       }
 
-      .nav-links {
-        display: none;
+      .features-grid,
+      .pricing-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
