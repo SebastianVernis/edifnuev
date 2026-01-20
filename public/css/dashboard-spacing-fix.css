@@ -68,3 +68,34 @@
 .info-card:first-child {
   margin-top: 0 !important;
 }
+
+/* FORZAR eliminación de espacios en sections */
+section.content-section {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+section.content-section.active {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Todos los divs inmediatamente después del section-header */
+.section-header + * {
+  margin-top: 0 !important;
+}
+
+/* Forzar filter-controls pegado */
+.section-header + .filter-controls {
+  margin-top: 0 !important;
+}
+
+/* Forzar fondos-summary pegado */
+.section-header + .fondos-summary {
+  margin-top: 0 !important;
+}
+
+/* Cualquier div después de section-header */
+.section-header ~ div:first-of-type {
+  margin-top: 0 !important;
+}
