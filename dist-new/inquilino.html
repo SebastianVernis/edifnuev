@@ -6,27 +6,43 @@
   <title>ChispartBuilding | Panel de Inquilino</title>
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/dashboard.css">
-  <link rel="stylesheet" href="css/dashboard-compact.css">
-  <link rel="stylesheet" href="css/dashboard-spacing-fix.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* Sistema de Temas Avanzado */
+    /* Sistema de Temas Avanzado - Fondos tonales coherentes */
     :root, [data-theme="default"] {
       --primary: #0ea5e9;
       --primary-dark: #0284c7;
       --gradient: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #14b8a6 100%);
+      --bg-primary: #f0f9ff;
+      --bg-secondary: #e0f2fe;
+      --text-primary: #0c4a6e;
+      --text-secondary: #075985;
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --card-border: #7dd3fc;
     }
 
     [data-theme="green"] {
       --primary: #059669;
       --primary-dark: #047857;
       --gradient: linear-gradient(135deg, #34d399 0%, #059669 100%);
+      --bg-primary: #ecfdf5;
+      --bg-secondary: #d1fae5;
+      --text-primary: #064e3b;
+      --text-secondary: #065f46;
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --card-border: #6ee7b7;
     }
 
     [data-theme="purple"] {
       --primary: #7C3AED;
       --primary-dark: #6D28D9;
       --gradient: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+      --bg-primary: #f5f3ff;
+      --bg-secondary: #ede9fe;
+      --text-primary: #4c1d95;
+      --text-secondary: #5b21b6;
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --card-border: #c4b5fd;
     }
 
     [data-theme="orange"] {
@@ -103,11 +119,22 @@
       --bg-secondary: #1F2937;
       --text-primary: #F9FAFB;
       --text-secondary: #D1D5DB;
+      --card-bg: #1F2937;
+      --card-border: #374151;
     }
 
-    /* Aplicar colores */
+    /* Aplicar temas a TODOS los elementos */
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
     .sidebar {
       background: var(--gradient) !important;
+    }
+
+    .main-content {
+      background: var(--bg-primary) !important;
     }
 
     .btn-primary {
@@ -123,30 +150,45 @@
       background: rgba(255,255,255,0.1) !important;
     }
 
-    /* Modo oscuro específico */
-    [data-theme="dark"] body {
-      background: var(--bg-primary);
+    /* Cards y contenedores */
+    .summary-card,
+    .info-card,
+    .chart-container,
+    .recent-container,
+    .config-card,
+    .filter-controls,
+    .table-container,
+    .fondo-card,
+    .anuncio-card {
+      background: var(--card-bg) !important;
+      color: var(--text-primary);
+      border-color: var(--card-border);
+    }
+
+    .data-table {
+      background: var(--card-bg) !important;
       color: var(--text-primary);
     }
 
-    [data-theme="dark"] .main-content {
-      background: var(--bg-primary);
+    .data-table th {
+      background: var(--bg-secondary) !important;
+      color: var(--text-primary);
     }
 
-    [data-theme="dark"] .summary-card,
-    [data-theme="dark"] .chart-container,
-    [data-theme="dark"] .recent-container,
-    [data-theme="dark"] .config-card,
-    [data-theme="dark"] .data-table {
-      background: var(--bg-secondary);
+    h1, h2, h3, h4, h5, h6 {
       color: var(--text-primary);
-      border-color: #374151;
     }
 
-    [data-theme="dark"] h1,
-    [data-theme="dark"] h2,
-    [data-theme="dark"] h3 {
-      color: var(--text-primary);
+    p, label, span {
+      color: var(--text-secondary);
+    }
+
+    .mobile-sidebar-toggle {
+      background: var(--primary) !important;
+    }
+
+    .mobile-sidebar-toggle:hover {
+      background: var(--primary-dark) !important;
     }
   </style>
   <script src="/config.js"></script>
@@ -185,12 +227,6 @@
     <!-- Main Content -->
     <main class="main-content">
       <button class="mobile-sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-      <header class="main-header">
-        <h1 id="page-title">Dashboard</h1>
-        <div class="date-display">
-          <p id="current-date">Cargando...</p>
-        </div>
-      </header>
       
       <!-- Dashboard Section -->
       <section id="dashboard-section" class="content-section active">
@@ -312,7 +348,7 @@
             <tbody>
               <!-- Cuotas will be loaded here -->
             </tbody>
-          </table></div>
+          </table>
         </div>
 
       </section>
@@ -393,7 +429,7 @@
             <tbody id="gastos-edificio-tbody">
               <tr><td colspan="5" style="text-align: center;">Cargando...</td></tr>
             </tbody>
-          </table></div>
+          </table>
         </div>
       </section>
 
