@@ -2848,14 +2848,16 @@ export default {
         }
       }
 
-      // POST /api/proyectos - Crear proyecto
+      // POST /api/proyectos - Crear proyecto con cuotas diferidas
       if (method === 'POST' && path === '/api/proyectos') {
         const authResult = await verifyAuth(request, env);
         if (authResult instanceof Response) return authResult;
 
         const buildingId = authResult.payload.buildingId;
         const body = await request.json();
-        const { nombre, monto, prioridad, descripcion } = body;
+        const { nombre, monto, prioridad, descripcion, mesesDiferimiento, inicioCobrobroCobro } = body;
+
+        console.log('📋 Crear proyecto:', { nombre, monto, mesesDiferimiento, inicioCobro });
 
         if (!nombre || !monto || !prioridad) {
           return new Response(JSON.stringify({
@@ -2868,18 +2870,147 @@ export default {
         }
 
         try {
-          const result = await env.DB.prepare(
+          // 1. Crear el proyecto
+          const resultProyecto = await env.DB.prepare(
             'INSERT INTO proyectos (nombre, descripcion, monto, prioridad, building_id) VALUES (?, ?, ?, ?, ?)'
           ).bind(nombre, descripcion || '', monto, prioridad, buildingId).run();
 
+          const proyectoId = resultProyecto.meta.last_row_id;
+          console.log('✅ Proyecto creado ID:', proyectoId);
+
+          // 2. Obtener inquilinos activos
+          const inquilinos = await env.DB.prepare(
+            'SELECT id, departamento FROM usuarios WHERE building_id = ? AND rol = ? AND activo = 1'
+          ).bind(buildingId, 'INQUILINO').all();
+
+          const totalInquilinos = inquilinos.results.length;
+          console.log('👥 Inquilinos activos:', totalInquilinos);
+
+          if (totalInquilinos === 0) {
+            return new Response(JSON.stringify({
+              ok: true,
+              msg: 'Proyecto creado pero no hay inquilinos activos para generar cuotas',
+              id: proyectoId
+            }), {
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+
+          // 3. Calcular montos
+          const mesesDif = parseInt(mesesDiferimiento) || 1;
+          const montoPorDepto = parseFloat(monto) / totalInquilinos;
+          const montoPorMes = montoPorDepto / mesesDif;
+
+          console.log('💰 Distribución:', { montoPorDepto, montoPorMes, meses: mesesDif });
+
+          // 4. Obtener mes y año actual
+          const ahora = new Date();
+          const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+          
+          let mesInicio = ahora.getMonth(); // 0-11
+          let anioInicio = ahora.getFullYear();
+
+          // Si inicio es "siguiente", avanzar un mes
+          if (inicioCobro === 'siguiente') {
+            mesInicio++;
+            if (mesInicio > 11) {
+              mesInicio = 0;
+              anioInicio++;
+            }
+          }
+
+          console.log('📅 Inicio cobro:', meses[mesInicio], anioInicio);
+
+          let cuotasCreadas = 0;
+          let cuotasActualizadas = 0;
+
+          // 5. Para cada inquilino, generar/actualizar cuotas
+          for (const inquilino of inquilinos.results) {
+            for (let i = 0; i < mesesDif; i++) {
+              let mesIdx = mesInicio + i;
+              let anio = anioInicio;
+              
+              // Ajustar año si pasamos diciembre
+              while (mesIdx > 11) {
+                mesIdx -= 12;
+                anio++;
+              }
+              
+              const mesNombre = meses[mesIdx];
+              
+              // Verificar si ya existe cuota para este depto/mes/año
+              const cuotaExistente = await env.DB.prepare(
+                'SELECT id, monto, pagado FROM cuotas WHERE departamento = ? AND mes = ? AND anio = ? AND building_id = ?'
+              ).bind(inquilino.departamento, mesNombre, anio, buildingId).first();
+
+              if (cuotaExistente) {
+                // Si la cuota ya está pagada, crear cuota extraordinaria
+                if (cuotaExistente.pagado === 1) {
+                  await env.DB.prepare(
+                    'INSERT INTO cuotas (departamento, mes, anio, monto, tipo, pagado, fecha_vencimiento, building_id, concepto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+                  ).bind(
+                    inquilino.departamento,
+                    mesNombre,
+                    anio,
+                    montoPorMes,
+                    'EXTRAORDINARIA',
+                    0,
+                    `${anio}-${String(mesIdx + 1).padStart(2, '0')}-${ahora.getDate()}`,
+                    buildingId,
+                    `Proyecto: ${nombre} (${i + 1}/${mesesDif})`
+                  ).run();
+                  cuotasCreadas++;
+                } else {
+                  // Sumar al monto existente
+                  const nuevoMonto = parseFloat(cuotaExistente.monto) + montoPorMes;
+                  await env.DB.prepare(
+                    'UPDATE cuotas SET monto = ?, concepto = ? WHERE id = ?'
+                  ).bind(
+                    nuevoMonto,
+                    (cuotaExistente.concepto || '') + ` + Proyecto: ${nombre} (${i + 1}/${mesesDif})`,
+                    cuotaExistente.id
+                  ).run();
+                  cuotasActualizadas++;
+                }
+              } else {
+                // Crear nueva cuota
+                await env.DB.prepare(
+                  'INSERT INTO cuotas (departamento, mes, anio, monto, tipo, pagado, fecha_vencimiento, building_id, concepto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+                ).bind(
+                  inquilino.departamento,
+                  mesNombre,
+                  anio,
+                  montoPorMes,
+                  'EXTRAORDINARIA',
+                  0,
+                  `${anio}-${String(mesIdx + 1).padStart(2, '0')}-${ahora.getDate()}`,
+                  buildingId,
+                  `Proyecto: ${nombre} (${i + 1}/${mesesDif})`
+                ).run();
+                cuotasCreadas++;
+              }
+            }
+          }
+
+          console.log('✅ Cuotas generadas:', cuotasCreadas, 'Actualizadas:', cuotasActualizadas);
+
           return new Response(JSON.stringify({
             ok: true,
-            msg: 'Proyecto creado exitosamente',
-            id: result.meta.last_row_id
+            msg: `Proyecto creado exitosamente. ${cuotasCreadas} cuotas creadas, ${cuotasActualizadas} actualizadas.`,
+            id: proyectoId,
+            stats: {
+              inquilinos: totalInquilinos,
+              cuotasCreadas,
+              cuotasActualizadas,
+              mesesDiferimiento: mesesDif,
+              montoPorMes,
+              montoPorDepto
+            }
           }), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           });
         } catch (error) {
+          console.error('Error creando proyecto:', error);
           return new Response(JSON.stringify({
             ok: false,
             msg: 'Error al crear proyecto',
