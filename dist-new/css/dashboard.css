@@ -98,6 +98,9 @@
   min-height: 100vh;
   width: 100%;
   transition: margin-left 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .main-header {
@@ -107,6 +110,19 @@
   margin-bottom: 2rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--border-color);
+  width: 100%;
+  max-width: 1400px;
+}
+
+/* Contenedor para centrar el contenido */
+.content-section {
+  display: none;
+  width: 100%;
+  max-width: 1400px;
+}
+
+.content-section.active {
+  display: block;
 }
 
 .date-display {
@@ -114,20 +130,12 @@
   color: #666;
 }
 
-/* Content Sections */
-.content-section {
-  display: none;
-}
-
-.content-section.active {
-  display: block;
-}
-
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
+  width: 100%;
 }
 
 /* Filter Controls */
@@ -1044,6 +1052,15 @@
   transition: all 0.3s;
   z-index: 1001;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Ocultar botón hamburguesa cuando sidebar está activo */
+.sidebar.active + .main-content .mobile-sidebar-toggle {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-20px);
 }
 
 .mobile-sidebar-toggle:hover {
@@ -1134,10 +1151,15 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
+    max-width: 100%;
   }
   
   .main-header h1 {
     font-size: 1.5rem;
+  }
+  
+  .content-section {
+    max-width: 100%;
   }
   
   /* Dashboard */
