@@ -152,8 +152,9 @@
 <body>
   <div class="dashboard-container">
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
+        <button class="sidebar-close" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
         <img src="/logo.png" alt="Logo" style="height: 50px; margin-bottom: 10px;">
         <h2 id="building-name">Cargando...</h2>
         <p>Panel de Inquilino</p>
@@ -181,6 +182,7 @@
     
     <!-- Main Content -->
     <main class="main-content">
+      <button class="mobile-sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
       <header class="main-header">
         <h1 id="page-title">Dashboard</h1>
         <div class="date-display">
@@ -692,4 +694,21 @@
         }
       });
     })();
+  </script>
+  
+  <script>
+    // Toggle sidebar en móvil
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('active');
+    }
+    
+    // Cerrar sidebar al hacer click en un enlace (móvil)
+    document.querySelectorAll('.sidebar-nav a').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          document.getElementById('sidebar').classList.remove('active');
+        }
+      });
+    });
   </script>
