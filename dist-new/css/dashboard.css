@@ -1247,7 +1247,20 @@
   }
   
   .main-header {
+    display: flex;
+    border-bottom: none;
+    margin-bottom: 1rem;
+    padding-bottom: 0;
+  }
+  
+  .main-header h1,
+  .main-header .date-display {
     display: none;
+  }
+  
+  .main-header .mobile-sidebar-toggle {
+    display: flex;
+    position: fixed;
   }
   
   .content-section {
