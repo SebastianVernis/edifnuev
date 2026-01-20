@@ -523,6 +523,8 @@ export default {
         const body = await request.json();
         const { email, password } = body;
 
+        console.log('🔐 Login attempt:', email);
+
         if (!env.DB) {
           return new Response(JSON.stringify({
             success: false,
@@ -537,6 +539,7 @@ export default {
         const user = await stmt.first();
 
         if (!user) {
+          console.log('❌ Usuario no encontrado:', email);
           return new Response(JSON.stringify({
             ok: false,
             msg: 'Credenciales inválidas'
@@ -546,9 +549,26 @@ export default {
           });
         }
 
+        console.log('✅ Usuario encontrado:', user.email, 'Activo:', user.activo);
+
+        // Verificar que el usuario esté activo
+        if (!user.activo) {
+          console.log('❌ Usuario inactivo');
+          return new Response(JSON.stringify({
+            ok: false,
+            msg: 'Usuario inactivo. Contacta al administrador.'
+          }), {
+            status: 401,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
         // Verificar password con hash
         const isValidPassword = await verifyPassword(password, user.password);
+        console.log('🔑 Password válida:', isValidPassword);
+        
         if (!isValidPassword) {
+          console.log('❌ Contraseña incorrecta para:', email);
           return new Response(JSON.stringify({
             ok: false,
             msg: 'Credenciales inválidas'
