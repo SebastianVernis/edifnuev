@@ -1063,7 +1063,43 @@
   flex: 1;
 }
 
-/* Responsive para configuración - CONSOLIDADO ABAJO */
+/* Responsive para configuración */
+@media (max-width: 768px) {
+  .config-tabs {
+    flex-wrap: wrap;
+  }
+  
+  .tab-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .config-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .proyecto-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .proyecto-actions {
+    margin-top: 1rem;
+    width: 100%;
+  }
+  
+  .proyecto-actions button {
+    flex: 1;
+  }
+  
+  .documentos-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+}
 /* ============================================
    RESPONSIVE DASHBOARD - MOBILE
    ============================================ */
@@ -1188,7 +1224,16 @@
     -webkit-overflow-scrolling: touch;
   }
   
-
+  .data-table {
+    font-size: 0.75rem;
+    min-width: 600px;
+  }
+  
+  .data-table th,
+  .data-table td {
+    padding: 0.75rem 0.5rem;
+    white-space: nowrap;
+  }
   
   .modal-content {
     width: 95%;
@@ -1263,9 +1308,61 @@
   min-width: 700px;
 }
 
+/* Botones de acción en móvil */
+@media (max-width: 768px) {
+  .action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .action-buttons .btn {
+    width: 100%;
+    font-size: 0.75rem;
+    padding: 0.4rem 0.6rem;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+  }
+  
+  .modal-actions button {
+    width: 100%;
+  }
+}
 
-
-
+/* Optimizaciones adicionales móvil */
+@media (max-width: 768px) {
+  /* Ocultar columnas menos importantes en móvil */
+  .data-table th:nth-child(n+5),
+  .data-table td:nth-child(n+5) {
+    display: none;
+  }
+  
+  /* Mostrar solo primeras 4 columnas */
+  .data-table.full-mobile th,
+  .data-table.full-mobile td {
+    display: table-cell;
+  }
+  
+  /* Cards de anuncios */
+  .anuncio-card,
+  .info-card,
+  .fondo-card {
+    margin-bottom: 1rem;
+  }
+  
+  /* Tabs responsive */
+  .config-tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .tab-btn {
+    white-space: nowrap;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+  }
   
   /* Config container stack */
   .config-container {
@@ -1290,6 +1387,16 @@
   
   .sidebar-nav a {
     padding: 1rem;
+  }
+  
+  /* Tablas minimalistas */
+  .data-table {
+    font-size: 0.7rem;
+  }
+  
+  .data-table th,
+  .data-table td {
+    padding: 0.5rem 0.25rem;
   }
   
   /* Solo 3 columnas en móvil pequeño */
@@ -1409,113 +1516,5 @@
     z-index: 100;
     padding: 1rem;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-}
-
-/* ============================================
-   MEDIA QUERIES CONSOLIDADOS
-   ============================================ */
-
-/* Tablets y móviles grandes (768px) */
-@media (max-width: 768px) {
-  /* Configuración */
-  .config-tabs {
-    flex-wrap: wrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  .tab-btn {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-    white-space: nowrap;
-  }
-  
-  .config-container {
-    grid-template-columns: 1fr;
-  }
-  
-  .proyecto-item {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .proyecto-actions {
-    margin-top: 1rem;
-    width: 100%;
-  }
-  
-  .proyecto-actions button {
-    flex: 1;
-  }
-  
-  .documentos-container {
-    grid-template-columns: 1fr;
-  }
-  
-  .form-actions {
-    flex-direction: column;
-  }
-  
-  /* Botones de acción */
-  .action-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-  
-  .action-buttons .btn {
-    width: 100%;
-    font-size: 0.75rem;
-    padding: 0.4rem 0.6rem;
-  }
-  
-  .modal-actions {
-    flex-direction: column;
-  }
-  
-  .modal-actions button {
-    width: 100%;
-  }
-  
-  /* Cards */
-  .anuncio-card,
-  .info-card,
-  .fondo-card {
-    margin-bottom: 1rem;
-  }
-  
-  /* Ocultar columna Editor en tabla usuarios */
-  #usuarios-table th:nth-child(5),
-  #usuarios-table td:nth-child(5) {
-    display: none;
-  }
-}
-
-/* Móviles pequeños (480px) */
-@media (max-width: 480px) {
-  /* Ocultar Email y Departamento en tabla usuarios */
-  #usuarios-table th:nth-child(2),
-  #usuarios-table td:nth-child(2),
-  #usuarios-table th:nth-child(3),
-  #usuarios-table td:nth-child(3) {
-    display: none;
-  }
-  
-  .data-table .actions {
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-  
-  .data-table .actions .btn {
-    font-size: 0.65rem;
-    padding: 0.2rem 0.4rem;
-    white-space: nowrap;
-  }
-  
-  #usuarios-table th:nth-child(7),
-  #usuarios-table td:nth-child(7) {
-    width: 60px;
-    min-width: 60px;
   }
 }
