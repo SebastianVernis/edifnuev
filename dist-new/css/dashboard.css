@@ -255,6 +255,9 @@
   border-radius: 0.5rem;
   box-shadow: var(--shadow);
   padding: 1.5rem;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
 }
 
 .chart-container h3 {
@@ -264,7 +267,27 @@
 }
 
 .chart {
+  position: relative;
   height: 300px;
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chart canvas {
+  max-width: 100% !important;
+  width: 100% !important;
+  height: auto !important;
+  max-height: 300px !important;
+}
+
+/* Asegurar que Chart.js respete el contenedor */
+.chart > div {
+  width: 100% !important;
+  height: 100% !important;
+  position: relative !important;
 }
 
 /* Dashboard Recent */
@@ -987,10 +1010,14 @@
   
   /* Charts responsive */
   .chart-container {
+    padding: 1rem;
+  }
+  
+  .chart {
     height: 250px;
   }
   
-  canvas {
+  .chart canvas {
     max-height: 250px !important;
   }
 }
@@ -1280,7 +1307,15 @@
   }
   
   .chart-container {
+    padding: 1rem;
+  }
+  
+  .chart {
     height: 250px;
+  }
+  
+  .chart canvas {
+    max-height: 250px !important;
   }
   
   .recent-container {
