@@ -1031,3 +1031,121 @@
     flex-direction: column;
   }
 }
+/* ============================================
+   RESPONSIVE DASHBOARD - MOBILE
+   ============================================ */
+
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 250px;
+  }
+  
+  .main-content {
+    margin-left: 250px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+  
+  .sidebar-header {
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  .sidebar-header img {
+    height: 40px !important;
+  }
+  
+  .sidebar-header h2 {
+    font-size: 1.25rem;
+  }
+  
+  .sidebar-nav {
+    padding: 0.5rem 0;
+  }
+  
+  .sidebar-nav ul {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    padding: 0 0.5rem;
+  }
+  
+  .sidebar-nav a {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.85rem;
+    text-align: center;
+  }
+  
+  .sidebar-nav i {
+    display: block;
+    margin: 0 0 0.25rem 0;
+    font-size: 1.2rem;
+  }
+  
+  .sidebar-footer {
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  .main-content {
+    margin-left: 0;
+    padding: 1rem;
+  }
+  
+  .main-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .dashboard-summary {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .data-table {
+    font-size: 0.75rem;
+  }
+  
+  .data-table th,
+  .data-table td {
+    padding: 0.5rem 0.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar-header img {
+    height: 35px !important;
+  }
+  
+  .sidebar-nav ul {
+    grid-template-columns: 1fr;
+  }
+  
+  .main-content {
+    padding: 0.75rem;
+  }
+  
+  .summary-card {
+    padding: 1rem;
+  }
+  
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+}

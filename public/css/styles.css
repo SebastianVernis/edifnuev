@@ -858,3 +858,76 @@ input:focus, select:focus, textarea:focus {
     justify-content: center;
   }
 }
+/* ============================================
+   RESPONSIVE / MOBILE OPTIMIZATIONS
+   ============================================ */
+
+@media (max-width: 768px) {
+  /* Typography móvil */
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+  
+  body { font-size: 14px; }
+  
+  /* Login móvil */
+  .login-card {
+    margin: 1rem;
+  }
+  
+  .login-header {
+    padding: 1.5rem 1rem;
+  }
+  
+  .login-header img {
+    height: 60px !important;
+  }
+  
+  .login-form {
+    padding: 1.5rem;
+  }
+  
+  /* Botones móvil */
+  .btn {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.9rem;
+  }
+  
+  /* Forms móvil */
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+  
+  input, select, textarea {
+    font-size: 16px; /* Evita zoom en iOS */
+  }
+}
+
+@media (max-width: 480px) {
+  /* Login muy pequeño */
+  .login-header img {
+    height: 50px !important;
+  }
+  
+  .login-container {
+    padding: 0.5rem;
+  }
+  
+  /* Registro móvil */
+  .container {
+    grid-template-columns: 1fr;
+    margin: 0.5rem;
+  }
+  
+  .info-panel {
+    padding: 2rem 1.5rem;
+  }
+  
+  .info-panel img {
+    height: 80px !important;
+  }
+  
+  .form-panel {
+    padding: 2rem 1.5rem;
+  }
+}
