@@ -189,6 +189,11 @@
   background-color: #fff;
   border-radius: 0.5rem;
   box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.filter-controls.hidden {
+  display: none;
 }
 
 .filter-group {
@@ -204,6 +209,17 @@
 
 .filter-group select, .filter-group input {
   min-width: 150px;
+}
+
+/* Toggle filters button */
+#toggle-filters-cuotas {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#toggle-filters-cuotas i {
+  transition: transform 0.3s ease;
 }
 
 /* Tables */
@@ -1334,6 +1350,20 @@
     min-width: 70px;
   }
   
+  /* Ocultar columnas en tabla cuotas */
+  #cuotas-table th:nth-child(3),
+  #cuotas-table td:nth-child(3),
+  #cuotas-table th:nth-child(7),
+  #cuotas-table td:nth-child(7) {
+    display: none;
+  }
+  
+  #cuotas-table th:nth-child(8),
+  #cuotas-table td:nth-child(8) {
+    width: 80px;
+    min-width: 80px;
+  }
+  
   .data-table .actions {
     flex-direction: column;
     gap: 0.25rem;
@@ -1464,6 +1494,12 @@
   #usuarios-table td:nth-child(2),
   #usuarios-table th:nth-child(3),
   #usuarios-table td:nth-child(3) {
+    display: none;
+  }
+  
+  /* Ocultar más columnas en tabla cuotas */
+  #cuotas-table th:nth-child(6),
+  #cuotas-table td:nth-child(6) {
     display: none;
   }
   
