@@ -454,6 +454,39 @@
           </div>
         </div>
 
+        <div class="section-title" style="margin-top: 2rem;">
+          <i class="fas fa-home"></i>
+          Estructura de Departamentos
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="totalFloors">Cantidad de pisos *</label>
+            <input type="number" id="totalFloors" name="totalFloors" min="1" required>
+            <p class="help-text">Define cuántos pisos/niveles tiene el edificio</p>
+          </div>
+
+          <div class="form-group">
+            <label for="numberingStyle">Estilo de numeración *</label>
+            <select id="numberingStyle" name="numberingStyle" required>
+              <option value="">Selecciona un estilo</option>
+              <option value="dash">Con guión (4-1, 4-2, 4-3)</option>
+              <option value="continuous">Continuo (401, 402, 403)</option>
+            </select>
+            <p class="help-text">Formato de numeración de departamentos</p>
+          </div>
+        </div>
+
+        <div id="departmentPreview" style="display: none; background: #F0F9FF; padding: 1rem; border-radius: 0.5rem; margin-top: 1rem; border-left: 4px solid var(--primary);">
+          <h4 style="margin-bottom: 0.5rem; color: var(--dark);"><i class="fas fa-eye"></i> Vista Previa de Numeración</h4>
+          <p style="color: var(--gray); font-size: 0.875rem; margin-bottom: 0.5rem;">
+            <strong>Distribución:</strong> <span id="previewDistribution"></span>
+          </p>
+          <div id="previewDepartments" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
+            <!-- Departamentos de ejemplo se mostrarán aquí -->
+          </div>
+        </div>
+
         <!-- Información del Administrador -->
         <div class="section-title">
           <i class="fas fa-user-shield"></i>
@@ -1044,6 +1077,78 @@ En caso de venta, debe notificar y liquidar adeudos.`
       document.getElementById('paymentPolicies').value = template;
     }
 
+    // Generar numeración de departamentos
+    function generateDepartmentNumbers(totalUnits, totalFloors, style) {
+      if (!totalUnits || !totalFloors || !style) return [];
+      
+      const deptsPerFloor = Math.ceil(totalUnits / totalFloors);
+      const departments = [];
+      
+      for (let floor = 1; floor <= totalFloors; floor++) {
+        for (let unit = 1; unit <= deptsPerFloor; unit++) {
+          if (departments.length >= totalUnits) break;
+          
+          let deptNumber;
+          if (style === 'dash') {
+            deptNumber = `${floor}-${unit}`;
+          } else if (style === 'continuous') {
+            deptNumber = `${floor}${String(unit).padStart(2, '0')}`;
+          }
+          
+          departments.push(deptNumber);
+        }
+      }
+      
+      return departments;
+    }
+
+    // Actualizar vista previa
+    function updateDepartmentPreview() {
+      const totalUnits = parseInt(document.getElementById('totalUnits').value);
+      const totalFloors = parseInt(document.getElementById('totalFloors').value);
+      const style = document.getElementById('numberingStyle').value;
+      
+      const preview = document.getElementById('departmentPreview');
+      const previewDist = document.getElementById('previewDistribution');
+      const previewDepts = document.getElementById('previewDepartments');
+      
+      if (!totalUnits || !totalFloors || !style) {
+        preview.style.display = 'none';
+        return;
+      }
+      
+      const deptsPerFloor = Math.ceil(totalUnits / totalFloors);
+      const departments = generateDepartmentNumbers(totalUnits, totalFloors, style);
+      
+      previewDist.textContent = `${totalFloors} pisos × ${deptsPerFloor} deptos/piso = ${departments.length} departamentos`;
+      
+      // Mostrar primeros 10 como ejemplo
+      const examples = departments.slice(0, 10);
+      previewDepts.innerHTML = examples.map(dept => 
+        `<span style="background: var(--primary); color: white; padding: 0.375rem 0.75rem; border-radius: 0.25rem; font-size: 0.875rem; font-weight: 500;">${dept}</span>`
+      ).join('');
+      
+      if (departments.length > 10) {
+        previewDepts.innerHTML += `<span style="color: var(--gray); font-size: 0.875rem;">... y ${departments.length - 10} más</span>`;
+      }
+      
+      preview.style.display = 'block';
+    }
+
+    // Event listeners para actualizar preview
+    document.addEventListener('DOMContentLoaded', () => {
+      const totalFloors = document.getElementById('totalFloors');
+      const numberingStyle = document.getElementById('numberingStyle');
+      
+      if (totalFloors) {
+        totalFloors.addEventListener('input', updateDepartmentPreview);
+      }
+      
+      if (numberingStyle) {
+        numberingStyle.addEventListener('change', updateDepartmentPreview);
+      }
+    });
+
     // Form submission
     document.getElementById('setupForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -1083,6 +1188,21 @@ En caso de venta, debe notificar y liquidar adeudos.`
         fondoIngresosSelect.appendChild(option);
       });
       
+      // Generar departamentos con la numeración seleccionada
+      const totalUnits = parseInt(document.getElementById('totalUnits').value);
+      const totalFloors = parseInt(document.getElementById('totalFloors').value);
+      const numberingStyle = document.getElementById('numberingStyle').value;
+      
+      if (!totalFloors || !numberingStyle) {
+        alert.className = 'alert error';
+        alert.textContent = 'Por favor define la cantidad de pisos y el estilo de numeración';
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-check"></i> Completar Configuración';
+        return;
+      }
+      
+      const departments = generateDepartmentNumbers(totalUnits, totalFloors, numberingStyle);
+      
       const data = {
         email,
         adminPassword: password,
@@ -1095,6 +1215,9 @@ En caso de venta, debe notificar y liquidar adeudos.`
           address: document.getElementById('address').value,
           totalUnits: parseInt(document.getElementById('totalUnits').value),
           type: document.getElementById('buildingType').value,
+          totalFloors: totalFloors,
+          numberingStyle: numberingStyle,
+          departments: departments,
           monthlyFee: parseFloat(document.getElementById('monthlyFee').value),
           extraordinaryFee: parseFloat(document.getElementById('extraordinaryFee').value) || 0,
           cutoffDay: parseInt(document.getElementById('cutoffDay').value),
@@ -1107,6 +1230,8 @@ En caso de venta, debe notificar y liquidar adeudos.`
         patrimonies: patrimonies,
         fondoIngresosIndex: parseInt(document.getElementById('fondoIngresos').value) || 0
       };
+      
+      console.log('🏢 Departamentos generados:', departments);
 
       try {
         const response = await fetch('/api/onboarding/complete-setup', {
