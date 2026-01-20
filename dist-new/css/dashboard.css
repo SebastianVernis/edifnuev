@@ -644,7 +644,7 @@
 
 @media (max-width: 992px) {
   .dashboard-summary {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
   }
   
   .dashboard-charts {
@@ -660,7 +660,7 @@
   }
   
   .fondos-summary {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
   }
 }
 
