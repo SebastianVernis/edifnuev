@@ -1,0 +1,41 @@
+{
+  "usuarios": [
+    {
+      "id": 4,
+      "nombre": "Antonio",
+      "email": "antonio.gemelo.95@gmail.com",
+      "password": "24ce5acf3a8c14539acd442cfe58c00eda8dccdd58c8368d9631f0f71b25fbe6",
+      "rol": "ADMIN",
+      "departamento": null,
+      "telefono": null,
+      "buildingId": 7,
+      "legitimidad_entregada": false,
+      "estatus_validacion": "aprobado",
+      "fechaCreacion": "2026-01-20T05:37:50.000Z",
+      "activo": true,
+      "permisos": {
+        "anuncios": true,
+        "gastos": true,
+        "presupuestos": true,
+        "cuotas": true,
+        "usuarios": true,
+        "cierres": true,
+        "proyectos": true,
+        "configuracion": true
+      }
+    }
+  ],
+  "cuotas": [],
+  "gastos": [],
+  "presupuestos": [],
+  "cierres": [],
+  "anuncios": [],
+  "solicitudes": [],
+  "fondos": {
+    "ahorroAcumulado": 0,
+    "gastosMayores": 0,
+    "dineroOperacional": 0,
+    "patrimonioTotal": 0
+  },
+  "proyectos": []
+}
