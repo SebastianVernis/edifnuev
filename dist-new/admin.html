@@ -1499,31 +1499,33 @@
         align-items: center;
         justify-content: center;
         z-index: 10000;
+        padding: 1rem;
+        overflow-y: auto;
       `;
 
       modal.innerHTML = `
-        <div style="background: white; padding: 1rem; border-radius: 0.75rem; max-width: 450px; width: calc(100% - 2rem); margin: 1rem; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-height: calc(100vh - 2rem); overflow-y: auto;">
-          <div style="width: 45px; height: 45px; border-radius: 50%; background: #FEF3C7; color: #F59E0B; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem; font-size: 1.25rem;">
+        <div style="background: white; padding: 1rem; border-radius: 0.5rem; max-width: 400px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+          <div style="width: 40px; height: 40px; border-radius: 50%; background: #FEF3C7; color: #F59E0B; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.5rem; font-size: 1.1rem;">
             <i class="fas fa-clock"></i>
           </div>
-          <h2 style="text-align: center; color: #1F2937; margin-bottom: 0.75rem; font-size: 1.1rem;">Acceso Temporal Activo</h2>
-          <p style="color: #6B7280; line-height: 1.5; text-align: center; margin-bottom: 0.75rem; font-size: 0.85rem;">
-            Tu pago está <strong>pendiente de validación</strong>. Acceso temporal activo.
+          <h2 style="text-align: center; color: #1F2937; margin: 0 0 0.5rem 0; font-size: 1rem; font-weight: 600;">Acceso Temporal</h2>
+          <p style="color: #6B7280; line-height: 1.4; text-align: center; margin: 0 0 0.75rem 0; font-size: 0.8rem;">
+            Pago <strong>pendiente</strong>. Acceso temporal activo.
           </p>
           
-          <div style="background: #EFF6FF; border: 2px solid #4F46E5; padding: 0.75rem; border-radius: 0.5rem; text-align: center; margin-bottom: 0.75rem;">
-            <div style="color: #6B7280; font-size: 0.7rem; margin-bottom: 0.25rem;">Tu acceso expira en:</div>
-            <div id="modalCountdown" style="color: #4F46E5; font-size: 1.1rem; font-weight: bold; font-family: monospace;">--:--:--</div>
+          <div style="background: #EFF6FF; border: 2px solid #4F46E5; padding: 0.5rem; border-radius: 0.5rem; text-align: center; margin-bottom: 0.75rem;">
+            <div style="color: #6B7280; font-size: 0.65rem; margin-bottom: 0.25rem;">Expira en:</div>
+            <div id="modalCountdown" style="color: #4F46E5; font-size: 1rem; font-weight: bold; font-family: monospace;">--:--:--</div>
           </div>
 
-          <div style="background: #FEFCE8; border-left: 3px solid #F59E0B; padding: 0.75rem; border-radius: 0.5rem; margin-bottom: 0.75rem; font-size: 0.75rem; color: #6B7280; line-height: 1.4;">
-            <strong style="color: #1F2937;">¿Qué sigue?</strong><br>
-            • Validación en 24 horas<br>
-            • Acceso permanente después<br>
-            • Email de confirmación
+          <div style="background: #FEFCE8; border-left: 3px solid #F59E0B; padding: 0.5rem; border-radius: 0.25rem; margin-bottom: 0.75rem; font-size: 0.7rem; color: #6B7280; line-height: 1.4;">
+            <strong style="color: #1F2937; font-size: 0.75rem;">¿Qué sigue?</strong><br>
+            • Validación en 24h<br>
+            • Acceso permanente<br>
+            • Email confirmación
           </div>
 
-          <button onclick="document.getElementById('paymentPendingModal').remove()" style="width: 100%; padding: 0.75rem; background: #4F46E5; color: white; border: none; border-radius: 0.5rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: background 0.2s;">
+          <button onclick="document.getElementById('paymentPendingModal').remove()" style="width: 100%; padding: 0.65rem; background: #4F46E5; color: white; border: none; border-radius: 0.5rem; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: background 0.2s;">
             <i class="fas fa-check"></i> Continuar
           </button>
         </div>
