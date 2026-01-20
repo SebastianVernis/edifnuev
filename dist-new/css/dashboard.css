@@ -1393,6 +1393,20 @@
     min-width: 80px;
   }
   
+  /* Ocultar columnas en tabla gastos */
+  #gastos-table th:nth-child(4),
+  #gastos-table td:nth-child(4),
+  #gastos-table th:nth-child(5),
+  #gastos-table td:nth-child(5) {
+    display: none;
+  }
+  
+  #gastos-table th:nth-child(6),
+  #gastos-table td:nth-child(6) {
+    width: 80px;
+    min-width: 80px;
+  }
+  
   .data-table .actions {
     flex-direction: column;
     gap: 0.25rem;
@@ -1529,6 +1543,12 @@
   /* Ocultar más columnas en tabla cuotas */
   #cuotas-table th:nth-child(6),
   #cuotas-table td:nth-child(6) {
+    display: none;
+  }
+  
+  /* Ocultar Fecha en tabla gastos */
+  #gastos-table th:nth-child(1),
+  #gastos-table td:nth-child(1) {
     display: none;
   }
   
