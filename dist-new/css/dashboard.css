@@ -455,13 +455,19 @@
   color: #fff;
 }
 
-/* Fondos */
+/* Fondos - Grid adaptativo según cantidad de fondos */
 .fondos-summary {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.25rem;
   margin-bottom: 1.5rem;
   margin-top: 0;
+}
+
+/* Si hay 3 fondos + patrimonio = 4 items, usar 4 columnas
+   Si hay más fondos, se adaptará automáticamente */
+.fondos-summary:has(.fondo-card:nth-child(5)) {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
 .fondo-card {
@@ -473,13 +479,13 @@
 }
 
 .fondo-card h3 {
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
   color: var(--text-primary);
 }
 
 .fondo-card .amount {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
   color: var(--primary);
@@ -487,13 +493,13 @@
 
 .fondo-card .description {
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   margin-bottom: 0;
 }
 
 .fondo-card.total {
-  grid-column: 1 / -1;
   background: var(--gradient) !important;
+  order: -1;
 }
 
 .fondo-card.total h3, 
@@ -504,7 +510,7 @@
 
 .fondo-card.total .amount {
   color: #fff !important;
-  font-size: 2.5rem;
+  font-size: 2rem;
 }
 
 /* Parcialidades */
