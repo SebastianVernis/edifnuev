@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="css/dashboard-compact.css">
+  <link rel="stylesheet" href="css/dashboard-spacing-fix.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     /* Sistema de Temas Avanzado con Degradados */
@@ -268,7 +269,7 @@
         </div>
         
         <!-- Alertas y notificaciones -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-bottom: 2rem;" id="dashboard-alerts">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-bottom: 1rem; margin-top: 0;" id="dashboard-alerts">
           <!-- Alertas se cargarán aquí -->
         </div>
 
@@ -379,7 +380,7 @@
             <tbody id="usuarios-table-body">
               <!-- Usuarios will be loaded here -->
             </tbody>
-          </table></div>
+          </table>
         </div>
       </section>
       
@@ -449,7 +450,7 @@
             <tbody>
               <!-- Cuotas will be loaded here -->
             </tbody>
-          </table></div>
+          </table>
         </div>
         
         <!-- Modal for new/edit cuota -->
@@ -665,7 +666,7 @@
             <tbody>
               <!-- Gastos will be loaded here -->
             </tbody>
-          </table></div>
+          </table>
         </div>
         
         <!-- Modal for new/edit gasto -->
@@ -788,7 +789,7 @@
               <tbody>
                 <!-- Movimientos will be loaded here -->
               </tbody>
-            </table></div>
+            </table>
           </div>
         </div>
         
@@ -935,7 +936,7 @@
                 <tbody>
                   <!-- Cierres will be loaded here -->
                 </tbody>
-              </table></div>
+              </table>
             </div>
           </div>
           
@@ -956,7 +957,7 @@
                 <tbody>
                   <!-- Cierres anuales will be loaded here -->
                 </tbody>
-              </table></div>
+              </table>
             </div>
           </div>
         </div>
@@ -1060,14 +1061,14 @@
           <button id="nuevo-proyecto-btn-main" class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo Proyecto</button>
         </div>
 
-        <div style="background: #EFF6FF; padding: 1rem; border-radius: 0.5rem; margin-bottom: 2rem; border-left: 4px solid #4F46E5;">
+        <div style="background: #EFF6FF; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; border-left: 4px solid #4F46E5;">
           <p style="margin: 0; color: #1F2937;">
             <i class="fas fa-info-circle" style="color: #4F46E5;"></i>
             <strong>Proyectos Críticos:</strong> Gestiona proyectos importantes del condominio como remodelaciones, reparaciones mayores, actualizaciones legales, etc.
           </p>
         </div>
         
-        <div class="proyectos-list" id="proyectos-list-main" style="margin-bottom: 2rem;">
+        <div class="proyectos-list" id="proyectos-list-main" style="margin-bottom: 1rem;">
           <!-- Proyectos will be loaded here -->
         </div>
 
@@ -1172,7 +1173,7 @@
                 <input type="text" id="perfil-departamento" readonly>
               </div>
               
-              <h4 style="margin-top: 2rem;">Personalización</h4>
+              <h4 style="margin-top: 0.5rem;">Personalización</h4>
               
               <div class="form-group">
                 <label for="perfil-tema">Tema de Color:</label>
@@ -1195,7 +1196,7 @@
                 <small style="color: #6B7280;">El tema se aplicará en toda la plataforma</small>
               </div>
 
-              <h4 style="margin-top: 2rem;">Cambiar Contraseña</h4>
+              <h4 style="margin-top: 0.5rem;">Cambiar Contraseña</h4>
               
               <div class="form-group">
                 <label for="perfil-password-actual">Contraseña Actual:</label>
@@ -1271,14 +1272,14 @@
                 <small style="color: #6B7280;">Los pagos de cuotas se sumarán automáticamente a este fondo</small>
               </div>
               
-              <h4 style="margin-top: 2rem;">Fondos Patrimoniales</h4>
+              <h4 style="margin-top: 0.5rem;">Fondos Patrimoniales</h4>
               <p class="description">Fondos configurados durante el setup inicial</p>
               
-              <div id="fondos-list" style="margin-bottom: 2rem;">
+              <div id="fondos-list" style="margin-bottom: 1rem;">
                 <!-- Fondos will be loaded here -->
               </div>
               
-              <h4 style="margin-top: 2rem;">Políticas del Condominio</h4>
+              <h4 style="margin-top: 0.5rem;">Políticas del Condominio</h4>
               
               <div class="form-group">
                 <label for="edificio-reglamento">Reglamento Interno:</label>
@@ -1315,7 +1316,7 @@
               <!-- Documentos will be loaded here -->
             </div>
             
-            <div style="margin-top: 2rem;">
+            <div style="margin-top: 0.5rem;">
               <h4>Subir Nuevo Documento</h4>
               <form id="documento-form">
                 <div class="form-group">
