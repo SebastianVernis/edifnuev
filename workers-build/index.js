@@ -608,7 +608,7 @@ export default {
 
         const buildingId = authResult.payload.buildingId;
         const { results } = await env.DB.prepare(
-          'SELECT id, nombre, email, rol, departamento, activo FROM usuarios WHERE building_id = ?'
+          'SELECT id, nombre, email, rol, departamento, activo FROM usuarios WHERE building_id = ? AND activo = 1'
         ).bind(buildingId).all();
 
         return new Response(JSON.stringify({
