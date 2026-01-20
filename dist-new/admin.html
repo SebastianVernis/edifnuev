@@ -1226,6 +1226,24 @@
                 <label for="proyecto-monto-main">Monto Total:</label>
                 <input type="number" id="proyecto-monto-main" min="0" step="0.01" required>
               </div>
+
+              <div class="form-group">
+                <label for="proyecto-meses-main">Diferir en meses:</label>
+                <input type="number" id="proyecto-meses-main" min="1" max="36" value="1" required>
+                <p class="help-text" style="font-size: 0.85rem; color: #666; margin-top: 0.25rem;">El monto se dividirá en estos meses</p>
+              </div>
+
+              <div class="form-group">
+                <label for="proyecto-inicio-main">¿Cuándo iniciar el cobro?:</label>
+                <select id="proyecto-inicio-main" required>
+                  <option value="actual">Mes actual</option>
+                  <option value="siguiente">Siguiente mes</option>
+                </select>
+                <p class="help-text" style="font-size: 0.85rem; color: #666; margin-top: 0.25rem;">
+                  <strong>Actual:</strong> Si cuota pagada crea extraordinaria, si pendiente suma.<br>
+                  <strong>Siguiente:</strong> Genera cuotas para el próximo mes.
+                </p>
+              </div>
               
               <div class="form-group">
                 <label for="proyecto-prioridad-main">Prioridad:</label>
@@ -1240,6 +1258,13 @@
               <div class="form-group">
                 <label for="proyecto-descripcion-main">Descripción:</label>
                 <textarea id="proyecto-descripcion-main" rows="4" placeholder="Describe el proyecto..."></textarea>
+              </div>
+
+              <div class="info-box" id="proyecto-calculo-main" style="display: none; background: #e7f3ff; padding: 1rem; border-radius: 0.5rem; margin-top: 1rem;">
+                <h4 style="margin-bottom: 0.5rem; font-size: 0.9rem;">📊 Cálculo:</h4>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><strong>Inquilinos:</strong> <span id="calc-deptos-main">-</span></p>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><strong>Por depto:</strong> $<span id="calc-por-depto-main">-</span></p>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem; color: #059669;"><strong>Por mes/depto:</strong> $<span id="calc-por-mes-main">-</span></p>
               </div>
               
               <div class="form-group">

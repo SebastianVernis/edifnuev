@@ -3506,12 +3506,25 @@ const proyectoFormMain = document.getElementById('proyecto-form-main');
 if (proyectoFormMain) {
   proyectoFormMain.addEventListener('submit', async (e) => {
     e.preventDefault();
-    console.log('💾 Guardando proyecto...');
+    console.log('💾 Guardando proyecto con diferimiento...');
     
     const nombre = document.getElementById('proyecto-nombre-main').value;
     const monto = parseFloat(document.getElementById('proyecto-monto-main').value);
     const prioridad = document.getElementById('proyecto-prioridad-main').value;
     const descripcion = document.getElementById('proyecto-descripcion-main').value;
+    const mesesDiferimiento = parseInt(document.getElementById('proyecto-meses-main')?.value) || 1;
+    const inicioCobro = document.getElementById('proyecto-inicio-main')?.value || 'actual';
+    
+    const proyectoData = {
+      nombre,
+      monto,
+      prioridad,
+      descripcion,
+      mesesDiferimiento,
+      inicioCobro
+    };
+    
+    console.log('📋 Datos proyecto:', proyectoData);
     
     try {
       const token = localStorage.getItem('edificio_token');
@@ -3519,25 +3532,74 @@ if (proyectoFormMain) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
           'x-auth-token': token
         },
-        body: JSON.stringify({ nombre, monto, prioridad, descripcion })
+        body: JSON.stringify(proyectoData)
       });
       
+      const data = await response.json();
+      
       if (response.ok) {
-        const data = await response.json();
-        alert('✅ ' + (data.msg || data.message || 'Proyecto creado'));
+        let mensaje = data.msg || 'Proyecto creado exitosamente';
+        if (data.stats) {
+          mensaje += `\n\n📊 Resumen:\n`;
+          mensaje += `• Inquilinos: ${data.stats.inquilinos}\n`;
+          mensaje += `• Cuotas creadas: ${data.stats.cuotasCreadas}\n`;
+          mensaje += `• Cuotas actualizadas: ${data.stats.cuotasActualizadas}\n`;
+          mensaje += `• Monto por mes: $${data.stats.montoPorMes.toFixed(2)}`;
+        }
+        alert(mensaje);
         hideModal('proyecto-modal-main');
         cargarProyectosMain();
+        
+        // Recargar cuotas si está visible
+        const cuotasSection = document.getElementById('cuotas-section');
+        if (cuotasSection && cuotasSection.classList.contains('active')) {
+          filtrarCuotas();
+        }
       } else {
-        const error = await response.json();
-        alert('❌ Error: ' + (error.msg || error.message));
+        alert('❌ Error: ' + (data.msg || data.message));
       }
     } catch (error) {
       console.error('Error:', error);
       alert('❌ Error al guardar proyecto');
     }
   });
+  
+  // Listeners para calcular preview
+  const montoInput = document.getElementById('proyecto-monto-main');
+  const mesesInput = document.getElementById('proyecto-meses-main');
+  const inicioSelect = document.getElementById('proyecto-inicio-main');
+  
+  const calcularPreviewMain = async () => {
+    const monto = parseFloat(montoInput?.value) || 0;
+    const meses = parseInt(mesesInput?.value) || 1;
+    
+    if (monto > 0) {
+      try {
+        const token = localStorage.getItem('edificio_token');
+        const res = await fetch('/api/usuarios', {
+          headers: { 'x-auth-token': token }
+        });
+        const data = await res.json();
+        const inquilinos = data.usuarios.filter(u => u.rol === 'INQUILINO' && u.activo).length;
+        const porDepto = monto / (inquilinos || 1);
+        const porMes = porDepto / meses;
+        
+        document.getElementById('calc-deptos-main').textContent = inquilinos;
+        document.getElementById('calc-por-depto-main').textContent = porDepto.toFixed(2);
+        document.getElementById('calc-por-mes-main').textContent = porMes.toFixed(2);
+        document.getElementById('proyecto-calculo-main').style.display = 'block';
+      } catch (err) {
+        console.error('Error calculando:', err);
+      }
+    }
+  };
+  
+  if (montoInput) montoInput.addEventListener('input', calcularPreviewMain);
+  if (mesesInput) mesesInput.addEventListener('input', calcularPreviewMain);
+  if (inicioSelect) inicioSelect.addEventListener('change', calcularPreviewMain);
 }
 
 async function eliminarProyectoMainReal(id) {

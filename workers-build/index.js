@@ -2855,7 +2855,7 @@ export default {
 
         const buildingId = authResult.payload.buildingId;
         const body = await request.json();
-        const { nombre, monto, prioridad, descripcion, mesesDiferimiento, inicioCobrobroCobro } = body;
+        const { nombre, monto, prioridad, descripcion, mesesDiferimiento, inicioCobro } = body;
 
         console.log('📋 Crear proyecto:', { nombre, monto, mesesDiferimiento, inicioCobro });
 
