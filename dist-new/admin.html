@@ -217,8 +217,34 @@
       background: rgba(255,255,255,0.1) !important;
     }
 
+    /* Card especial de patrimonio con gradiente del tema */
+    .patrimonio-card {
+      background: var(--gradient) !important;
+      color: white !important;
+    }
+
+    .patrimonio-card h3,
+    .patrimonio-card p,
+    .patrimonio-card .amount,
+    .patrimonio-card .description {
+      color: white !important;
+    }
+
+    .patrimonio-card h3 {
+      opacity: 0.9;
+    }
+
+    .patrimonio-card .description {
+      opacity: 0.8;
+    }
+
+    .patrimonio-card i {
+      color: white;
+      opacity: 0.3;
+    }
+
     /* Cards y contenedores */
-    .summary-card,
+    .summary-card:not(.patrimonio-card),
     .chart-container,
     .recent-container,
     .config-card,
@@ -308,12 +334,12 @@
       <section id="dashboard-section" class="content-section active">
         <!-- Métricas principales -->
         <div class="dashboard-summary">
-          <div class="summary-card" style="background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #14b8a6 100%); color: white;">
+          <div class="summary-card patrimonio-card">
             <div style="display: flex; justify-content: space-between; align-items: start;">
               <div>
-                <h3 style="color: white; opacity: 0.9;">Patrimonio Total</h3>
-                <p class="amount" id="patrimonio-total" style="color: white;">$0</p>
-                <p class="description" style="color: white; opacity: 0.8;">Fondos acumulados</p>
+                <h3>Patrimonio Total</h3>
+                <p class="amount" id="patrimonio-total">$0</p>
+                <p class="description">Fondos acumulados</p>
               </div>
               <i class="fas fa-piggy-bank" style="font-size: 2.5rem; opacity: 0.3;"></i>
             </div>
