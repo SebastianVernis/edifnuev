@@ -179,29 +179,34 @@ export const eliminarUsuario = async (req, res) => {
     const id = parseInt(req.params.id);
     
     // No permitir eliminar el admin principal
-    if (id === 1) {
-      return res.status(400).json({ ok: false, msg: 'No se puede eliminar el administrador principal' });
+    if (id === 1 || id === 4) {
+      return res.status(400).json({ ok: false, msg: 'No se puede eliminar este administrador' });
     }
 
-    const index = data.usuarios.findIndex(u => u.id === id);
-    if (index === -1) {
+    const usuario = data.usuarios.find(u => u.id === id);
+    if (!usuario) {
       return res.status(404).json({ ok: false, msg: 'Usuario no encontrado' });
     }
 
-    // Guardar datos del usuario antes de eliminarlo para auditoría
-    const usuarioAEliminar = { ...data.usuarios[index] };
-
-    data.usuarios.splice(index, 1);
-    writeData(data);
-
-    // Log de auditoría para eliminación
+    // Log de auditoría antes de eliminar
     const actor = req.usuario;
     const ip = req.ip || req.connection.remoteAddress;
     const userAgent = req.get('User-Agent');
     
-    logUserDeletion(usuarioAEliminar, actor, ip, userAgent);
+    logUserDeletion(usuario, actor, ip, userAgent);
 
-    res.json({ ok: true, msg: 'Usuario eliminado exitosamente' });
+    // Soft delete: marcar como inactivo
+    usuario.activo = false;
+    usuario.deletedAt = new Date().toISOString();
+    usuario.deletedBy = actor.email;
+    
+    writeData(data);
+
+    res.json({ 
+      ok: true, 
+      msg: 'Usuario desactivado correctamente',
+      info: 'El usuario fue marcado como inactivo en lugar de eliminado'
+    });
   } catch (error) {
     return handleControllerError(error, res, 'eliminarUsuario');
   }
