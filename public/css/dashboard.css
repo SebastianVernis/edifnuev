@@ -1059,6 +1059,9 @@
   .sidebar-header {
     padding: 1rem;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   
   .sidebar-header img {
@@ -1071,30 +1074,44 @@
   
   .sidebar-nav {
     padding: 0.5rem 0;
+    overflow-x: auto;
   }
   
   .sidebar-nav ul {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 0.5rem;
     padding: 0 0.5rem;
   }
   
   .sidebar-nav a {
-    padding: 0.75rem 0.5rem;
-    font-size: 0.85rem;
+    padding: 1rem 0.5rem;
+    font-size: 0.8rem;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
   }
   
   .sidebar-nav i {
     display: block;
-    margin: 0 0 0.25rem 0;
-    font-size: 1.2rem;
+    margin: 0;
+    font-size: 1.5rem;
+  }
+  
+  .sidebar-nav li.active a {
+    border-left: none;
+    border-bottom: 3px solid #fff;
   }
   
   .sidebar-footer {
     padding: 1rem;
     text-align: center;
+  }
+  
+  .sidebar-footer .btn {
+    width: 100%;
   }
   
   .main-content {
@@ -1108,22 +1125,83 @@
     gap: 1rem;
   }
   
+  .main-header h1 {
+    font-size: 1.5rem;
+  }
+  
   .dashboard-summary {
     grid-template-columns: 1fr;
     gap: 1rem;
+  }
+  
+  .summary-card {
+    padding: 1.5rem;
+  }
+  
+  .summary-card h3 {
+    font-size: 0.9rem;
+  }
+  
+  .summary-card .amount {
+    font-size: 1.75rem;
   }
   
   .form-grid {
     grid-template-columns: 1fr !important;
   }
   
+  .data-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
   .data-table {
     font-size: 0.75rem;
+    min-width: 600px;
   }
   
   .data-table th,
   .data-table td {
-    padding: 0.5rem 0.25rem;
+    padding: 0.75rem 0.5rem;
+    white-space: nowrap;
+  }
+  
+  .modal-content {
+    width: 95%;
+    max-width: 95%;
+    margin: 1rem;
+  }
+  
+  .chart-container {
+    height: 250px;
+  }
+  
+  .recent-container {
+    padding: 1rem;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .section-header h2 {
+    font-size: 1.25rem;
+  }
+  
+  .filter-controls {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .filter-group {
+    width: 100%;
+  }
+  
+  .filter-group select,
+  .filter-group input {
+    width: 100%;
   }
 }
 
@@ -1147,5 +1225,139 @@
   .btn {
     padding: 0.5rem 1rem;
     font-size: 0.85rem;
+  }
+}
+
+/* Contenedor scroll para tablas */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 1rem 0;
+}
+
+.table-responsive .data-table {
+  min-width: 700px;
+}
+
+/* Botones de acción en móvil */
+@media (max-width: 768px) {
+  .action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .action-buttons .btn {
+    width: 100%;
+    font-size: 0.75rem;
+    padding: 0.4rem 0.6rem;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+  }
+  
+  .modal-actions button {
+    width: 100%;
+  }
+}
+
+/* Optimizaciones adicionales móvil */
+@media (max-width: 768px) {
+  /* Ocultar columnas menos importantes en móvil */
+  .data-table th:nth-child(n+5),
+  .data-table td:nth-child(n+5) {
+    display: none;
+  }
+  
+  /* Mostrar solo primeras 4 columnas */
+  .data-table.full-mobile th,
+  .data-table.full-mobile td {
+    display: table-cell;
+  }
+  
+  /* Cards de anuncios */
+  .anuncio-card,
+  .info-card,
+  .fondo-card {
+    margin-bottom: 1rem;
+  }
+  
+  /* Tabs responsive */
+  .config-tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .tab-btn {
+    white-space: nowrap;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+  }
+  
+  /* Config container stack */
+  .config-container {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Charts responsive */
+  .chart-container {
+    height: 250px;
+  }
+  
+  canvas {
+    max-height: 250px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Sidebar completamente apilado */
+  .sidebar-nav ul {
+    grid-template-columns: 1fr;
+  }
+  
+  .sidebar-nav a {
+    padding: 1rem;
+  }
+  
+  /* Tablas minimalistas */
+  .data-table {
+    font-size: 0.7rem;
+  }
+  
+  .data-table th,
+  .data-table td {
+    padding: 0.5rem 0.25rem;
+  }
+  
+  /* Solo 3 columnas en móvil pequeño */
+  .data-table th:nth-child(n+4),
+  .data-table td:nth-child(n+4) {
+    display: none;
+  }
+  
+  /* Summary cards más compactas */
+  .summary-card {
+    padding: 1rem;
+  }
+  
+  .summary-card .amount {
+    font-size: 1.5rem;
+  }
+  
+  .summary-card h3 {
+    font-size: 0.85rem;
+  }
+  
+  /* Botones full width */
+  .btn,
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  
+  .section-header .btn {
+    width: 100%;
   }
 }
