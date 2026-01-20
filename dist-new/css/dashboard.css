@@ -110,13 +110,24 @@
   padding: 1rem 1.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   flex-shrink: 0;
-  background-color: var(--secondary-color);
+  background: transparent;
 }
 
 .sidebar-footer p {
   margin-bottom: 0.5rem;
   font-weight: 500;
   font-size: 0.9rem;
+  color: #fff;
+}
+
+.sidebar-footer .btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-footer .btn:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* Main Content */
