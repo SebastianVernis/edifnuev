@@ -1159,7 +1159,6 @@ function renderCierresTable(cierres) {
         
         tbodyMensual.appendChild(tr);
       });
-    }
   }
   
   // Renderizar cierres anuales

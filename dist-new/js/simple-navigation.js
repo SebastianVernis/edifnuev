@@ -31,9 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
       // Mostrar sección
       showSection(sectionId);
       
-      // Actualizar título
-      const title = link.textContent.trim().replace(/.*\s/, '');
-      document.getElementById('page-title').textContent = title;
+      // Actualizar título si existe
+      const pageTitle = document.getElementById('page-title');
+      if (pageTitle) {
+        const title = link.textContent.trim().replace(/.*\s/, '');
+        pageTitle.textContent = title;
+      }
       
       // Cargar datos de la sección
       loadSectionData(sectionId);
