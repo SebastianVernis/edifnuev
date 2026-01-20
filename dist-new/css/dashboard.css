@@ -475,33 +475,35 @@
 .fondo-card h3 {
   font-size: 1.25rem;
   margin-bottom: 1rem;
-  color: #666;
+  color: var(--text-primary);
 }
 
 .fondo-card .amount {
   font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  color: var(--primary-color);
+  color: var(--primary);
 }
 
 .fondo-card .description {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.9rem;
   margin-bottom: 0;
 }
 
 .fondo-card.total {
   grid-column: 1 / -1;
-  background-color: var(--secondary-color);
+  background: var(--gradient) !important;
 }
 
-.fondo-card.total h3, .fondo-card.total .description {
-  color: rgba(255, 255, 255, 0.8);
+.fondo-card.total h3, 
+.fondo-card.total .description,
+.fondo-card.total .description span {
+  color: rgba(255, 255, 255, 0.9) !important;
 }
 
 .fondo-card.total .amount {
-  color: #fff;
+  color: #fff !important;
   font-size: 2.5rem;
 }
 
