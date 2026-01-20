@@ -1496,6 +1496,18 @@
                 <input type="number" id="proyecto-meses" name="mesesDiferimiento" min="1" max="36" value="1" required>
                 <p class="help-text" style="font-size: 0.85rem; color: #666; margin-top: 0.25rem;">El monto por depto se dividirá en estos meses</p>
               </div>
+
+              <div class="form-group">
+                <label for="proyecto-inicio">¿Cuándo iniciar el cobro?:</label>
+                <select id="proyecto-inicio" required>
+                  <option value="actual">Mes actual (Enero 2026)</option>
+                  <option value="siguiente">Siguiente mes (Febrero 2026)</option>
+                </select>
+                <p class="help-text" style="font-size: 0.85rem; color: #666; margin-top: 0.25rem;">
+                  <strong>Mes actual:</strong> Si cuota pagada → crea cuota extraordinaria. Si pendiente → suma al monto.<br>
+                  <strong>Siguiente mes:</strong> Genera cuotas para el próximo periodo.
+                </p>
+              </div>
               
               <div class="form-group">
                 <label for="proyecto-prioridad">Prioridad:</label>
@@ -1508,10 +1520,12 @@
               </div>
               
               <div class="info-box" id="proyecto-calculo" style="display: none; background: #e7f3ff; padding: 1rem; border-radius: 0.5rem; margin-top: 1rem;">
-                <h4 style="margin-bottom: 0.5rem; font-size: 0.9rem;">📊 Cálculo:</h4>
+                <h4 style="margin-bottom: 0.5rem; font-size: 0.9rem;">📊 Cálculo de Diferimiento:</h4>
                 <p style="margin: 0.25rem 0; font-size: 0.85rem;"><strong>Deptos activos:</strong> <span id="calc-deptos">-</span></p>
                 <p style="margin: 0.25rem 0; font-size: 0.85rem;"><strong>Por depto (total):</strong> $<span id="calc-por-depto">-</span></p>
                 <p style="margin: 0.25rem 0; font-size: 0.85rem;"><strong>Por mes/depto:</strong> $<span id="calc-por-mes">-</span></p>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><strong>Inicio cobro:</strong> <span id="calc-inicio">-</span></p>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem; color: #059669;"><strong>Total meses:</strong> <span id="calc-total-meses">-</span></p>
               </div>
               
               <div class="form-actions">
@@ -1721,6 +1735,7 @@
 function calcularProyecto() {
   const monto = parseFloat(document.getElementById('proyecto-monto')?.value) || 0;
   const meses = parseInt(document.getElementById('proyecto-meses')?.value) || 1;
+  const inicio = document.getElementById('proyecto-inicio')?.value || 'actual';
   
   if (monto > 0) {
     // Obtener deptos activos del sistema
@@ -1731,9 +1746,15 @@ function calcularProyecto() {
         const porDepto = monto / (deptosActivos || 1);
         const porMes = porDepto / meses;
         
+        // Calcular meses
+        const mesActual = new Date().toLocaleDateString('es-MX', { month: 'long', year: 'numeric' });
+        const mesInicio = inicio === 'actual' ? mesActual : 'Próximo mes';
+        
         document.getElementById('calc-deptos').textContent = deptosActivos;
         document.getElementById('calc-por-depto').textContent = porDepto.toFixed(2);
         document.getElementById('calc-por-mes').textContent = porMes.toFixed(2);
+        document.getElementById('calc-inicio').textContent = mesInicio;
+        document.getElementById('calc-total-meses').textContent = `${meses} ${meses === 1 ? 'mes' : 'meses'}`;
         document.getElementById('proyecto-calculo').style.display = 'block';
       })
       .catch(err => console.error('Error calculando:', err));
@@ -1743,6 +1764,7 @@ function calcularProyecto() {
 // Agregar listeners al modal de proyectos
 document.getElementById('proyecto-monto')?.addEventListener('input', calcularProyecto);
 document.getElementById('proyecto-meses')?.addEventListener('input', calcularProyecto);
+document.getElementById('proyecto-inicio')?.addEventListener('change', calcularProyecto);
 
 // Toggle filters para cuotas
 document.getElementById('toggle-filters-cuotas')?.addEventListener('click', function() {
