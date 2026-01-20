@@ -14,11 +14,13 @@
   flex-direction: column;
   position: fixed;
   height: 100vh;
+  max-height: 100vh;
   left: -280px;
   top: 0;
   z-index: 1000;
   transition: left 0.3s ease;
   box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+  overflow: hidden;
 }
 
 .sidebar.active {
@@ -28,6 +30,7 @@
 .sidebar-header {
   padding: 1.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
 }
 
 .sidebar-header h2 {
@@ -44,10 +47,32 @@
 .sidebar-nav {
   flex: 1;
   padding: 1rem 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .sidebar-nav ul {
   list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .sidebar-nav li {
@@ -82,6 +107,8 @@
 .sidebar-footer {
   padding: 1.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+  background-color: var(--secondary-color);
 }
 
 .sidebar-footer p {
