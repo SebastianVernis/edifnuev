@@ -3632,82 +3632,133 @@ async function eliminarProyectoMainReal(id) {
 
 // Generar cuotas extraordinarias para un proyecto
 async function generarCuotasProyecto(proyectoId, nombreProyecto, montoTotal) {
-  try {
-    // Obtener info del building para saber cuántas unidades
-    const token = localStorage.getItem('edificio_token');
-    const buildingRes = await fetch('/api/onboarding/building-info', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
+  console.log('💰 Generar cuotas para proyecto:', nombreProyecto);
+  
+  // Crear modal con opciones de diferimiento
+  const modalHTML = `
+    <div id="generar-cuotas-proyecto-modal" class="modal" style="display: block;">
+      <div class="modal-content">
+        <span class="close" onclick="document.getElementById('generar-cuotas-proyecto-modal').remove()">&times;</span>
+        <h2>Generar Cuotas del Proyecto</h2>
+        <p style="color: #6B7280; margin-bottom: 1.5rem;">
+          <strong>${nombreProyecto}</strong><br>
+          Monto total: <strong>$${montoTotal.toLocaleString('es-MX')}</strong>
+        </p>
+        
+        <form id="form-generar-cuotas-proyecto">
+          <div class="form-group">
+            <label for="cuotas-meses">Diferir en meses:</label>
+            <input type="number" id="cuotas-meses" min="1" max="36" value="1" required>
+            <p class="help-text">El monto se dividirá en estos meses</p>
+          </div>
+
+          <div class="form-group">
+            <label for="cuotas-inicio">¿Cuándo iniciar el cobro?:</label>
+            <select id="cuotas-inicio" required>
+              <option value="actual">Mes actual</option>
+              <option value="siguiente">Siguiente mes</option>
+            </select>
+            <p class="help-text">
+              <strong>Actual:</strong> Si cuota pagada crea extraordinaria, si pendiente suma.<br>
+              <strong>Siguiente:</strong> Genera para el próximo mes.
+            </p>
+          </div>
+
+          <div id="preview-cuotas" style="background: #F0F9FF; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; border-left: 4px solid var(--primary);">
+            <h4 style="margin-bottom: 0.5rem; color: #1F2937;">📊 Vista Previa</h4>
+            <p style="margin: 0.25rem 0; font-size: 0.85rem;"><strong>Inquilinos:</strong> <span id="preview-inquilinos">Calculando...</span></p>
+            <p style="margin: 0.25rem 0; font-size: 0.85rem;"><strong>Por depto:</strong> $<span id="preview-por-depto">-</span></p>
+            <p style="margin: 0.25rem 0; font-size: 0.85rem; color: #059669;"><strong>Por mes/depto:</strong> $<span id="preview-por-mes">-</span></p>
+          </div>
+          
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-bolt"></i> Generar Cuotas
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('generar-cuotas-proyecto-modal').remove()">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+  
+  // Calcular preview
+  const calcularPreview = async () => {
+    const meses = parseInt(document.getElementById('cuotas-meses').value) || 1;
     
-    if (!buildingRes.ok) {
-      alert('Error al obtener información del edificio');
-      return;
-    }
-    
-    const buildingData = await buildingRes.json();
-    const totalUnidades = buildingData.buildingInfo.totalUnidades || 20;
-    const montoPorUnidad = montoTotal / totalUnidades;
-    
-    const confirmar = confirm(
-      `¿Generar cuotas extraordinarias para el proyecto?\n\n` +
-      `Proyecto: ${nombreProyecto}\n` +
-      `Monto total: $${montoTotal.toLocaleString('es-MX')}\n` +
-      `Total unidades: ${totalUnidades}\n` +
-      `Monto por unidad: $${montoPorUnidad.toLocaleString('es-MX')}\n\n` +
-      `Se generarán ${totalUnidades} cuotas extraordinarias.`
-    );
-    
-    if (!confirmar) return;
-    
-    // Solicitar mes y año
-    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
-                   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-    const hoy = new Date();
-    const mesActual = meses[hoy.getMonth()];
-    const anioActual = hoy.getFullYear();
-    
-    const mes = prompt(`¿Para qué mes generar las cuotas?`, mesActual);
-    if (!mes) return;
-    
-    const anio = prompt(`¿Qué año?`, anioActual);
-    if (!anio) return;
-    
-    console.log(`⚡ Agregando monto extraordinario a cuotas de ${mes} ${anio}...`);
-    
-    const response = await fetch('/api/cuotas/agregar-extraordinaria', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-auth-token': token
-      },
-      body: JSON.stringify({
-        mes: mes,
-        anio: parseInt(anio),
-        montoTotal: montoTotal,
-        concepto: `Proyecto: ${nombreProyecto}`
-      })
-    });
-    
-    if (response.ok) {
-      const data = await response.json();
-      alert(
-        `✅ ${data.message}\n\n` +
-        `Cuotas actualizadas: ${data.cuotasActualizadas}\n` +
-        `Monto por unidad: $${parseFloat(data.montoPorUnidad).toLocaleString('es-MX')}\n` +
-        `Total proyecto: $${montoTotal.toLocaleString('es-MX')}\n\n` +
-        `Las cuotas ahora incluyen el monto extraordinario del proyecto.`
-      );
+    try {
+      const token = localStorage.getItem('edificio_token');
+      const res = await fetch('/api/usuarios', {
+        headers: { 'x-auth-token': token }
+      });
+      const data = await res.json();
+      const inquilinos = data.usuarios.filter(u => u.rol === 'INQUILINO' && u.activo).length;
+      const porDepto = montoTotal / (inquilinos || 1);
+      const porMes = porDepto / meses;
       
-      // Recargar cuotas para ver actualizadas
-      filtrarCuotas();
-    } else {
-      const error = await response.json();
-      alert('❌ Error: ' + (error.message || 'No se pudo agregar el monto extraordinario'));
+      document.getElementById('preview-inquilinos').textContent = inquilinos;
+      document.getElementById('preview-por-depto').textContent = porDepto.toFixed(2);
+      document.getElementById('preview-por-mes').textContent = porMes.toFixed(2);
+    } catch (err) {
+      console.error('Error calculando preview:', err);
     }
-  } catch (error) {
-    console.error('Error:', error);
-    alert('❌ Error al generar cuotas del proyecto');
-  }
+  };
+  
+  calcularPreview();
+  document.getElementById('cuotas-meses').addEventListener('input', calcularPreview);
+  
+  // Submit form
+  document.getElementById('form-generar-cuotas-proyecto').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const mesesDiferimiento = parseInt(document.getElementById('cuotas-meses').value);
+    const inicioCobro = document.getElementById('cuotas-inicio').value;
+    
+    console.log('⚡ Generando cuotas:', { proyectoId, mesesDiferimiento, inicioCobro });
+    
+    try {
+      const token = localStorage.getItem('edificio_token');
+      const response = await fetch(`/api/proyectos/${proyectoId}/generar-cuotas`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+          'x-auth-token': token
+        },
+        body: JSON.stringify({ mesesDiferimiento, inicioCobro })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        let mensaje = data.msg || 'Cuotas generadas exitosamente';
+        if (data.stats) {
+          mensaje += `\n\n📊 Resumen:\n`;
+          mensaje += `• Inquilinos: ${data.stats.inquilinos}\n`;
+          mensaje += `• Cuotas creadas: ${data.stats.cuotasCreadas}\n`;
+          mensaje += `• Cuotas actualizadas: ${data.stats.cuotasActualizadas}\n`;
+          mensaje += `• Monto por mes: $${data.stats.montoPorMes.toFixed(2)}`;
+        }
+        alert(mensaje);
+        document.getElementById('generar-cuotas-proyecto-modal').remove();
+        
+        // Recargar cuotas si está visible
+        const cuotasSection = document.getElementById('cuotas-section');
+        if (cuotasSection && cuotasSection.classList.contains('active')) {
+          filtrarCuotas();
+        }
+      } else {
+        alert('❌ Error: ' + (data.msg || data.message));
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('❌ Error al generar cuotas');
+    }
+  });
 }
 
 // Gráfico de Balance (Ingresos vs Egresos últimos 6 meses)
