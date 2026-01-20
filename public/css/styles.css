@@ -1,16 +1,17 @@
 /* Base Styles */
 :root {
-  --primary-color: #3498db;
-  --primary-dark: #2980b9;
-  --secondary-color: #2c3e50;
-  --success-color: #27ae60;
-  --warning-color: #f39c12;
-  --danger-color: #e74c3c;
+  --primary-color: #0ea5e9;
+  --primary-dark: #0284c7;
+  --secondary-color: #06b6d4;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
   --light-color: #ecf0f1;
   --dark-color: #2c3e50;
   --text-color: #333;
   --border-color: #ddd;
   --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  --gradient: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #14b8a6 100%);
 }
 
 * {
