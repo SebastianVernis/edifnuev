@@ -3011,16 +3011,28 @@ export default {
       if (method === 'GET' && path.startsWith('/uploads/')) {
         try {
           const key = path.substring(9); // Remover '/uploads/' del inicio
+          console.log('📥 Sirviendo archivo desde R2:', key);
           
           if (env.UPLOADS) {
             const object = await env.UPLOADS.get(key);
             
             if (object === null) {
-              return new Response('Archivo no encontrado', { 
+              console.log('❌ Archivo no encontrado en R2:', key);
+              // Listar claves disponibles para debugging
+              const list = await env.UPLOADS.list({ prefix: 'anuncios/', limit: 10 });
+              console.log('📋 Archivos disponibles:', list.objects.map(o => o.key));
+              
+              return new Response(JSON.stringify({
+                error: 'Archivo no encontrado',
+                key: key,
+                available: list.objects.map(o => o.key)
+              }), { 
                 status: 404,
-                headers: { 'Content-Type': 'text/plain' }
+                headers: { 'Content-Type': 'application/json' }
               });
             }
+            
+            console.log('✅ Archivo encontrado en R2:', key);
 
             const headers = new Headers();
             object.writeHttpMetadata(headers);
