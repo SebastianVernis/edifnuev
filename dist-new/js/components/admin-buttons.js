@@ -828,22 +828,17 @@ function renderUsuariosTable(usuarios) {
   usuarios.forEach(user => {
     const tr = document.createElement('tr');
     
-    const estadoClass = user.estatus_validacion === 'validado' ? 'text-success' : 'text-warning';
-    const editor = user.esEditor ? 'Sí' : 'No';
-    
     tr.innerHTML = `
       <td>${user.nombre}</td>
       <td>${user.email}</td>
       <td>${user.departamento || '-'}</td>
-      <td><span class="badge badge-${user.rol.toLowerCase()}">${user.rol}</span></td>
-      <td>${editor}</td>
-      <td class="${estadoClass}">${user.estatus_validacion}</td>
-      <td>
+      <td><span class="badge badge-${user.rol ? user.rol.toLowerCase() : 'inquilino'}">${user.rol || 'INQUILINO'}</span></td>
+      <td class="actions">
         <button class="btn btn-sm btn-secondary" data-action="editar-usuario" data-id="${user.id}">
-          <i class="fas fa-edit"></i>
+          <i class="fas fa-edit"></i> Editar
         </button>
         <button class="btn btn-sm btn-danger" data-action="eliminar-usuario" data-id="${user.id}">
-          <i class="fas fa-trash"></i>
+          <i class="fas fa-trash"></i> Eliminar
         </button>
       </td>
     `;

@@ -1366,22 +1366,11 @@
     max-width: none;
   }
   
-  /* Ocultar columna Editor en tabla usuarios */
+  /* Columna de acciones en tabla usuarios */
   #usuarios-table th:nth-child(5),
   #usuarios-table td:nth-child(5) {
-    display: none;
-  }
-  
-  #usuarios-table th:nth-child(7),
-  #usuarios-table td:nth-child(7) {
-    width: 80px;
-    min-width: 80px;
-  }
-  
-  #usuarios-table th:nth-child(6),
-  #usuarios-table td:nth-child(6) {
-    width: 70px;
-    min-width: 70px;
+    width: 120px;
+    min-width: 120px;
   }
   
   /* Ocultar columnas en tabla cuotas */
@@ -1568,9 +1557,9 @@
     white-space: nowrap;
   }
   
-  #usuarios-table th:nth-child(7),
-  #usuarios-table td:nth-child(7) {
-    width: 60px;
-    min-width: 60px;
+  #usuarios-table th:nth-child(5),
+  #usuarios-table td:nth-child(5) {
+    width: 100px;
+    min-width: 100px;
   }
 }
