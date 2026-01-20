@@ -207,10 +207,10 @@
   gap: 0.5rem;
 }
 
-/* Dashboard Summary */
+/* Dashboard Summary - 3 columnas */
 .dashboard-summary {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
   margin-bottom: 1.5rem;
 }
@@ -242,10 +242,10 @@
   margin-bottom: 0;
 }
 
-/* Dashboard Charts */
+/* Dashboard Charts - 2 columnas */
 .dashboard-charts {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
   margin-bottom: 1.5rem;
 }
@@ -268,9 +268,10 @@
 }
 
 /* Dashboard Recent */
+/* Dashboard Recent - 3 columnas */
 .dashboard-recent {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
 }
 
@@ -536,28 +537,32 @@
   z-index: 999;
 }
 
-/* Responsive */
+/* Responsive - Tablets y pantallas medianas */
 @media (max-width: 1200px) {
   .dashboard-summary {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
   }
   
-  .dashboard-charts, .dashboard-recent {
+  .dashboard-charts {
     grid-template-columns: 1fr;
+  }
+  
+  .dashboard-recent {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 992px) {
-  .sidebar {
-    width: 240px;
-  }
-  
-  .main-content {
-    margin-left: 240px;
-  }
-  
   .dashboard-summary {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .dashboard-charts {
+    grid-template-columns: 1fr;
+  }
+  
+  .dashboard-recent {
+    grid-template-columns: 1fr;
   }
   
   .anuncios-container {
@@ -565,7 +570,7 @@
   }
   
   .fondos-summary {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -1164,6 +1169,16 @@
   
   /* Dashboard */
   .dashboard-summary {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .dashboard-charts {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .dashboard-recent {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
