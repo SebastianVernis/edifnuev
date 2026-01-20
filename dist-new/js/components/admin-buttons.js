@@ -997,8 +997,9 @@ function renderAnunciosContainer(anuncios) {
     
     const fecha = new Date(anuncio.created_at || anuncio.createdAt).toLocaleDateString('es-MX');
     
-    // Usar 'archivo' de la BD o 'imagen' del frontend
-    const archivoUrl = anuncio.archivo || anuncio.imagen;
+    // El backend guarda en 'imagen', pero verificamos ambos por compatibilidad
+    const archivoUrl = anuncio.imagen || anuncio.archivo;
+    console.log('🖼️ URL de archivo para anuncio', anuncio.id, ':', archivoUrl);
     
     div.innerHTML = `
       <div class="anuncio-header">
@@ -1423,26 +1424,30 @@ function setupFormHandlers() {
         
         // Si hay imagen, subirla primero
         if (imagenFile) {
-          console.log('📤 Subiendo archivo:', imagenFile.name);
+          console.log('📤 Subiendo archivo:', imagenFile.name, 'Tamaño:', imagenFile.size);
           
           const uploadFormData = new FormData();
-          uploadFormData.append('file', imagenFile); // Nombre correcto del campo
+          uploadFormData.append('imagen', imagenFile); // Backend espera 'imagen'
           
           const uploadResponse = await fetch('/api/anuncios/upload', {
             method: 'POST',
             headers: {
+              'Authorization': `Bearer ${token}`,
               'x-auth-token': token
+              // NO incluir Content-Type - FormData lo establece automáticamente
             },
             body: uploadFormData
           });
           
-          if (uploadResponse.ok) {
-            const uploadData = await uploadResponse.json();
+          const uploadData = await uploadResponse.json();
+          console.log('📦 Respuesta upload:', uploadData);
+          
+          if (uploadResponse.ok && (uploadData.ok || uploadData.success)) {
             imagenUrl = uploadData.url || uploadData.fileName;
-            console.log('✅ Archivo subido:', imagenUrl);
+            console.log('✅ Archivo subido correctamente:', imagenUrl);
           } else {
-            const error = await uploadResponse.json();
-            alert(`⚠️ Error al subir archivo: ${error.message}. El anuncio se creará sin imagen.`);
+            console.error('❌ Error al subir archivo:', uploadData);
+            alert(`⚠️ Error al subir archivo: ${uploadData.msg || uploadData.message || 'Error desconocido'}. El anuncio se creará sin imagen.`);
           }
         }
         
