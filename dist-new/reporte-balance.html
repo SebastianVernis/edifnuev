@@ -257,19 +257,31 @@
     async function cargarBalance() {
       try {
         const token = localStorage.getItem('edificio_token') || localStorage.getItem('token');
+        
+        if (!token) {
+          console.error('No hay token disponible');
+          alert('No se encontró el token de autenticación');
+          return;
+        }
+
+        const headers = {
+          'Authorization': `Bearer ${token}`,
+          'x-auth-token': token,
+          'Content-Type': 'application/json'
+        };
+
+        console.log('📊 Cargando balance para:', { mes, anio });
 
         // Info del edificio
-        const buildingRes = await fetch('/api/onboarding/building-info', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+        const buildingRes = await fetch('/api/onboarding/building-info', { headers });
         
         if (buildingRes.ok) {
           const buildingData = await buildingRes.json();
-          const info = buildingData.buildingInfo;
+          const info = buildingData.buildingInfo || {};
           
-          document.getElementById('edificio-nombre').textContent = info.nombre;
+          document.getElementById('edificio-nombre').textContent = info.nombre || 'N/A';
           document.getElementById('edificio-direccion').textContent = info.direccion || 'N/A';
-          document.getElementById('total-unidades').textContent = info.totalUnidades;
+          document.getElementById('total-unidades').textContent = info.totalUnidades || '0';
 
           // Fondos
           const fondos = info.funds || [];
@@ -282,60 +294,68 @@
             fondosHTML += `
               <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #E5E7EB;">
                 <span style="color: #6B7280;">${fondo.name}</span>
-                <span style="color: #1F2937; font-weight: 600;">$${saldo.toLocaleString('es-MX')}</span>
+                <span style="color: #1F2937; font-weight: 600;">$${saldo.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
             `;
           });
 
-          document.getElementById('fondos-detalle').innerHTML = fondosHTML;
-          document.getElementById('patrimonio-total').textContent = `$${patrimonioTotal.toLocaleString('es-MX')}`;
+          document.getElementById('fondos-detalle').innerHTML = fondosHTML || '<p style="color: #6B7280;">No hay fondos registrados</p>';
+          document.getElementById('patrimonio-total').textContent = `$${patrimonioTotal.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        } else {
+          console.error('Error cargando info edificio:', await buildingRes.text());
         }
 
         // Cuotas
         let cuotasUrl = '/api/cuotas';
         if (mes && anio) cuotasUrl += `?mes=${mes}&anio=${anio}`;
         
-        const cuotasRes = await fetch(cuotasUrl, {
-          headers: { 'x-auth-token': token }
-        });
+        console.log('📋 Cargando cuotas desde:', cuotasUrl);
+        const cuotasRes = await fetch(cuotasUrl, { headers });
+
+        let ingresosCuotas = 0;
+        let ingresosMora = 0;
 
         if (cuotasRes.ok) {
           const cuotasData = await cuotasRes.json();
           const cuotas = cuotasData.cuotas || [];
           
-          let ingresosCuotas = 0;
-          let ingresosMora = 0;
+          console.log('✅ Cuotas cargadas:', cuotas.length);
 
           cuotas.forEach(c => {
-            if (c.pagado) {
+            if (c.estado === 'PAGADO' || c.pagado) {
               ingresosCuotas += parseFloat(c.monto || 0);
               ingresosMora += parseFloat(c.monto_mora || 0);
             }
           });
-
-          document.getElementById('ingresos-cuotas').textContent = `$${ingresosCuotas.toLocaleString('es-MX')}`;
-          document.getElementById('ingresos-mora').textContent = `$${ingresosMora.toLocaleString('es-MX')}`;
-          document.getElementById('total-ingresos').textContent = `$${(ingresosCuotas + ingresosMora).toLocaleString('es-MX')}`;
+        } else {
+          console.error('Error cargando cuotas:', await cuotasRes.text());
         }
+
+        document.getElementById('ingresos-cuotas').textContent = `$${ingresosCuotas.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        document.getElementById('ingresos-mora').textContent = `$${ingresosMora.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        document.getElementById('total-ingresos').textContent = `$${(ingresosCuotas + ingresosMora).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
         // Gastos
         let gastosUrl = '/api/gastos';
         if (mes && anio) {
           const mesIndex = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
                            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'].indexOf(mes);
-          gastosUrl += `?anio=${anio}&mes=${mesIndex + 1}`;
+          if (mesIndex >= 0) {
+            gastosUrl += `?anio=${anio}&mes=${mesIndex + 1}`;
+          }
         }
         
-        const gastosRes = await fetch(gastosUrl, {
-          headers: { 'x-auth-token': token }
-        });
+        console.log('💸 Cargando gastos desde:', gastosUrl);
+        const gastosRes = await fetch(gastosUrl, { headers });
+
+        let totalGastos = 0;
+        let mantenimiento = 0;
 
         if (gastosRes.ok) {
           const gastosData = await gastosRes.json();
           const gastos = gastosData.gastos || [];
           
-          let totalGastos = 0;
-          let mantenimiento = 0;
+          console.log('✅ Gastos cargados:', gastos.length);
 
           gastos.forEach(g => {
             const monto = parseFloat(g.monto || 0);
@@ -344,19 +364,20 @@
               mantenimiento += monto;
             }
           });
-
-          document.getElementById('egresos-gastos').textContent = `$${(totalGastos - mantenimiento).toLocaleString('es-MX')}`;
-          document.getElementById('egresos-mantenimiento').textContent = `$${mantenimiento.toLocaleString('es-MX')}`;
-          document.getElementById('total-egresos').textContent = `$${totalGastos.toLocaleString('es-MX')}`;
+        } else {
+          console.error('Error cargando gastos:', await gastosRes.text());
         }
 
+        document.getElementById('egresos-gastos').textContent = `$${(totalGastos - mantenimiento).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        document.getElementById('egresos-mantenimiento').textContent = `$${mantenimiento.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        document.getElementById('total-egresos').textContent = `$${totalGastos.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
         // Calcular resultado
-        const ingresos = parseFloat(document.getElementById('total-ingresos').textContent.replace(/[$,]/g, ''));
-        const egresos = parseFloat(document.getElementById('total-egresos').textContent.replace(/[$,]/g, ''));
-        const resultado = ingresos - egresos;
+        const totalIngresosNum = ingresosCuotas + ingresosMora;
+        const resultado = totalIngresosNum - totalGastos;
 
         const resultadoEl = document.getElementById('resultado-periodo');
-        resultadoEl.textContent = `$${resultado.toLocaleString('es-MX')}`;
+        resultadoEl.textContent = `$${resultado.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         resultadoEl.style.color = resultado >= 0 ? '#10B981' : '#EF4444';
 
         // Establecer periodo
@@ -365,9 +386,11 @@
         document.getElementById('fecha-emision').textContent = new Date().toLocaleDateString('es-MX');
         document.getElementById('fecha-generacion').textContent = new Date().toLocaleString('es-MX');
 
+        console.log('✅ Balance cargado correctamente');
+
       } catch (error) {
-        console.error('Error cargando balance:', error);
-        alert('Error al cargar el balance');
+        console.error('❌ Error cargando balance:', error);
+        alert('Error al cargar el balance. Revisa la consola para más detalles.');
       }
     }
 

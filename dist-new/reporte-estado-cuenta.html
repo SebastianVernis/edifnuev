@@ -256,18 +256,32 @@
     async function cargarReporte() {
       try {
         const token = localStorage.getItem('edificio_token') || localStorage.getItem('token');
+        
+        if (!token) {
+          console.error('No hay token disponible');
+          alert('No se encontró el token de autenticación');
+          return;
+        }
+
+        const headers = {
+          'Authorization': `Bearer ${token}`,
+          'x-auth-token': token,
+          'Content-Type': 'application/json'
+        };
+
+        console.log('📊 Cargando estado de cuenta para:', { departamento, mes, anio });
 
         // Cargar info del edificio
-        const buildingRes = await fetch('/api/onboarding/building-info', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+        const buildingRes = await fetch('/api/onboarding/building-info', { headers });
         
         if (buildingRes.ok) {
           const buildingData = await buildingRes.json();
-          const info = buildingData.buildingInfo;
+          const info = buildingData.buildingInfo || {};
           
-          document.getElementById('edificio-nombre').textContent = info.nombre;
+          document.getElementById('edificio-nombre').textContent = info.nombre || 'N/A';
           document.getElementById('edificio-direccion').textContent = info.direccion || 'N/A';
+        } else {
+          console.error('Error cargando info edificio:', await buildingRes.text());
         }
 
         // Cargar cuotas
@@ -281,20 +295,24 @@
           url += '?' + queryParams.toString();
         }
 
-        const cuotasRes = await fetch(url, {
-          headers: { 'x-auth-token': token }
-        });
+        console.log('📋 Cargando cuotas desde:', url);
+        const cuotasRes = await fetch(url, { headers });
 
         if (cuotasRes.ok) {
           const cuotasData = await cuotasRes.json();
           let cuotas = cuotasData.cuotas || [];
           
+          console.log('✅ Cuotas cargadas:', cuotas.length);
+          
           // Filtrar por departamento si no es TODOS
           if (departamento !== 'TODOS') {
             cuotas = cuotas.filter(c => c.departamento === departamento);
+            console.log('🔍 Cuotas filtradas por depto:', cuotas.length);
           }
 
           renderCuotas(cuotas);
+        } else {
+          console.error('Error cargando cuotas:', await cuotasRes.text());
         }
 
         // Establecer fechas
@@ -304,15 +322,22 @@
         document.getElementById('fecha-emision').textContent = new Date().toLocaleDateString('es-MX');
         document.getElementById('fecha-generacion').textContent = new Date().toLocaleString('es-MX');
 
+        console.log('✅ Reporte cargado correctamente');
+
       } catch (error) {
-        console.error('Error cargando reporte:', error);
-        alert('Error al cargar el reporte');
+        console.error('❌ Error cargando reporte:', error);
+        alert('Error al cargar el reporte. Revisa la consola para más detalles.');
       }
     }
 
     function renderCuotas(cuotas) {
       const tbody = document.getElementById('cuotas-tbody');
       tbody.innerHTML = '';
+
+      if (cuotas.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem; color: #6B7280;">No hay cuotas registradas para este periodo</td></tr>';
+        return;
+      }
 
       let totalPendiente = 0;
       let totalPagado = 0;
@@ -324,10 +349,13 @@
         const total = monto + mora;
 
         const tr = document.createElement('tr');
-        const estadoClass = cuota.pagado ? 'pagado' : (cuota.vencida ? 'vencido' : 'pendiente');
-        const estadoTexto = cuota.pagado ? 'PAGADO' : (cuota.vencida ? 'VENCIDO' : 'PENDIENTE');
+        const isPagado = cuota.estado === 'PAGADO' || cuota.pagado === true;
+        const isVencido = cuota.estado === 'VENCIDO' || cuota.vencida === true;
+        
+        const estadoClass = isPagado ? 'pagado' : (isVencido ? 'vencido' : 'pendiente');
+        const estadoTexto = isPagado ? 'PAGADO' : (isVencido ? 'VENCIDO' : 'PENDIENTE');
 
-        if (cuota.pagado) {
+        if (isPagado) {
           totalPagado += total;
         } else {
           totalPendiente += total;
@@ -335,12 +363,12 @@
         }
 
         tr.innerHTML = `
-          <td>${cuota.mes}</td>
-          <td>${cuota.anio}</td>
-          <td>$${monto.toLocaleString('es-MX')}</td>
-          <td>${mora > 0 ? '$' + mora.toLocaleString('es-MX') : '-'}</td>
-          <td><strong>$${total.toLocaleString('es-MX')}</strong></td>
-          <td class="${estadoClass}">${estadoTexto}</td>
+          <td>${cuota.mes || 'N/A'}</td>
+          <td>${cuota.anio || 'N/A'}</td>
+          <td>$${monto.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td>${mora > 0 ? '$' + mora.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-'}</td>
+          <td><strong>$${total.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></td>
+          <td class="${estadoClass}"><strong>${estadoTexto}</strong></td>
           <td>${cuota.fecha_vencimiento ? new Date(cuota.fecha_vencimiento).toLocaleDateString('es-MX') : '-'}</td>
         `;
 
@@ -348,9 +376,11 @@
       });
 
       // Actualizar resumen
-      document.getElementById('total-pendiente').textContent = `$${totalPendiente.toLocaleString('es-MX')}`;
-      document.getElementById('total-pagado').textContent = `$${totalPagado.toLocaleString('es-MX')}`;
-      document.getElementById('total-mora').textContent = `$${totalMora.toLocaleString('es-MX')}`;
+      document.getElementById('total-pendiente').textContent = `$${totalPendiente.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      document.getElementById('total-pagado').textContent = `$${totalPagado.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      document.getElementById('total-mora').textContent = `$${totalMora.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      
+      console.log('📊 Totales calculados:', { totalPendiente, totalPagado, totalMora });
     }
 
     // Cargar al iniciar
