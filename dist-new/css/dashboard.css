@@ -83,15 +83,16 @@
 .main-content {
   flex: 1;
   margin-left: 280px;
-  padding: 1.5rem;
+  padding: 2rem;
   background-color: #f5f7fa;
+  min-height: 100vh;
 }
 
 .main-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--border-color);
 }
@@ -548,171 +549,7 @@
   }
 }
 
-@media (max-width: 768px) {
-  .mobile-menu-toggle {
-    display: block;
-  }
-  
-  .dashboard-container {
-    position: relative;
-  }
-  
-  .sidebar {
-    width: 280px;
-    position: fixed;
-    left: -280px;
-    top: 0;
-    height: 100vh;
-    z-index: 1000;
-    transition: left 0.3s ease;
-  }
-  
-  .sidebar.mobile-open {
-    left: 0;
-  }
-  
-  .mobile-overlay.active {
-    display: block;
-  }
-  
-  .main-content {
-    margin-left: 0;
-    padding: 4rem 1rem 1rem;
-    width: 100%;
-  }
-  
-  .main-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-  
-  .main-header h1 {
-    font-size: 1.5rem;
-  }
-  
-  .filter-controls {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-  
-  .filter-group {
-    width: 100%;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.25rem;
-  }
-  
-  .filter-group select, .filter-group input {
-    width: 100%;
-    min-width: auto;
-  }
-  
-  .section-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-  
-  .section-header .btn, .section-header .button-group {
-    width: 100%;
-  }
-  
-  .button-group {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .dashboard-summary {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .summary-card {
-    padding: 1rem;
-  }
-  
-  .summary-card .amount {
-    font-size: 1.5rem;
-  }
-  
-  .anuncios-container {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .fondos-summary {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .parcialidades-info {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  /* Table responsive */
-  .table-container {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    width: 100%;
-    max-width: 100vw;
-  }
-  
-  .data-table {
-    width: 100%;
-    min-width: 100%;
-    table-layout: auto;
-  }
-  
-  .data-table th, .data-table td {
-    padding: 0.5rem 0.25rem;
-    font-size: 0.75rem;
-    white-space: normal;
-    word-wrap: break-word;
-    max-width: none;
-  }
-  
-  /* Hacer columnas de acciones y estado más pequeñas */
-  #usuarios-table th:nth-child(7),
-  #usuarios-table td:nth-child(7) {
-    width: 80px;
-    min-width: 80px;
-  }
-  
-  #usuarios-table th:nth-child(6),
-  #usuarios-table td:nth-child(6) {
-    width: 70px;
-    min-width: 70px;
-  }
-  
-  /* Ocultar columna Editor en tablets */
-  #usuarios-table th:nth-child(5),
-  #usuarios-table td:nth-child(5) {
-    display: none;
-  }
-  
-  .data-table .actions {
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-  
-  /* Modal responsive */
-  .modal-content {
-    margin: 1rem;
-    max-height: calc(100vh - 2rem);
-    overflow-y: auto;
-  }
-  
-  .form-group {
-    margin-bottom: 1rem;
-  }
-  
-  .form-group input, .form-group select, .form-group textarea {
-    font-size: 16px; /* Prevent zoom on iOS */
-  }
-}
+/* ESTE MEDIA QUERY SE MOVIÓ A LA SECCIÓN CONSOLIDADA AL FINAL */
 
 @media (max-width: 480px) {
   .main-content {
@@ -1078,156 +915,7 @@
   }
 }
 
-@media (max-width: 768px) {
-  .dashboard-container {
-    flex-direction: column;
-  }
-  
-  .sidebar {
-    width: 100%;
-    height: auto;
-    position: relative;
-  }
-  
-  .sidebar-header {
-    padding: 1rem;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .sidebar-header img {
-    height: 40px !important;
-  }
-  
-  .sidebar-header h2 {
-    font-size: 1.25rem;
-  }
-  
-  .sidebar-nav {
-    padding: 0.5rem 0;
-    overflow-x: auto;
-  }
-  
-  .sidebar-nav ul {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 0.5rem;
-    padding: 0 0.5rem;
-  }
-  
-  .sidebar-nav a {
-    padding: 1rem 0.5rem;
-    font-size: 0.8rem;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .sidebar-nav i {
-    display: block;
-    margin: 0;
-    font-size: 1.5rem;
-  }
-  
-  .sidebar-nav li.active a {
-    border-left: none;
-    border-bottom: 3px solid #fff;
-  }
-  
-  .sidebar-footer {
-    padding: 1rem;
-    text-align: center;
-  }
-  
-  .sidebar-footer .btn {
-    width: 100%;
-  }
-  
-  .main-content {
-    margin-left: 0;
-    padding: 1rem;
-  }
-  
-  .main-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-  
-  .main-header h1 {
-    font-size: 1.5rem;
-  }
-  
-  .dashboard-summary {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .summary-card {
-    padding: 1.5rem;
-  }
-  
-  .summary-card h3 {
-    font-size: 0.9rem;
-  }
-  
-  .summary-card .amount {
-    font-size: 1.75rem;
-  }
-  
-  .form-grid {
-    grid-template-columns: 1fr !important;
-  }
-  
-  .data-table-container {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-
-  
-  .modal-content {
-    width: 95%;
-    max-width: 95%;
-    margin: 1rem;
-  }
-  
-  .chart-container {
-    height: 250px;
-  }
-  
-  .recent-container {
-    padding: 1rem;
-  }
-  
-  .section-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-  
-  .section-header h2 {
-    font-size: 1.25rem;
-  }
-  
-  .filter-controls {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-  
-  .filter-group {
-    width: 100%;
-  }
-  
-  .filter-group select,
-  .filter-group input {
-    width: 100%;
-  }
-}
+/* MEDIA QUERY CONSOLIDADO AL FINAL */
 
 @media (max-width: 480px) {
   .sidebar-header img {
@@ -1418,6 +1106,194 @@
 
 /* Tablets y móviles grandes (768px) */
 @media (max-width: 768px) {
+  /* Sidebar responsive */
+  .mobile-menu-toggle {
+    display: block;
+  }
+  
+  .dashboard-container {
+    position: relative;
+  }
+  
+  .sidebar {
+    width: 280px;
+    position: fixed;
+    left: -280px;
+    top: 0;
+    height: 100vh;
+    z-index: 1000;
+    transition: left 0.3s ease;
+  }
+  
+  .sidebar.mobile-open {
+    left: 0;
+  }
+  
+  .mobile-overlay.active {
+    display: block;
+  }
+  
+  /* Main content */
+  .main-content {
+    margin-left: 0;
+    padding: 4rem 1rem 1rem;
+    width: 100%;
+  }
+  
+  .main-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .main-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  /* Dashboard */
+  .dashboard-summary {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .summary-card {
+    padding: 1rem;
+  }
+  
+  .summary-card .amount {
+    font-size: 1.5rem;
+  }
+  
+  /* Filtros */
+  .filter-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  
+  .filter-group {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+  
+  .filter-group select, .filter-group input {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  /* Sections */
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .section-header .btn, .section-header .button-group {
+    width: 100%;
+  }
+  
+  .button-group {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  /* Tables */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    max-width: 100vw;
+  }
+  
+  .data-table {
+    width: 100%;
+    min-width: 100%;
+    table-layout: auto;
+  }
+  
+  .data-table th, .data-table td {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.75rem;
+    white-space: normal;
+    word-wrap: break-word;
+    max-width: none;
+  }
+  
+  /* Ocultar columna Editor en tabla usuarios */
+  #usuarios-table th:nth-child(5),
+  #usuarios-table td:nth-child(5) {
+    display: none;
+  }
+  
+  #usuarios-table th:nth-child(7),
+  #usuarios-table td:nth-child(7) {
+    width: 80px;
+    min-width: 80px;
+  }
+  
+  #usuarios-table th:nth-child(6),
+  #usuarios-table td:nth-child(6) {
+    width: 70px;
+    min-width: 70px;
+  }
+  
+  .data-table .actions {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  /* Containers */
+  .anuncios-container,
+  .fondos-summary,
+  .parcialidades-info {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .chart-container {
+    height: 250px;
+  }
+  
+  .recent-container {
+    padding: 1rem;
+  }
+  
+  /* Forms */
+  .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-group input, .form-group select, .form-group textarea {
+    font-size: 16px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  /* Modals */
+  .modal-content {
+    margin: 1rem;
+    width: 95%;
+    max-width: 95%;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+  }
+  
+  .modal-actions button {
+    width: 100%;
+  }
+  
   /* Configuración */
   .config-tabs {
     flex-wrap: wrap;
@@ -1453,11 +1329,7 @@
     grid-template-columns: 1fr;
   }
   
-  .form-actions {
-    flex-direction: column;
-  }
-  
-  /* Botones de acción */
+  /* Botones */
   .action-buttons {
     display: flex;
     flex-direction: column;
@@ -1470,30 +1342,20 @@
     padding: 0.4rem 0.6rem;
   }
   
-  .modal-actions {
-    flex-direction: column;
-  }
-  
-  .modal-actions button {
-    width: 100%;
-  }
-  
   /* Cards */
   .anuncio-card,
   .info-card,
   .fondo-card {
     margin-bottom: 1rem;
   }
-  
-  /* Ocultar columna Editor en tabla usuarios */
-  #usuarios-table th:nth-child(5),
-  #usuarios-table td:nth-child(5) {
-    display: none;
-  }
 }
 
 /* Móviles pequeños (480px) */
 @media (max-width: 480px) {
+  .main-content {
+    padding: 3.5rem 0.75rem 0.75rem;
+  }
+  
   /* Ocultar Email y Departamento en tabla usuarios */
   #usuarios-table th:nth-child(2),
   #usuarios-table td:nth-child(2),
