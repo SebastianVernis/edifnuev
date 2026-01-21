@@ -414,11 +414,50 @@ class InquilinoController {
             const response = await fetchAuth(`${API_URL}/anuncios`);
             const anuncios = response.anuncios || [];
             
-            // Implementar renderizado de anuncios
+            this.renderAnuncios(anuncios);
         } catch (error) {
             console.error('Error al cargar anuncios:', error);
             alert('Error al cargar anuncios');
         }
+    }
+
+    // Renderizar anuncios
+    renderAnuncios(anuncios) {
+        const container = document.getElementById('anuncios-list');
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        if (!anuncios || anuncios.length === 0) {
+            container.innerHTML = '<p class="text-center">No hay anuncios disponibles</p>';
+            return;
+        }
+
+        anuncios.forEach(anuncio => {
+            const div = document.createElement('div');
+            div.className = 'anuncio-card';
+
+            let tipoClass = 'bg-secondary';
+            if (anuncio.tipo === 'URGENTE') tipoClass = 'bg-danger';
+            else if (anuncio.tipo === 'IMPORTANTE') tipoClass = 'bg-warning';
+
+            const fecha = new Date(anuncio.fechaPublicacion).toLocaleDateString('es-MX');
+
+            div.innerHTML = `
+                <div class="anuncio-header">
+                    <h4>${anuncio.titulo}</h4>
+                    <span class="badge ${tipoClass}">${anuncio.tipo}</span>
+                </div>
+                <div class="anuncio-body">
+                    <p>${anuncio.contenido}</p>
+                </div>
+                <div class="anuncio-footer">
+                    <small>${fecha}</small>
+                </div>
+            `;
+
+            container.appendChild(div);
+        });
     }
 
     // Mostrar modal de acumulado anual
