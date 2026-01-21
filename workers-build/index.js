@@ -3529,7 +3529,7 @@ export default {
                 available: list.objects.map(o => o.key)
               }), { 
                 status: 404,
-                headers: { 'Content-Type': 'application/json' }
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' }
               });
             }
             
@@ -3553,19 +3553,23 @@ export default {
             };
             
             headers.set('Content-Type', contentTypes[ext] || 'application/octet-stream');
-            headers.set('Access-Control-Allow-Origin', '*'); // CORS para imágenes
+
+            // Add all CORS headers
+            Object.entries(corsHeaders).forEach(([k, v]) => {
+              headers.set(k, v);
+            });
 
             return new Response(object.body, { headers });
           } else {
             return new Response('Almacenamiento no disponible', { 
               status: 503,
-              headers: { 'Content-Type': 'text/plain' }
+              headers: { ...corsHeaders, 'Content-Type': 'text/plain' }
             });
           }
         } catch (error) {
           return new Response('Error al servir archivo: ' + error.message, { 
             status: 500,
-            headers: { 'Content-Type': 'text/plain' }
+            headers: { ...corsHeaders, 'Content-Type': 'text/plain' }
           });
         }
       }
