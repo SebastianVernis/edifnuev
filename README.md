@@ -187,14 +187,20 @@ edifnuev/
 │   └── login.html              # Login
 ├── workers-build/              # Build optimizado para Workers
 ├── migrations/                 # Migraciones D1
-├── scripts/                    # Scripts de utilidad
-│   ├── deployment/             # Scripts de deploy
-│   └── testing/                # Scripts de testing
+├── scripts/                    # Scripts de utilidad organizados
+│   ├── admin/                  # Scripts de administración
+│   ├── archive-legacy/         # Scripts de archivos legados
+│   ├── testing/                # Scripts de pruebas
+│   └── utils/                  # Scripts de utilidades
+├── build-scripts/              # Scripts de construcción
 ├── tests/                      # Suite de tests
 ├── docs/                       # Documentación
 │   ├── screenshots/            # Capturas de pantalla
 │   ├── guides/                 # Guías de uso
 │   └── technical/              # Documentación técnica
+├── archive/                    # Archivos legados y desusados
+│   ├── legacy-distros/         # Distribuciones antiguas
+│   └── legacy-files/           # Archivos antiguos
 ├── wrangler.toml               # Configuración Cloudflare
 └── package.json
 ```
@@ -236,6 +242,39 @@ npm run test:permisos        # Tests de permisos
 
 # Tests E2E con Playwright
 npm run test:playwright
+```
+
+## 🛠️ Scripts Disponibles
+
+Los scripts del proyecto están organizados en directorios temáticos:
+
+### Scripts de Pruebas (`scripts/testing/`)
+- `test-password.js` - Verificación de funcionalidad de contraseña
+- `comprehensive-flow-test.js` - Testeo integral del flujo de la aplicación
+- `generate-visual-test-documentation.js` - Generación de documentación visual de tests
+- `test-clerk-integration.sh` - Testeo de integración con Clerk
+
+### Scripts de Administración (`scripts/admin/`)
+- `reset-admin-password.js` - Herramienta para reiniciar contraseñas de administrador
+
+### Scripts de Utilidades (`scripts/utils/`)
+- `d1-shell.sh` - Interfaz de comandos para interactuar con Cloudflare D1
+
+### Ejecución mediante npm
+
+Además de ejecutar los scripts directamente, puedes usar los siguientes comandos npm:
+
+```bash
+# Tests
+npm run test:password         # Ejecuta test de contraseña
+npm run test:clerk            # Ejecuta test de integración con Clerk
+npm run test:comprehensive    # Ejecuta test integral
+
+# Administración
+npm run admin:reset-password  # Reinicia contraseña de administrador
+
+# Utilidades
+npm run utils:d1-shell        # Abre shell de D1
 ```
 
 ## 🔧 Configuración

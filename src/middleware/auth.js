@@ -60,7 +60,7 @@ export const verifyToken = (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
     const ip = req.ip || req.connection.remoteAddress;
     const userAgent = req.get('User-Agent');
-    
+
     // Verificar si existe token
     if (!token) {
       logAccess('AUTH_FAILED', null, null, req.path, null, false, ip, userAgent);
@@ -69,23 +69,23 @@ export const verifyToken = (req, res, next) => {
         message: 'Acceso denegado. No se proporcionó token de autenticación.'
       });
     }
-    
+
     // Verificar token
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'edificio-admin-secret-key-2025');
-    
+
     // Si el token tiene la estructura {usuario: {...}}, extraer el usuario
     // Si no, asumir que el decoded ya es el usuario
     req.usuario = decoded.usuario || decoded;
-    
+
     // Log de autenticación exitosa
     logAccess('AUTH_SUCCESS', req.usuario.id, req.usuario.rol, req.path, null, true, ip, userAgent);
-    
+
     next();
   } catch (error) {
     const ip = req.ip || req.connection.remoteAddress;
     const userAgent = req.get('User-Agent');
     logAccess('AUTH_FAILED', null, null, req.path, null, false, ip, userAgent);
-    
+
     return res.status(401).json({
       success: false,
       message: 'Token inválido o expirado'

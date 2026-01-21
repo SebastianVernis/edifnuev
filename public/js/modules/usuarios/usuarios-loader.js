@@ -92,12 +92,12 @@ class UsuariosLoader {
           <td>${usuario.id}</td>
           <td><strong>${usuario.nombre}</strong></td>
           <td>${usuario.email}</td>
+          <td>${usuario.departamento}</td>
           <td>
             <span class="badge badge-${rolClass}">
               ${usuario.rol.toUpperCase()}
             </span>
           </td>
-          <td>${usuario.departamento}</td>
           <td>${usuario.telefono || '-'}</td>
           <td>
             <span class="badge badge-${estatusClass}">
@@ -111,7 +111,7 @@ class UsuariosLoader {
               Editar
             </button>
             ${usuario.id !== 1 ? `
-              <button class="btn btn-sm btn-${usuario.estatus_validacion === 'validado' ? 'warning' : 'success'}" 
+              <button class="btn btn-sm btn-${usuario.estatus_validacion === 'validado' ? 'warning' : 'success'}"
                       onclick="toggleValidacion(${usuario.id})">
                 ${usuario.estatus_validacion === 'validado' ? 'Invalidar' : 'Validar'}
               </button>
@@ -195,6 +195,7 @@ window.toggleValidacion = async (id) => {
     await window.usuariosManager.toggleValidacion(id);
   }
 };
+
 
 // Crear instancia global
 window.usuariosLoader = new UsuariosLoader();

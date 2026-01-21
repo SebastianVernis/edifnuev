@@ -33,7 +33,7 @@ npx wrangler d1 execute edificio-admin-db --local --file=migrations/0007_add_cle
 npm run dev
 
 # 5. Probar integración
-./test-clerk-integration.sh
+npm run test:clerk
 ```
 
 ### Para Usuarios

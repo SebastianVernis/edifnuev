@@ -1,35 +1,46 @@
-import './database.js';
-import { Usuario } from './models/Usuario.js';
+import Usuario from './models/Usuario.js';
 import { Presupuesto } from './models/Presupuesto.js';
-import { Cuota } from './models/Cuota.js';
-import { Anuncio } from './models/Anuncio.js';
+import Cuota from './models/Cuota.js';
+import Anuncio from './models/Anuncio.js';
 import { Solicitud } from './models/Solicitud.js';
 
 async function seed() {
   try {
     console.log('Iniciando seeder...');
 
-    const admin = await Usuario.crear({
-      nombre: 'Administrador',
-      email: 'admin@edificio.com',
-      password: '123456',
-      rol: 'admin',
-      departamento: 'Administración',
-      telefono: '+54911234567'
-    });
-    console.log('Usuario administrador creado');
+    let admin = Usuario.obtenerPorEmail('admin@edificio.com');
+    if (!admin) {
+      admin = await Usuario.crear({
+        nombre: 'Administrador',
+        email: 'admin@edificio.com',
+        password: '123456',
+        rol: 'admin',
+        departamento: 'Administración',
+        telefono: '+54911234567'
+      });
+      console.log('Usuario administrador creado');
+    } else {
+      console.log('Usuario administrador ya existe, saltando creación');
+    }
 
     const inquilinos = [];
     for (let i = 1; i <= 20; i++) {
-      const inquilino = await Usuario.crear({
-        nombre: `Inquilino ${i}`,
-        email: `inquilino${i}@email.com`,
-        password: '123456',
-        rol: 'inquilino',
-        departamento: `${i}A`,
-        telefono: `+5491123456${i.toString().padStart(2, '0')}`
-      });
-      inquilinos.push(inquilino);
+      const email = `inquilino${i}@email.com`;
+      let existingInq = Usuario.obtenerPorEmail(email);
+      if(!existingInq) {
+        const inquilino = await Usuario.crear({
+          nombre: `Inquilino ${i}`,
+          email,
+          password: '123456',
+          rol: 'inquilino',
+          departamento: `${i}A`,
+          telefono: `+5491123456${i.toString().padStart(2, '0')}`
+        });
+        inquilinos.push(inquilino);
+      } else {
+        console.log(`Inquilino con email ${email} ya existe, saltando`);
+        inquilinos.push(existingInq);
+      }
     }
     console.log('20 inquilinos creados');
 
@@ -60,20 +71,12 @@ async function seed() {
     });
     console.log('Presupuestos creados');
 
-    Cuota.crearParaTodos({
-      concepto: 'Expensas Enero 2024',
-      monto: 45000,
-      fecha_vencimiento: '2024-01-10'
-    });
+    Cuota.generarCuotasMensuales('Enero', 2024, 45000, '2024-01-10');
 
-    Cuota.crearParaTodos({
-      concepto: 'Expensas Febrero 2024',
-      monto: 47000,
-      fecha_vencimiento: '2024-02-10'
-    });
+    Cuota.generarCuotasMensuales('Febrero', 2024, 47000, '2024-02-10');
     console.log('Cuotas creadas para todos los inquilinos');
 
-    const anuncio1 = Anuncio.crear({
+    const anuncio1 = await Anuncio.create({
       titulo: 'Corte de agua programado',
       contenido: 'Se informa que el día 15/01/2024 de 9:00 a 17:00 hs se realizarán trabajos de mantenimiento en las cañerías. Habrá corte de agua en todo el edificio.',
       tipo: 'urgente',
@@ -81,7 +84,7 @@ async function seed() {
       fecha_expiracion: '2024-01-16'
     });
 
-    const anuncio2 = Anuncio.crear({
+    const anuncio2 = await Anuncio.create({
       titulo: 'Reunión de consorcio',
       contenido: 'Se convoca a todos los propietarios a la reunión mensual que se realizará el día 25/01/2024 a las 19:00 hs en el salón de usos múltiples.',
       tipo: 'reunion',
@@ -89,7 +92,7 @@ async function seed() {
       fecha_expiracion: '2024-01-26'
     });
 
-    const anuncio3 = Anuncio.crear({
+    const anuncio3 = await Anuncio.create({
       titulo: 'Horarios de limpieza',
       contenido: 'Se recuerda que los días de limpieza son lunes, miércoles y viernes de 8:00 a 12:00 hs. Por favor mantener libres los espacios comunes en esos horarios.',
       tipo: 'general',

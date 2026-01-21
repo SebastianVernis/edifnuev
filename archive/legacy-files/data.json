@@ -1,0 +1,438 @@
+{
+  "usuarios": [
+    {
+      "id": 4,
+      "nombre": "Antonio",
+      "email": "antonio.gemelo.95@gmail.com",
+      "password": "24ce5acf3a8c14539acd442cfe58c00eda8dccdd58c8368d9631f0f71b25fbe6",
+      "rol": "ADMIN",
+      "departamento": null,
+      "telefono": null,
+      "buildingId": 7,
+      "legitimidad_entregada": false,
+      "estatus_validacion": "aprobado",
+      "fechaCreacion": "2026-01-20T05:37:50.000Z",
+      "activo": true,
+      "permisos": {
+        "anuncios": true,
+        "gastos": true,
+        "presupuestos": true,
+        "cuotas": true,
+        "usuarios": true,
+        "cierres": true,
+        "proyectos": true,
+        "configuracion": true
+      }
+    },
+    {
+      "nombre": "Administrador",
+      "email": "admin@edificio.com",
+      "password": "$2a$10$mvsj7ErNMcsg9QUBQAE50ux9gAZHcDpFOCOmzxWDnFOvwhrccYeTW",
+      "departamento": "Administración",
+      "rol": "admin",
+      "permisos": {},
+      "buildingId": null,
+      "fechaCreacion": "2026-01-20T16:02:33.176Z",
+      "activo": true,
+      "id": 5
+    },
+    {
+      "nombre": "Inquilino 1",
+      "email": "inquilino1@email.com",
+      "password": "$2a$10$GxaVGT7aLVZcf0.x1N6N2efIB.uDN/97ft7NUL5JJU.WQ40T2c3Bm",
+      "departamento": "1A",
+      "rol": "inquilino",
+      "permisos": {},
+      "buildingId": null,
+      "fechaCreacion": "2026-01-20T16:02:33.251Z",
+      "activo": true,
+      "id": 6
+    },
+    {
+      "nombre": "Inquilino 2",
+      "email": "inquilino2@email.com",
+      "password": "$2a$10$1Dq.N8087anWG0LsKkDOke4F3uxXyRptRa3ALFsW65k.mN4fFpC1K",
+      "departamento": "2A",
+      "rol": "inquilino",
+      "permisos": {},
+      "buildingId": null,
+      "fechaCreacion": "2026-01-20T16:02:33.326Z",
+      "activo": true,
+      "id": 7
+    },
+    {
+      "nombre": "Inquilino 3",
+      "email": "inquilino3@email.com",
+      "password": "$2a$10$8Psar4jZExqB31.7u34UAuWBH3ibz6c41Su.OwV5aDrlcQJbKa5xe",
+      "departamento": "3A",
+      "rol": "inquilino",
+      "permisos": {},
+      "buildingId": null,
+      "fechaCreacion": "2026-01-20T16:02:33.404Z",
+      "activo": true,
+      "id": 8
+    },
+    {
+      "nombre": "Inquilino 4",
+      "email": "inquilino4@email.com",
+      "password": "$2a$10$0TSTLrMJxIy1AwQ6gKtKbOZwCCNa2KS3zWwrCcerWhhmyRtHe6qRK",
+      "departamento": "4A",
+      "rol": "inquilino",
+      "permisos": {},
+      "buildingId": null,
+      "fechaCreacion": "2026-01-20T16:02:33.479Z",
+      "activo": true,
+      "id": 9
+    },
+    {
+      "nombre": "Inquilino 5",
+      "email": "inquilino5@email.com",
+      "password": "$2a$10$0CArHpldQEJzX21/nhZ/tenC8HGgFyQ7En9m5Zx5OJMpQDKHKcKNC",
+      "departamento": "5A",
+      "rol": "inquilino",
+      "permisos": {},
+      "buildingId": null,
+      "fechaCreacion": "2026-01-20T16:02:33.555Z",
+      "activo": true,
+      "id": 10
+    },
+    {
+      "nombre": "Inquilino 6",
+      "email": "inquilino6@email.com",
+      "password": "$2a$10$Jy16SUbsOBTn7GvHLgReCOciHZ9Re24WPnbQAwkunilxbXCNpZiDy",
+      "departamento": "6A",
+      "rol": "inquilino",
+      "permisos": {},
+      "buildingId": null,
+      "fechaCreacion": "2026-01-20T16:02:33.630Z",
+      "activo": true,
+      "id": 11
+    },
+    {
+      "nombre": "Inquilino 7",
+      "email": "inquilino7@email.com",
+      "password": "$2a$10$8PA9UjTQxu.RPXQSJOyoNeNDT9GFZ8FV2hNO/Tw7tRox1d5I1LabW",
+      "departamento": "7A",
+      "rol": "inquilino",
+      "permisos": {},
+      "buildingId": null,
+      "fechaCreacion": "2026-01-20T16:02:33.707Z",
+      "activo": true,
+      "id": 12
+    },
+    {
+      "nombre": "Inquilino 8",
+      "email": "inquilino8@email.com",
+      "password": "$2a$10$bK3sur1P44gP5UhC6GdT1..YCR3DgLP0pPGv8tdwIVO/Itfy2X0F6",
+      "departamento": "8A",
+      "rol": "inquilino",
+      "permisos": {},
+      "buildingId": null,
+      "fechaCreacion": "2026-01-20T16:02:33.781Z",
+      "activo": true,
+      "id": 13
+    },
+    {
+      "nombre": "Inquilino 9",
+      "email": "inquilino9@email.com",
+      "password": "$2a$10$IAQQkkfeI4f06uwPCxO/2utHNhzcalNtK8SUH5FU3uFK1ORyUJW9q",
+      "departamento": "9A",
+      "rol": "inquilino",
+      "permisos": {},
+      "buildingId": null,
+      "fechaCreacion": "2026-01-20T16:02:33.856Z",
+      "activo": true,
+      "id": 14
+    },
+    {
+      "nombre": "Inquilino 10",
+      "email": "inquilino10@email.com",
+      "password": "$2a$10$OjX/i2LCzZD9AqV4wg.D1OHzfpsxrFNyEFITW.jW9YYi8LuXR3GXW",
+      "departamento": "10A",
+      "rol": "inquilino",
+      "permisos": {},
+      "buildingId": null,
+      "fechaCreacion": "2026-01-20T16:02:33.929Z",
+      "activo": true,
+      "id": 15
+    },
+    {
+      "nombre": "Inquilino 11",
+      "email": "inquilino11@email.com",
+      "password": "$2a$10$0lMbzrhWMKbKk7BaNsaANO3nso6DBN1J8whZ0mqpXBkBsk2M7trL2",
+      "departamento": "11A",
+      "rol": "inquilino",
+      "permisos": {},
+      "buildingId": null,
+      "fechaCreacion": "2026-01-20T16:02:34.004Z",
+      "activo": true,
+      "id": 16
+    },
+    {
+      "nombre": "Inquilino 12",
+      "email": "inquilino12@email.com",
+      "password": "$2a$10$bePLRFPmJ6uhi7BovuvPkOlkckzSHl9NoaHtw5D3YbxC.HfaG..sC",
+      "departamento": "12A",
+      "rol": "inquilino",
+      "permisos": {},
+      "buildingId": null,
+      "fechaCreacion": "2026-01-20T16:02:34.079Z",
+      "activo": true,
+      "id": 17
+    },
+    {
+      "nombre": "Inquilino 13",
+      "email": "inquilino13@email.com",
+      "password": "$2a$10$l9kJpGygkSnpO7TqZffpBeM5mfA4P3SIsVmPV.vBBqob7xKLZCjh2",
+      "departamento": "13A",
+      "rol": "inquilino",
+      "permisos": {},
+      "buildingId": null,
+      "fechaCreacion": "2026-01-20T16:02:34.156Z",
+      "activo": true,
+      "id": 18
+    },
+    {
+      "nombre": "Inquilino 14",
+      "email": "inquilino14@email.com",
+      "password": "$2a$10$RCYJlFiwvuUIEVrnC0yVCeFrJ5A2iFFQaQxwOpEOFIAKt4s2yWGdK",
+      "departamento": "14A",
+      "rol": "inquilino",
+      "permisos": {},
+      "buildingId": null,
+      "fechaCreacion": "2026-01-20T16:02:34.229Z",
+      "activo": true,
+      "id": 19
+    },
+    {
+      "nombre": "Inquilino 15",
+      "email": "inquilino15@email.com",
+      "password": "$2a$10$QFtZNdbbkKXV2d7k6eLlv.ErGPEOb/pL9BVglDOP638ThH8SEzCfa",
+      "departamento": "15A",
+      "rol": "inquilino",
+      "permisos": {},
+      "buildingId": null,
+      "fechaCreacion": "2026-01-20T16:02:34.304Z",
+      "activo": true,
+      "id": 20
+    },
+    {
+      "nombre": "Inquilino 16",
+      "email": "inquilino16@email.com",
+      "password": "$2a$10$NZgtVJgl5l1OWfb/zHb4bOrRflcVxS4DSauq8Vp3qivNYfOZ0Laye",
+      "departamento": "16A",
+      "rol": "inquilino",
+      "permisos": {},
+      "buildingId": null,
+      "fechaCreacion": "2026-01-20T16:02:34.379Z",
+      "activo": true,
+      "id": 21
+    },
+    {
+      "nombre": "Inquilino 17",
+      "email": "inquilino17@email.com",
+      "password": "$2a$10$W44mIxhxBf8/Qk8iErP3Su5j1cP3pL0TIMc6NaMNeQ7pgvoky2e9m",
+      "departamento": "17A",
+      "rol": "inquilino",
+      "permisos": {},
+      "buildingId": null,
+      "fechaCreacion": "2026-01-20T16:02:34.453Z",
+      "activo": true,
+      "id": 22
+    },
+    {
+      "nombre": "Inquilino 18",
+      "email": "inquilino18@email.com",
+      "password": "$2a$10$HxZ5S.hecPHYoKzyXxSyHevr5CgfRS4NJtqQzSilup5Yxx1uZ2vTm",
+      "departamento": "18A",
+      "rol": "inquilino",
+      "permisos": {},
+      "buildingId": null,
+      "fechaCreacion": "2026-01-20T16:02:34.527Z",
+      "activo": true,
+      "id": 23
+    },
+    {
+      "nombre": "Inquilino 19",
+      "email": "inquilino19@email.com",
+      "password": "$2a$10$b3tLXvc4aJHPpn14jsBewuoCrQj.lFgCwMKucC1bmjDn.sWRq2aUe",
+      "departamento": "19A",
+      "rol": "inquilino",
+      "permisos": {},
+      "buildingId": null,
+      "fechaCreacion": "2026-01-20T16:02:34.603Z",
+      "activo": true,
+      "id": 24
+    },
+    {
+      "nombre": "Inquilino 20",
+      "email": "inquilino20@email.com",
+      "password": "$2a$10$PZ.SPHbcYQoYwojPbAA6SuUewbL.ncsxeKVpn7aDA4d7uFH0U7ZLG",
+      "departamento": "20A",
+      "rol": "inquilino",
+      "permisos": {},
+      "buildingId": null,
+      "fechaCreacion": "2026-01-20T16:02:34.678Z",
+      "activo": true,
+      "id": 25
+    }
+  ],
+  "cuotas": [
+    {
+      "mes": "Enero",
+      "anio": 2025,
+      "monto": 550,
+      "fechaVencimiento": "2025-02-01T05:59:59.000Z",
+      "departamento": "TEST-101",
+      "estado": "VENCIDO",
+      "fechaPago": null,
+      "comprobantePago": null,
+      "fechaCreacion": "2026-01-20T15:55:21.075Z",
+      "id": 1
+    },
+    {
+      "mes": "Test",
+      "anio": 2024,
+      "monto": 550,
+      "fechaVencimiento": "2026-01-19T15:55:21.078Z",
+      "departamento": "TEST-VENCIDA",
+      "estado": "VENCIDO",
+      "fechaPago": null,
+      "comprobantePago": null,
+      "fechaCreacion": "2026-01-20T15:55:21.078Z",
+      "id": 2
+    }
+  ],
+  "gastos": [],
+  "presupuestos": [
+    {
+      "id": 1,
+      "titulo": "Reparación de ascensor",
+      "monto": null,
+      "descripcion": "Mantenimiento y reparación del ascensor principal",
+      "fecha_creacion": "2026-01-20T16:02:34.678Z",
+      "estado": "borrador",
+      "anio": 2026,
+      "monto_ejecutado": 0
+    },
+    {
+      "id": 2,
+      "titulo": "Pintura de fachada",
+      "monto": null,
+      "descripcion": "Repintado completo de la fachada del edificio",
+      "fecha_creacion": "2026-01-20T16:02:34.679Z",
+      "estado": "borrador",
+      "anio": 2026,
+      "monto_ejecutado": 0
+    },
+    {
+      "id": 3,
+      "titulo": "Reparación de ascensor",
+      "monto": null,
+      "descripcion": "Mantenimiento y reparación del ascensor principal",
+      "fecha_creacion": "2026-01-20T16:03:38.509Z",
+      "estado": "borrador",
+      "anio": 2026,
+      "monto_ejecutado": 0
+    },
+    {
+      "id": 4,
+      "titulo": "Pintura de fachada",
+      "monto": null,
+      "descripcion": "Repintado completo de la fachada del edificio",
+      "fecha_creacion": "2026-01-20T16:03:38.509Z",
+      "estado": "borrador",
+      "anio": 2026,
+      "monto_ejecutado": 0
+    },
+    {
+      "id": 5,
+      "titulo": "Reparación de ascensor",
+      "monto": null,
+      "descripcion": "Mantenimiento y reparación del ascensor principal",
+      "fecha_creacion": "2026-01-20T16:04:15.102Z",
+      "estado": "borrador",
+      "anio": 2026,
+      "monto_ejecutado": 0
+    },
+    {
+      "id": 6,
+      "titulo": "Pintura de fachada",
+      "monto": null,
+      "descripcion": "Repintado completo de la fachada del edificio",
+      "fecha_creacion": "2026-01-20T16:04:15.103Z",
+      "estado": "borrador",
+      "anio": 2026,
+      "monto_ejecutado": 0
+    }
+  ],
+  "cierres": [],
+  "anuncios": [
+    {
+      "id": 1,
+      "titulo": "Corte de agua programado",
+      "contenido": "Se informa que el día 15/01/2024 de 9:00 a 17:00 hs se realizarán trabajos de mantenimiento en las cañerías. Habrá corte de agua en todo el edificio.",
+      "tipo": "urgente",
+      "imagen": null,
+      "createdAt": "2026-01-20T16:04:15.104Z",
+      "archivos": []
+    },
+    {
+      "id": 2,
+      "titulo": "Reunión de consorcio",
+      "contenido": "Se convoca a todos los propietarios a la reunión mensual que se realizará el día 25/01/2024 a las 19:00 hs en el salón de usos múltiples.",
+      "tipo": "reunion",
+      "imagen": null,
+      "createdAt": "2026-01-20T16:04:15.104Z",
+      "archivos": []
+    },
+    {
+      "id": 3,
+      "titulo": "Horarios de limpieza",
+      "contenido": "Se recuerda que los días de limpieza son lunes, miércoles y viernes de 8:00 a 12:00 hs. Por favor mantener libres los espacios comunes en esos horarios.",
+      "tipo": "general",
+      "imagen": null,
+      "createdAt": "2026-01-20T16:04:15.104Z",
+      "archivos": []
+    }
+  ],
+  "solicitudes": [
+    {
+      "id": 1,
+      "usuario_id": 6,
+      "titulo": "Problema con la cerradura",
+      "descripcion": "La cerradura de la puerta principal no está funcionando correctamente. A veces no se puede abrir desde adentro.",
+      "categoria": "general",
+      "fecha_creacion": "2026-01-20T16:04:15.105Z",
+      "estado": "pendiente",
+      "respuesta": null
+    },
+    {
+      "id": 2,
+      "usuario_id": 7,
+      "titulo": "Instalación de cámaras de seguridad",
+      "descripcion": "Solicito evaluar la posibilidad de instalar cámaras de seguridad en el hall de entrada para mejorar la seguridad del edificio.",
+      "categoria": "general",
+      "fecha_creacion": "2026-01-20T16:04:15.105Z",
+      "estado": "pendiente",
+      "respuesta": null
+    },
+    {
+      "id": 3,
+      "usuario_id": 8,
+      "titulo": "Ruidos molestos",
+      "descripcion": "El departamento de arriba hace mucho ruido por las noches. Solicito que se hable con los inquilinos.",
+      "categoria": "general",
+      "fecha_creacion": "2026-01-20T16:04:15.106Z",
+      "estado": "pendiente",
+      "respuesta": null
+    }
+  ],
+  "fondos": {
+    "ahorroAcumulado": 0,
+    "gastosMayores": 0,
+    "dineroOperacional": 0,
+    "patrimonioTotal": 0
+  },
+  "proyectos": []
+}

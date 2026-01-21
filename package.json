@@ -30,7 +30,12 @@
     "test:playwright": "npx playwright test --config=config/playwright.config.js",
     "test:post-fixes": "node tests/post-fixes-endpoints.test.js",
     "deploy:workers": "./scripts/deployment/deploy-workers.sh",
-    "wrangler": "wrangler"
+    "wrangler": "wrangler",
+    "test:password": "node scripts/testing/test-password.js",
+    "test:clerk": "sh scripts/testing/test-clerk-integration.sh",
+    "test:comprehensive": "node scripts/testing/comprehensive-flow-test.js",
+    "admin:reset-password": "node scripts/admin/reset-admin-password.js",
+    "utils:d1-shell": "sh scripts/utils/d1-shell.sh"
   },
   "keywords": [
     "edificio",

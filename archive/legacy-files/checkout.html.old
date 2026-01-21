@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Método de Pago - ChispartBuilding</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #4F46E5;
+      --primary-dark: #4338CA;
+      --secondary: #10B981;
+      --dark: #1F2937;
+      --light: #F9FAFB;
+      --gray: #6B7280;
+      --danger: #EF4444;
+      --warning: #F59E0B;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--light);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .header h1 {
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .header .subtitle {
+      color: var(--gray);
+    }
+
+    .progress-bar {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .steps {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #E5E7EB;
+      z-index: 0;
+    }
+
+    .step {
+      flex: 1;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #E5E7EB;
+      color: var(--gray);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 0.5rem;
+      font-weight: bold;
+    }
+
+    .step.completed .step-icon {
+      background: var(--secondary);
+      color: white;
+    }
+
+    .step.active .step-icon {
+      background: var(--primary);
+      color: white;
+    }
+
+    .step-label {
+      font-size: 0.875rem;
+      color: var(--gray);
+    }
+
+    .payment-card {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+
+    .alert-box {
+      background: #FEF3C7;
+      border-left: 4px solid var(--warning);
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: start;
+      gap: 1rem;
+    }
+
+    .alert-box i {
+      color: var(--warning);
+      font-size: 1.5rem;
+      margin-top: 0.25rem;
+    }
+
+    .alert-content h3 {
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .alert-content p {
+      color: var(--gray);
+      line-height: 1.6;
+    }
+
+    .plan-summary {
+      background: #EFF6FF;
+      border: 2px solid var(--primary);
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .plan-summary h3 {
+      color: var(--primary);
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+    }
+
+    .plan-detail {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #DBEAFE;
+    }
+
+    .plan-detail:last-child {
+      border-bottom: none;
+      font-weight: 600;
+      font-size: 1.125rem;
+      padding-top: 1rem;
+      border-top: 2px solid var(--primary);
+    }
+
+    .payment-methods {
+      display: grid;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .payment-method {
+      border: 2px solid #E5E7EB;
+      border-radius: 0.75rem;
+      padding: 2rem;
+      transition: all 0.3s;
+    }
+
+    .payment-method:hover {
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+    }
+
+    .method-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .method-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 0.5rem;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .method-header h3 {
+      color: var(--dark);
+      margin: 0;
+    }
+
+    .method-badge {
+      margin-left: auto;
+      background: var(--secondary);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .transfer-info {
+      background: var(--light);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
+      color: var(--gray);
+      font-weight: 500;
+    }
+
+    .info-value {
+      color: var(--dark);
+      font-weight: 600;
+      font-family: monospace;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .copy-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: background 0.3s;
+    }
+
+    .copy-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .copy-btn.copied {
+      background: var(--secondary);
+    }
+
+    .instructions {
+      background: #FEFCE8;
+      border-left: 4px solid var(--warning);
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .instructions h4 {
+      color: var(--dark);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .instructions ol {
+      margin-left: 1.5rem;
+      color: var(--gray);
+      line-height: 1.8;
+    }
+
+    .instructions ol li {
+      margin-bottom: 0.5rem;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-disabled {
+      background: var(--gray);
+      color: white;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .btn-disabled:hover {
+      background: var(--gray);
+    }
+
+    .coming-soon {
+      background: #FEF2F2;
+      border: 2px dashed var(--danger);
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .coming-soon i {
+      font-size: 2rem;
+      color: var(--danger);
+      margin-bottom: 0.5rem;
+    }
+
+    .coming-soon p {
+      color: var(--gray);
+      margin-top: 0.5rem;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 1rem;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #FEF3C7;
+      color: var(--warning);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 1.75rem;
+    }
+
+    .modal-content h2 {
+      text-align: center;
+      color: var(--dark);
+      margin-bottom: 1rem;
+    }
+
+    .modal-content p {
+      color: var(--gray);
+      line-height: 1.6;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .countdown {
+      background: #EFF6FF;
+      border: 2px solid var(--primary);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .countdown-label {
+      color: var(--gray);
+      font-size: 0.875rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .countdown-time {
+      color: var(--primary);
+      font-size: 1.5rem;
+      font-weight: bold;
+      font-family: monospace;
+    }
+
+    @media (max-width: 768px) {
+      .checkout-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .order-summary {
+        order: -1;
+      }
+
+      body {
+        padding: 1rem 0.5rem;
+      }
+    }
+  </style>
+  <script src="/config.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="progress-bar">
+      <div class="steps">
+        <div class="step completed">
+          <div class="step-icon">✓</div>
+          <div class="step-label">Registro</div>
+        </div>
+        <div class="step completed">
+          <div class="step-icon">✓</div>
+          <div class="step-label">Verificación</div>
+        </div>
+        <div class="step active">
+          <div class="step-icon">3</div>
+          <div class="step-label">Pago</div>
+        </div>
+        <div class="step">
+          <div class="step-icon">4</div>
+          <div class="step-label">Configuración</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="header">
+      <h1>Método de Pago</h1>
+      <p class="subtitle">Selecciona cómo deseas realizar tu pago</p>
+    </div>
+
+    <!-- Alerta de acceso temporal -->
+    <div class="alert-box">
+      <i class="fas fa-clock"></i>
+      <div class="alert-content">
+        <h3>Acceso temporal de 48 horas</h3>
+        <p>Una vez que confirmes tu método de pago, tendrás acceso inmediato a la plataforma por 48 horas mientras validamos tu pago. Después de la validación, tu acceso será permanente.</p>
+      </div>
+    </div>
+
+    <div class="checkout-grid">
+      <!-- Métodos de pago -->
+      <div class="payment-card">
+        <h2>Selecciona tu método de pago</h2>
+
+        <div class="payment-methods">
+          <!-- Transferencia Bancaria -->
+          <div class="payment-method">
+            <div class="method-header">
+              <div class="method-icon">
+                <i class="fas fa-university"></i>
+              </div>
+              <div>
+                <h3>Transferencia Bancaria</h3>
+                <p style="color: var(--gray); font-size: 0.875rem; margin: 0.25rem 0 0;">Realiza tu pago mediante transferencia SPEI</p>
+              </div>
+              <div class="method-badge">Recomendado</div>
+            </div>
+
+            <div class="transfer-info">
+              <div class="info-row">
+                <span class="info-label">Banco:</span>
+                <span class="info-value">BBVA Bancomer</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Beneficiario:</span>
+                <span class="info-value">Sebastian Vernis</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">CLABE:</span>
+                <span class="info-value" id="clabe">
+                  012180015502866360
+                  <button class="copy-btn" onclick="copyToClipboard('clabe')">
+                    <i class="fas fa-copy"></i> Copiar
+                  </button>
+                </span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Referencia:</span>
+                <span class="info-value" id="referencia">
+                  <span id="referenciaValue">CHIS-<span id="timestamp"></span></span>
+                  <button class="copy-btn" onclick="copyToClipboard('referencia')">
+                    <i class="fas fa-copy"></i> Copiar
+                  </button>
+                </span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Monto:</span>
+                <span class="info-value" style="color: var(--primary); font-size: 1.25rem;">
+                  $<span id="montoTransfer">0</span> MXN
+                </span>
+              </div>
+            </div>
+
+            <div class="instructions">
+              <h4><i class="fas fa-list-ol"></i> Instrucciones para pago</h4>
+              <ol>
+                <li>Ingresa a tu banca en línea o app bancaria</li>
+                <li>Selecciona "Transferencia SPEI"</li>
+                <li>Copia la CLABE y la referencia de arriba</li>
+                <li>Realiza la transferencia por el monto indicado</li>
+                <li>Conserva tu comprobante de pago</li>
+                <li>Una vez realizada la transferencia, presiona el botón "Confirmar Transferencia"</li>
+                <li>Recibirás acceso inmediato por 48 horas</li>
+                <li>Tu pago será validado en máximo 24 horas</li>
+              </ol>
+            </div>
+
+            <button class="btn btn-primary" onclick="confirmarTransferencia()">
+              <i class="fas fa-check-circle"></i>
+              Confirmar Transferencia Realizada
+            </button>
+          </div>
+
+          <!-- MercadoPago - Próximamente -->
+          <div class="payment-method">
+            <div class="method-header">
+              <div class="method-icon" style="background: #00B1EA;">
+                <i class="fas fa-credit-card"></i>
+              </div>
+              <div>
+                <h3>Tarjeta de Crédito/Débito</h3>
+                <p style="color: var(--gray); font-size: 0.875rem; margin: 0.25rem 0 0;">Pago inmediato con MercadoPago</p>
+              </div>
+            </div>
+
+            <div class="coming-soon">
+              <i class="fas fa-tools"></i>
+              <h4 style="color: var(--dark); margin-bottom: 0.5rem;">Próximamente disponible</h4>
+              <p>Estamos integrando MercadoPago para que puedas pagar con tarjeta de crédito o débito de forma instantánea.</p>
+            </div>
+
+            <button class="btn btn-disabled" disabled id="mercadopagoBtn">
+              <i class="fas fa-lock"></i>
+              Pagar con MercadoPago (Próximamente)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resumen del pedido -->
+      <div class="order-summary">
+        <h2>Resumen del pedido</h2>
+
+        <div class="plan-summary" id="planDetails">
+          <h3>Cargando...</h3>
+        </div>
+
+        <div style="background: #F3F4F6; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="color: var(--gray);">Subtotal:</span>
+            <span style="color: var(--dark); font-weight: 600;" id="subtotal">$0</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="color: var(--gray);">IVA (16%):</span>
+            <span style="color: var(--dark); font-weight: 600;" id="iva">$0</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding-top: 0.75rem; border-top: 2px solid #D1D5DB;">
+            <span style="color: var(--dark); font-weight: bold;">Total:</span>
+            <span style="color: var(--primary); font-weight: bold; font-size: 1.25rem;" id="total">$0 MXN</span>
+          </div>
+        </div>
+
+        <div style="background: #DBEAFE; padding: 1rem; border-radius: 0.5rem; font-size: 0.875rem; color: var(--gray);">
+          <i class="fas fa-shield-alt" style="color: var(--primary);"></i>
+          <strong>Pago seguro</strong><br>
+          Tu información está protegida y encriptada.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Confirmación y Acceso Temporal -->
+  <div class="modal" id="confirmModal">
+    <div class="modal-content">
+      <div class="modal-icon">
+        <i class="fas fa-clock"></i>
+      </div>
+      <h2>¡Acceso Temporal Activado!</h2>
+      <p>Has recibido acceso temporal a la plataforma por <strong>48 horas</strong> mientras validamos tu pago.</p>
+      
+      <div class="countdown">
+        <div class="countdown-label">Acceso temporal expira en:</div>
+        <div class="countdown-time" id="countdown">48:00:00</div>
+      </div>
+
+      <div style="background: #FEF3C7; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem; text-align: left;">
+        <div style="display: flex; align-items: start; gap: 0.75rem;">
+          <i class="fas fa-info-circle" style="color: var(--warning); margin-top: 0.25rem;"></i>
+          <div style="font-size: 0.875rem; color: var(--gray);">
+            <strong style="color: var(--dark);">Importante:</strong><br>
+            • Validaremos tu pago en las próximas 24 horas<br>
+            • Una vez validado, tu acceso será permanente<br>
+            • Si no recibimos el pago en 48 horas, el acceso expirará<br>
+            • Conserva tu comprobante de pago
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="continuarSetup()">
+        <i class="fas fa-arrow-right"></i>
+        Continuar al Setup
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Obtener datos del plan
+    const email = localStorage.getItem('onboarding_email');
+    const planKey = localStorage.getItem('onboarding_plan') || 'profesional';
+    const buildingName = localStorage.getItem('building_name') || 'Mi Edificio';
+
+    if (!email) {
+      window.location.href = '/register';
+    }
+
+    // Definir planes
+    const PLANS = {
+      basico: { name: 'Plan Básico', price: 499, maxUnits: 20 },
+      profesional: { name: 'Plan Profesional', price: 999, maxUnits: 50 },
+      empresarial: { name: 'Plan Empresarial', price: 1999, maxUnits: 200 },
+      personalizado: { name: 'Plan Personalizado', price: 2999, maxUnits: -1 }
+    };
+
+    // Check if custom package
+    const customPackage = localStorage.getItem('custom_package');
+    let plan = PLANS[planKey];
+    
+    if (planKey === 'personalizado' && customPackage) {
+      const pkg = JSON.parse(customPackage);
+      plan = {
+        name: 'Plan Personalizado',
+        price: pkg.price,
+        maxUnits: pkg.units
+      };
+    }
+    
+    // Display plan details
+    const planDetailsEl = document.getElementById('planDetails');
+    planDetailsEl.innerHTML = `
+      <h3>${plan.name}</h3>
+      <div class="plan-detail">
+        <span>Unidades:</span>
+        <span>${plan.maxUnits === -1 ? 'Ilimitadas' : plan.maxUnits + ' unidades'}</span>
+      </div>
+      <div class="plan-detail">
+        <span>Edificio:</span>
+        <span>${buildingName}</span>
+      </div>
+      <div class="plan-detail">
+        <span>Periodo:</span>
+        <span>Mensual</span>
+      </div>
+      <div class="plan-detail">
+        <span>Total:</span>
+        <span style="color: var(--primary);">$${plan.price.toLocaleString('es-MX')} MXN</span>
+      </div>
+    `;
+
+    // Calculate totals
+    const subtotal = plan.price;
+    const iva = subtotal * 0.16;
+    const total = subtotal + iva;
+
+    document.getElementById('subtotal').textContent = `$${subtotal.toLocaleString('es-MX')}`;
+    document.getElementById('iva').textContent = `$${iva.toLocaleString('es-MX')}`;
+    document.getElementById('total').textContent = `$${total.toLocaleString('es-MX')} MXN`;
+    document.getElementById('montoTransfer').textContent = total.toLocaleString('es-MX');
+
+    // Generar referencia única
+    const timestamp = Date.now().toString().slice(-8);
+    document.getElementById('timestamp').textContent = timestamp;
+
+    // Función para copiar al portapapeles
+    function copyToClipboard(elementId) {
+      const element = document.getElementById(elementId);
+      let textToCopy = '';
+
+      if (elementId === 'clabe') {
+        textToCopy = '012180015502866360';
+      } else if (elementId === 'referencia') {
+        textToCopy = 'CHIS-' + document.getElementById('timestamp').textContent;
+      }
+
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        const btn = element.querySelector('.copy-btn');
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i> Copiado';
+        btn.classList.add('copied');
+        
+        setTimeout(() => {
+          btn.innerHTML = originalHTML;
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    // Confirmar transferencia y activar acceso temporal
+    async function confirmarTransferencia() {
+      try {
+        // Llamar al endpoint para marcar como "pago pendiente de validación"
+        const response = await fetch('/api/onboarding/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email,
+            paymentMethod: 'transfer',
+            reference: 'CHIS-' + document.getElementById('timestamp').textContent,
+            amount: total
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.ok) {
+          // Guardar tiempo de expiración del acceso temporal
+          const expiresAt = Date.now() + (48 * 60 * 60 * 1000); // 48 horas
+          localStorage.setItem('temp_access_expires', expiresAt);
+          localStorage.setItem('payment_pending', 'true');
+          
+          // Mostrar modal de confirmación
+          showConfirmModal();
+        } else {
+          alert('Error: ' + result.msg);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error al confirmar. Intenta nuevamente.');
+      }
+    }
+
+    // Mostrar modal de confirmación
+    function showConfirmModal() {
+      const modal = document.getElementById('confirmModal');
+      modal.classList.add('active');
+      
+      // Iniciar countdown de 48 horas
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+    }
+
+    // Actualizar countdown
+    function updateCountdown() {
+      const expiresAt = parseInt(localStorage.getItem('temp_access_expires') || '0');
+      if (!expiresAt) return;
+
+      const now = Date.now();
+      const remaining = expiresAt - now;
+
+      if (remaining <= 0) {
+        document.getElementById('countdown').textContent = '00:00:00';
+        return;
+      }
+
+      const hours = Math.floor(remaining / (1000 * 60 * 60));
+      const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+
+      document.getElementById('countdown').textContent = 
+        `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    // Continuar al setup
+    function continuarSetup() {
+      window.location.href = '/setup';
+    }
+
+    // Si ya se confirmó el pago, mostrar el modal automáticamente
+    if (localStorage.getItem('payment_pending') === 'true' && localStorage.getItem('temp_access_expires')) {
+      showConfirmModal();
+    }
+  </script>
+</body>
+</html>

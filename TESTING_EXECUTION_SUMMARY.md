@@ -332,10 +332,10 @@ The minor issues identified can be addressed in a future update without impactin
 ## 📁 Files Generated
 
 ### Test Scripts
-- `comprehensive-flow-test.js` - Main test suite
-- `generate-visual-test-documentation.js` - Documentation generator
-- `reset-admin-password.js` - Password reset utility
-- `test-password.js` - Password testing utility
+- `scripts/testing/comprehensive-flow-test.js` - Main test suite
+- `scripts/testing/generate-visual-test-documentation.js` - Documentation generator
+- `scripts/admin/reset-admin-password.js` - Password reset utility
+- `scripts/testing/test-password.js` - Password testing utility
 
 ### Reports
 - `test-reports/README.md` - Documentation index
