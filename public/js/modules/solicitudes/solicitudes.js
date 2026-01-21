@@ -325,15 +325,21 @@ class SolicitudesManager {
     }
 
     mostrarExito(mensaje) {
-        // Implementar notificación de éxito
-        console.log('Éxito:', mensaje);
-        // Aquí podrías usar una librería de notificaciones como Toastr
+        if (typeof Utils !== 'undefined' && Utils.showAlert) {
+            Utils.showAlert(mensaje, 'success');
+        } else {
+            console.log('Éxito:', mensaje);
+            alert('Éxito: ' + mensaje);
+        }
     }
 
     mostrarError(mensaje) {
-        // Implementar notificación de error
         console.error('Error:', mensaje);
-        // Aquí podrías usar una librería de notificaciones como Toastr
+        if (typeof Utils !== 'undefined' && Utils.showAlert) {
+            Utils.showAlert(mensaje, 'error');
+        } else {
+            alert('Error: ' + mensaje);
+        }
     }
 }
 
