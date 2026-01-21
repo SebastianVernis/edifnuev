@@ -350,17 +350,79 @@ class InquilinoSolicitudesManager {
     }
 
     mostrarExito(mensaje) {
-        // Implementar notificación de éxito
-        console.log('Éxito:', mensaje);
-        // Aquí podrías usar una librería de notificaciones como Toastr
-        alert('✅ ' + mensaje);
+        this.mostrarNotificacion(mensaje, 'success');
     }
 
     mostrarError(mensaje) {
-        // Implementar notificación de error
         console.error('Error:', mensaje);
-        // Aquí podrías usar una librería de notificaciones como Toastr
-        alert('❌ ' + mensaje);
+        this.mostrarNotificacion(mensaje, 'error');
+    }
+
+    mostrarNotificacion(mensaje, tipo = 'success') {
+        const containerId = 'toast-container-custom';
+        let container = document.getElementById(containerId);
+
+        if (!container) {
+            container = document.createElement('div');
+            container.id = containerId;
+            container.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 1055; pointer-events: none; display: flex; flex-direction: column; align-items: flex-end;';
+            document.body.appendChild(container);
+        }
+
+        const toastEl = document.createElement('div');
+        const bgClass = tipo === 'success' ? 'bg-success' : 'bg-danger';
+        const iconClass = tipo === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill';
+
+        // Estilos base usando clases de Bootstrap/Proyecto
+        toastEl.className = `${bgClass} text-white p-3 rounded shadow mb-3 d-flex align-items-center`;
+        toastEl.style.cssText = 'pointer-events: auto; min-width: 300px; max-width: 400px; animation: slideInRight 0.3s ease-out;';
+
+        // Añadir animación slideInRight si no existe
+        if (!document.getElementById('keyframes-slideInRight')) {
+            const styleSheet = document.createElement('style');
+            styleSheet.id = 'keyframes-slideInRight';
+            styleSheet.textContent = `
+                @keyframes slideInRight {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes fadeOutRight {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(styleSheet);
+        }
+
+        toastEl.innerHTML = `
+            <i class="bi ${iconClass} me-2 fs-5"></i>
+            <div class="flex-grow-1">${mensaje}</div>
+            <button type="button" class="btn-close btn-close-white ms-2" aria-label="Close" style="filter: invert(1) grayscale(100%) brightness(200%); background: transparent; border: 0;">
+                <i class="bi bi-x"></i>
+            </button>
+        `;
+
+        // Manejar cierre
+        const btnClose = toastEl.querySelector('button');
+        btnClose.onclick = () => {
+            closeToast();
+        };
+
+        function closeToast() {
+            toastEl.style.animation = 'fadeOutRight 0.3s ease-in forwards';
+            toastEl.addEventListener('animationend', () => {
+                if (toastEl.parentNode) toastEl.remove();
+            });
+        }
+
+        container.appendChild(toastEl);
+
+        // Auto cerrar
+        setTimeout(() => {
+            if (toastEl.parentNode) {
+                closeToast();
+            }
+        }, 5000);
     }
 }
 
