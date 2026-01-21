@@ -325,11 +325,15 @@ class SolicitudesManager {
     }
 
     mostrarExito(mensaje) {
-        notie.alert({ type: 'success', text: mensaje });
+        // Implementar notificación de éxito
+        console.log('Éxito:', mensaje);
+        // Aquí podrías usar una librería de notificaciones como Toastr
     }
 
     mostrarError(mensaje) {
-        notie.alert({ type: 'error', text: mensaje });
+        // Implementar notificación de error
+        console.error('Error:', mensaje);
+        // Aquí podrías usar una librería de notificaciones como Toastr
     }
 }
 
