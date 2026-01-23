@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - ChispartBuilding</title>
+    <link rel="stylesheet" href="/css/base/variables.css">
+    <link rel="stylesheet" href="/css/base/reset.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #14b8a6 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 450px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #667eea;
+            font-size: 28px;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .clerk-component {
+            margin: 20px 0;
+        }
+
+        #clerk-sign-in {
+            /* Clerk component will be mounted here */
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .divider span {
+            padding: 0 15px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .legacy-login-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .legacy-login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .legacy-login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            color: #1976d2;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1>🏢 ChispartBuilding</h1>
+            <p>Sistema de Administración de Edificios</p>
+        </div>
+
+        <div class="info-box">
+            <strong>✨ Nueva Experiencia de Login</strong>
+            Ahora usamos Clerk para una autenticación más segura y moderna.
+        </div>
+
+        <div id="error-message" class="error-message"></div>
+
+        <div id="loading" class="loading">
+            <div class="loading-spinner"></div>
+            <p>Cargando sistema de autenticación...</p>
+        </div>
+
+        <div id="clerk-sign-in" class="clerk-component" style="display: none;"></div>
+
+        <div class="divider">
+            <span>o</span>
+        </div>
+
+        <div class="legacy-login-link">
+            <a href="/login.html">Usar sistema de login anterior</a>
+        </div>
+    </div>
+
+    <!-- Configuration -->
+    <script src="/config.js"></script>
+    
+    <!-- Clerk SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" crossorigin="anonymous"></script>
+    
+    <script>
+        
+        async function initializeClerkLogin() {
+            try {
+                // Verificar que config esté cargado
+                if (!window.APP_CONFIG || !window.APP_CONFIG.CLERK_PUBLISHABLE_KEY) {
+                    throw new Error('Configuración de Clerk no disponible');
+                }
+
+                // Verificar que Clerk SDK esté cargado
+                if (!window.Clerk) {
+                    throw new Error('Clerk SDK no se cargó correctamente');
+                }
+
+                // Inicializar Clerk
+                const clerk = window.Clerk;
+                await clerk.load({
+                    publishableKey: window.APP_CONFIG.CLERK_PUBLISHABLE_KEY
+                });
+
+                console.log('Clerk loaded successfully');
+
+                // Verificar si ya está autenticado
+                if (clerk.user) {
+                    console.log('User already authenticated:', clerk.user);
+                    await handleSuccessfulLogin(clerk.user);
+                    return;
+                }
+
+                // Ocultar loading
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('clerk-sign-in').style.display = 'block';
+
+                // Montar componente de Sign In
+                clerk.mountSignIn(document.getElementById('clerk-sign-in'), {
+                    afterSignInUrl: '/admin.html',
+                    afterSignUpUrl: '/setup.html',
+                    appearance: {
+                        elements: {
+                            rootBox: 'w-full',
+                            card: 'shadow-none'
+                        }
+                    }
+                });
+
+                // Escuchar cambios en la sesión
+                clerk.addListener(({ user, session }) => {
+                    if (user && session) {
+                        console.log('User signed in:', user);
+                        handleSuccessfulLogin(user);
+                    }
+                });
+
+            } catch (error) {
+                console.error('Error initializing Clerk:', error);
+                showError('Error al cargar el sistema de autenticación. Por favor, intenta de nuevo.');
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        async function handleSuccessfulLogin(user) {
+            try {
+                // Obtener token de sesión
+                const token = await user.getSessions()[0]?.getToken();
+                
+                if (!token) {
+                    throw new Error('No se pudo obtener el token de sesión');
+                }
+
+                // Guardar token en localStorage
+                localStorage.setItem('clerk_token', token);
+                localStorage.setItem('clerk_user_id', user.id);
+
+                // Obtener datos del usuario desde el backend
+                const API_URL = window.location.origin;
+                const response = await fetch(`${API_URL}/api/auth/me`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const usuario = data.usuario;
+
+                    // Guardar datos del usuario
+                    localStorage.setItem('usuario', JSON.stringify(usuario));
+                    localStorage.setItem('token', token);
+
+                    // Redirigir según el rol
+                    if (usuario.rol === 'ADMIN') {
+                        window.location.href = '/admin.html';
+                    } else if (usuario.rol === 'COMITE') {
+                        window.location.href = '/admin.html';
+                    } else {
+                        window.location.href = '/inquilino.html';
+                    }
+                } else {
+                    // Usuario nuevo, redirigir a setup
+                    window.location.href = '/setup.html';
+                }
+
+            } catch (error) {
+                console.error('Error handling successful login:', error);
+                showError('Error al procesar el inicio de sesión. Por favor, intenta de nuevo.');
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        // Inicializar cuando el DOM esté listo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeClerkLogin);
+        } else {
+            initializeClerkLogin();
+        }
+    </script>
+</body>
+</html>

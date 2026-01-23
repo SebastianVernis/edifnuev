@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personalizador de Tema - ChispartBuilding</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .customizer-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 2rem;
+    }
+
+    .customizer-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .customizer-header h1 {
+      color: var(--secondary-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .customizer-header p {
+      color: var(--text-color-light);
+    }
+
+    .customizer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .customizer-section {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .customizer-section h3 {
+      margin-bottom: 1rem;
+      color: var(--primary-color);
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 0.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text-color-dark);
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    .form-group input[type="color"] {
+      height: 50px;
+      cursor: pointer;
+    }
+
+    .color-preview {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      border-radius: 4px;
+      margin-left: 10px;
+      vertical-align: middle;
+      border: 1px solid var(--border-color);
+    }
+
+    .preview-section {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+    }
+
+    .preview-section h3 {
+      margin-bottom: 1.5rem;
+      color: var(--secondary-color);
+    }
+
+    .preview-components {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .preview-card {
+      padding: 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      background: var(--background-color-light);
+    }
+
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .btn {
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--secondary-dark);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 2px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .alert.show {
+      display: block;
+    }
+
+    .alert-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .alert-error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    @media (max-width: 768px) {
+      .customizer-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <script src="/config.js"></script>
+</head>
+<body>
+  <div class="customizer-container">
+    <div class="customizer-header">
+      <h1>🎨 Personalizador de Tema</h1>
+      <p>Personaliza la apariencia de tu sistema de administración</p>
+    </div>
+
+    <div class="alert alert-success" id="successAlert"></div>
+    <div class="alert alert-error" id="errorAlert"></div>
+
+    <div class="customizer-grid">
+      <!-- Tipografía -->
+      <div class="customizer-section">
+        <h3>📝 Tipografía</h3>
+        <div class="form-group">
+          <label for="fontFamily">Familia de fuente</label>
+          <select id="fontFamily">
+            <option value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">Segoe UI (Default)</option>
+            <option value="'Roboto', sans-serif">Roboto</option>
+            <option value="'Open Sans', sans-serif">Open Sans</option>
+            <option value="'Lato', sans-serif">Lato</option>
+            <option value="'Montserrat', sans-serif">Montserrat</option>
+            <option value="'Poppins', sans-serif">Poppins</option>
+            <option value="'Inter', sans-serif">Inter</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="fontSize">Tamaño de fuente base</label>
+          <input type="text" id="fontSize" value="16px">
+        </div>
+      </div>
+
+      <!-- Colores Principales -->
+      <div class="customizer-section">
+        <h3>🎨 Colores Principales</h3>
+        <div class="form-group">
+          <label for="primaryColor">Color primario <span class="color-preview" id="primaryPreview"></span></label>
+          <input type="color" id="primaryColor" value="#3498db">
+        </div>
+        <div class="form-group">
+          <label for="primaryDark">Color primario oscuro <span class="color-preview" id="primaryDarkPreview"></span></label>
+          <input type="color" id="primaryDark" value="#2980b9">
+        </div>
+      </div>
+
+      <!-- Colores Secundarios -->
+      <div class="customizer-section">
+        <h3>🌈 Colores Secundarios</h3>
+        <div class="form-group">
+          <label for="secondaryColor">Color secundario <span class="color-preview" id="secondaryPreview"></span></label>
+          <input type="color" id="secondaryColor" value="#2c3e50">
+        </div>
+        <div class="form-group">
+          <label for="accentColor">Color de acento <span class="color-preview" id="accentPreview"></span></label>
+          <input type="color" id="accentColor" value="#e74c3c">
+        </div>
+      </div>
+
+      <!-- Colores de Estado -->
+      <div class="customizer-section">
+        <h3>✅ Colores de Estado</h3>
+        <div class="form-group">
+          <label for="successColor">Éxito <span class="color-preview" id="successPreview"></span></label>
+          <input type="color" id="successColor" value="#27ae60">
+        </div>
+        <div class="form-group">
+          <label for="warningColor">Advertencia <span class="color-preview" id="warningPreview"></span></label>
+          <input type="color" id="warningColor" value="#f39c12">
+        </div>
+        <div class="form-group">
+          <label for="dangerColor">Peligro <span class="color-preview" id="dangerPreview"></span></label>
+          <input type="color" id="dangerColor" value="#e74c3c">
+        </div>
+      </div>
+
+      <!-- Colores de Texto -->
+      <div class="customizer-section">
+        <h3>📄 Colores de Texto</h3>
+        <div class="form-group">
+          <label for="textColor">Color de texto <span class="color-preview" id="textPreview"></span></label>
+          <input type="color" id="textColor" value="#333333">
+        </div>
+        <div class="form-group">
+          <label for="backgroundColor">Color de fondo <span class="color-preview" id="backgroundPreview"></span></label>
+          <input type="color" id="backgroundColor" value="#f5f7fa">
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="customizer-section">
+        <h3>📋 Sidebar</h3>
+        <div class="form-group">
+          <label for="sidebarBackground">Fondo del sidebar <span class="color-preview" id="sidebarBgPreview"></span></label>
+          <input type="color" id="sidebarBackground" value="#2c3e50">
+        </div>
+        <div class="form-group">
+          <label for="sidebarTextColor">Color de texto <span class="color-preview" id="sidebarTextPreview"></span></label>
+          <input type="color" id="sidebarTextColor" value="#ecf0f1">
+        </div>
+      </div>
+    </div>
+
+    <!-- Preview Section -->
+    <div class="preview-section">
+      <h3>👀 Vista Previa</h3>
+      <div class="preview-components">
+        <div class="preview-card">
+          <h4>Botones</h4>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <button class="btn btn-primary">Primario</button>
+            <button class="btn btn-secondary">Secundario</button>
+            <button class="btn btn-outline">Outlined</button>
+          </div>
+        </div>
+        <div class="preview-card">
+          <h4>Texto de ejemplo</h4>
+          <p>Este es un párrafo de ejemplo con el estilo de texto configurado.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button class="btn btn-secondary" onclick="resetTheme()">Restaurar por defecto</button>
+      <button class="btn btn-outline" onclick="previewTheme()">Vista previa</button>
+      <button class="btn btn-primary" onclick="saveTheme()">Guardar tema</button>
+    </div>
+  </div>
+
+  <script>
+    let buildingId = null;
+
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Obtener usuario autenticado
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.href = '/';
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/auth/me', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) throw new Error('No autorizado');
+
+        const { data } = await response.json();
+        buildingId = data.buildingId;
+
+        // Cargar tema actual
+        await loadCurrentTheme();
+
+        // Actualizar previews de colores
+        updateColorPreviews();
+
+        // Listeners para actualizar previews en tiempo real
+        document.querySelectorAll('input[type="color"]').forEach(input => {
+          input.addEventListener('input', updateColorPreviews);
+        });
+
+      } catch (error) {
+        showError('Error al cargar datos del usuario');
+        setTimeout(() => window.location.href = '/', 2000);
+      }
+    });
+
+    async function loadCurrentTheme() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('/api/theme/my-theme', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const { data } = await response.json();
+          const config = data.config;
+
+          // Aplicar valores a los inputs
+          document.getElementById('fontFamily').value = config.fontFamily;
+          document.getElementById('fontSize').value = config.fontSize;
+          document.getElementById('primaryColor').value = config.primaryColor;
+          document.getElementById('primaryDark').value = config.primaryDark;
+          document.getElementById('secondaryColor').value = config.secondaryColor;
+          document.getElementById('accentColor').value = config.accentColor;
+          document.getElementById('successColor').value = config.successColor;
+          document.getElementById('warningColor').value = config.warningColor;
+          document.getElementById('dangerColor').value = config.dangerColor;
+          document.getElementById('textColor').value = config.textColor;
+          document.getElementById('backgroundColor').value = config.backgroundColor;
+          document.getElementById('sidebarBackground').value = config.sidebarBackground;
+          document.getElementById('sidebarTextColor').value = config.sidebarTextColor;
+
+          updateColorPreviews();
+        }
+      } catch (error) {
+        console.error('Error al cargar tema:', error);
+      }
+    }
+
+    function updateColorPreviews() {
+      const colorInputs = {
+        primaryColor: 'primaryPreview',
+        primaryDark: 'primaryDarkPreview',
+        secondaryColor: 'secondaryPreview',
+        accentColor: 'accentPreview',
+        successColor: 'successPreview',
+        warningColor: 'warningPreview',
+        dangerColor: 'dangerPreview',
+        textColor: 'textPreview',
+        backgroundColor: 'backgroundPreview',
+        sidebarBackground: 'sidebarBgPreview',
+        sidebarTextColor: 'sidebarTextPreview'
+      };
+
+      for (const [inputId, previewId] of Object.entries(colorInputs)) {
+        const input = document.getElementById(inputId);
+        const preview = document.getElementById(previewId);
+        if (input && preview) {
+          preview.style.backgroundColor = input.value;
+        }
+      }
+    }
+
+    function getThemeConfig() {
+      return {
+        fontFamily: document.getElementById('fontFamily').value,
+        fontSize: document.getElementById('fontSize').value,
+        primaryColor: document.getElementById('primaryColor').value,
+        primaryDark: document.getElementById('primaryDark').value,
+        secondaryColor: document.getElementById('secondaryColor').value,
+        accentColor: document.getElementById('accentColor').value,
+        successColor: document.getElementById('successColor').value,
+        warningColor: document.getElementById('warningColor').value,
+        dangerColor: document.getElementById('dangerColor').value,
+        textColor: document.getElementById('textColor').value,
+        backgroundColor: document.getElementById('backgroundColor').value,
+        sidebarBackground: document.getElementById('sidebarBackground').value,
+        sidebarTextColor: document.getElementById('sidebarTextColor').value
+      };
+    }
+
+    function previewTheme() {
+      const config = getThemeConfig();
+      
+      // Aplicar estilos en tiempo real
+      document.documentElement.style.setProperty('--font-family', config.fontFamily);
+      document.documentElement.style.setProperty('--font-size-base', config.fontSize);
+      document.documentElement.style.setProperty('--primary-color', config.primaryColor);
+      document.documentElement.style.setProperty('--primary-dark', config.primaryDark);
+      document.documentElement.style.setProperty('--secondary-color', config.secondaryColor);
+      document.documentElement.style.setProperty('--accent-color', config.accentColor);
+      document.documentElement.style.setProperty('--success-color', config.successColor);
+      document.documentElement.style.setProperty('--warning-color', config.warningColor);
+      document.documentElement.style.setProperty('--danger-color', config.dangerColor);
+      document.documentElement.style.setProperty('--text-color', config.textColor);
+      document.documentElement.style.setProperty('--background-color', config.backgroundColor);
+      document.documentElement.style.setProperty('--sidebar-background', config.sidebarBackground);
+      document.documentElement.style.setProperty('--sidebar-text-color', config.sidebarTextColor);
+
+      showSuccess('Vista previa aplicada. Los cambios no se han guardado aún.');
+    }
+
+    async function saveTheme() {
+      if (!buildingId) {
+        showError('No se pudo determinar el edificio. Intenta recargar la página.');
+        return;
+      }
+
+      const config = getThemeConfig();
+
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`/api/theme/building/${buildingId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(config)
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || 'Error al guardar tema');
+        }
+
+        showSuccess('✅ Tema guardado exitosamente. Los cambios se aplicarán en la próxima recarga.');
+        
+        setTimeout(() => {
+          window.location.href = '/admin';
+        }, 2000);
+
+      } catch (error) {
+        showError('Error al guardar tema: ' + error.message);
+      }
+    }
+
+    function resetTheme() {
+      if (!confirm('¿Estás seguro de restaurar el tema por defecto? Se perderán todos los cambios.')) {
+        return;
+      }
+
+      // Restaurar valores por defecto
+      document.getElementById('fontFamily').value = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+      document.getElementById('fontSize').value = "16px";
+      document.getElementById('primaryColor').value = "#3498db";
+      document.getElementById('primaryDark').value = "#2980b9";
+      document.getElementById('secondaryColor').value = "#2c3e50";
+      document.getElementById('accentColor').value = "#e74c3c";
+      document.getElementById('successColor').value = "#27ae60";
+      document.getElementById('warningColor').value = "#f39c12";
+      document.getElementById('dangerColor').value = "#e74c3c";
+      document.getElementById('textColor').value = "#333333";
+      document.getElementById('backgroundColor').value = "#f5f7fa";
+      document.getElementById('sidebarBackground').value = "#2c3e50";
+      document.getElementById('sidebarTextColor').value = "#ecf0f1";
+
+      updateColorPreviews();
+      showSuccess('Tema restaurado a valores por defecto. Haz clic en "Guardar tema" para aplicar.');
+    }
+
+    function showSuccess(message) {
+      const alert = document.getElementById('successAlert');
+      alert.textContent = message;
+      alert.classList.add('show');
+      setTimeout(() => alert.classList.remove('show'), 5000);
+    }
+
+    function showError(message) {
+      const alert = document.getElementById('errorAlert');
+      alert.textContent = message;
+      alert.classList.add('show');
+      setTimeout(() => alert.classList.remove('show'), 5000);
+    }
+  </script>
+</body>
+</html>
