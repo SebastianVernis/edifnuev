@@ -1,0 +1,5 @@
+{"timestamp":"2026-01-21T04:35:13.326Z","type":"AUTH_FAILED","userId":null,"userRole":null,"resource":"/","permission":null,"granted":false,"ip":"::1","userAgent":"node-fetch"}
+{"timestamp":"2026-01-21T04:36:19.210Z","type":"AUTH_SUCCESS","userId":1,"userRole":"admin","resource":"/","permission":null,"granted":true,"ip":"::1","userAgent":"node-fetch"}
+{"timestamp":"2026-01-21T04:36:19.210Z","type":"ADMIN_ACCESS_DENIED","userId":1,"userRole":"admin","resource":"/","permission":"admin","granted":false,"ip":"::1","userAgent":"node-fetch"}
+{"timestamp":"2026-01-21T04:36:46.822Z","type":"AUTH_SUCCESS","userId":1,"userRole":"admin","resource":"/","permission":null,"granted":true,"ip":"::1","userAgent":"node-fetch"}
+{"timestamp":"2026-01-21T04:36:46.822Z","type":"ADMIN_ACCESS_GRANTED","userId":1,"userRole":"admin","resource":"/","permission":"admin","granted":true,"ip":"::1","userAgent":"node-fetch"}
