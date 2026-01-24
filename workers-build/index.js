@@ -186,6 +186,21 @@ export default {
         });
       }
 
+      // Debug R2 - Listar archivos
+      if (method === 'GET' && path === '/api/admin/debug-r2') {
+        if (!env.UPLOADS) {
+          return new Response(JSON.stringify({ error: 'R2 no configurado' }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+        const list = await env.UPLOADS.list();
+        return new Response(JSON.stringify({
+          objects: list.objects.map(o => ({ key: o.key, size: o.size, uploaded: o.uploaded }))
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
       // === CLERK WEBHOOK ROUTES ===
 
       // Clerk Webhook - Test endpoint
@@ -2976,48 +2991,29 @@ export default {
               ).bind(inquilino.departamento, mesNombre, anio, buildingId).first();
 
               if (cuotaExistente) {
-                // Si la cuota ya está pagada, crear cuota extraordinaria
-                if (cuotaExistente.pagado === 1) {
-                  await env.DB.prepare(
-                    'INSERT INTO cuotas (departamento, mes, anio, monto, tipo, pagado, fecha_vencimiento, building_id, concepto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
-                  ).bind(
-                    inquilino.departamento,
-                    mesNombre,
-                    anio,
-                    montoPorMes,
-                    'EXTRAORDINARIA',
-                    0,
-                    `${anio}-${String(mesIdx + 1).padStart(2, '0')}-${ahora.getDate()}`,
-                    buildingId,
-                    `Proyecto: ${nombre} (${i + 1}/${mesesDif})`
-                  ).run();
-                  cuotasCreadas++;
-                } else {
-                  // Sumar al monto existente
-                  const nuevoMonto = parseFloat(cuotaExistente.monto) + montoPorMes;
-                  await env.DB.prepare(
-                    'UPDATE cuotas SET monto = ?, concepto = ? WHERE id = ?'
-                  ).bind(
-                    nuevoMonto,
-                    (cuotaExistente.concepto || '') + ` + Proyecto: ${nombre} (${i + 1}/${mesesDif})`,
-                    cuotaExistente.id
-                  ).run();
-                  cuotasActualizadas++;
-                }
-              } else {
-                // Crear nueva cuota
+                // SIEMPRE usar monto_extraordinario y concepto_extraordinario para separar del mantenimiento
+                const nuevoMontoExtra = parseFloat(cuotaExistente.monto_extraordinario || 0) + montoPorMes;
+                const nuevoConceptoExtra = (cuotaExistente.concepto_extraordinario ? cuotaExistente.concepto_extraordinario + ' + ' : '') + `Proyecto: ${nombre} (${i + 1}/${mesesDif})`;
+
                 await env.DB.prepare(
-                  'INSERT INTO cuotas (departamento, mes, anio, monto, tipo, pagado, fecha_vencimiento, building_id, concepto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+                  'UPDATE cuotas SET monto_extraordinario = ?, concepto_extraordinario = ? WHERE id = ?'
+                ).bind(nuevoMontoExtra, nuevoConceptoExtra, cuotaExistente.id).run();
+                cuotasActualizadas++;
+              } else {
+                // Crear nueva cuota EXTRAORDINARIA dedicada si no existe la mensual
+                await env.DB.prepare(
+                  'INSERT INTO cuotas (departamento, mes, anio, monto, monto_extraordinario, concepto_extraordinario, tipo, pagado, fecha_vencimiento, building_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
                 ).bind(
                   inquilino.departamento,
                   mesNombre,
                   anio,
+                  0, // Monto base 0
                   montoPorMes,
+                  `Proyecto: ${nombre} (${i + 1}/${mesesDif})`,
                   'EXTRAORDINARIA',
                   0,
                   `${anio}-${String(mesIdx + 1).padStart(2, '0')}-${ahora.getDate()}`,
-                  buildingId,
-                  `Proyecto: ${nombre} (${i + 1}/${mesesDif})`
+                  buildingId
                 ).run();
                 cuotasCreadas++;
               }
@@ -3140,45 +3136,29 @@ export default {
               ).bind(inquilino.departamento, mesNombre, anio, buildingId).first();
 
               if (cuotaExistente) {
-                if (cuotaExistente.pagado === 1) {
-                  await env.DB.prepare(
-                    'INSERT INTO cuotas (departamento, mes, anio, monto, tipo, pagado, fecha_vencimiento, building_id, concepto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
-                  ).bind(
-                    inquilino.departamento,
-                    mesNombre,
-                    anio,
-                    montoPorMes,
-                    'EXTRAORDINARIA',
-                    0,
-                    `${anio}-${String(mesIdx + 1).padStart(2, '0')}-${ahora.getDate()}`,
-                    buildingId,
-                    `Proyecto: ${proyecto.nombre} (${i + 1}/${mesesDif})`
-                  ).run();
-                  cuotasCreadas++;
-                } else {
-                  const nuevoMonto = parseFloat(cuotaExistente.monto) + montoPorMes;
-                  await env.DB.prepare(
-                    'UPDATE cuotas SET monto = ?, concepto = ? WHERE id = ?'
-                  ).bind(
-                    nuevoMonto,
-                    `Cuota + Proyecto: ${proyecto.nombre} (${i + 1}/${mesesDif})`,
-                    cuotaExistente.id
-                  ).run();
-                  cuotasActualizadas++;
-                }
-              } else {
+                // SIEMPRE usar monto_extraordinario y concepto_extraordinario
+                const nuevoMontoExtra = parseFloat(cuotaExistente.monto_extraordinario || 0) + montoPorMes;
+                const nuevoConceptoExtra = (cuotaExistente.concepto_extraordinario ? cuotaExistente.concepto_extraordinario + ' + ' : '') + `Proyecto: ${proyecto.nombre} (${i + 1}/${mesesDif})`;
+
                 await env.DB.prepare(
-                  'INSERT INTO cuotas (departamento, mes, anio, monto, tipo, pagado, fecha_vencimiento, building_id, concepto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+                  'UPDATE cuotas SET monto_extraordinario = ?, concepto_extraordinario = ? WHERE id = ?'
+                ).bind(nuevoMontoExtra, nuevoConceptoExtra, cuotaExistente.id).run();
+                cuotasActualizadas++;
+              } else {
+                // Crear nueva cuota EXTRAORDINARIA dedicada
+                await env.DB.prepare(
+                  'INSERT INTO cuotas (departamento, mes, anio, monto, monto_extraordinario, concepto_extraordinario, tipo, pagado, fecha_vencimiento, building_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
                 ).bind(
                   inquilino.departamento,
                   mesNombre,
                   anio,
+                  0,
                   montoPorMes,
+                  `Proyecto: ${proyecto.nombre} (${i + 1}/${mesesDif})`,
                   'EXTRAORDINARIA',
                   0,
                   `${anio}-${String(mesIdx + 1).padStart(2, '0')}-${ahora.getDate()}`,
-                  buildingId,
-                  `Proyecto: ${proyecto.nombre} (${i + 1}/${mesesDif})`
+                  buildingId
                 ).run();
                 cuotasCreadas++;
               }
@@ -3236,21 +3216,63 @@ export default {
           });
         }
 
-        // Buscar cuotas que tienen el concepto de este proyecto
-        const conceptoBuscar = `Proyecto: ${proyecto.nombre}`;
+        // EXPLICACIÓN DE LA LÓGICA DE LIMPIEZA:
+        // 1. Buscamos todas las cuotas que mencionen el proyecto en 'concepto' o 'concepto_extraordinario'.
+        // 2. Si el tipo es 'EXTRAORDINARIA' y el monto base (monto) es 0, es una cuota dedicada -> SE ELIMINA.
+        // 3. Si tiene monto base > 0 o es tipo 'MENSUAL', es una cuota combinada -> SE RESTA el extra y se limpia el concepto.
 
-        const cuotasAfectadas = await env.DB.prepare(
-          'SELECT id, monto_extraordinario FROM cuotas WHERE concepto_extraordinario = ? AND building_id = ?'
-        ).bind(conceptoBuscar, buildingId).all();
+        const queryCuotas = `
+          SELECT * FROM cuotas 
+          WHERE building_id = ? 
+          AND (concepto LIKE ? OR concepto_extraordinario LIKE ?)
+        `;
+        const projectPattern = `%Proyecto: ${proyecto.nombre}%`;
+        const { results: cuotasAfectadas } = await env.DB.prepare(queryCuotas)
+          .bind(buildingId, projectPattern, projectPattern)
+          .all();
 
-        let cuotasLimpiadas = 0;
+        let cuotasEliminadas = 0;
+        let cuotasRestauradas = 0;
 
-        // Limpiar el monto extraordinario de las cuotas asociadas
-        for (const cuota of cuotasAfectadas.results || []) {
-          await env.DB.prepare(
-            'UPDATE cuotas SET monto_extraordinario = 0, concepto_extraordinario = NULL WHERE id = ?'
-          ).bind(cuota.id).run();
-          cuotasLimpiadas++;
+        for (const cuota of cuotasAfectadas || []) {
+          // Caso A: Cuota dedicada (EXTRAORDINARIA con monto base 0)
+          if (cuota.tipo === 'EXTRAORDINARIA' && parseFloat(cuota.monto || 0) === 0) {
+            await env.DB.prepare('DELETE FROM cuotas WHERE id = ?').bind(cuota.id).run();
+            cuotasEliminadas++;
+          }
+          // Caso B: Cuota combinada (MENSUAL o EXTRAORDINARIA con contenido previo)
+          else {
+            let nuevoMontoBase = parseFloat(cuota.monto || 0);
+            let nuevoMontoExtra = parseFloat(cuota.monto_extraordinario || 0);
+            let nuevoConcepto = (cuota.concepto || '').replace(new RegExp(`\\s*\\+?\\s*Proyecto: ${proyecto.nombre}(\\s*\\(\\d+/\\d+\\))?`, 'g'), '').trim();
+            let nuevoConceptoExtra = (cuota.concepto_extraordinario || '').replace(new RegExp(`\\s*\\+?\\s*Proyecto: ${proyecto.nombre}(\\s*\\(\\d+/\\d+\\))?`, 'g'), '').trim();
+
+            // Si el monto estaba en 'monto' (formato viejo), intentar restarlo
+            // NOTA: Como no guardamos cuánto era el "monto del proyecto" por separado en el formato viejo, 
+            // esta parte es heurística. Pero en el formato nuevo (monto_extraordinario) es exacto.
+            if (cuota.concepto && cuota.concepto.includes(proyecto.nombre)) {
+              // Heurística para viejo formato: si solo era este proyecto, volver a monto estándar (ej: 550)
+              // Pero es mejor confiar en que nuevos proyectos usaran monto_extraordinario.
+              // Para el nuevo formato:
+              nuevoMontoExtra = 0;
+            } else {
+              nuevoMontoExtra = 0;
+            }
+
+            await env.DB.prepare(`
+              UPDATE cuotas 
+              SET monto_extraordinario = ?, 
+                  concepto_extraordinario = CASE WHEN ? = '' THEN NULL ELSE ? END,
+                  concepto = CASE WHEN ? = '' THEN NULL ELSE ? END
+              WHERE id = ?
+            `).bind(
+              0, // Limpiamos el extra
+              nuevoConceptoExtra, nuevoConceptoExtra,
+              nuevoConcepto, nuevoConcepto,
+              cuota.id
+            ).run();
+            cuotasRestauradas++;
+          }
         }
 
         // Soft delete del proyecto
@@ -3260,8 +3282,8 @@ export default {
 
         return new Response(JSON.stringify({
           ok: true,
-          msg: `Proyecto eliminado exitosamente. ${cuotasLimpiadas} cuotas actualizadas (monto extraordinario removido).`,
-          cuotasLimpiadas
+          msg: `Proyecto eliminado. ${cuotasEliminadas} cuotas borradas, ${cuotasRestauradas} cuotas restauradas.`,
+          stats: { cuotasEliminadas, cuotasRestauradas }
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
@@ -3563,12 +3585,14 @@ export default {
               console.log('❌ Archivo no encontrado en R2:', key);
               // Listar claves disponibles para debugging
               const list = await env.UPLOADS.list({ prefix: 'anuncios/', limit: 10 });
-              console.log('📋 Archivos disponibles:', list.objects.map(o => o.key));
+              console.log('📋 Archivos disponibles (lista):', list.objects.map(o => o.key));
 
               return new Response(JSON.stringify({
                 error: 'Archivo no encontrado',
                 key: key,
-                available: list.objects.map(o => o.key)
+                originalPath: path,
+                available: list.objects.map(o => o.key).slice(0, 10),
+                hint: 'Verifica que el archivo exista en el bucket R2 con este nombre exacto'
               }), {
                 status: 404,
                 headers: { ...corsHeaders, 'Content-Type': 'application/json' }

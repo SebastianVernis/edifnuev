@@ -1,2 +1,2 @@
-/uploads/* https://edificio-production.sebastianvernis.workers.dev/uploads/:splat 200
-/api/* https://edificio-production.sebastianvernis.workers.dev/api/:splat 200
+/uploads/* https://edificio-production.sebastianvernis.workers.dev/uploads/:splat 302
+/api/* https://edificio-production.sebastianvernis.workers.dev/api/:splat 302
