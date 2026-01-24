@@ -31,7 +31,7 @@
     "test:post-fixes": "node tests/post-fixes-endpoints.test.js",
     "deploy": "bash scripts/deployment/deploy.sh",
     "deploy:workers": "npx wrangler deploy --config wrangler.toml",
-    "deploy:pages": "npx wrangler pages deploy ./public --project-name edificio-production",
+    "deploy:pages": "npx wrangler pages deploy ./dist --project-name edificio-production",
     "wrangler": "wrangler",
     "test:password": "node scripts/testing/test-password.js",
     "test:clerk": "bash scripts/testing/test-clerk-integration.sh",

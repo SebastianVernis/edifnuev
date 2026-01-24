@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,7 +27,7 @@
             width: 100%;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         nav {
@@ -74,19 +75,22 @@
             color: white;
             padding: 100px 2rem;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .hero h1 {
             font-size: 3rem;
             margin-bottom: 1rem;
+            max-width: 900px;
         }
 
         .hero p {
             font-size: 1.2rem;
             margin-bottom: 2rem;
             max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
         }
 
         .btn-primary {
@@ -102,7 +106,7 @@
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         /* Features Section */
@@ -129,9 +133,13 @@
             background: white;
             padding: 2rem;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             text-align: center;
             transition: transform 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .feature-card:hover {
@@ -172,15 +180,18 @@
         .pricing-card {
             background: white;
             border-radius: 10px;
-            padding: 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 2.5rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             text-align: center;
             transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .pricing-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
         }
 
         .pricing-card.popular {
@@ -221,6 +232,8 @@
             list-style: none;
             margin: 2rem 0;
             text-align: left;
+            width: 100%;
+            max-width: 250px;
         }
 
         .plan-features li {
@@ -277,8 +290,9 @@
             }
         }
     </style>
-  <script src="/config.js"></script>
+    <script src="/config.js"></script>
 </head>
+
 <body>
     <!-- Header -->
     <header>
@@ -295,7 +309,8 @@
     <!-- Hero Section -->
     <section class="hero">
         <h1>Administración Inteligente para tu Edificio</h1>
-        <p>Control total de cuotas 2026-2027, auditorías en tiempo real y respaldos automáticos. La solución profesional y definitiva para tu comunidad.</p>
+        <p>Control total de cuotas 2026-2027, auditorías en tiempo real y respaldos automáticos. La solución profesional
+            y definitiva para tu comunidad.</p>
         <a href="#pricing" class="btn-primary">Ver Planes</a>
     </section>
 
@@ -306,7 +321,8 @@
             <div class="feature-card">
                 <div class="feature-icon">✅</div>
                 <h3>Cuotas 2026-2027</h3>
-                <p>Ciclo completo de facturación ya pre-configurado para los próximos años con actualización diaria automática.</p>
+                <p>Ciclo completo de facturación ya pre-configurado para los próximos años con actualización diaria
+                    automática.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🛡️</div>
@@ -316,7 +332,8 @@
             <div class="feature-card">
                 <div class="feature-icon">☁️</div>
                 <h3>Respaldos Horarios</h3>
-                <p>Tu información está segura con backups automáticos cada hora y exportación directa a formato JSON.</p>
+                <p>Tu información está segura con backups automáticos cada hora y exportación directa a formato JSON.
+                </p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🔐</div>
@@ -326,12 +343,14 @@
             <div class="feature-card">
                 <div class="feature-icon">💼</div>
                 <h3>Fondos de Reserva</h3>
-                <p>Gestión avanzada de ahorro acumulado, patrimonio total y proyectos urgentes con priorización automática.</p>
+                <p>Gestión avanzada de ahorro acumulado, patrimonio total y proyectos urgentes con priorización
+                    automática.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🐳</div>
                 <h3>Portabilidad Docker</h3>
-                <p>Arquitectura moderna lista para escalar en cualquier nube. Máxima eficiencia y estabilidad garantizada.</p>
+                <p>Arquitectura moderna lista para escalar en cualquier nube. Máxima eficiencia y estabilidad
+                    garantizada.</p>
             </div>
         </div>
     </section>
@@ -339,7 +358,8 @@
     <!-- Pricing Section -->
     <section class="pricing" id="pricing">
         <h2>Planes Transparentes por Tamaño de Comunidad</h2>
-        <p style="text-align: center; margin-bottom: 3rem; color: #666;">Todos los planes incluyen el 100% de las funcionalidades actuales.</p>
+        <p style="text-align: center; margin-bottom: 3rem; color: #666;">Todos los planes incluyen el 100% de las
+            funcionalidades actuales.</p>
         <div class="pricing-grid">
             <!-- Comunidad Pequeña -->
             <div class="pricing-card">
@@ -417,4 +437,5 @@
         });
     </script>
 </body>
+
 </html>

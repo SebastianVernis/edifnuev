@@ -17,7 +17,7 @@ npx wrangler deploy --config wrangler.toml
 
 # 3. Despliegue de Pages (Frontend)
 echo "🌐 Desplegando Cloudflare Pages..."
-# Nota: Usamos wrangler pages deploy para subir el directorio public
-npx wrangler pages deploy ./public --project-name edificio-production
+# Nota: Usamos wrangler pages deploy para subir el directorio dist
+npx wrangler pages deploy ./dist --project-name edificio-production
 
 echo "✅ Despliegue completado con éxito!"
