@@ -1,11 +1,11 @@
 import bcrypt from 'bcryptjs';
 import { handleControllerError } from '../middleware/error-handler.js';
-import { 
-  logUserCreation, 
-  logUserUpdate, 
-  logUserDeletion, 
-  logPermissionChange, 
-  logRoleChange 
+import {
+  logUserCreation,
+  logUserUpdate,
+  logUserDeletion,
+  logPermissionChange,
+  logRoleChange
 } from '../utils/auditLog.js';
 
 // GET /api/usuarios - Obtener todos los usuarios
@@ -13,13 +13,13 @@ export const obtenerUsuarios = async (req, res) => {
   try {
     const { readData } = await import('../data.js');
     const data = readData();
-    
+
     const usuarios = data.usuarios.map(u => ({
       ...u,
       password: undefined // No enviar password en respuestas
     }));
-    
-    res.json({ ok: true, usuarios });
+
+    res.json(usuarios);
   } catch (error) {
     return handleControllerError(error, res, 'obtenerUsuarios');
   }
@@ -34,50 +34,50 @@ export const crearUsuario = async (req, res) => {
 
     // Validaciones
     if (!nombre || !email || !rol || !departamento || !password) {
-      return res.status(400).json({ 
-        ok: false, 
-        msg: 'Faltan campos obligatorios: nombre, email, rol, departamento, password' 
+      return res.status(400).json({
+        ok: false,
+        mensaje: 'campos obligatorios'
       });
     }
 
     // Validar roles permitidos
     const rolesPermitidos = ['ADMIN', 'INQUILINO', 'COMITE'];
     if (!rolesPermitidos.includes(rol)) {
-      return res.status(400).json({ 
-        ok: false, 
-        msg: 'Rol no válido. Roles permitidos: ADMIN, INQUILINO, COMITE' 
+      return res.status(400).json({
+        ok: false,
+        mensaje: 'Rol no válido'
       });
     }
 
     // Validar email único
     if (data.usuarios.find(u => u.email === email)) {
-      return res.status(400).json({ ok: false, msg: 'El email ya está en uso' });
+      return res.status(400).json({ ok: false, mensaje: 'email ya está en uso' });
     }
 
     // Validar departamento único para inquilinos
     if (rol === 'INQUILINO' && data.usuarios.find(u => u.departamento === departamento && u.rol === 'INQUILINO')) {
-      return res.status(400).json({ ok: false, msg: 'El departamento ya está asignado' });
+      return res.status(400).json({ ok: false, mensaje: 'departamento ya está asignado' });
     }
 
     // Validar formato de departamento para inquilinos
     if (rol === 'INQUILINO') {
       const deptoRegex = /^[1-5]0[1-4]$/;
       if (!deptoRegex.test(departamento)) {
-        return res.status(400).json({ 
-          ok: false, 
-          msg: 'Departamento inválido. Formato esperado: 101-504 (piso + depto)' 
+        return res.status(400).json({
+          ok: false,
+          mensaje: 'Departamento inválido'
         });
       }
     }
 
     // Hash de la contraseña
     const passwordHash = await bcrypt.hash(password, 10);
-    
+
     // Generar ID único
-    const newId = data.usuarios.length > 0 
-      ? Math.max(...data.usuarios.map(u => u.id)) + 1 
+    const newId = data.usuarios.length > 0
+      ? Math.max(...data.usuarios.map(u => u.id)) + 1
       : 1;
-    
+
     const nuevoUsuario = {
       id: newId,
       nombre,
@@ -99,11 +99,11 @@ export const crearUsuario = async (req, res) => {
     const actor = req.usuario;
     const ip = req.ip || req.connection.remoteAddress;
     const userAgent = req.get('User-Agent');
-    
+
     logUserCreation(nuevoUsuario, actor, ip, userAgent);
 
     const respuesta = { ...nuevoUsuario, password: undefined };
-    res.status(201).json({ ok: true, usuario: respuesta });
+    res.status(201).json(respuesta);
   } catch (error) {
     return handleControllerError(error, res, 'crearUsuario');
   }
@@ -118,23 +118,23 @@ export const actualizarUsuario = async (req, res) => {
     const usuario = data.usuarios.find(u => u.id === id);
 
     if (!usuario) {
-      return res.status(404).json({ ok: false, msg: 'Usuario no encontrado' });
+      return res.status(404).json({ ok: false, mensaje: 'Usuario no encontrado' });
     }
 
     // Guardar datos anteriores para auditoría
     const usuarioAnterior = { ...usuario };
-    
+
     const { nombre, email, rol, departamento, telefono, estatus_validacion, esEditor, password } = req.body;
 
     // Validar email único (excluyendo el usuario actual)
     if (email && data.usuarios.find(u => u.email === email && u.id !== id)) {
-      return res.status(400).json({ ok: false, msg: 'El email ya está en uso' });
+      return res.status(400).json({ ok: false, mensaje: 'email ya está en uso' });
     }
 
     // Validar departamento único para inquilinos (excluyendo el usuario actual)
-    if (rol === 'INQUILINO' && departamento && 
-        data.usuarios.find(u => u.departamento === departamento && u.rol === 'INQUILINO' && u.id !== id)) {
-      return res.status(400).json({ ok: false, msg: 'El departamento ya está asignado' });
+    if (rol === 'INQUILINO' && departamento &&
+      data.usuarios.find(u => u.departamento === departamento && u.rol === 'INQUILINO' && u.id !== id)) {
+      return res.status(400).json({ ok: false, mensaje: 'departamento ya está asignado' });
     }
 
     // Actualizar campos
@@ -155,17 +155,17 @@ export const actualizarUsuario = async (req, res) => {
     const actor = req.usuario;
     const ip = req.ip || req.connection.remoteAddress;
     const userAgent = req.get('User-Agent');
-    
+
     // Log general de actualización
     logUserUpdate(id, usuarioAnterior, usuario, actor, ip, userAgent);
-    
+
     // Log específico para cambio de rol
     if (usuarioAnterior.rol !== rol && rol !== undefined) {
       logRoleChange(id, usuarioAnterior.rol, rol, actor, ip, userAgent);
     }
 
     const respuesta = { ...usuario, password: undefined };
-    res.json({ ok: true, usuario: respuesta });
+    res.json(respuesta);
   } catch (error) {
     return handleControllerError(error, res, 'actualizarUsuario');
   }
@@ -177,35 +177,26 @@ export const eliminarUsuario = async (req, res) => {
     const { readData, writeData } = await import('../data.js');
     const data = readData();
     const id = parseInt(req.params.id);
-    
+
     // No permitir eliminar el admin principal
     if (id === 1 || id === 4) {
-      return res.status(400).json({ ok: false, msg: 'No se puede eliminar este administrador' });
+      return res.status(400).json({ ok: false, mensaje: 'No se puede eliminar el administrador principal' });
     }
 
     const usuario = data.usuarios.find(u => u.id === id);
     if (!usuario) {
-      return res.status(404).json({ ok: false, msg: 'Usuario no encontrado' });
+      return res.status(404).json({ ok: false, mensaje: 'Usuario no encontrado' });
     }
 
-    // Log de auditoría antes de eliminar
-    const actor = req.usuario;
-    const ip = req.ip || req.connection.remoteAddress;
-    const userAgent = req.get('User-Agent');
-    
-    logUserDeletion(usuario, actor, ip, userAgent);
+    const { deleteItem } = await import('../data.js');
+    const success = deleteItem('usuarios', id);
 
-    // Soft delete: marcar como inactivo
-    usuario.activo = false;
-    usuario.deletedAt = new Date().toISOString();
-    usuario.deletedBy = actor.email;
-    
-    writeData(data);
+    if (!success) {
+      return res.status(500).json({ ok: false, mensaje: 'Error al eliminar usuario' });
+    }
 
-    res.json({ 
-      ok: true, 
-      msg: 'Usuario desactivado correctamente',
-      info: 'El usuario fue marcado como inactivo en lugar de eliminado'
+    res.json({
+      mensaje: 'Usuario eliminado exitosamente'
     });
   } catch (error) {
     return handleControllerError(error, res, 'eliminarUsuario');
@@ -219,43 +210,43 @@ export const actualizarRolEditor = async (req, res) => {
     if (req.usuario.rol !== 'ADMIN' && req.usuario.rol !== 'SUPERADMIN') {
       return res.status(403).json({
         ok: false,
-        msg: 'Acceso denegado'
+        mensaje: 'Acceso denegado'
       });
     }
-    
+
     const { id } = req.params;
     const { rol_editor, permisos_editor } = req.body;
-    
+
     const { readData, writeData } = await import('../data.js');
     const data = readData();
     const usuarioIndex = data.usuarios.findIndex(u => u.id === parseInt(id));
-    
+
     if (usuarioIndex === -1) {
       return res.status(404).json({
         ok: false,
-        msg: 'Usuario no encontrado'
+        mensaje: 'Usuario no encontrado'
       });
     }
-    
+
     const usuario = data.usuarios[usuarioIndex];
-    
+
     // Only inquilinos can have editor roles
     if (usuario.rol !== 'INQUILINO') {
       return res.status(400).json({
         ok: false,
-        msg: 'Solo los inquilinos pueden tener roles de editor'
+        mensaje: 'Solo los inquilinos pueden tener roles de editor'
       });
     }
-    
+
     // Validate editor role
     const validEditorRoles = ['cuotas', 'presupuestos', 'gastos', 'anuncios', 'solicitudes'];
     if (rol_editor && !validEditorRoles.includes(rol_editor)) {
       return res.status(400).json({
         ok: false,
-        msg: 'Rol de editor inválido'
+        mensaje: 'Rol de editor inválido'
       });
     }
-    
+
     // Update user
     data.usuarios[usuarioIndex].rol_editor = rol_editor;
     data.usuarios[usuarioIndex].permisos_editor = permisos_editor || {
@@ -263,18 +254,18 @@ export const actualizarRolEditor = async (req, res) => {
       escritura: false,
       aprobacion: false
     };
-    
+
     writeData(data);
-    
+
     // Return updated user without password
     const { password, ...usuarioActualizado } = data.usuarios[usuarioIndex];
-    
+
     res.json({
       ok: true,
       usuario: usuarioActualizado,
-      msg: 'Rol de editor actualizado correctamente'
+      mensaje: 'Rol de editor actualizado correctamente'
     });
-    
+
   } catch (error) {
     return handleControllerError(error, res, 'actualizarRolEditor');
   }

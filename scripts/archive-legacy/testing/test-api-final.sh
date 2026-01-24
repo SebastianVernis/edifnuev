@@ -116,7 +116,7 @@ echo "=================================================="
 echo "📊 Resumen Final"
 echo "=================================================="
 echo ""
-echo "Frontend: https://production.chispartbuilding.pages.dev"
+echo "Frontend: https://edificio-production.pages.dev"
 echo "API:      $API_URL"
 echo ""
 

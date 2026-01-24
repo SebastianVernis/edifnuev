@@ -14,7 +14,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # URLs
-FRONTEND_URL="https://production.chispartbuilding.pages.dev"
+FRONTEND_URL="https://edificio-production.pages.dev"
 API_URL="https://edificio-admin.sebastianvernis.workers.dev"
 HEALTH_ENDPOINT="${API_URL}/api/validation/health"
 LOGIN_ENDPOINT="${API_URL}/api/auth/login"

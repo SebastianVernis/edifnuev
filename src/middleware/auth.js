@@ -32,7 +32,7 @@ const logAccess = (type, userId, userRole, resource, permission, granted, ip, us
   // Escribir log de acceso
   const logFile = path.join(logsDir, `access-${new Date().toISOString().split('T')[0]}.log`);
   const logLine = JSON.stringify(logEntry) + '\n';
-  
+
   try {
     fs.appendFileSync(logFile, logLine);
   } catch (error) {
@@ -97,7 +97,7 @@ export const verifyToken = (req, res, next) => {
 export const isAdmin = (req, res, next) => {
   const ip = req.ip || req.connection.remoteAddress;
   const userAgent = req.get('User-Agent');
-  
+
   if (req.usuario && req.usuario.rol === 'ADMIN') {
     logAccess('ADMIN_ACCESS_GRANTED', req.usuario.id, req.usuario.rol, req.path, 'admin', true, ip, userAgent);
     next();
@@ -114,7 +114,7 @@ export const isAdmin = (req, res, next) => {
 export const isComiteOrAdmin = (req, res, next) => {
   const ip = req.ip || req.connection.remoteAddress;
   const userAgent = req.get('User-Agent');
-  
+
   if (req.usuario && (req.usuario.rol === 'ADMIN' || req.usuario.rol === 'COMITE')) {
     logAccess('COMITE_ADMIN_ACCESS_GRANTED', req.usuario.id, req.usuario.rol, req.path, 'comite_admin', true, ip, userAgent);
     next();
@@ -134,7 +134,7 @@ export const hasPermission = (permiso) => {
     const cacheKey = `${userId}-${permiso}`;
     const ip = req.ip || req.connection.remoteAddress;
     const userAgent = req.get('User-Agent');
-    
+
     // Verificar cache primero
     const cachedResult = permissionsCache.get(cacheKey);
     if (cachedResult && (Date.now() - cachedResult.timestamp < CACHE_TTL)) {
@@ -149,11 +149,11 @@ export const hasPermission = (permiso) => {
         });
       }
     }
-    
+
     // Obtener usuario completo de la base de datos para tener acceso a los permisos
     const data = readData();
     const usuarioCompleto = data.usuarios.find(u => u.id === userId);
-    
+
     if (!usuarioCompleto) {
       logAccess('USER_NOT_FOUND', userId, req.usuario.rol, req.path, permiso, false, ip, userAgent);
       return res.status(404).json({
@@ -161,16 +161,16 @@ export const hasPermission = (permiso) => {
         message: 'Usuario no encontrado'
       });
     }
-    
+
     // Verificar si el usuario tiene el permiso requerido
     const hasPermissionResult = Usuario.tienePermiso(usuarioCompleto, permiso);
-    
+
     // Guardar en cache
     permissionsCache.set(cacheKey, {
       hasPermission: hasPermissionResult,
       timestamp: Date.now()
     });
-    
+
     if (hasPermissionResult) {
       logAccess('PERMISSION_GRANTED', userId, req.usuario.rol, req.path, permiso, true, ip, userAgent);
       next();
@@ -189,7 +189,7 @@ export const isOwner = (req, res, next) => {
   const { id } = req.params;
   const ip = req.ip || req.connection.remoteAddress;
   const userAgent = req.get('User-Agent');
-  
+
   if (req.usuario.rol === 'ADMIN' || req.usuario.id === parseInt(id)) {
     logAccess('OWNER_ACCESS_GRANTED', req.usuario.id, req.usuario.rol, req.path, 'owner', true, ip, userAgent);
     next();
@@ -233,7 +233,7 @@ export const getCacheStats = () => {
 export const getTodayAccessLogs = () => {
   const today = new Date().toISOString().split('T')[0];
   const logFile = path.join(process.cwd(), 'logs', `access-${today}.log`);
-  
+
   try {
     if (fs.existsSync(logFile)) {
       const content = fs.readFileSync(logFile, 'utf8');
@@ -258,8 +258,8 @@ export const generarJWT = (userId, userRole, userDepartamento, buildingId = null
       buildingId: buildingId
     }
   };
-  
-  return jwt.sign(payload, process.env.JWT_SECRET || 'edificio205_secret_key_2025', {
+
+  return jwt.sign(payload, process.env.JWT_SECRET || 'edificio-admin-secret-key-2025', {
     expiresIn: '24h'
   });
 };

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,11 +56,12 @@
       gap: 2rem;
     }
 
-    .config-panel, .summary-panel {
+    .config-panel,
+    .summary-panel {
       background: white;
       padding: 2rem;
       border-radius: 1rem;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     h2 {
@@ -88,7 +90,8 @@
       margin-top: 0.25rem;
     }
 
-    input[type="number"], input[type="range"] {
+    input[type="number"],
+    input[type="range"] {
       width: 100%;
       padding: 0.75rem;
       border: 2px solid #E5E7EB;
@@ -276,6 +279,7 @@
   </style>
   <script src="/config.js"></script>
 </head>
+
 <body>
   <div class="container">
     <a href="/register" class="back-link">
@@ -325,9 +329,9 @@
         <div class="reference-plans">
           <h4><i class="fas fa-info-circle"></i> Planes de referencia</h4>
           <ul>
-            <li>Plan Básico: hasta 20 unidades - $499/mes</li>
-            <li>Plan Profesional: hasta 50 unidades - $999/mes</li>
-            <li>Plan Empresarial: hasta 200 unidades - $1,999/mes</li>
+            <li>Comunidad Pequeña: hasta 20 unidades - $499/mes</li>
+            <li>Comunidad Mediana: hasta 50 unidades - $949/mes</li>
+            <li>Comunidad Grande: hasta 200 unidades - $1,799/mes</li>
           </ul>
         </div>
       </div>
@@ -341,15 +345,11 @@
             <span id="summaryUnits">1</span>
           </div>
           <div class="price-row">
-            <span>Costo base:</span>
-            <span class="price" id="basePrice">$0</span>
-          </div>
-          <div class="price-row">
-            <span>Margen (10%):</span>
-            <span class="price" id="margin">$0</span>
+            <span>Precio por unidad:</span>
+            <span class="price" id="unitPrice">$0</span>
           </div>
           <div class="price-row total">
-            <span>Total mensual:</span>
+            <span>Inversión Mensual:</span>
             <span id="totalPrice">$0</span>
           </div>
         </div>
@@ -370,34 +370,25 @@
     // Pricing logic
     const PLANS = {
       basico: { maxUnits: 20, price: 499 },
-      profesional: { maxUnits: 50, price: 999 },
-      empresarial: { maxUnits: 200, price: 1999 }
+      profesional: { maxUnits: 50, price: 949 },
+      empresarial: { maxUnits: 200, price: 1799 }
     };
 
     function calculatePrice(units) {
       let costPerUnit;
 
       if (units <= PLANS.basico.maxUnits) {
-        // Básico: $499 / 20 unidades = $24.95 por unidad
         costPerUnit = PLANS.basico.price / PLANS.basico.maxUnits;
       } else if (units <= PLANS.profesional.maxUnits) {
-        // Profesional: $999 / 50 unidades = $19.98 por unidad
         costPerUnit = PLANS.profesional.price / PLANS.profesional.maxUnits;
-      } else if (units <= PLANS.empresarial.maxUnits) {
-        // Empresarial: $1999 / 200 unidades = $9.995 por unidad
-        costPerUnit = PLANS.empresarial.price / PLANS.empresarial.maxUnits;
       } else {
-        // Para más de 200 unidades, usar el costo del plan empresarial
         costPerUnit = PLANS.empresarial.price / PLANS.empresarial.maxUnits;
       }
 
-      const baseCost = costPerUnit * units;
-      const margin = baseCost * 0.10; // 10% margen
-      const total = baseCost + margin;
+      const total = costPerUnit * units;
 
       return {
-        baseCost: Math.round(baseCost),
-        margin: Math.round(margin),
+        unitPrice: costPerUnit,
         total: Math.round(total)
       };
     }
@@ -405,8 +396,7 @@
     const unitsInput = document.getElementById('units');
     const unitsDisplay = document.getElementById('unitsDisplay');
     const summaryUnits = document.getElementById('summaryUnits');
-    const basePriceEl = document.getElementById('basePrice');
-    const marginEl = document.getElementById('margin');
+    const unitPriceEl = document.getElementById('unitPrice');
     const totalPriceEl = document.getElementById('totalPrice');
 
     function updatePrice() {
@@ -415,8 +405,7 @@
 
       unitsDisplay.textContent = units;
       summaryUnits.textContent = units + ' unidades';
-      basePriceEl.textContent = '$' + pricing.baseCost.toLocaleString('es-MX');
-      marginEl.textContent = '$' + pricing.margin.toLocaleString('es-MX');
+      unitPriceEl.textContent = '$' + pricing.unitPrice.toFixed(2);
       totalPriceEl.textContent = '$' + pricing.total.toLocaleString('es-MX') + ' MXN';
     }
 
@@ -443,4 +432,5 @@
     });
   </script>
 </body>
+
 </html>

@@ -120,13 +120,13 @@ app.use((err, req, res, next) => {
 async function inicializarSistema() {
   try {
     console.log('🚀 Iniciando sistema...');
-    
+
     // Inicializar cuotas automáticamente
     await inicializarCuotasAnuales();
-    
+
     // Actualizar cuotas vencidas
     await actualizarCuotasVencidas();
-    
+
     console.log('✅ Sistema inicializado correctamente');
   } catch (error) {
     console.error('❌ Error durante la inicialización:', error);
@@ -136,11 +136,11 @@ async function inicializarSistema() {
 // Función para respaldos automáticos
 async function programarRespaldos() {
   try {
-    const { createAutoBackup } = await import('../scripts/backupData.js');
-    
+    const { createAutoBackup } = await import('../scripts/archive-legacy/database/backupData.js');
+
     // Crear respaldo inmediato
     await createAutoBackup('startup');
-    
+
     // Programar respaldos cada 60 minutos
     setInterval(async () => {
       try {
@@ -149,7 +149,7 @@ async function programarRespaldos() {
         console.error('Error en respaldo programado:', error);
       }
     }, 60 * 60 * 1000); // Cada 60 minutos
-    
+
     console.log('Respaldos automáticos configurados cada 60 minutos');
   } catch (error) {
     console.error('Error configurando respaldos automáticos:', error);
@@ -160,16 +160,16 @@ async function programarRespaldos() {
 app.listen(PORT, async () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
   console.log('DNS configurado: http://ec2-18-223-32-141.us-east-2.compute.amazonaws.com');
-  
+
   // Inicializar SMTP
   await getTransporter();
 
   // Inicializar sistema después de que el servidor esté corriendo
   await inicializarSistema();
-  
+
   // Configurar respaldos automáticos
   await programarRespaldos();
-  
+
   // Programar actualización de cuotas vencidas cada día
   setInterval(async () => {
     try {

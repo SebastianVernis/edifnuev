@@ -7,8 +7,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production && npm cache clean --force
+# Install dependencies (bcryptjs doesn't need build tools)
+RUN npm ci --omit=dev && npm cache clean --force
 
 # Production stage
 FROM node:20-alpine
@@ -42,12 +42,13 @@ COPY --chown=nodejs:nodejs data.json ./data.json 2>/dev/null || :
 # Switch to non-root user
 USER nodejs
 
-# Expose port (Cloud Run uses PORT env variable)
+# Expose port (Cloud Run uses PORT env variable, defaulting to 8080)
+ENV PORT=8080
 EXPOSE 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:8080/api/validation/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+  CMD node -e "require('http').get('http://localhost:' + (process.env.PORT || 8080) + '/api/validation/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
 # Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]

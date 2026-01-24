@@ -29,13 +29,15 @@
     "test:bug2:selectors": "node tests/bug2-selector-validation.test.js",
     "test:playwright": "npx playwright test --config=config/playwright.config.js",
     "test:post-fixes": "node tests/post-fixes-endpoints.test.js",
-    "deploy:workers": "./scripts/deployment/deploy-workers.sh",
+    "deploy": "bash scripts/deployment/deploy.sh",
+    "deploy:workers": "npx wrangler deploy --config wrangler.toml",
+    "deploy:pages": "npx wrangler pages deploy ./public --project-name edificio-production",
     "wrangler": "wrangler",
     "test:password": "node scripts/testing/test-password.js",
-    "test:clerk": "sh scripts/testing/test-clerk-integration.sh",
+    "test:clerk": "bash scripts/testing/test-clerk-integration.sh",
     "test:comprehensive": "node scripts/testing/comprehensive-flow-test.js",
     "admin:reset-password": "node scripts/admin/reset-admin-password.js",
-    "utils:d1-shell": "sh scripts/utils/d1-shell.sh"
+    "utils:d1-shell": "bash scripts/utils/d1-shell.sh"
   },
   "keywords": [
     "edificio",
@@ -49,7 +51,6 @@
   "dependencies": {
     "@clerk/backend": "^2.29.3",
     "@clerk/clerk-js": "^5.120.0",
-    "bcrypt": "^6.0.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",

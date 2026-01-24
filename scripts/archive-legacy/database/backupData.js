@@ -7,8 +7,8 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const dataPath = path.join(__dirname, '../data.json');
-const backupsDir = path.join(__dirname, '../backups');
+const dataPath = path.join(__dirname, '../../../data.json');
+const backupsDir = path.join(__dirname, '../../../backups');
 
 /**
  * Crear backup automático con rotación
@@ -22,24 +22,24 @@ export async function createAutoBackup(reason = 'auto') {
 
         // Leer datos actuales
         const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
-        
+
         // Generar nombre de archivo con timestamp
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
         const backupFilename = `data-backup-${timestamp}-${reason}.json`;
         const backupPath = path.join(backupsDir, backupFilename);
-        
+
         // Crear backup
         fs.writeFileSync(backupPath, JSON.stringify(data, null, 2));
-        
+
         // Obtener información del archivo
         const stats = fs.statSync(backupPath);
-        
+
         console.log(`✅ Backup creado: ${backupFilename}`);
         console.log(`📊 Tamaño: ${(stats.size / 1024).toFixed(2)} KB`);
-        
+
         // Limpiar backups antiguos (mantener solo los últimos 10)
         await cleanOldBackups();
-        
+
         return {
             success: true,
             filename: backupFilename,
@@ -47,7 +47,7 @@ export async function createAutoBackup(reason = 'auto') {
             size: stats.size,
             timestamp: new Date().toISOString()
         };
-        
+
     } catch (error) {
         console.error('❌ Error creando backup:', error);
         return {
@@ -79,7 +79,7 @@ async function cleanOldBackups() {
                 console.log(`🗑️ Backup antiguo eliminado: ${file.name}`);
             });
         }
-        
+
     } catch (error) {
         console.error('⚠️ Error limpiando backups antiguos:', error);
     }
@@ -91,28 +91,28 @@ async function cleanOldBackups() {
 export async function restoreFromBackup(backupFilename) {
     try {
         const backupPath = path.join(backupsDir, backupFilename);
-        
+
         if (!fs.existsSync(backupPath)) {
             throw new Error(`Backup no encontrado: ${backupFilename}`);
         }
-        
+
         // Crear backup del estado actual antes de restaurar
         await createAutoBackup('before-restore');
-        
+
         // Leer backup
         const backupData = JSON.parse(fs.readFileSync(backupPath, 'utf8'));
-        
+
         // Restaurar datos
         fs.writeFileSync(dataPath, JSON.stringify(backupData, null, 2));
-        
+
         console.log(`✅ Datos restaurados desde: ${backupFilename}`);
-        
+
         return {
             success: true,
             restoredFrom: backupFilename,
             timestamp: new Date().toISOString()
         };
-        
+
     } catch (error) {
         console.error('❌ Error restaurando backup:', error);
         return {
@@ -130,7 +130,7 @@ export function listBackups() {
         if (!fs.existsSync(backupsDir)) {
             return { success: true, backups: [] };
         }
-        
+
         const backups = fs.readdirSync(backupsDir)
             .filter(file => file.startsWith('data-backup-') && file.endsWith('.json'))
             .map(file => {
@@ -144,13 +144,13 @@ export function listBackups() {
                 };
             })
             .sort((a, b) => b.created - a.created); // Más recientes primero
-        
+
         return {
             success: true,
             backups,
             total: backups.length
         };
-        
+
     } catch (error) {
         console.error('❌ Error listando backups:', error);
         return {
@@ -164,14 +164,14 @@ export function listBackups() {
 if (import.meta.url === `file://${process.argv[1]}`) {
     const action = process.argv[2];
     const param = process.argv[3];
-    
+
     switch (action) {
         case 'create':
             createAutoBackup(param || 'manual').then(result => {
                 console.log(result.success ? '✅ Backup creado' : '❌ Error:', result);
             });
             break;
-            
+
         case 'restore':
             if (!param) {
                 console.error('❌ Especifique el nombre del backup a restaurar');
@@ -181,7 +181,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
                 console.log(result.success ? '✅ Restauración completa' : '❌ Error:', result);
             });
             break;
-            
+
         case 'list':
             const list = listBackups();
             if (list.success) {
@@ -193,7 +193,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
                 console.error('❌ Error:', list.error);
             }
             break;
-            
+
         default:
             console.log(`
 🔧 Sistema de Backup - Edificio Admin

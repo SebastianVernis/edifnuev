@@ -4,7 +4,7 @@
  */
 
 import { readData, writeData } from '../data.js';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { sendInvitationEmail } from '../utils/smtp.js';
 
@@ -65,7 +65,7 @@ export async function sendInvitation(req, res) {
     // Verificar si el email ya existe
     const data = readData();
     const existingUser = data.usuarios.find(u => u.email === email);
-    
+
     if (existingUser) {
       return res.status(409).json({
         ok: false,
@@ -111,7 +111,7 @@ export async function sendInvitation(req, res) {
     if (!emailResult.ok) {
       // Eliminar token si falla el envío
       invitationTokens.delete(invitationToken);
-      
+
       return res.status(500).json({
         ok: false,
         msg: 'Error al enviar la invitación por email',
@@ -251,7 +251,7 @@ export async function activateInvitation(req, res) {
     // Crear usuario
     const data = readData();
     const hashedPassword = await bcrypt.hash(password, 10);
-    
+
     const nuevoUsuario = {
       id: data.usuarios.length + 1,
       nombre: invitation.name,
@@ -276,10 +276,10 @@ export async function activateInvitation(req, res) {
 
     // Generar token JWT
     const jwtToken = jwt.sign(
-      { 
-        id: nuevoUsuario.id, 
+      {
+        id: nuevoUsuario.id,
         email: nuevoUsuario.email,
-        rol: nuevoUsuario.rol 
+        rol: nuevoUsuario.rol
       },
       JWT_SECRET,
       { expiresIn: '7d' }

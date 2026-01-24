@@ -4,32 +4,41 @@
  */
 
 import { readData, writeData } from '../data.js';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { sendOtpEmail, sendWelcomeEmail, checkEmailRateLimit } from '../utils/smtp.js';
 import { verifyEmailWithCache } from '../utils/emailVerification.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'edificio-admin-secret-key-2025';
 
-// Planes disponibles
+// Planes disponibles (Todos con 100% de funcionalidades)
+const ALL_FEATURES = [
+  'Gestión de cuotas 2026-2027',
+  'Historial de auditoría (Logs)',
+  'Respaldos horários automáticos',
+  'Gestión de fondos y presupuesto',
+  'Portal completo para residentes',
+  'Soporte técnico prioritario'
+];
+
 const PLANS = {
-  basico: { 
-    name: 'Plan Básico', 
-    price: 499, 
+  basico: {
+    name: 'Comunidad Pequeña',
+    price: 499,
     maxUnits: 20,
-    features: ['Gestión de cuotas', 'Registro de gastos', 'Comunicados', 'Acceso para residentes']
+    features: ALL_FEATURES
   },
-  profesional: { 
-    name: 'Plan Profesional', 
-    price: 999, 
+  profesional: {
+    name: 'Comunidad Mediana',
+    price: 949,
     maxUnits: 50,
-    features: ['Todo en Básico', 'Presupuestos', 'Notificaciones email', 'Reportes', 'Roles personalizados']
+    features: ALL_FEATURES
   },
-  empresarial: { 
-    name: 'Plan Empresarial', 
-    price: 1999, 
+  empresarial: {
+    name: 'Comunidad Grande',
+    price: 1799,
     maxUnits: 200,
-    features: ['Todo en Profesional', 'Múltiples edificios', 'Dashboard personalizado', 'API', 'Soporte prioritario']
+    features: ALL_FEATURES
   },
 };
 
@@ -62,7 +71,7 @@ export async function register(req, res) {
 
     // Validar email con APILayer
     const emailVerification = await verifyEmailWithCache(email, req.env || process.env);
-    
+
     if (!emailVerification.valid) {
       return res.status(400).json({
         ok: false,
@@ -71,7 +80,7 @@ export async function register(req, res) {
         suggestion: emailVerification.details?.did_you_mean || null
       });
     }
-    
+
     // Log de verificación exitosa
     console.log(`✅ Email verificado: ${email} - Score: ${emailVerification.details?.score || 'N/A'}`);
 
@@ -86,7 +95,7 @@ export async function register(req, res) {
     // Verificar si el email ya existe en usuarios
     const data = readData();
     const existingUser = data.usuarios.find(u => u.email === email);
-    
+
     if (existingUser) {
       return res.status(409).json({
         ok: false,
@@ -145,7 +154,7 @@ export async function sendOtp(req, res) {
 
     // Validar email con APILayer antes de enviar OTP
     const emailVerification = await verifyEmailWithCache(email, req.env || process.env);
-    
+
     if (!emailVerification.valid) {
       return res.status(400).json({
         ok: false,
@@ -281,7 +290,7 @@ export async function verifyOtp(req, res) {
 
     // Código correcto - eliminar OTP y actualizar registro pendiente
     otpStore.delete(email);
-    
+
     const pendingReg = pendingRegistrations.get(email);
     if (pendingReg) {
       pendingReg.otpVerified = true;
@@ -384,10 +393,10 @@ export async function checkout(req, res) {
  */
 export async function setupBuilding(req, res) {
   try {
-    const { 
-      email, 
+    const {
+      email,
       password,
-      buildingData 
+      buildingData
     } = req.body;
 
     // Validar datos
@@ -425,7 +434,7 @@ export async function setupBuilding(req, res) {
     // Crear usuario administrador
     const data = readData();
     const hashedPassword = await bcrypt.hash(password, 10);
-    
+
     const nuevoUsuario = {
       id: data.usuarios.length + 1,
       nombre: pendingReg.fullName,
@@ -452,7 +461,7 @@ export async function setupBuilding(req, res) {
     };
 
     data.usuarios.push(nuevoUsuario);
-    
+
     // Inicializar fondos si no existen
     if (!data.fondos) {
       data.fondos = {
@@ -462,7 +471,7 @@ export async function setupBuilding(req, res) {
         patrimonioTotal: 240500
       };
     }
-    
+
     // Inicializar proyectos críticos si no existen
     if (!data.proyectos) {
       data.proyectos = [
@@ -472,15 +481,15 @@ export async function setupBuilding(req, res) {
         { id: 4, nombre: 'Estructura Castillos', monto: 120000, prioridad: 'ALTA' }
       ];
     }
-    
+
     writeData(data);
 
     // Generar token JWT
     const token = jwt.sign(
-      { 
-        id: nuevoUsuario.id, 
+      {
+        id: nuevoUsuario.id,
         email: nuevoUsuario.email,
-        rol: nuevoUsuario.rol 
+        rol: nuevoUsuario.rol
       },
       JWT_SECRET,
       { expiresIn: '7d' }
@@ -548,7 +557,7 @@ export async function getOnboardingStatus(req, res) {
     const { email } = req.params;
 
     const pendingReg = pendingRegistrations.get(email);
-    
+
     if (!pendingReg) {
       return res.json({
         ok: true,

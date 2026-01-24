@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,7 +56,7 @@
       padding: 1.5rem;
       border-radius: 1rem;
       margin-bottom: 2rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .steps {
@@ -114,7 +115,7 @@
       background: white;
       padding: 2.5rem;
       border-radius: 1rem;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       margin-bottom: 2rem;
     }
 
@@ -379,7 +380,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0, 0, 0, 0.5);
       z-index: 1000;
       align-items: center;
       justify-content: center;
@@ -395,7 +396,7 @@
       border-radius: 1rem;
       max-width: 500px;
       width: 90%;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
       animation: slideIn 0.3s ease-out;
     }
 
@@ -404,6 +405,7 @@
         transform: translateY(-50px);
         opacity: 0;
       }
+
       to {
         transform: translateY(0);
         opacity: 1;
@@ -474,6 +476,7 @@
   </style>
   <script src="/config.js"></script>
 </head>
+
 <body>
   <div class="container">
     <div class="progress-bar">
@@ -507,7 +510,8 @@
       <i class="fas fa-clock"></i>
       <div class="alert-content">
         <h3>Acceso temporal de 48 horas</h3>
-        <p>Una vez que confirmes tu método de pago, tendrás acceso inmediato a la plataforma por 48 horas mientras validamos tu pago. Después de la validación, tu acceso será permanente.</p>
+        <p>Una vez que confirmes tu método de pago, tendrás acceso inmediato a la plataforma por 48 horas mientras
+          validamos tu pago. Después de la validación, tu acceso será permanente.</p>
       </div>
     </div>
 
@@ -525,7 +529,8 @@
               </div>
               <div>
                 <h3>Transferencia Bancaria</h3>
-                <p style="color: var(--gray); font-size: 0.875rem; margin: 0.25rem 0 0;">Realiza tu pago mediante transferencia SPEI</p>
+                <p style="color: var(--gray); font-size: 0.875rem; margin: 0.25rem 0 0;">Realiza tu pago mediante
+                  transferencia SPEI</p>
               </div>
               <div class="method-badge">Recomendado</div>
             </div>
@@ -593,14 +598,16 @@
               </div>
               <div>
                 <h3>Tarjeta de Crédito/Débito</h3>
-                <p style="color: var(--gray); font-size: 0.875rem; margin: 0.25rem 0 0;">Pago inmediato con MercadoPago</p>
+                <p style="color: var(--gray); font-size: 0.875rem; margin: 0.25rem 0 0;">Pago inmediato con MercadoPago
+                </p>
               </div>
             </div>
 
             <div class="coming-soon">
               <i class="fas fa-tools"></i>
               <h4 style="color: var(--dark); margin-bottom: 0.5rem;">Próximamente disponible</h4>
-              <p>Estamos integrando MercadoPago para que puedas pagar con tarjeta de crédito o débito de forma instantánea.</p>
+              <p>Estamos integrando MercadoPago para que puedas pagar con tarjeta de crédito o débito de forma
+                instantánea.</p>
             </div>
 
             <button class="btn btn-disabled" disabled id="mercadopagoBtn">
@@ -628,13 +635,15 @@
             <span style="color: var(--gray);">IVA (16%):</span>
             <span style="color: var(--dark); font-weight: 600;" id="iva">$0</span>
           </div>
-          <div style="display: flex; justify-content: space-between; padding-top: 0.75rem; border-top: 2px solid #D1D5DB;">
+          <div
+            style="display: flex; justify-content: space-between; padding-top: 0.75rem; border-top: 2px solid #D1D5DB;">
             <span style="color: var(--dark); font-weight: bold;">Total:</span>
             <span style="color: var(--primary); font-weight: bold; font-size: 1.25rem;" id="total">$0 MXN</span>
           </div>
         </div>
 
-        <div style="background: #DBEAFE; padding: 1rem; border-radius: 0.5rem; font-size: 0.875rem; color: var(--gray);">
+        <div
+          style="background: #DBEAFE; padding: 1rem; border-radius: 0.5rem; font-size: 0.875rem; color: var(--gray);">
           <i class="fas fa-shield-alt" style="color: var(--primary);"></i>
           <strong>Pago seguro</strong><br>
           Tu información está protegida y encriptada.
@@ -651,7 +660,7 @@
       </div>
       <h2>¡Acceso Temporal Activado!</h2>
       <p>Has recibido acceso temporal a la plataforma por <strong>48 horas</strong> mientras validamos tu pago.</p>
-      
+
       <div class="countdown">
         <div class="countdown-label">Acceso temporal expira en:</div>
         <div class="countdown-time" id="countdown">48:00:00</div>
@@ -689,16 +698,16 @@
 
     // Definir planes
     const PLANS = {
-      basico: { name: 'Plan Básico', price: 499, maxUnits: 20 },
-      profesional: { name: 'Plan Profesional', price: 999, maxUnits: 50 },
-      empresarial: { name: 'Plan Empresarial', price: 1999, maxUnits: 200 },
-      personalizado: { name: 'Plan Personalizado', price: 2999, maxUnits: -1 }
+      basico: { name: 'Pequeña', price: 499, maxUnits: 20 },
+      profesional: { name: 'Mediana', price: 949, maxUnits: 50 },
+      empresarial: { name: 'Grande', price: 1799, maxUnits: 200 },
+      personalizado: { name: 'Personalizado', price: 2999, maxUnits: -1 }
     };
 
     // Check if custom package
     const customPackage = localStorage.getItem('custom_package');
     let plan = PLANS[planKey];
-    
+
     if (planKey === 'personalizado' && customPackage) {
       const pkg = JSON.parse(customPackage);
       plan = {
@@ -707,7 +716,7 @@
         maxUnits: pkg.units
       };
     }
-    
+
     // Display plan details
     const planDetailsEl = document.getElementById('planDetails');
     planDetailsEl.innerHTML = `
@@ -760,7 +769,7 @@
         const originalHTML = btn.innerHTML;
         btn.innerHTML = '<i class="fas fa-check"></i> Copiado';
         btn.classList.add('copied');
-        
+
         setTimeout(() => {
           btn.innerHTML = originalHTML;
           btn.classList.remove('copied');
@@ -790,7 +799,7 @@
           const expiresAt = Date.now() + (48 * 60 * 60 * 1000); // 48 horas
           localStorage.setItem('temp_access_expires', expiresAt);
           localStorage.setItem('payment_pending', 'true');
-          
+
           // Mostrar modal de confirmación
           showConfirmModal();
         } else {
@@ -806,7 +815,7 @@
     function showConfirmModal() {
       const modal = document.getElementById('confirmModal');
       modal.classList.add('active');
-      
+
       // Iniciar countdown de 48 horas
       updateCountdown();
       setInterval(updateCountdown, 1000);
@@ -829,7 +838,7 @@
       const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
 
-      document.getElementById('countdown').textContent = 
+      document.getElementById('countdown').textContent =
         `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     }
 
@@ -844,4 +853,5 @@
     }
   </script>
 </body>
+
 </html>
