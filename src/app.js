@@ -22,6 +22,7 @@ import invitationsRoutes from './routes/invitations.routes.js';
 import themeRoutes from './routes/theme.routes.js';
 import proyectosRoutes from './routes/proyectos.routes.js';
 import adminManagementRoutes from './routes/admin-management.routes.js';
+import superAdminRoutes from './routes/super-admin.routes.js';
 
 import { inicializarCuotasAnuales, actualizarCuotasVencidas } from './utils/cuotasInicializacion.js';
 import { getTransporter } from './utils/smtp.js';
@@ -66,6 +67,7 @@ app.use('/api/invitations', invitationsRoutes);
 app.use('/api/theme', themeRoutes);
 app.use('/api/proyectos', proyectosRoutes);
 app.use('/api/admin-management', adminManagementRoutes);
+app.use('/api/super-admin', superAdminRoutes);
 
 
 // Ruta para servir la aplicación frontend

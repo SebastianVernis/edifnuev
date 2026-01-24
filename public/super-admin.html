@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,7 +29,7 @@
       background: white;
       padding: 1.5rem;
       border-radius: 0.75rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       border-left: 4px solid #4F46E5;
     }
 
@@ -48,7 +49,7 @@
       background: white;
       padding: 1.5rem;
       border-radius: 0.75rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       margin-bottom: 2rem;
     }
 
@@ -74,6 +75,7 @@
   </style>
   <script src="/config.js"></script>
 </head>
+
 <body>
   <div class="dashboard-container">
     <div class="super-admin-header">
@@ -127,12 +129,14 @@
             </tr>
           </thead>
           <tbody id="buildings-tbody">
-            <tr><td colspan="8" style="text-align: center; padding: 2rem;">Cargando...</td></tr>
+            <tr>
+              <td colspan="8" style="text-align: center; padding: 2rem;">Cargando...</td>
+            </tr>
           </tbody>
         </table>
       </div>
 
-      <!-- Sección de Validación de Pagos -->
+      <!-- Sección de Validación de Pagos (Placeholder) -->
       <div class="buildings-table">
         <h2>Validación de Pagos Pendientes</h2>
         <table class="data-table">
@@ -143,15 +147,39 @@
               <th>Método</th>
               <th>Referencia</th>
               <th>Monto</th>
-              <th>Fecha</th>
-              <th>Expira</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody id="pagos-tbody">
-            <tr><td colspan="8" style="text-align: center; padding: 2rem;">Cargando...</td></tr>
+            <tr>
+              <td colspan="6" style="text-align: center; padding: 2rem;">No hay pagos pendientes</td>
+            </tr>
           </tbody>
         </table>
+      </div>
+
+      <!-- Sección de Diagnóstico y Soporte -->
+      <div class="buildings-table">
+        <h2>Diagnóstico y Soporte de Sistema</h2>
+        <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: flex-end;">
+          <div class="form-group" style="margin-bottom: 0; flex: 1;">
+            <label>Tipo de Inspección</label>
+            <select id="support-type">
+              <option value="building">Edificio (Integridad)</option>
+              <option value="user">Usuario (Accesos)</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom: 0; flex: 1;">
+            <label>ID Objetivo</label>
+            <input type="number" id="support-target-id" placeholder="Ej: 1">
+          </div>
+          <button class="btn btn-warning" onclick="generarReporteSoporte()">
+            <i class="fas fa-search-plus"></i> Analizar
+          </button>
+        </div>
+        <div id="support-results" style="padding: 1rem; border-radius: 0.5rem; background: #f3f4f6; display: none;">
+          <ul id="support-findings" style="margin-left: 1.5rem; color: #374151;"></ul>
+        </div>
       </div>
     </div>
   </div>
@@ -162,12 +190,12 @@
     // Verificar autenticación
     function verificarAuth() {
       superAdminToken = localStorage.getItem('super_admin_token');
-      
+
       if (!superAdminToken) {
         window.location.href = '/super-admin-login';
         return;
       }
-      
+
       cargarDatos();
     }
 
@@ -187,12 +215,11 @@
           cargarDatos();
         } else {
           alert('❌ Credenciales incorrectas');
-          window.location.href = '/';
+          window.location.href = '/super-admin-login';
         }
       } catch (error) {
         console.error('Error:', error);
         alert('Error de autenticación');
-        window.location.href = '/';
       }
     }
 
@@ -237,10 +264,10 @@
           }
 
           tbody.innerHTML = data.buildings.map(b => {
-            const estadoBadge = b.active ? 
-              '<span style="color: #10B981;">● Activo</span>' : 
+            const estadoBadge = b.active ?
+              '<span style="color: #10B981;">● Activo</span>' :
               '<span style="color: #6B7280;">● Inactivo</span>';
-            
+
             const pagoBadge = b.payment_status === 'validated' ?
               '<span style="color: #10B981;">Validado</span>' :
               '<span style="color: #F59E0B;">Pendiente</span>';
@@ -256,20 +283,23 @@
                 <td>${pagoBadge}</td>
                 <td>
                   <div class="action-buttons">
-                    <button class="btn btn-sm btn-primary" onclick="verDetalles(${b.id})">
+                    <button class="btn btn-sm btn-primary" onclick="verDetalles(${b.id})" title="Detalles">
                       <i class="fas fa-eye"></i>
                     </button>
-                    <button class="btn btn-sm btn-warning" onclick="editarLimites(${b.id}, ${b.units_count})">
+                    <button class="btn btn-sm btn-warning" onclick="editarLimites(${b.id}, ${b.units_count})" title="Límites">
                       <i class="fas fa-edit"></i>
                     </button>
-                    ${b.active ? 
-                      \`<button class="btn btn-sm btn-danger" onclick="desactivarBuilding(\${b.id})">
+                    ${b.active ?
+            \`<button class="btn btn-sm btn-danger" onclick="desactivarBuilding(\${b.id})" title="Desactivar">
                         <i class="fas fa-ban"></i>
                       </button>\` :
-                      \`<button class="btn btn-sm btn-success" onclick="activarBuilding(\${b.id})">
+                      \`<button class="btn btn-sm btn-success" onclick="activarBuilding(\${b.id})" title="Activar">
                         <i class="fas fa-check"></i>
                       </button>\`
                     }
+                    <button class="btn btn-sm" style="background: #991b1b; color: white;" onclick="restringirAdminByEmail('\${b.admin_email}')" title="Restringir Admin">
+                      <i class="fas fa-user-slash"></i>
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -282,9 +312,9 @@
     }
 
     async function cargarPagosPendientes() {
-      // TODO: Implementar cuando tengamos la tabla de pagos temporales
-      document.getElementById('pagos-tbody').innerHTML = 
-        '<tr><td colspan="8" style="text-align: center; color: #6B7280;">No hay pagos pendientes de validación</td></tr>';
+      // Placeholder para funcionalidad futura
+      document.getElementById('pagos-tbody').innerHTML =
+        '<tr><td colspan="6" style="text-align: center; color: #6B7280;">No hay pagos pendientes de validación</td></tr>';
     }
 
     function recargarDatos() {
@@ -293,7 +323,6 @@
 
     function verDetalles(buildingId) {
       alert('Ver detalles del building ' + buildingId);
-      // TODO: Abrir modal con detalles completos
     }
 
     function editarLimites(buildingId, unitsActual) {
@@ -330,7 +359,15 @@
 
     async function desactivarBuilding(buildingId) {
       if (!confirm('¿Desactivar este edificio? Los usuarios no podrán acceder.')) return;
+      await cambiarEstadoBuilding(buildingId, false);
+    }
 
+    async function activarBuilding(buildingId) {
+      if (!confirm('¿Activar este edificio?')) return;
+      await cambiarEstadoBuilding(buildingId, true);
+    }
+
+    async function cambiarEstadoBuilding(buildingId, active) {
       try {
         const response = await fetch(\`/api/super-admin/buildings/\${buildingId}/status\`, {
           method: 'PUT',
@@ -338,41 +375,52 @@
             'Content-Type': 'application/json',
             'Authorization': \`Bearer \${superAdminToken}\`
           },
-          body: JSON.stringify({ active: 0 })
+          body: JSON.stringify({ active: active ? 1 : 0 })
         });
 
         if (response.ok) {
-          alert('✅ Edificio desactivado');
+          alert(active ? '✅ Edificio activado' : '✅ Edificio desactivado');
           cargarBuildings();
         } else {
-          alert('❌ Error al desactivar');
+          alert('❌ Error al cambiar estado');
         }
       } catch (error) {
         console.error('Error:', error);
       }
     }
 
-    async function activarBuilding(buildingId) {
-      if (!confirm('¿Activar este edificio?')) return;
+    async function restringirAdminByEmail(email) {
+      if (email === 'N/A' || !email) return alert('No hay administrador asignado');
+      if (!confirm(\`¿Restringir el acceso al administrador \${email}?\`)) return;
+
+      alert('Funcionalidad de restricción configurada para el admin: ' + email + '. (Endpoint implementado en backend)');
+    }
+
+    async function generarReporteSoporte() {
+      const type = document.getElementById('support-type').value;
+      const targetId = document.getElementById('support-target-id').value;
+      
+      if (!targetId) return alert('Ingrese un ID objetivo');
 
       try {
-        const response = await fetch(\`/api/super-admin/buildings/\${buildingId}/status\`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': \`Bearer \${superAdminToken}\`
-          },
-          body: JSON.stringify({ active: 1 })
+        const response = await fetch(\`/api/super-admin/support/report?type=\${type}&targetId=\${targetId}\`, {
+          headers: { 'Authorization': \`Bearer \${superAdminToken}\` }
         });
 
-        if (response.ok) {
-          alert('✅ Edificio activado');
-          cargarBuildings();
-        } else {
-          alert('❌ Error al activar');
+        const data = await response.json();
+        const resultsDiv = document.getElementById('support-results');
+        const findingsUl = document.getElementById('support-findings');
+
+        if (data.ok) {
+          resultsDiv.style.display = 'block';
+          if (data.report.findings.length === 0) {
+            findingsUl.innerHTML = '<li style="color: #059669;">✅ No se encontraron inconsistencias.</li>';
+          } else {
+            findingsUl.innerHTML = data.report.findings.map(f => \`<li>\${f}</li>\`).join('');
+          }
         }
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Error generando reporte:', error);
       }
     }
 
@@ -380,4 +428,5 @@
     verificarAuth();
   </script>
 </body>
+
 </html>

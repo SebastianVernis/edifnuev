@@ -110,6 +110,23 @@ export const isAdmin = (req, res, next) => {
   }
 };
 
+// Middleware para verificar rol de super administrador
+export const isSuperAdmin = (req, res, next) => {
+  const ip = req.ip || req.connection.remoteAddress;
+  const userAgent = req.get('User-Agent');
+
+  if (req.usuario && req.usuario.rol === 'SUPERADMIN') {
+    logAccess('SUPERADMIN_ACCESS_GRANTED', req.usuario.id, req.usuario.rol, req.path, 'superadmin', true, ip, userAgent);
+    next();
+  } else {
+    logAccess('SUPERADMIN_ACCESS_DENIED', req.usuario?.id, req.usuario?.rol, req.path, 'superadmin', false, ip, userAgent);
+    return res.status(403).json({
+      success: false,
+      message: 'Acceso denegado. Se requiere rol de super administrador.'
+    });
+  }
+};
+
 // Middleware para verificar rol de comité o administrador
 export const isComiteOrAdmin = (req, res, next) => {
   const ip = req.ip || req.connection.remoteAddress;
