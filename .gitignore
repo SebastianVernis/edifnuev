@@ -1,4 +1,7 @@
+# Build files
+build/
 node_modules/
+
 # Test results
 test-results/
 
@@ -11,3 +14,4 @@ dist/
 
 # Local secrets (never commit)
 .secrets.local
+.env*
