@@ -9,6 +9,10 @@ APP_URL = "https://edificio-production.sebastianvernis.workers.dev"
 FRONTEND_URL = "https://edificio-production.pages.dev"
 OTP_DEV_MODE = "false"
 
+# Super Admin Configuration (Set these via Cloudflare Dashboard Secrets)
+# SUPER_ADMIN_EMAIL = "admin@example.com"
+# SUPER_ADMIN_PASSWORD = "your-secure-password"
+
 # D1 Database binding
 [[d1_databases]]
 binding = "DB"
