@@ -169,19 +169,21 @@ export const generateSupportReport = async (req, res) => {
                 const admins = data.usuarios.filter(u => u.buildingId === building.id && u.rol === 'ADMIN');
                 if (admins.length === 0) report.findings.push('ERROR: El edificio no tiene un administrador asignado');
             }
-        } else if (type === 'user') {
-            const user = data.usuarios.find(u => u.id === parseInt(targetId));
-            if (!user) {
-                report.findings.push('CRITICAL: Usuario no existe en DB');
-            } else {
-                if (user.buildingId && !data.buildings?.find(b => b.id === user.buildingId)) {
-                    report.findings.push(`ERROR: El usuario está asignado a un edificio inexistente (ID: ${user.buildingId})`);
-                }
-            }
         }
-
-        res.json({ ok: true, report });
-    } catch (error) {
-        return handleControllerError(error, res, 'superAdmin.generateSupportReport');
     }
+        } else if (type === 'project') {
+    const project = data.proyectos?.find(p => p.id === parseInt(targetId));
+    if (!project) {
+        report.findings.push('CRITICAL: Proyecto no existe en DB');
+    } else {
+        if (!project.nombre || project.monto <= 0) {
+            report.findings.push('ERROR: El proyecto tiene datos inconsistentes (nombre vacío o monto inválido)');
+        }
+    }
+}
+
+res.json({ ok: true, report });
+    } catch (error) {
+    return handleControllerError(error, res, 'superAdmin.generateSupportReport');
+}
 };
