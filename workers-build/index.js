@@ -525,6 +525,37 @@ export default {
 
         console.log('🔐 Login attempt:', email);
 
+        // 1. Verificar si es Super Admin (Secretos)
+        const SA_EMAIL = env.SUPER_ADMIN_EMAIL;
+        const SA_PASSWORD = env.SUPER_ADMIN_PASSWORD;
+
+        if (SA_EMAIL && SA_PASSWORD &&
+          email.trim().toLowerCase() === SA_EMAIL.trim().toLowerCase() &&
+          password === SA_PASSWORD) {
+
+          console.log('👑 Super Admin autenticado vía secretos');
+          const token = await generateJWT({
+            userId: 0,
+            email: SA_EMAIL,
+            rol: 'SUPERADMIN',
+            departamento: 'System'
+          }, env);
+
+          return new Response(JSON.stringify({
+            ok: true,
+            token,
+            usuario: {
+              id: 0,
+              nombre: 'System Administrator',
+              email: SA_EMAIL,
+              rol: 'SUPERADMIN'
+            }
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // 2. Verificar en DB (Usuarios estándar)
         if (!env.DB) {
           return new Response(JSON.stringify({
             success: false,

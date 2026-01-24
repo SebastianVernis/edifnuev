@@ -189,7 +189,8 @@
 
     // Verificar autenticación
     function verificarAuth() {
-      superAdminToken = localStorage.getItem('super_admin_token');
+      // Soportar tanto el token específico como el unificado de Auth
+      superAdminToken = localStorage.getItem('super_admin_token') || localStorage.getItem('edificio_token');
 
       if (!superAdminToken) {
         window.location.href = '/super-admin-login';
