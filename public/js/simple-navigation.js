@@ -1,17 +1,17 @@
 // Navegación Simple para Admin Panel
 document.addEventListener('DOMContentLoaded', () => {
   console.log('✓ Navegación simple cargada');
-  
+
   // Mostrar sección por defecto (dashboard)
   showSection('dashboard');
-  
+
   // Cargar datos del dashboard al inicio
   setTimeout(() => {
     if (typeof cargarDashboard === 'function') {
       cargarDashboard();
     }
   }, 500);
-  
+
   // Setup navigation links
   const navLinks = document.querySelectorAll('.sidebar-nav a');
   navLinks.forEach(link => {
@@ -19,30 +19,41 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       const href = link.getAttribute('href');
       const sectionId = href.replace('#', '');
-      
+
       console.log('Navegando a:', sectionId);
-      
+
       // Remover active de todos los links
       navLinks.forEach(l => l.parentElement.classList.remove('active'));
-      
+
       // Agregar active al link clickeado
       link.parentElement.classList.add('active');
-      
+
       // Mostrar sección
       showSection(sectionId);
-      
+
       // Actualizar título
       const title = link.textContent.trim().replace(/.*\s/, '');
-      document.getElementById('page-title').textContent = title;
-      
+      const pageTitleEl = document.getElementById('page-title');
+      if (pageTitleEl) pageTitleEl.textContent = title;
+
       // Cargar datos de la sección
       loadSectionData(sectionId);
     });
   });
+
+  // Mouseleave para cerrar el sidebar (Overlay mode)
+  const sidebar = document.getElementById('sidebar');
+  if (sidebar) {
+    sidebar.addEventListener('mouseleave', () => {
+      if (window.innerWidth > 768) {
+        sidebar.classList.remove('active');
+      }
+    });
+  }
 });
 
 function loadSectionData(sectionId) {
-  switch(sectionId) {
+  switch (sectionId) {
     case 'dashboard':
       if (typeof cargarDashboard === 'function') cargarDashboard();
       if (typeof cargarDashboardInquilino === 'function') cargarDashboardInquilino();
@@ -101,14 +112,14 @@ function loadSectionData(sectionId) {
 
 function showSection(sectionId) {
   console.log('Mostrando sección:', sectionId);
-  
+
   // Ocultar todas las secciones
   const sections = document.querySelectorAll('.content-section');
   sections.forEach(section => {
     section.classList.remove('active');
     section.style.display = 'none';
   });
-  
+
   // Mostrar sección solicitada
   const targetSection = document.getElementById(`${sectionId}-section`);
   if (targetSection) {

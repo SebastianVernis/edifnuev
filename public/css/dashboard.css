@@ -20,7 +20,7 @@
 }
 
 .sidebar:hover,
-.sidebar-hotspot:hover + .sidebar,
+.sidebar-hotspot:hover+.sidebar,
 .sidebar.active {
   transform: translateX(0);
 }
@@ -107,7 +107,6 @@
   padding: 1.5rem;
   background-color: #f5f7fa;
   width: 100%;
-  transition: margin-left 0.3s ease-in-out;
 }
 
 .main-header {
@@ -163,7 +162,8 @@
   white-space: nowrap;
 }
 
-.filter-group select, .filter-group input {
+.filter-group select,
+.filter-group input {
   min-width: 150px;
 }
 
@@ -181,7 +181,8 @@
   border-collapse: collapse;
 }
 
-.data-table th, .data-table td {
+.data-table th,
+.data-table td {
   padding: 0.75rem 1rem;
   text-align: left;
   border-bottom: 1px solid var(--border-color);
@@ -399,7 +400,8 @@
   background-color: var(--secondary-color);
 }
 
-.fondo-card.total h3, .fondo-card.total .description {
+.fondo-card.total h3,
+.fondo-card.total .description {
   color: rgba(255, 255, 255, 0.8);
 }
 
@@ -535,8 +537,9 @@
   .dashboard-summary {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
-  
-  .dashboard-charts, .dashboard-recent {
+
+  .dashboard-charts,
+  .dashboard-recent {
     grid-template-columns: 1fr;
   }
 }
@@ -545,19 +548,19 @@
   .sidebar {
     width: 240px;
   }
-  
+
   .main-content {
-    margin-left: 240px;
+    margin-left: 0;
   }
-  
+
   .dashboard-summary {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
-  
+
   .anuncios-container {
     grid-template-columns: 1fr;
   }
-  
+
   .fondos-summary {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
@@ -567,11 +570,11 @@
   .mobile-menu-toggle {
     display: block;
   }
-  
+
   .dashboard-container {
     position: relative;
   }
-  
+
   .sidebar {
     width: 280px;
     position: fixed;
@@ -581,120 +584,126 @@
     z-index: 1000;
     transition: left 0.3s ease;
   }
-  
+
   .sidebar.mobile-open {
     left: 0;
   }
-  
+
   .mobile-overlay.active {
     display: block;
   }
-  
+
   .main-content {
     margin-left: 0;
     padding: 4rem 1rem 1rem;
     width: 100%;
   }
-  
+
   .main-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
-  
+
   .main-header h1 {
     font-size: 1.5rem;
   }
-  
+
   .filter-controls {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.75rem;
   }
-  
+
   .filter-group {
     width: 100%;
     flex-direction: column;
     align-items: flex-start;
     gap: 0.25rem;
   }
-  
-  .filter-group select, .filter-group input {
+
+  .filter-group select,
+  .filter-group input {
     width: 100%;
     min-width: auto;
   }
-  
+
   .section-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
-  
-  .section-header .btn, .section-header .button-group {
+
+  .section-header .btn,
+  .section-header .button-group {
     width: 100%;
   }
-  
+
   .button-group {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .dashboard-summary {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .summary-card {
     padding: 1rem;
   }
-  
+
   .summary-card .amount {
     font-size: 1.5rem;
   }
-  
+
   .anuncios-container {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .fondos-summary {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .parcialidades-info {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   /* Table responsive */
   .table-container {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
-  
+
   .data-table {
     min-width: 600px;
   }
-  
-  .data-table th, .data-table td {
+
+  .data-table th,
+  .data-table td {
     padding: 0.5rem;
     font-size: 0.875rem;
   }
-  
+
   /* Modal responsive */
   .modal-content {
     margin: 1rem;
     max-height: calc(100vh - 2rem);
     overflow-y: auto;
   }
-  
+
   .form-group {
     margin-bottom: 1rem;
   }
-  
-  .form-group input, .form-group select, .form-group textarea {
-    font-size: 16px; /* Prevent zoom on iOS */
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 16px;
+    /* Prevent zoom on iOS */
   }
 }
 
@@ -702,54 +711,57 @@
   .main-content {
     padding: 4rem 0.5rem 0.5rem;
   }
-  
+
   .summary-card {
     padding: 0.75rem;
   }
-  
+
   .summary-card h3 {
     font-size: 1rem;
   }
-  
+
   .summary-card .amount {
     font-size: 1.25rem;
   }
-  
+
   .summary-card .description {
     font-size: 0.8rem;
   }
-  
-  .data-table th, .data-table td {
+
+  .data-table th,
+  .data-table td {
     padding: 0.375rem;
     font-size: 0.8rem;
   }
-  
+
   .btn {
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
   }
-  
+
   .sidebar-header {
     padding: 1rem;
   }
-  
+
   .sidebar-header h2 {
     font-size: 1.25rem;
   }
-  
+
   .sidebar-nav a {
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
   }
-  
+
   .sidebar-footer {
     padding: 1rem;
   }
-  
-  .anuncio-card, .info-card, .fondo-card {
+
+  .anuncio-card,
+  .info-card,
+  .fondo-card {
     padding: 1rem;
   }
-  
+
   .progress-info {
     flex-direction: column;
     gap: 0.25rem;
@@ -1023,38 +1035,39 @@
   .config-tabs {
     flex-wrap: wrap;
   }
-  
+
   .tab-btn {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
   }
-  
+
   .config-container {
     grid-template-columns: 1fr;
   }
-  
+
   .proyecto-item {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .proyecto-actions {
     margin-top: 1rem;
     width: 100%;
   }
-  
+
   .proyecto-actions button {
     flex: 1;
   }
-  
+
   .documentos-container {
     grid-template-columns: 1fr;
   }
-  
+
   .form-actions {
     flex-direction: column;
   }
 }
+
 /* ============================================
    RESPONSIVE DASHBOARD - MOBILE
    ============================================ */
@@ -1063,7 +1076,7 @@
   .sidebar {
     width: 250px;
   }
-  
+
   .main-content {
     margin-left: 250px;
   }
@@ -1073,13 +1086,13 @@
   .dashboard-container {
     flex-direction: column;
   }
-  
+
   .sidebar {
     width: 100%;
     height: auto;
     position: relative;
   }
-  
+
   .sidebar-header {
     padding: 1rem;
     text-align: center;
@@ -1087,27 +1100,27 @@
     flex-direction: column;
     align-items: center;
   }
-  
+
   .sidebar-header img {
     height: 40px !important;
   }
-  
+
   .sidebar-header h2 {
     font-size: 1.25rem;
   }
-  
+
   .sidebar-nav {
     padding: 0.5rem 0;
     overflow-x: auto;
   }
-  
+
   .sidebar-nav ul {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 0.5rem;
     padding: 0 0.5rem;
   }
-  
+
   .sidebar-nav a {
     padding: 1rem 0.5rem;
     font-size: 0.8rem;
@@ -1117,112 +1130,112 @@
     align-items: center;
     gap: 0.5rem;
   }
-  
+
   .sidebar-nav i {
     display: block;
     margin: 0;
     font-size: 1.5rem;
   }
-  
+
   .sidebar-nav li.active a {
     border-left: none;
     border-bottom: 3px solid #fff;
   }
-  
+
   .sidebar-footer {
     padding: 1rem;
     text-align: center;
   }
-  
+
   .sidebar-footer .btn {
     width: 100%;
   }
-  
+
   .main-content {
     margin-left: 0;
     padding: 1rem;
   }
-  
+
   .main-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
-  
+
   .main-header h1 {
     font-size: 1.5rem;
   }
-  
+
   .dashboard-summary {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .summary-card {
     padding: 1.5rem;
   }
-  
+
   .summary-card h3 {
     font-size: 0.9rem;
   }
-  
+
   .summary-card .amount {
     font-size: 1.75rem;
   }
-  
+
   .form-grid {
     grid-template-columns: 1fr !important;
   }
-  
+
   .data-table-container {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
-  
+
   .data-table {
     font-size: 0.75rem;
     min-width: 600px;
   }
-  
+
   .data-table th,
   .data-table td {
     padding: 0.75rem 0.5rem;
     white-space: nowrap;
   }
-  
+
   .modal-content {
     width: 95%;
     max-width: 95%;
     margin: 1rem;
   }
-  
+
   .chart-container {
     height: 250px;
   }
-  
+
   .recent-container {
     padding: 1rem;
   }
-  
+
   .section-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
-  
+
   .section-header h2 {
     font-size: 1.25rem;
   }
-  
+
   .filter-controls {
     flex-direction: column;
     gap: 0.75rem;
   }
-  
+
   .filter-group {
     width: 100%;
   }
-  
+
   .filter-group select,
   .filter-group input {
     width: 100%;
@@ -1233,19 +1246,19 @@
   .sidebar-header img {
     height: 35px !important;
   }
-  
+
   .sidebar-nav ul {
     grid-template-columns: 1fr;
   }
-  
+
   .main-content {
     padding: 0.75rem;
   }
-  
+
   .summary-card {
     padding: 1rem;
   }
-  
+
   .btn {
     padding: 0.5rem 1rem;
     font-size: 0.85rem;
@@ -1270,17 +1283,17 @@
     flex-direction: column;
     gap: 0.25rem;
   }
-  
+
   .action-buttons .btn {
     width: 100%;
     font-size: 0.75rem;
     padding: 0.4rem 0.6rem;
   }
-  
+
   .modal-actions {
     flex-direction: column;
   }
-  
+
   .modal-actions button {
     width: 100%;
   }
@@ -1288,91 +1301,93 @@
 
 /* Optimizaciones adicionales móvil */
 @media (max-width: 768px) {
+
   /* Ocultar columnas menos importantes en móvil */
   .data-table th:nth-child(n+5),
   .data-table td:nth-child(n+5) {
     display: none;
   }
-  
+
   /* Mostrar solo primeras 4 columnas */
   .data-table.full-mobile th,
   .data-table.full-mobile td {
     display: table-cell;
   }
-  
+
   /* Cards de anuncios */
   .anuncio-card,
   .info-card,
   .fondo-card {
     margin-bottom: 1rem;
   }
-  
+
   /* Tabs responsive */
   .config-tabs {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
-  
+
   .tab-btn {
     white-space: nowrap;
     padding: 0.75rem 1rem;
     font-size: 0.85rem;
   }
-  
+
   /* Config container stack */
   .config-container {
     grid-template-columns: 1fr;
   }
-  
+
   /* Charts responsive */
   .chart-container {
     height: 250px;
   }
-  
+
   canvas {
     max-height: 250px !important;
   }
 }
 
 @media (max-width: 480px) {
+
   /* Sidebar completamente apilado */
   .sidebar-nav ul {
     grid-template-columns: 1fr;
   }
-  
+
   .sidebar-nav a {
     padding: 1rem;
   }
-  
+
   /* Tablas minimalistas */
   .data-table {
     font-size: 0.7rem;
   }
-  
+
   .data-table th,
   .data-table td {
     padding: 0.5rem 0.25rem;
   }
-  
+
   /* Solo 3 columnas en móvil pequeño */
   .data-table th:nth-child(n+4),
   .data-table td:nth-child(n+4) {
     display: none;
   }
-  
+
   /* Summary cards más compactas */
   .summary-card {
     padding: 1rem;
   }
-  
+
   .summary-card .amount {
     font-size: 1.5rem;
   }
-  
+
   .summary-card h3 {
     font-size: 0.85rem;
   }
-  
+
   /* Botones full width */
   .btn,
   .btn-primary,
@@ -1380,7 +1395,7 @@
     width: 100%;
     margin-bottom: 0.5rem;
   }
-  
+
   .section-header .btn {
     width: 100%;
   }
@@ -1415,7 +1430,7 @@
   .mobile-sidebar-toggle {
     display: flex;
   }
-  
+
   .sidebar {
     transform: translateY(-100%);
     transition: transform 0.3s ease;
@@ -1424,22 +1439,22 @@
     left: 0;
     right: 0;
     z-index: 1000;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
-  
+
   .sidebar.active {
     transform: translateY(0);
   }
-  
+
   .sidebar-header {
     position: relative;
   }
-  
+
   .sidebar-close {
     position: absolute;
     top: 1rem;
     right: 1rem;
-    background: rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.2);
     border: none;
     color: white;
     font-size: 1.5rem;
@@ -1458,19 +1473,19 @@
   .sidebar-close {
     display: none !important;
   }
-  
+
   .main-content {
     margin-left: 0;
     padding-top: 0;
   }
-  
+
   .main-header {
     position: sticky;
     top: 0;
     background: white;
     z-index: 100;
     padding: 1rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 }
 
@@ -1480,7 +1495,7 @@
   top: 1rem;
   left: 1rem;
   z-index: 1003;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   background-color: var(--primary-color);
   color: white;
   border: none;
