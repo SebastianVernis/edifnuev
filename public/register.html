@@ -65,6 +65,8 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
+      align-items: center;
+      text-align: center;
     }
 
     .info-panel h2 {
@@ -80,6 +82,9 @@
 
     .features {
       list-style: none;
+      text-align: left;
+      width: 100%;
+      max-width: 300px;
     }
 
     .features li {
@@ -95,6 +100,9 @@
 
     .form-panel {
       padding: 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     .form-panel h1 {
@@ -257,8 +265,10 @@
 <body>
   <div class="container">
     <div class="info-panel">
-      <img src="/logo.png" alt="ChispartBuilding" style="height: 120px; margin-bottom: 20px;">
-      <p>La plataforma más completa para la gestión de condominios y edificios.</p>
+      <img src="/logo.png" alt="ChispartBuilding"
+        style="margin-bottom: 30px;height: auto;width: 250px;position: relative;align-self: center;">
+      <p style="font-size: 1.1rem; max-width: 300px; margin: 0 auto 2rem;">La plataforma más completa para la gestión de
+        condominios y edificios.</p>
       <ul class="features">
         <li><i class="fas fa-check-circle"></i> Gestión de cuotas automatizada</li>
         <li><i class="fas fa-check-circle"></i> Control de gastos en tiempo real</li>
