@@ -81,10 +81,7 @@ app.get('/inquilino', (req, res) => {
   res.sendFile(path.join(publicPath, 'inquilino.html'));
 });
 
-// Rutas de onboarding
-app.get('/landing', (req, res) => {
-  res.sendFile(path.join(publicPath, 'landing.html'));
-});
+
 
 app.get('/register', (req, res) => {
   res.sendFile(path.join(publicPath, 'register.html'));

@@ -59,33 +59,33 @@ async function signHS256(data, secret) {
     false,
     ['sign']
   );
-  
+
   const signature = await crypto.subtle.sign(
     'HMAC',
     key,
     encoder.encode(data)
   );
-  
+
   return base64urlEncode(signature);
 }
 
 // Helper: Generar JWT
 async function generateJWT(payload, env) {
   const secret = env.JWT_SECRET || 'edificio-admin-secret-key-2025';
-  
+
   const header = { alg: 'HS256', typ: 'JWT' };
   const encodedHeader = base64urlEncode(JSON.stringify(header));
-  
+
   const payloadWithExp = {
     ...payload,
     exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60),
     iat: Math.floor(Date.now() / 1000)
   };
   const encodedPayload = base64urlEncode(JSON.stringify(payloadWithExp));
-  
+
   const data = `${encodedHeader}.${encodedPayload}`;
   const signature = await signHS256(data, secret);
-  
+
   return `${data}.${signature}`;
 }
 
@@ -93,7 +93,7 @@ async function generateJWT(payload, env) {
 async function verifyJWT(token, env) {
   try {
     const [encodedHeader, encodedPayload, signature] = token.split('.');
-    
+
     if (!encodedHeader || !encodedPayload || !signature) {
       return null;
     }
@@ -101,13 +101,13 @@ async function verifyJWT(token, env) {
     const secret = env.JWT_SECRET || 'edificio-admin-secret-key-2025';
     const data = `${encodedHeader}.${encodedPayload}`;
     const expectedSignature = await signHS256(data, secret);
-    
+
     if (signature !== expectedSignature) {
       return null;
     }
 
     const payload = JSON.parse(base64urlDecode(encodedPayload));
-    
+
     if (payload.exp && payload.exp < Math.floor(Date.now() / 1000)) {
       return null;
     }
@@ -123,15 +123,15 @@ async function verifyAuth(request, env) {
   // Intentar obtener token de Authorization header o x-auth-token header
   const authHeader = request.headers.get('Authorization');
   const xAuthToken = request.headers.get('x-auth-token');
-  
+
   let token = null;
-  
+
   if (authHeader && authHeader.startsWith('Bearer ')) {
     token = authHeader.substring(7);
   } else if (xAuthToken) {
     token = xAuthToken;
   }
-  
+
   if (!token) {
     return new Response(JSON.stringify({
       success: false,
@@ -141,7 +141,7 @@ async function verifyAuth(request, env) {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
   }
-  
+
   try {
     const payload = await verifyJWT(token, env);
     if (!payload) {
@@ -173,7 +173,7 @@ export default {
       }
 
       // === API ROUTES ===
-      
+
       // Health check
       if (method === 'GET' && path === '/api/validation/health') {
         return new Response(JSON.stringify({
@@ -187,7 +187,7 @@ export default {
       }
 
       // === CLERK WEBHOOK ROUTES ===
-      
+
       // Clerk Webhook - Test endpoint
       if (method === 'GET' && path === '/api/webhooks/clerk/test') {
         return new Response(JSON.stringify({
@@ -225,7 +225,7 @@ export default {
           // Get request body
           const body = await request.text();
           let payload;
-          
+
           try {
             payload = JSON.parse(body);
           } catch (e) {
@@ -365,7 +365,7 @@ export default {
           // Verify Clerk token (simplified - in production use @clerk/backend)
           // For now, we'll decode the JWT and get the user from DB
           const payload = await verifyJWT(token, env);
-          
+
           if (!payload || !payload.sub) {
             return new Response(JSON.stringify({
               ok: false,
@@ -434,7 +434,7 @@ export default {
 
           const token = authHeader.replace('Bearer ', '');
           const payload = await verifyJWT(token, env);
-          
+
           if (!payload || !payload.sub) {
             return new Response(JSON.stringify({
               ok: false,
@@ -566,7 +566,7 @@ export default {
         // Verificar password con hash
         const isValidPassword = await verifyPassword(password, user.password);
         console.log('🔑 Password válida:', isValidPassword);
-        
+
         if (!isValidPassword) {
           console.log('❌ Contraseña incorrecta para:', email);
           return new Response(JSON.stringify({
@@ -578,8 +578,8 @@ export default {
           });
         }
 
-        const token = await generateJWT({ 
-          userId: user.id, 
+        const token = await generateJWT({
+          userId: user.id,
           email: user.email,
           rol: user.rol,
           buildingId: user.building_id
@@ -675,7 +675,7 @@ export default {
           invitationToken = crypto.randomUUID();
           const expiresAt = new Date();
           expiresAt.setDate(expiresAt.getDate() + 7);
-          
+
           // Guardar token en KV
           await env.KV.put(`invitation:${invitationToken}`, JSON.stringify({
             email,
@@ -688,9 +688,9 @@ export default {
           }), {
             expirationTtl: 7 * 24 * 60 * 60 // 7 días
           });
-          
+
           invitationLink = `${env.FRONTEND_URL || 'https://edificio-production.pages.dev'}/establecer-password.html?token=${invitationToken}`;
-          
+
           // Contraseña temporal (no podrá usarse hasta que establezca la real)
           hashedPassword = await hashPassword(crypto.randomUUID());
         } else {
@@ -702,13 +702,13 @@ export default {
         await env.DB.prepare(
           'INSERT INTO usuarios (nombre, email, password, rol, departamento, telefono, building_id, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
         ).bind(
-          nombre, 
-          email, 
-          hashedPassword, 
-          rol || 'INQUILINO', 
-          departamento, 
-          telefono || '', 
-          buildingId, 
+          nombre,
+          email,
+          hashedPassword,
+          rol || 'INQUILINO',
+          departamento,
+          telefono || '',
+          buildingId,
           invitationToken ? 0 : 1 // Inactivo hasta que establezca contraseña
         ).run();
 
@@ -1097,7 +1097,7 @@ export default {
           console.log('📝 Iniciando generación masiva de cuotas');
           console.log('   Building ID:', buildingId);
           console.log('   Mes:', mes, 'Año:', anio);
-          
+
           // Obtener configuración del building
           const building = await env.DB.prepare(
             'SELECT units_count, cutoff_day FROM buildings WHERE id = ?'
@@ -1123,22 +1123,22 @@ export default {
           // Si se especificó "TODOS", generar para todas las unidades
           if (departamentos === 'TODOS') {
             const cutoffDay = building.cutoff_day || 5;
-            const mesIndex = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
-                             'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'].indexOf(mes);
+            const mesIndex = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+              'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'].indexOf(mes);
             const fechaVencimiento = new Date(anio, mesIndex, cutoffDay).toISOString().split('T')[0];
-            
+
             // Obtener cuotas existentes en batch
             const existentes = await env.DB.prepare(
               'SELECT departamento FROM cuotas WHERE mes = ? AND anio = ? AND building_id = ?'
             ).bind(mes, anio, buildingId).all();
-            
+
             const deptosExistentes = new Set(existentes.results.map(c => c.departamento));
-            
+
             // Preparar batch insert
             const batch = [];
             for (let i = 1; i <= totalUnits; i++) {
               const depto = i.toString().padStart(3, '0');
-              
+
               if (deptosExistentes.has(depto)) {
                 cuotasExistentes++;
               } else {
@@ -1149,7 +1149,7 @@ export default {
                 );
               }
             }
-            
+
             // Ejecutar batch
             if (batch.length > 0) {
               try {
@@ -1160,7 +1160,7 @@ export default {
               } catch (error) {
                 console.error('   ❌ Error en batch:', error);
                 errores.push(`Error en batch: ${error.message}`);
-                
+
                 // Intentar insertar una por una si batch falla
                 console.log('   🔄 Intentando inserts individuales...');
                 for (const stmt of batch) {
@@ -1176,7 +1176,7 @@ export default {
           } else {
             // Generar para departamentos específicos
             const deptos = Array.isArray(departamentos) ? departamentos : [departamentos];
-            
+
             for (const depto of deptos) {
               try {
                 const existe = await env.DB.prepare(
@@ -1187,14 +1187,14 @@ export default {
                   cuotasExistentes++;
                 } else {
                   const cutoffDay = building.cutoff_day || 5;
-                  const mesIndex = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
-                                   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'].indexOf(mes);
+                  const mesIndex = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'].indexOf(mes);
                   const fechaVencimiento = new Date(anio, mesIndex, cutoffDay).toISOString().split('T')[0];
 
                   await env.DB.prepare(
                     'INSERT INTO cuotas (mes, anio, departamento, monto, pagado, fecha_vencimiento, tipo, concepto, building_id) VALUES (?, ?, ?, ?, 0, ?, ?, ?, ?)'
                   ).bind(mes, anio, depto, monto, fechaVencimiento, tipo || 'ORDINARIA', concepto || null, buildingId).run();
-                  
+
                   cuotasCreadas++;
                 }
               } catch (error) {
@@ -1260,7 +1260,7 @@ export default {
         // Actualizar estado de la cuota
         const pagado = estado === 'PAGADO' ? 1 : 0;
         const estabaPagado = cuota.pagado === 1;
-        
+
         await env.DB.prepare(
           'UPDATE cuotas SET pagado = ?, fecha_pago = ?, metodo_pago = ?, referencia = ? WHERE id = ?'
         ).bind(
@@ -1279,7 +1279,7 @@ export default {
 
           if (building && building.fondo_ingresos_id) {
             const montoTotal = parseFloat(cuota.monto) + parseFloat(cuota.monto_extraordinario || 0) + parseFloat(cuota.monto_mora || 0);
-            
+
             // Sumar al fondo
             await env.DB.prepare(
               'UPDATE fondos SET saldo = saldo + ? WHERE id = ?'
@@ -1338,18 +1338,18 @@ export default {
 
           for (let i = 1; i <= totalUnits; i++) {
             const depto = i.toString().padStart(3, '0');
-            
+
             const cuota = await env.DB.prepare(
               'SELECT id, monto_extraordinario FROM cuotas WHERE mes = ? AND anio = ? AND departamento = ? AND building_id = ?'
             ).bind(mes, anio, depto, buildingId).first();
 
             if (cuota) {
               const nuevoMontoExtra = parseFloat(cuota.monto_extraordinario || 0) + montoPorUnidad;
-              
+
               await env.DB.prepare(
                 'UPDATE cuotas SET monto_extraordinario = ?, concepto_extraordinario = ? WHERE id = ?'
               ).bind(nuevoMontoExtra, concepto, cuota.id).run();
-              
+
               cuotasActualizadas++;
             }
           }
@@ -1409,18 +1409,18 @@ export default {
 
           const cuotas = cuotasPendientes.results || [];
           const hoy = new Date();
-          
+
           let cuotasActualizadas = 0;
           let moraTotal = 0;
 
           for (const cuota of cuotas) {
             // Calcular fecha límite de pago (cutoff_day + grace_days)
-            const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
-                          'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+              'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
             const mesIndex = meses.indexOf(cuota.mes);
-            
+
             if (mesIndex === -1) continue; // Mes inválido
-            
+
             const fechaCorte = new Date(cuota.anio, mesIndex, cutoffDay);
             const fechaLimite = new Date(fechaCorte);
             fechaLimite.setDate(fechaLimite.getDate() + graceDays);
@@ -1472,14 +1472,14 @@ export default {
       }
 
       // === FONDOS ENDPOINTS ===
-      
+
       // GET /api/fondos - Obtener fondos y movimientos
       if (method === 'GET' && path === '/api/fondos') {
         const authResult = await verifyAuth(request, env);
         if (authResult instanceof Response) return authResult;
 
         const buildingId = authResult.payload.buildingId;
-        
+
         // Obtener fondos
         const { results: fondos } = await env.DB.prepare(
           'SELECT * FROM fondos WHERE building_id = ?'
@@ -1581,7 +1581,7 @@ export default {
         await env.DB.prepare(
           'INSERT INTO movimientos_fondos (fondo_id, tipo, monto, concepto, fecha, building_id) VALUES (?, ?, ?, ?, ?, ?)'
         ).bind(fondoOrigen.id, 'EGRESO', monto, concepto || 'Transferencia', fecha, buildingId).run();
-        
+
         await env.DB.prepare(
           'INSERT INTO movimientos_fondos (fondo_id, tipo, monto, concepto, fecha, building_id) VALUES (?, ?, ?, ?, ?, ?)'
         ).bind(fondoDestino.id, 'INGRESO', monto, concepto || 'Transferencia', fecha, buildingId).run();
@@ -1595,7 +1595,7 @@ export default {
       }
 
       // === GASTOS ENDPOINTS ===
-      
+
       // GET /api/gastos - Obtener gastos
       if (method === 'GET' && path === '/api/gastos') {
         const authResult = await verifyAuth(request, env);
@@ -1604,22 +1604,22 @@ export default {
         const buildingId = authResult.payload.buildingId;
         const anio = url.searchParams.get('anio');
         const mes = url.searchParams.get('mes');
-        
+
         let query = 'SELECT * FROM gastos WHERE building_id = ?';
         const params = [buildingId];
-        
+
         if (anio) {
           query += ' AND strftime("%Y", fecha) = ?';
           params.push(anio);
-          
+
           if (mes) {
             query += ' AND strftime("%m", fecha) = ?';
             params.push(mes.toString().padStart(2, '0'));
           }
         }
-        
+
         query += ' ORDER BY fecha DESC';
-        
+
         const stmt = env.DB.prepare(query).bind(...params);
         const { results } = await stmt.all();
 
@@ -1638,11 +1638,11 @@ export default {
 
         const buildingId = authResult.payload.buildingId;
         const anio = url.searchParams.get('anio') || new Date().getFullYear();
-        
+
         const totalResult = await env.DB.prepare(
           'SELECT SUM(monto) as total FROM gastos WHERE building_id = ? AND strftime("%Y", fecha) = ?'
         ).bind(buildingId, anio.toString()).first();
-        
+
         const categoriesResult = await env.DB.prepare(
           'SELECT categoria, SUM(monto) as total FROM gastos WHERE building_id = ? AND strftime("%Y", fecha) = ? GROUP BY categoria'
         ).bind(buildingId, anio.toString()).all();
@@ -1717,9 +1717,9 @@ export default {
         const result = await env.DB.prepare(
           'INSERT INTO gastos (concepto, monto, categoria, fecha, descripcion, proveedor, fondo_id, building_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
         ).bind(
-          concepto, 
-          monto, 
-          categoria, 
+          concepto,
+          monto,
+          categoria,
           fecha || new Date().toISOString().split('T')[0],
           descripcion || '',
           proveedor || null,
@@ -1730,8 +1730,8 @@ export default {
         return new Response(JSON.stringify({
           success: true,
           id: result.meta.last_row_id,
-          message: fondoId ? 
-            `Gasto registrado y descontado del fondo exitosamente` : 
+          message: fondoId ?
+            `Gasto registrado y descontado del fondo exitosamente` :
             'Gasto registrado exitosamente (sin afectar fondos)'
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -1771,11 +1771,11 @@ export default {
           await env.DB.prepare(
             'INSERT INTO movimientos_fondos (fondo_id, tipo, monto, concepto, fecha, building_id) VALUES (?, ?, ?, ?, ?, ?)'
           ).bind(
-            gasto.fondo_id, 
-            'INGRESO', 
-            gasto.monto, 
-            `Reversión de gasto: ${gasto.concepto}`, 
-            new Date().toISOString().split('T')[0], 
+            gasto.fondo_id,
+            'INGRESO',
+            gasto.monto,
+            `Reversión de gasto: ${gasto.concepto}`,
+            new Date().toISOString().split('T')[0],
             buildingId
           ).run();
         }
@@ -1785,8 +1785,8 @@ export default {
 
         return new Response(JSON.stringify({
           success: true,
-          message: gasto.fondo_id ? 
-            'Gasto eliminado y monto revertido al fondo exitosamente' : 
+          message: gasto.fondo_id ?
+            'Gasto eliminado y monto revertido al fondo exitosamente' :
             'Gasto eliminado exitosamente'
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -1794,7 +1794,7 @@ export default {
       }
 
       // === ANUNCIOS ENDPOINTS ===
-      
+
       // GET /api/anuncios - Obtener anuncios
       if (method === 'GET' && path === '/api/anuncios') {
         const authResult = await verifyAuth(request, env);
@@ -1803,18 +1803,18 @@ export default {
         const buildingId = authResult.payload.buildingId;
         const limit = url.searchParams.get('limit') || 50;
         const tipo = url.searchParams.get('tipo');
-        
+
         let query = 'SELECT * FROM anuncios WHERE activo = 1 AND building_id = ?';
         const params = [buildingId];
-        
+
         if (tipo && tipo !== 'TODOS') {
           query += ' AND prioridad = ?';
           params.push(tipo);
         }
-        
+
         query += ' ORDER BY created_at DESC LIMIT ?';
         params.push(parseInt(limit));
-        
+
         const stmt = env.DB.prepare(query).bind(...params);
         const { results } = await stmt.all();
 
@@ -1851,9 +1851,9 @@ export default {
         const result = await env.DB.prepare(
           'INSERT INTO anuncios (titulo, contenido, prioridad, archivo, created_by, building_id) VALUES (?, ?, ?, ?, ?, ?)'
         ).bind(
-          titulo, 
-          contenido, 
-          prioridadFinal, 
+          titulo,
+          contenido,
+          prioridadFinal,
           imagen || null,
           authResult.payload.userId || authResult.user?.userId,
           buildingId
@@ -1876,17 +1876,17 @@ export default {
         try {
           console.log('📤 Upload request recibida');
           console.log('   Content-Type:', request.headers.get('content-type'));
-          
+
           const formData = await request.formData();
           console.log('   FormData parseado correctamente');
-          
+
           // Debug: ver todos los campos del FormData
           const fields = [];
           for (const [key, value] of formData.entries()) {
             fields.push(key);
             console.log(`   Campo: ${key}, Tipo: ${typeof value}, Es File: ${value instanceof File}`);
           }
-          
+
           // Intentar con 'imagen' primero, luego 'file' por compatibilidad
           const file = formData.get('imagen') || formData.get('file');
           console.log('   Archivo obtenido:', !!file);
@@ -1894,7 +1894,7 @@ export default {
           if (!file) {
             console.log('❌ No se encontró archivo en FormData');
             console.log('   Campos recibidos:', fields);
-            
+
             return new Response(JSON.stringify({
               success: false,
               message: 'No se recibió ningún archivo. Campos recibidos: ' + fields.join(', ')
@@ -1914,12 +1914,12 @@ export default {
             console.log(`📦 Preparando para subir a R2: ${key}`);
             console.log(`   Tamaño del archivo: ${file.size} bytes`);
             console.log(`   Tipo: ${file.type}`);
-            
+
             try {
               // Convertir a ArrayBuffer para R2
               const fileBuffer = await file.arrayBuffer();
               console.log(`   ArrayBuffer creado: ${fileBuffer.byteLength} bytes`);
-              
+
               await env.UPLOADS.put(key, fileBuffer, {
                 httpMetadata: {
                   contentType: file.type
@@ -2006,7 +2006,7 @@ export default {
       }
 
       // === CIERRES ENDPOINTS ===
-      
+
       // GET /api/cierres - Obtener cierres
       if (method === 'GET' && path === '/api/cierres') {
         const authResult = await verifyAuth(request, env);
@@ -2014,17 +2014,17 @@ export default {
 
         const buildingId = authResult.payload.buildingId;
         const anio = url.searchParams.get('anio');
-        
+
         let query = 'SELECT * FROM cierres WHERE building_id = ?';
         const params = [buildingId];
-        
+
         if (anio) {
           query += ' AND anio = ?';
           params.push(anio);
         }
-        
+
         query += ' ORDER BY anio DESC, fecha_cierre DESC';
-        
+
         const stmt = env.DB.prepare(query).bind(...params);
         const { results } = await stmt.all();
 
@@ -2075,27 +2075,27 @@ export default {
             const cuotasPagadas = await env.DB.prepare(
               'SELECT SUM(monto + monto_extraordinario + monto_mora) as total FROM cuotas WHERE building_id = ? AND mes = ? AND anio = ? AND pagado = 1'
             ).bind(buildingId, mes, anio).first();
-            
+
             ingresos = parseFloat(cuotasPagadas?.total || 0);
 
             // Egresos: gastos del mes
-            const mesIndex = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
-                             'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'].indexOf(mes);
-            
+            const mesIndex = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+              'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'].indexOf(mes);
+
             const gastosDelMes = await env.DB.prepare(
               `SELECT SUM(monto) as total FROM gastos 
                WHERE building_id = ? 
                AND strftime('%Y', fecha) = ? 
                AND strftime('%m', fecha) = ?`
             ).bind(buildingId, anio.toString(), (mesIndex + 1).toString().padStart(2, '0')).first();
-            
+
             egresos = parseFloat(gastosDelMes?.total || 0);
           } else {
             // ANUAL: todos los ingresos y egresos del año
             const cuotasAnuales = await env.DB.prepare(
               'SELECT SUM(monto + monto_extraordinario + monto_mora) as total FROM cuotas WHERE building_id = ? AND anio = ? AND pagado = 1'
             ).bind(buildingId, anio).first();
-            
+
             ingresos = parseFloat(cuotasAnuales?.total || 0);
 
             const gastosAnuales = await env.DB.prepare(
@@ -2103,7 +2103,7 @@ export default {
                WHERE building_id = ? 
                AND strftime('%Y', fecha) = ?`
             ).bind(buildingId, anio.toString()).first();
-            
+
             egresos = parseFloat(gastosAnuales?.total || 0);
           }
 
@@ -2150,7 +2150,7 @@ export default {
       }
 
       // === PARCIALIDADES ENDPOINTS ===
-      
+
       // GET /api/parcialidades/pagos - Obtener pagos
       if (method === 'GET' && path === '/api/parcialidades/pagos') {
         const authResult = await verifyAuth(request, env);
@@ -2249,7 +2249,7 @@ export default {
 
         // Generar OTP
         const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         // Guardar en KV temporal (si está configurado)
         if (env.KV) {
           await env.KV.put(`otp:${email}`, JSON.stringify({
@@ -2262,7 +2262,7 @@ export default {
         // TODO: Enviar email con OTP usando servicio de email
         // Por ahora, retornar OTP en respuesta (solo para desarrollo)
         console.log(`OTP para ${email}: ${otpCode}`);
-        
+
         return new Response(JSON.stringify({
           ok: true,
           msg: 'Código OTP enviado correctamente',
@@ -2302,7 +2302,7 @@ export default {
 
         // Generar OTP
         const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         // Guardar en KV temporal (si está configurado) o en memoria
         if (env.KV) {
           await env.KV.put(`otp:${email}`, JSON.stringify({
@@ -2318,7 +2318,7 @@ export default {
 
         // TODO: Enviar email con OTP
         // Por ahora, retornar OTP en respuesta (solo para desarrollo)
-        
+
         return new Response(JSON.stringify({
           ok: true,
           msg: 'Registro iniciado. Revisa tu email para el código OTP.',
@@ -2460,7 +2460,7 @@ export default {
 
         // Generar ID de transacción
         const transactionId = `${paymentMethod === 'transfer' ? 'TRANS' : 'MP'}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-        
+
         // Calcular tiempo de expiración de acceso temporal (48 horas)
         const tempAccessExpires = new Date(Date.now() + (48 * 60 * 60 * 1000)).toISOString();
 
@@ -2473,7 +2473,7 @@ export default {
         otpData.checkoutAt = new Date().toISOString();
         otpData.paymentStatus = 'pending_validation'; // pending_validation | validated | rejected
         otpData.tempAccessExpires = tempAccessExpires;
-        
+
         if (env.KV) {
           await env.KV.put(`otp:${email}`, JSON.stringify(otpData), { expirationTtl: 172800 }); // 48 horas
         }
@@ -2499,7 +2499,7 @@ export default {
         try {
           const body = await request.json();
           const { email, buildingData } = body;
-          
+
           if (!email) {
             return new Response(JSON.stringify({
               ok: false,
@@ -2509,7 +2509,7 @@ export default {
               headers: { ...corsHeaders, 'Content-Type': 'application/json' }
             });
           }
-          
+
           const buildingName = buildingData?.name || 'Mi Edificio';
           const address = buildingData?.address || '';
           const unitsCount = buildingData?.totalUnits || 20;
@@ -2521,12 +2521,12 @@ export default {
           const reglamento = buildingData?.reglamento || '';
           const privacyPolicy = buildingData?.privacyPolicy || '';
           const paymentPolicies = buildingData?.paymentPolicies || '';
-          
+
           // Obtener plan y datos de pago desde KV
           let selectedPlan = 'profesional';
           let paymentStatus = 'validated'; // Default para compatibilidad
           let tempAccessExpires = null;
-          
+
           if (env.KV) {
             const stored = await env.KV.get(`otp:${email}`);
             if (stored) {
@@ -2545,8 +2545,8 @@ export default {
                 'personalizado': 'empresarial',
                 'custom': 'empresarial'
               };
-              const planKey = typeof otpData.selectedPlan === 'string' 
-                ? otpData.selectedPlan.toLowerCase() 
+              const planKey = typeof otpData.selectedPlan === 'string'
+                ? otpData.selectedPlan.toLowerCase()
                 : 'profesional';
               selectedPlan = planMapping[planKey] || 'profesional';
             }
@@ -2563,7 +2563,7 @@ export default {
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`
           ).bind(
             buildingName, address, unitsCount, selectedPlan, 1,
-            monthlyFee, extraFee, cutoffDay, 
+            monthlyFee, extraFee, cutoffDay,
             paymentDueDays, lateFeePercent,
             reglamento, privacyPolicy, paymentPolicies
           ).run();
@@ -2573,14 +2573,14 @@ export default {
           // Crear patrimonios/fondos iniciales (frontend usa 'patrimonies')
           const patrimonies = body.patrimonies || buildingData?.funds || [];
           const fondosIds = [];
-          
+
           for (const fund of patrimonies) {
             if (fund.name && (fund.amount || fund.amount === 0)) {
               const insertFondo = await env.DB.prepare(
                 `INSERT INTO fondos (building_id, nombre, tipo, saldo, descripcion, created_at)
                  VALUES (?, ?, ?, ?, ?, datetime('now'))`
               ).bind(buildingId, fund.name, 'RESERVA', parseFloat(fund.amount) || 0, fund.name).run();
-              
+
               fondosIds.push(insertFondo.meta.last_row_id);
             }
           }
@@ -2588,10 +2588,10 @@ export default {
           // Asignar fondo de ingresos si se seleccionó
           const fondoIngresosIndex = body.fondoIngresosIndex;
           let fondoIngresosId = null;
-          
+
           if (fondoIngresosIndex !== undefined && fondosIds[fondoIngresosIndex]) {
             fondoIngresosId = fondosIds[fondoIngresosIndex];
-            
+
             // Actualizar building con fondo de ingresos
             await env.DB.prepare(
               'UPDATE buildings SET fondo_ingresos_id = ? WHERE id = ?'
@@ -2603,7 +2603,7 @@ export default {
           const hashedPassword = await hashPassword(plainPassword);
           const adminName = body.adminData?.name || 'Administrador';
           const adminPhone = body.adminData?.phone || '';
-          
+
           const insertUser = await env.DB.prepare(
             'INSERT INTO usuarios (nombre, email, password, telefono, rol, departamento, activo, building_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
           ).bind(adminName, email, hashedPassword, adminPhone, 'ADMIN', 'Admin', 1, buildingId).run();
@@ -2749,7 +2749,7 @@ export default {
 
         try {
           const body = await request.json();
-          const { 
+          const {
             nombre, direccion, totalUnidades, cuotaMensual, cuotaExtraordinaria,
             diaCorte, diasGracia, porcentajeMora, politicas, politicasPrivacidad, politicasPago,
             fondoIngresosId
@@ -2765,10 +2765,10 @@ export default {
                updated_at = datetime('now')
              WHERE id = ?`
           ).bind(
-            nombre, 
-            direccion, 
-            totalUnidades, 
-            cuotaMensual, 
+            nombre,
+            direccion,
+            totalUnidades,
+            cuotaMensual,
             cuotaExtraordinaria || 0,
             diaCorte,
             diasGracia || 5,
@@ -2799,29 +2799,29 @@ export default {
       }
 
       // === PROYECTOS ENDPOINTS ===
-      
+
       // GET /api/proyectos - Obtener proyectos críticos
       if (method === 'GET' && path === '/api/proyectos') {
         const authResult = await verifyAuth(request, env);
         if (authResult instanceof Response) return authResult;
 
         const buildingId = authResult.payload.buildingId;
-        
+
         try {
           const { results } = await env.DB.prepare(
             'SELECT * FROM proyectos WHERE building_id = ? AND activo = 1 ORDER BY prioridad DESC, created_at DESC'
           ).bind(buildingId).all();
 
           const proyectos = results || [];
-          
+
           // Calcular resumen
           const total = proyectos.reduce((sum, p) => sum + parseFloat(p.monto || 0), 0);
-          
+
           // Obtener total de unidades del building
           const building = await env.DB.prepare(
             'SELECT units_count FROM buildings WHERE id = ?'
           ).bind(buildingId).first();
-          
+
           const totalUnidades = building?.units_count || 20;
           const porDepartamento = totalUnidades > 0 ? total / totalUnidades : 0;
 
@@ -2906,7 +2906,7 @@ export default {
           // 4. Obtener mes y año actual
           const ahora = new Date();
           const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-          
+
           let mesInicio = ahora.getMonth(); // 0-11
           let anioInicio = ahora.getFullYear();
 
@@ -2929,15 +2929,15 @@ export default {
             for (let i = 0; i < mesesDif; i++) {
               let mesIdx = mesInicio + i;
               let anio = anioInicio;
-              
+
               // Ajustar año si pasamos diciembre
               while (mesIdx > 11) {
                 mesIdx -= 12;
                 anio++;
               }
-              
+
               const mesNombre = meses[mesIdx];
-              
+
               // Verificar si ya existe cuota para este depto/mes/año
               const cuotaExistente = await env.DB.prepare(
                 'SELECT id, monto, pagado FROM cuotas WHERE departamento = ? AND mes = ? AND anio = ? AND building_id = ?'
@@ -3075,7 +3075,7 @@ export default {
           // Obtener mes y año
           const ahora = new Date();
           const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-          
+
           let mesInicio = ahora.getMonth();
           let anioInicio = ahora.getFullYear();
 
@@ -3095,14 +3095,14 @@ export default {
             for (let i = 0; i < mesesDif; i++) {
               let mesIdx = mesInicio + i;
               let anio = anioInicio;
-              
+
               while (mesIdx > 11) {
                 mesIdx -= 12;
                 anio++;
               }
-              
+
               const mesNombre = meses[mesIdx];
-              
+
               const cuotaExistente = await env.DB.prepare(
                 'SELECT id, monto, pagado FROM cuotas WHERE departamento = ? AND mes = ? AND anio = ? AND building_id = ?'
               ).bind(inquilino.departamento, mesNombre, anio, buildingId).first();
@@ -3206,7 +3206,7 @@ export default {
 
         // Buscar cuotas que tienen el concepto de este proyecto
         const conceptoBuscar = `Proyecto: ${proyecto.nombre}`;
-        
+
         const cuotasAfectadas = await env.DB.prepare(
           'SELECT id, monto_extraordinario FROM cuotas WHERE concepto_extraordinario = ? AND building_id = ?'
         ).bind(conceptoBuscar, buildingId).all();
@@ -3236,7 +3236,7 @@ export default {
       }
 
       // === SUPER ADMIN ENDPOINTS ===
-      
+
       // POST /api/super-admin/login - Login de super admin
       if (method === 'POST' && path === '/api/super-admin/login') {
         const body = await request.json();
@@ -3400,7 +3400,7 @@ export default {
         if (authResult instanceof Response) return authResult;
 
         const buildingId = authResult.payload.buildingId;
-        
+
         try {
           const formData = await request.formData();
           const file = formData.get('file');
@@ -3425,7 +3425,7 @@ export default {
 
           if (env.UPLOADS) {
             const fileBuffer = await file.arrayBuffer();
-            
+
             await env.UPLOADS.put(key, fileBuffer, {
               httpMetadata: {
                 contentType: file.type
@@ -3513,33 +3513,33 @@ export default {
         try {
           const key = path.substring(9); // Remover '/uploads/' del inicio
           console.log('📥 Sirviendo archivo desde R2:', key);
-          
+
           if (env.UPLOADS) {
             const object = await env.UPLOADS.get(key);
-            
+
             if (object === null) {
               console.log('❌ Archivo no encontrado en R2:', key);
               // Listar claves disponibles para debugging
               const list = await env.UPLOADS.list({ prefix: 'anuncios/', limit: 10 });
               console.log('📋 Archivos disponibles:', list.objects.map(o => o.key));
-              
+
               return new Response(JSON.stringify({
                 error: 'Archivo no encontrado',
                 key: key,
                 available: list.objects.map(o => o.key)
-              }), { 
+              }), {
                 status: 404,
                 headers: { ...corsHeaders, 'Content-Type': 'application/json' }
               });
             }
-            
+
             console.log('✅ Archivo encontrado en R2:', key);
 
             const headers = new Headers();
             object.writeHttpMetadata(headers);
             headers.set('etag', object.httpEtag);
             headers.set('Cache-Control', 'public, max-age=31536000'); // 1 año
-            
+
             // Determinar Content-Type por extensión
             const ext = key.split('.').pop().toLowerCase();
             const contentTypes = {
@@ -3551,7 +3551,7 @@ export default {
               'pdf': 'application/pdf',
               'svg': 'image/svg+xml'
             };
-            
+
             headers.set('Content-Type', contentTypes[ext] || 'application/octet-stream');
 
             // Add all CORS headers
@@ -3561,26 +3561,26 @@ export default {
 
             return new Response(object.body, { headers });
           } else {
-            return new Response('Almacenamiento no disponible', { 
+            return new Response('Almacenamiento no disponible', {
               status: 503,
               headers: { ...corsHeaders, 'Content-Type': 'text/plain' }
             });
           }
         } catch (error) {
-          return new Response('Error al servir archivo: ' + error.message, { 
+          return new Response('Error al servir archivo: ' + error.message, {
             status: 500,
             headers: { ...corsHeaders, 'Content-Type': 'text/plain' }
           });
         }
       }
-      
+
       // Mapear rutas HTML
       const htmlRoutes = {
         '/': 'index.html',
         '/login': 'login.html',
         '/admin': 'admin.html',
         '/inquilino': 'inquilino.html',
-        '/landing': 'landing.html',
+
         '/register': 'register.html',
         '/registro': 'register.html',
         '/verify-otp': 'verify-otp.html',
@@ -3607,10 +3607,10 @@ export default {
 
         if (manifestKey) {
           const asset = await env.__STATIC_CONTENT.get(manifestKey, 'arrayBuffer');
-          
+
           if (asset) {
             const headers = new Headers();
-            
+
             // Content type
             const ext = assetKey.split('.').pop();
             const contentTypes = {
@@ -3633,7 +3633,7 @@ export default {
         }
       }
 
-      return new Response('Not Found', { 
+      return new Response('Not Found', {
         status: 404,
         headers: { 'Content-Type': 'text/plain' }
       });
