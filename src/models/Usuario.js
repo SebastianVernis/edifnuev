@@ -13,25 +13,25 @@ class Usuario {
     this.fechaCreacion = new Date().toISOString();
     this.activo = true;
   }
-  
+
   // Método para crear un nuevo usuario
   static async crear(userData) {
     try {
       // Verificar si el email ya existe
       const data = readData();
       const existeEmail = data.usuarios.some(u => u.email === userData.email);
-      
+
       if (existeEmail) {
         throw new Error('El email ya está registrado');
       }
-      
+
       // Hash de la contraseña
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(userData.password, salt);
-      
+
       // Configurar permisos según el rol
       let permisos = {};
-      
+
       if (userData.rol === 'COMITE') {
         // Permisos por defecto para el comité (todos desactivados)
         permisos = {
@@ -53,7 +53,7 @@ class Usuario {
           cierres: true
         };
       }
-      
+
       // Crear nuevo usuario con contraseña hasheada y permisos
       const nuevoUsuario = new Usuario(
         userData.nombre,
@@ -63,7 +63,7 @@ class Usuario {
         userData.rol || 'INQUILINO',
         permisos
       );
-      
+
       // Guardar en la base de datos
       return addItem('usuarios', nuevoUsuario);
     } catch (error) {
@@ -71,7 +71,7 @@ class Usuario {
       throw error;
     }
   }
-  
+
   // Método para obtener todos los usuarios
   static obtenerTodos() {
     const data = readData();
@@ -80,29 +80,29 @@ class Usuario {
       return usuarioSinPassword;
     });
   }
-  
+
   // Método para obtener un usuario por ID
   static obtenerPorId(id) {
     const data = readData();
     const usuario = data.usuarios.find(u => u.id === id);
-    
+
     if (!usuario) return null;
-    
+
     const { password, ...usuarioSinPassword } = usuario;
     return usuarioSinPassword;
   }
-  
+
   // Método para obtener un usuario por email
   static obtenerPorEmail(email) {
     const data = readData();
     return data.usuarios.find(u => u.email === email);
   }
-  
+
   // Método para actualizar un usuario
   static actualizar(id, updates) {
     // No permitir actualizar la contraseña directamente
     const { password, ...actualizaciones } = updates;
-    
+
     // Si se están actualizando permisos y el rol es COMITE, asegurarse de que los permisos sean válidos
     if (actualizaciones.permisos && actualizaciones.rol === 'COMITE') {
       actualizaciones.permisos = {
@@ -127,31 +127,31 @@ class Usuario {
       // Si se cambia el rol a INQUILINO, eliminar permisos
       actualizaciones.permisos = {};
     }
-    
+
     return updateItem('usuarios', id, actualizaciones);
   }
-  
+
   // Método para cambiar contraseña
   static async cambiarPassword(id, passwordActual, passwordNueva) {
     try {
       const data = readData();
       const usuario = data.usuarios.find(u => u.id === id);
-      
+
       if (!usuario) {
         throw new Error('Usuario no encontrado');
       }
-      
+
       // Verificar contraseña actual
       const passwordValida = await bcrypt.compare(passwordActual, usuario.password);
-      
+
       if (!passwordValida) {
         throw new Error('Contraseña actual incorrecta');
       }
-      
+
       // Hash de la nueva contraseña
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(passwordNueva, salt);
-      
+
       // Actualizar contraseña
       return updateItem('usuarios', id, { password: hashedPassword });
     } catch (error) {
@@ -159,28 +159,28 @@ class Usuario {
       throw error;
     }
   }
-  
+
   // Método para eliminar un usuario
   static eliminar(id) {
     return deleteItem('usuarios', id);
   }
-  
+
   // Método para validar credenciales
   static async validarCredenciales(email, password) {
     try {
       const usuario = Usuario.obtenerPorEmail(email);
-      
+
       if (!usuario) {
         return null;
       }
-      
+
       // Verificar contraseña
       const passwordValida = await bcrypt.compare(password, usuario.password);
-      
+
       if (!passwordValida) {
         return null;
       }
-      
+
       // Retornar usuario sin contraseña
       const { password: _, ...usuarioSinPassword } = usuario;
       return usuarioSinPassword;
@@ -189,12 +189,12 @@ class Usuario {
       throw error;
     }
   }
-  
+
   // Métodos alias para compatibilidad con controladores existentes
   static getByEmail(email) {
     return Usuario.obtenerPorEmail(email);
   }
-  
+
   static async validatePassword(usuario, password) {
     try {
       return await bcrypt.compare(password, usuario.password);
@@ -203,40 +203,38 @@ class Usuario {
       return false;
     }
   }
-  
+
   static async create(userData) {
     return Usuario.crear(userData);
   }
-  
+
   static getById(id) {
     return Usuario.obtenerPorId(id);
   }
-  
+
   // Método para verificar si un usuario tiene un permiso específico
   static tienePermiso(usuario, permiso) {
     // Administradores tienen todos los permisos
     if (usuario.rol === 'ADMIN') {
       return true;
     }
-    
+
     // Miembros del comité tienen permisos específicos
     if (usuario.rol === 'COMITE' && usuario.permisos) {
       return usuario.permisos[permiso] === true;
     }
-    
+
     // Inquilinos no tienen permisos administrativos
     return false;
   }
 
-  // ========== MÉTODOS PARA INTEGRACIÓN CON CLERK ==========
-
   /**
-   * Obtener usuario por Clerk User ID
+   * Obtener usuario por ID de Clerk
    * @param {string} clerkUserId - ID de usuario de Clerk
-   * @param {Object} db - Instancia de D1 database (Cloudflare Workers)
-   * @returns {Object|null} Usuario encontrado o null
+   * @param {Object} db - Instancia de D1 database (opcional, para desarrollo local)
+   * @returns {Object|null} Usuario sin contraseña
    */
-  static async getByClerkId(clerkUserId, db) {
+  static async obtenerPorClerkId(clerkUserId, db) {
     try {
       if (!db) {
         // Fallback a data.js si no hay DB (desarrollo local)

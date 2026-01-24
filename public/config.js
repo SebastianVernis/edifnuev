@@ -3,18 +3,18 @@
  * Auto-detecta entorno y configura API URL
  */
 
-(function() {
+(function () {
   'use strict';
-  
+
   // Detectar entorno
   const hostname = window.location.hostname;
   const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
   const isPages = hostname.includes('.pages.dev');
   const isWorkers = hostname.includes('.workers.dev');
-  
+
   // Configurar API_BASE_URL
   let API_BASE_URL;
-  
+
   if (isLocalhost) {
     // Desarrollo local - backend local
     API_BASE_URL = 'http://localhost:3001';
@@ -25,7 +25,7 @@
     // Fallback - usar rutas relativas
     API_BASE_URL = '';
   }
-  
+
   // Configuración global
   window.APP_CONFIG = {
     API_BASE_URL: API_BASE_URL,
@@ -33,12 +33,8 @@
     VERSION: '2.0.0',
     SITE_NAME: 'ChispartBuilding',
     DOMAIN: isLocalhost ? 'localhost:3001' : 'chispartbuilding.pages.dev',
-    
-    // Clerk Configuration
-    CLERK_PUBLISHABLE_KEY: 'pk_test_cG9saXNoZWQtaGFnZmlzaC01OS5jbGVyay5hY2NvdW50cy5kZXYk',
-    
     // Helper para construir URLs
-    apiUrl: function(endpoint) {
+    apiUrl: function (endpoint) {
       // Si endpoint ya es absoluto, devolverlo
       if (endpoint.startsWith('http')) {
         return endpoint;
@@ -51,22 +47,22 @@
       return this.API_BASE_URL + '/api/' + endpoint;
     }
   };
-  
+
   console.log('🔧 ChispartBuilding Config:', {
     environment: window.APP_CONFIG.ENVIRONMENT,
     apiBaseUrl: window.APP_CONFIG.API_BASE_URL,
     domain: window.APP_CONFIG.DOMAIN,
     hostname: hostname
   });
-  
+
   // Interceptar fetch para agregar base URL automáticamente
   const originalFetch = window.fetch;
-  window.fetch = function(url, options) {
+  window.fetch = function (url, options) {
     // Si la URL empieza con /api/, agregar base URL
     if (typeof url === 'string' && url.startsWith('/api/')) {
       url = window.APP_CONFIG.API_BASE_URL + url;
     }
     return originalFetch(url, options);
   };
-  
+
 })();

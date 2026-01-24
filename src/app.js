@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.routes.js';
-import clerkAuthRoutes from './routes/clerk-auth.routes.js';
+
 import usuariosRoutes from './routes/usuarios.routes.js';
 import cuotasRoutes from './routes/cuotas.routes.js';
 import gastosRoutes from './routes/gastos.routes.js';
@@ -22,7 +22,7 @@ import invitationsRoutes from './routes/invitations.routes.js';
 import themeRoutes from './routes/theme.routes.js';
 import proyectosRoutes from './routes/proyectos.routes.js';
 import adminManagementRoutes from './routes/admin-management.routes.js';
-import clerkWebhookRoutes from './routes/clerk-webhook.routes.js';
+
 import { inicializarCuotasAnuales, actualizarCuotasVencidas } from './utils/cuotasInicializacion.js';
 import { getTransporter } from './utils/smtp.js';
 
@@ -48,7 +48,7 @@ app.use('/uploads', express.static(uploadsPath));
 
 // Rutas API
 app.use('/api/auth', authRoutes);
-app.use('/api/auth', clerkAuthRoutes); // Rutas de Clerk Auth
+
 app.use('/api/usuarios', usuariosRoutes);
 app.use('/api/cuotas', cuotasRoutes);
 app.use('/api/gastos', gastosRoutes);
@@ -66,7 +66,7 @@ app.use('/api/invitations', invitationsRoutes);
 app.use('/api/theme', themeRoutes);
 app.use('/api/proyectos', proyectosRoutes);
 app.use('/api/admin-management', adminManagementRoutes);
-app.use('/api/webhooks/clerk', clerkWebhookRoutes);
+
 
 // Ruta para servir la aplicación frontend
 app.get('/', (req, res) => {

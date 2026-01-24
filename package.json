@@ -49,8 +49,6 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@clerk/backend": "^2.29.3",
-    "@clerk/clerk-js": "^5.120.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",

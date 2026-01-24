@@ -8,8 +8,6 @@ NODE_ENV = "production"
 APP_URL = "https://edificio-production.sebastianvernis.workers.dev"
 FRONTEND_URL = "https://edificio-production.pages.dev"
 OTP_DEV_MODE = "false"
-CLERK_PUBLISHABLE_KEY = "pk_test_cG9saXNoZWQtaGFnZmlzaC01OS5jbGVyay5hY2NvdW50cy5kZXYk"
-CLERK_JWKS_URL = "https://polished-hagfish-59.clerk.accounts.dev/.well-known/jwks.json"
 
 # D1 Database binding
 [[d1_databases]]
