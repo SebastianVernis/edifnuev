@@ -228,6 +228,5 @@ class Usuario {
     return false;
   }
 }
-}
 
 export default Usuario;
