@@ -291,14 +291,14 @@
                       <i class="fas fa-edit"></i>
                     </button>
                     ${b.active ?
-            \`<button class="btn btn-sm btn-danger" onclick="desactivarBuilding(\${b.id})" title="Desactivar">
+                `<button class="btn btn-sm btn-danger" onclick="desactivarBuilding(${b.id})" title="Desactivar">
                         <i class="fas fa-ban"></i>
-                      </button>\` :
-                      \`<button class="btn btn-sm btn-success" onclick="activarBuilding(\${b.id})" title="Activar">
+                      </button>` :
+                `<button class="btn btn-sm btn-success" onclick="activarBuilding(${b.id})" title="Activar">
                         <i class="fas fa-check"></i>
-                      </button>\`
-                    }
-                    <button class="btn btn-sm" style="background: #991b1b; color: white;" onclick="restringirAdminByEmail('\${b.admin_email}')" title="Restringir Admin">
+                      </button>`
+              }
+                    <button class="btn btn-sm" style="background: #991b1b; color: white;" onclick="restringirAdminByEmail('${b.admin_email}')" title="Restringir Admin">
                       <i class="fas fa-user-slash"></i>
                     </button>
                   </div>
@@ -335,11 +335,11 @@
 
     async function actualizarLimites(buildingId, units) {
       try {
-        const response = await fetch(\`/api/super-admin/buildings/\${buildingId}/limits\`, {
+        const response = await fetch(`/api/super-admin/buildings/${buildingId}/limits`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': \`Bearer \${superAdminToken}\`
+            'Authorization': `Bearer ${superAdminToken}`
           },
           body: JSON.stringify({ units_count: units })
         });
@@ -370,11 +370,11 @@
 
     async function cambiarEstadoBuilding(buildingId, active) {
       try {
-        const response = await fetch(\`/api/super-admin/buildings/\${buildingId}/status\`, {
+        const response = await fetch(`/api/super-admin/buildings/${buildingId}/status`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': \`Bearer \${superAdminToken}\`
+            'Authorization': `Bearer ${superAdminToken}`
           },
           body: JSON.stringify({ active: active ? 1 : 0 })
         });
@@ -392,7 +392,7 @@
 
     async function restringirAdminByEmail(email) {
       if (email === 'N/A' || !email) return alert('No hay administrador asignado');
-      if (!confirm(\`¿Restringir el acceso al administrador \${email}?\`)) return;
+      if (!confirm(`¿Restringir el acceso al administrador ${email}?`)) return;
 
       alert('Funcionalidad de restricción configurada para el admin: ' + email + '. (Endpoint implementado en backend)');
     }
@@ -400,12 +400,12 @@
     async function generarReporteSoporte() {
       const type = document.getElementById('support-type').value;
       const targetId = document.getElementById('support-target-id').value;
-      
+
       if (!targetId) return alert('Ingrese un ID objetivo');
 
       try {
-        const response = await fetch(\`/api/super-admin/support/report?type=\${type}&targetId=\${targetId}\`, {
-          headers: { 'Authorization': \`Bearer \${superAdminToken}\` }
+        const response = await fetch(`/api/super-admin/support/report?type=${type}&targetId=${targetId}`, {
+          headers: { 'Authorization': `Bearer ${superAdminToken}` }
         });
 
         const data = await response.json();
@@ -417,7 +417,7 @@
           if (data.report.findings.length === 0) {
             findingsUl.innerHTML = '<li style="color: #059669;">✅ No se encontraron inconsistencias.</li>';
           } else {
-            findingsUl.innerHTML = data.report.findings.map(f => \`<li>\${f}</li>\`).join('');
+            findingsUl.innerHTML = data.report.findings.map(f => `<li>${f}</li>`).join('');
           }
         }
       } catch (error) {
