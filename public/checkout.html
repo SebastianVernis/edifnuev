@@ -40,19 +40,9 @@
     .header {
       text-align: center;
       margin-bottom: 2rem;
-    }
-
-    .logo-container {
-      margin-bottom: 1.5rem;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-    }
-
-    .header-logo {
-      height: 100px;
-      width: auto;
-      object-fit: contain;
     }
 
     .header h1 {
@@ -514,9 +504,8 @@
     </div>
 
     <div class="header">
-      <div class="logo-container">
-        <img src="/logo.png" alt="ChispartBuilding" class="header-logo">
-      </div>
+      <img src="/logo.png" alt="ChispartBuilding"
+        style="margin-bottom: 30px;height: auto;width: 250px;position: relative;align-self: anchor-center;">
       <h1>Método de Pago</h1>
       <p class="subtitle">Selecciona cómo deseas realizar tu pago</p>
     </div>
