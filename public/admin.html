@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +13,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     /* Sistema de Temas Avanzado con Degradados */
-    :root, [data-theme="default"] {
+    :root,
+    [data-theme="default"] {
       --primary: #0ea5e9;
       --primary-dark: #0284c7;
       --gradient: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #14b8a6 100%);
@@ -121,7 +123,7 @@
 
     .sidebar-nav a:hover,
     .sidebar-nav li.active a {
-      background: rgba(255,255,255,0.1) !important;
+      background: rgba(255, 255, 255, 0.1) !important;
     }
 
     /* Modo oscuro */
@@ -152,8 +154,17 @@
   </style>
   <script src="/config.js"></script>
 </head>
+
 <body>
   <div class="dashboard-container">
+    <!-- Sidebar Hotspot -->
+    <div class="sidebar-hotspot"></div>
+
+    <!-- Hamburguesa Button -->
+    <button class="mobile-sidebar-toggle fixed-toggle" onclick="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </button>
+
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
@@ -164,7 +175,7 @@
         <h2 id="building-name">Cargando...</h2>
         <p>Panel de Administración</p>
       </div>
-      
+
       <nav class="sidebar-nav">
         <ul>
           <li class="active"><a href="#dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
@@ -178,30 +189,22 @@
           <li><a href="#configuracion"><i class="fas fa-cog"></i> Configuración</a></li>
         </ul>
       </nav>
-      
+
       <div class="sidebar-footer">
         <p id="user-name">Administrador</p>
         <button id="logout-btn" class="btn btn-outline">Cerrar Sesión</button>
       </div>
     </aside>
-    
+
     <!-- Main Content -->
     <main class="main-content">
-      <header class="main-header">
-        <button class="mobile-sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
-          <i class="fas fa-bars"></i>
-        </button>
-        <h1 id="page-title">Dashboard</h1>
-        <div class="date-display">
-          <p id="current-date">Cargando...</p>
-        </div>
-      </header>
-      
+
       <!-- Dashboard Section -->
       <section id="dashboard-section" class="content-section active">
         <!-- Métricas principales -->
         <div class="dashboard-summary">
-          <div class="summary-card" style="background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #14b8a6 100%); color: white;">
+          <div class="summary-card"
+            style="background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #14b8a6 100%); color: white;">
             <div style="display: flex; justify-content: space-between; align-items: start;">
               <div>
                 <h3 style="color: white; opacity: 0.9;">Patrimonio Total</h3>
@@ -211,7 +214,7 @@
               <i class="fas fa-piggy-bank" style="font-size: 2.5rem; opacity: 0.3;"></i>
             </div>
           </div>
-          
+
           <div class="summary-card">
             <div style="display: flex; justify-content: space-between; align-items: start;">
               <div>
@@ -222,7 +225,7 @@
               <i class="fas fa-exclamation-triangle" style="font-size: 2.5rem; color: #F59E0B; opacity: 0.2;"></i>
             </div>
           </div>
-          
+
           <div class="summary-card">
             <div style="display: flex; justify-content: space-between; align-items: start;">
               <div>
@@ -233,7 +236,7 @@
               <i class="fas fa-check-circle" style="font-size: 2.5rem; color: #10B981; opacity: 0.2;"></i>
             </div>
           </div>
-          
+
           <div class="summary-card">
             <div style="display: flex; justify-content: space-between; align-items: start;">
               <div>
@@ -244,7 +247,7 @@
               <i class="fas fa-arrow-up" style="font-size: 2.5rem; color: #10B981; opacity: 0.2;"></i>
             </div>
           </div>
-          
+
           <div class="summary-card">
             <div style="display: flex; justify-content: space-between; align-items: start;">
               <div>
@@ -255,7 +258,7 @@
               <i class="fas fa-arrow-down" style="font-size: 2.5rem; color: #EF4444; opacity: 0.2;"></i>
             </div>
           </div>
-          
+
           <div class="summary-card">
             <div style="display: flex; justify-content: space-between; align-items: start;">
               <div>
@@ -267,9 +270,11 @@
             </div>
           </div>
         </div>
-        
+
         <!-- Alertas y notificaciones -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-bottom: 1rem; margin-top: 0;" id="dashboard-alerts">
+        <div
+          style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-bottom: 1rem; margin-top: 0;"
+          id="dashboard-alerts">
           <!-- Alertas se cargarán aquí -->
         </div>
 
@@ -280,7 +285,7 @@
               <!-- Chart will be rendered here -->
             </div>
           </div>
-          
+
           <div class="chart-container">
             <h3>Estado de Cuotas del Mes</h3>
             <div class="chart" id="cuotas-chart">
@@ -294,7 +299,7 @@
               <!-- Chart will be rendered here -->
             </div>
           </div>
-          
+
           <div class="chart-container">
             <h3>Gastos por Categoría</h3>
             <div class="chart" id="gastos-categoria-chart">
@@ -302,7 +307,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="dashboard-recent" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
           <div class="recent-container">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -313,7 +318,7 @@
               <!-- Recent movements will be loaded here -->
             </div>
           </div>
-          
+
           <div class="recent-container">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
               <h3>Últimos Gastos</h3>
@@ -335,14 +340,14 @@
           </div>
         </div>
       </section>
-      
+
       <!-- Usuarios Section -->
       <section id="usuarios-section" class="content-section">
         <div class="section-header">
           <h2>Gestión de Usuarios</h2>
           <button id="nuevo-usuario-btn" class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo Usuario</button>
         </div>
-        
+
         <div class="filter-controls">
           <div class="filter-group">
             <label for="usuarios-rol">Rol:</label>
@@ -380,241 +385,97 @@
             <tbody id="usuarios-table-body">
               <!-- Usuarios will be loaded here -->
             </tbody>
-          </table></div>
+          </table>
         </div>
-      </section>
-      
-      <!-- Cuotas Section -->
-      <section id="cuotas-section" class="content-section">
-        <div class="section-header">
-          <h2>Gestión de Cuotas</h2>
-          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-            <button id="generar-masivo-btn" class="btn btn-primary"><i class="fas fa-layer-group"></i> Generar Cuotas Masivas</button>
-            <button id="calcular-mora-btn" class="btn" style="background: #F59E0B; color: white;"><i class="fas fa-calculator"></i> Calcular Mora</button>
-            <button id="reporte-cuotas-btn" class="btn" style="background: #EF4444; color: white;"><i class="fas fa-file-pdf"></i> Reporte PDF</button>
-            <button id="nueva-cuota-btn" class="btn btn-secondary"><i class="fas fa-plus"></i> Nueva Cuota Individual</button>
-          </div>
-        </div>
-        
-        <div class="filter-controls">
-          <div class="filter-group">
-            <label for="cuotas-mes">Mes:</label>
-            <select id="cuotas-mes">
-              <!-- Se llenará dinámicamente con todos los meses -->
-            </select>
-          </div>
-          
-          <div class="filter-group">
-            <label for="cuotas-año">Año:</label>
-            <select id="cuotas-año">
-              <!-- Se llenará dinámicamente con rango de años -->
-            </select>
-          </div>
-          
-          <div class="filter-group">
-            <label for="cuotas-estado">Estado:</label>
-            <select id="cuotas-estado">
-              <option value="TODOS">Todos</option>
-              <option value="PENDIENTE">Pendiente</option>
-              <option value="PAGADO">Pagado</option>
-              <option value="VENCIDO">Vencido</option>
-            </select>
-          </div>
+  </div>
+  </section>
 
-          <div class="filter-group">
-            <label for="cuotas-tipo">Tipo:</label>
-            <select id="cuotas-tipo">
-              <option value="TODOS">Todos</option>
-              <option value="ORDINARIA">Ordinaria</option>
-              <option value="EXTRAORDINARIA">Extraordinaria</option>
-            </select>
-          </div>
-          
-          <button id="verificar-vencimientos-btn" class="btn btn-secondary">Verificar Vencimientos</button>
-        </div>
-        
-        <div class="table-container">
-          <table id="cuotas-table" class="data-table">
-            <thead>
-              <tr>
-                <th>Depto.</th>
-                <th>Mes/Año</th>
-                <th>Monto Base</th>
-                <th>Total a Pagar</th>
-                <th>Estado</th>
-                <th>Vencimiento</th>
-                <th>Fecha Pago</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Cuotas will be loaded here -->
-            </tbody>
-          </table></div>
-        </div>
-        
-        <!-- Modal for new/edit cuota -->
-        <div id="cuota-modal" class="modal">
-          <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 id="cuota-modal-title">Nueva Cuota</h2>
-            
-            <form id="cuota-form">
-              <input type="hidden" id="cuota-id">
-              
-              <div class="form-group">
-                <label for="cuota-mes">Mes:</label>
-                <select id="cuota-mes" required>
-                  <option value="Enero">Enero</option>
-                  <option value="Febrero">Febrero</option>
-                  <option value="Marzo">Marzo</option>
-                  <option value="Abril">Abril</option>
-                  <option value="Mayo">Mayo</option>
-                  <option value="Junio">Junio</option>
-                  <option value="Julio">Julio</option>
-                  <option value="Agosto">Agosto</option>
-                  <option value="Septiembre">Septiembre</option>
-                  <option value="Octubre">Octubre</option>
-                  <option value="Noviembre">Noviembre</option>
-                  <option value="Diciembre">Diciembre</option>
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label for="cuota-año">Año:</label>
-                <input type="number" id="cuota-año" min="2025" max="2030" value="2025" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="cuota-monto">Monto:</label>
-                <input type="number" id="cuota-monto" min="0" step="0.01" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="cuota-departamento">Departamento:</label>
-                <select id="cuota-departamento" required disabled>
-                  <option value="TODOS" selected>Todos los departamentos</option>
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label for="cuota-vencimiento">Fecha Vencimiento:</label>
-                <input type="date" id="cuota-vencimiento" required>
-              </div>
-              
-              <div class="form-group">
-                <button type="submit" class="btn btn-primary">Guardar</button>
-                <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
-              </div>
-            </form>
-          </div>
-        </div>
-        
-        <!-- Modal for validating payment -->
-        <div id="validar-pago-modal" class="modal">
-          <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Validar Pago</h2>
-            
-            <form id="validar-pago-form">
-              <input type="hidden" id="validar-cuota-id">
-              
-              <div class="form-group">
-                <label for="validar-estado">Estado:</label>
-                <select id="validar-estado" required>
-                  <option value="PENDIENTE">Pendiente</option>
-                  <option value="PAGADO">Pagado</option>
-                  <option value="VENCIDO">Vencido</option>
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label for="validar-fecha-pago">Fecha de Pago:</label>
-                <input type="date" id="validar-fecha-pago">
-              </div>
-              
-              <div class="form-group">
-                <label for="validar-comprobante">Comprobante:</label>
-                <input type="text" id="validar-comprobante" placeholder="Referencia de pago">
-              </div>
-              
-              <div class="form-group">
-                <button type="submit" class="btn btn-primary">Guardar</button>
-                <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
-              </div>
-            </form>
-          </div>
-        </div>
+  <!-- Cuotas Section -->
+  <section id="cuotas-section" class="content-section">
+    <div class="section-header">
+      <h2>Gestión de Cuotas</h2>
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <button id="generar-masivo-btn" class="btn btn-primary"><i class="fas fa-layer-group"></i> Generar Cuotas
+          Masivas</button>
+        <button id="calcular-mora-btn" class="btn" style="background: #F59E0B; color: white;"><i
+            class="fas fa-calculator"></i> Calcular Mora</button>
+        <button id="reporte-cuotas-btn" class="btn" style="background: #EF4444; color: white;"><i
+            class="fas fa-file-pdf"></i> Reporte PDF</button>
+        <button id="nueva-cuota-btn" class="btn btn-secondary"><i class="fas fa-plus"></i> Nueva Cuota
+          Individual</button>
+      </div>
+    </div>
 
-        <!-- Modal for generación masiva -->
-        <div id="generar-masivo-modal" class="modal">
-          <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Generar Cuotas Masivas</h2>
-            <p style="color: var(--gray); margin-bottom: 1.5rem;">
-              Genera cuotas automáticamente para todas las unidades del edificio
-            </p>
-            
-            <form id="generar-masivo-form">
-              <div class="form-group">
-                <label for="masivo-mes">Mes:</label>
-                <select id="masivo-mes" required>
-                  <option value="Enero">Enero</option>
-                  <option value="Febrero">Febrero</option>
-                  <option value="Marzo">Marzo</option>
-                  <option value="Abril">Abril</option>
-                  <option value="Mayo">Mayo</option>
-                  <option value="Junio">Junio</option>
-                  <option value="Julio">Julio</option>
-                  <option value="Agosto">Agosto</option>
-                  <option value="Septiembre">Septiembre</option>
-                  <option value="Octubre">Octubre</option>
-                  <option value="Noviembre">Noviembre</option>
-                  <option value="Diciembre">Diciembre</option>
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label for="masivo-año">Año:</label>
-                <input type="number" id="masivo-año" min="2025" max="2030" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="masivo-monto">Monto por unidad:</label>
-                <input type="number" id="masivo-monto" min="0" step="0.01" required>
-                <small style="color: var(--gray);">Este monto se aplicará a todas las unidades</small>
-              </div>
+    <div class="filter-controls">
+      <div class="filter-group">
+        <label for="cuotas-mes">Mes:</label>
+        <select id="cuotas-mes">
+          <!-- Se llenará dinámicamente con todos los meses -->
+        </select>
+      </div>
 
-              <div style="background: #EFF6FF; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
-                <p style="margin: 0; color: var(--gray); font-size: 0.875rem;">
-                  <i class="fas fa-info-circle" style="color: var(--primary);"></i>
-                  Se generarán cuotas para <strong id="total-unidades-info">20</strong> unidades.
-                  Las cuotas que ya existan para este mes/año no se duplicarán.
-                </p>
-              </div>
-              
-              <div class="form-group">
-                <button type="submit" class="btn btn-primary">
-                  <i class="fas fa-bolt"></i> Generar Cuotas Masivas
-                </button>
-                <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </section>
-      
-      <!-- Gastos Section -->
-      <section id="gastos-section" class="content-section">
-        <div class="section-header">
-          <h2>Gestión de Gastos</h2>
-          <button id="nuevo-gasto-btn" class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo Gasto</button>
-        </div>
-        
-        <div class="filter-controls">
-          <div class="filter-group">
-            <label for="gastos-mes">Mes:</label>
-            <select id="gastos-mes">
+      <div class="filter-group">
+        <label for="cuotas-año">Año:</label>
+        <select id="cuotas-año">
+          <!-- Se llenará dinámicamente con rango de años -->
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="cuotas-estado">Estado:</label>
+        <select id="cuotas-estado">
+          <option value="TODOS">Todos</option>
+          <option value="PENDIENTE">Pendiente</option>
+          <option value="PAGADO">Pagado</option>
+          <option value="VENCIDO">Vencido</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="cuotas-tipo">Tipo:</label>
+        <select id="cuotas-tipo">
+          <option value="TODOS">Todos</option>
+          <option value="ORDINARIA">Ordinaria</option>
+          <option value="EXTRAORDINARIA">Extraordinaria</option>
+        </select>
+      </div>
+
+      <button id="verificar-vencimientos-btn" class="btn btn-secondary">Verificar Vencimientos</button>
+    </div>
+
+    <div class="table-container">
+      <table id="cuotas-table" class="data-table">
+        <thead>
+          <tr>
+            <th>Depto.</th>
+            <th>Mes/Año</th>
+            <th>Monto Base</th>
+            <th>Total a Pagar</th>
+            <th>Estado</th>
+            <th>Vencimiento</th>
+            <th>Fecha Pago</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Cuotas will be loaded here -->
+        </tbody>
+      </table>
+    </div>
+    </div>
+
+    <!-- Modal for new/edit cuota -->
+    <div id="cuota-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="cuota-modal-title">Nueva Cuota</h2>
+
+        <form id="cuota-form">
+          <input type="hidden" id="cuota-id">
+
+          <div class="form-group">
+            <label for="cuota-mes">Mes:</label>
+            <select id="cuota-mes" required>
               <option value="Enero">Enero</option>
               <option value="Febrero">Febrero</option>
               <option value="Marzo">Marzo</option>
@@ -629,19 +490,219 @@
               <option value="Diciembre">Diciembre</option>
             </select>
           </div>
-          
-          <div class="filter-group">
-            <label for="gastos-año">Año:</label>
-            <select id="gastos-año">
-              <option value="2025">2025</option>
-              <option value="2026">2026</option>
+
+          <div class="form-group">
+            <label for="cuota-año">Año:</label>
+            <input type="number" id="cuota-año" min="2025" max="2030" value="2025" required>
+          </div>
+
+          <div class="form-group">
+            <label for="cuota-monto">Monto:</label>
+            <input type="number" id="cuota-monto" min="0" step="0.01" required>
+          </div>
+
+          <div class="form-group">
+            <label for="cuota-departamento">Departamento:</label>
+            <select id="cuota-departamento" required disabled>
+              <option value="TODOS" selected>Todos los departamentos</option>
             </select>
           </div>
-          
-          <div class="filter-group">
-            <label for="gastos-categoria">Categoría:</label>
-            <select id="gastos-categoria">
-              <option value="TODOS">Todas</option>
+
+          <div class="form-group">
+            <label for="cuota-vencimiento">Fecha Vencimiento:</label>
+            <input type="date" id="cuota-vencimiento" required>
+          </div>
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal for validating payment -->
+    <div id="validar-pago-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Validar Pago</h2>
+
+        <form id="validar-pago-form">
+          <input type="hidden" id="validar-cuota-id">
+
+          <div class="form-group">
+            <label for="validar-estado">Estado:</label>
+            <select id="validar-estado" required>
+              <option value="PENDIENTE">Pendiente</option>
+              <option value="PAGADO">Pagado</option>
+              <option value="VENCIDO">Vencido</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="validar-fecha-pago">Fecha de Pago:</label>
+            <input type="date" id="validar-fecha-pago">
+          </div>
+
+          <div class="form-group">
+            <label for="validar-comprobante">Comprobante:</label>
+            <input type="text" id="validar-comprobante" placeholder="Referencia de pago">
+          </div>
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal for generación masiva -->
+    <div id="generar-masivo-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Generar Cuotas Masivas</h2>
+        <p style="color: var(--gray); margin-bottom: 1.5rem;">
+          Genera cuotas automáticamente para todas las unidades del edificio
+        </p>
+
+        <form id="generar-masivo-form">
+          <div class="form-group">
+            <label for="masivo-mes">Mes:</label>
+            <select id="masivo-mes" required>
+              <option value="Enero">Enero</option>
+              <option value="Febrero">Febrero</option>
+              <option value="Marzo">Marzo</option>
+              <option value="Abril">Abril</option>
+              <option value="Mayo">Mayo</option>
+              <option value="Junio">Junio</option>
+              <option value="Julio">Julio</option>
+              <option value="Agosto">Agosto</option>
+              <option value="Septiembre">Septiembre</option>
+              <option value="Octubre">Octubre</option>
+              <option value="Noviembre">Noviembre</option>
+              <option value="Diciembre">Diciembre</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="masivo-año">Año:</label>
+            <input type="number" id="masivo-año" min="2025" max="2030" required>
+          </div>
+
+          <div class="form-group">
+            <label for="masivo-monto">Monto por unidad:</label>
+            <input type="number" id="masivo-monto" min="0" step="0.01" required>
+            <small style="color: var(--gray);">Este monto se aplicará a todas las unidades</small>
+          </div>
+
+          <div style="background: #EFF6FF; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+            <p style="margin: 0; color: var(--gray); font-size: 0.875rem;">
+              <i class="fas fa-info-circle" style="color: var(--primary);"></i>
+              Se generarán cuotas para <strong id="total-unidades-info">20</strong> unidades.
+              Las cuotas que ya existan para este mes/año no se duplicarán.
+            </p>
+          </div>
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-bolt"></i> Generar Cuotas Masivas
+            </button>
+            <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gastos Section -->
+  <section id="gastos-section" class="content-section">
+    <div class="section-header">
+      <h2>Gestión de Gastos</h2>
+      <button id="nuevo-gasto-btn" class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo Gasto</button>
+    </div>
+
+    <div class="filter-controls">
+      <div class="filter-group">
+        <label for="gastos-mes">Mes:</label>
+        <select id="gastos-mes">
+          <option value="Enero">Enero</option>
+          <option value="Febrero">Febrero</option>
+          <option value="Marzo">Marzo</option>
+          <option value="Abril">Abril</option>
+          <option value="Mayo">Mayo</option>
+          <option value="Junio">Junio</option>
+          <option value="Julio">Julio</option>
+          <option value="Agosto">Agosto</option>
+          <option value="Septiembre">Septiembre</option>
+          <option value="Octubre">Octubre</option>
+          <option value="Noviembre">Noviembre</option>
+          <option value="Diciembre">Diciembre</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="gastos-año">Año:</label>
+        <select id="gastos-año">
+          <option value="2025">2025</option>
+          <option value="2026">2026</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="gastos-categoria">Categoría:</label>
+        <select id="gastos-categoria">
+          <option value="TODOS">Todas</option>
+          <option value="MANTENIMIENTO">Mantenimiento</option>
+          <option value="SERVICIOS">Servicios</option>
+          <option value="REPARACIONES">Reparaciones</option>
+          <option value="ADMINISTRATIVO">Administrativo</option>
+          <option value="OTROS">Otros</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table id="gastos-table" class="data-table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Concepto</th>
+            <th>Monto</th>
+            <th>Categoría</th>
+            <th>Proveedor</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Gastos will be loaded here -->
+        </tbody>
+      </table>
+    </div>
+    </div>
+
+    <!-- Modal for new/edit gasto -->
+    <div id="gasto-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="gasto-modal-title">Nuevo Gasto</h2>
+
+        <form id="gasto-form">
+          <input type="hidden" id="gasto-id">
+
+          <div class="form-group">
+            <label for="gasto-concepto">Concepto:</label>
+            <input type="text" id="gasto-concepto" required>
+          </div>
+
+          <div class="form-group">
+            <label for="gasto-monto">Monto:</label>
+            <input type="number" id="gasto-monto" min="0" step="0.01" required>
+          </div>
+
+          <div class="form-group">
+            <label for="gasto-categoria">Categoría:</label>
+            <select id="gasto-categoria" required>
               <option value="MANTENIMIENTO">Mantenimiento</option>
               <option value="SERVICIOS">Servicios</option>
               <option value="REPARACIONES">Reparaciones</option>
@@ -649,764 +710,734 @@
               <option value="OTROS">Otros</option>
             </select>
           </div>
-        </div>
-        
+
+          <div class="form-group">
+            <label for="gasto-proveedor">Proveedor:</label>
+            <input type="text" id="gasto-proveedor" required>
+          </div>
+
+          <div class="form-group">
+            <label for="gasto-fecha">Fecha:</label>
+            <input type="date" id="gasto-fecha" required>
+          </div>
+
+          <div class="form-group">
+            <label for="gasto-fondo">Fondo:</label>
+            <select id="gasto-fondo" required>
+              <option value="dineroOperacional">Dinero Operacional</option>
+              <option value="ahorroAcumulado">Ahorro Acumulado</option>
+              <option value="gastosMayores">Gastos Mayores</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="gasto-comprobante">Comprobante:</label>
+            <input type="text" id="gasto-comprobante" placeholder="Referencia de factura">
+          </div>
+
+          <div class="form-group">
+            <label for="gasto-notas">Notas:</label>
+            <textarea id="gasto-notas" rows="3"></textarea>
+          </div>
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fondos Section -->
+  <section id="fondos-section" class="content-section">
+    <div class="section-header">
+      <h2>Gestión de Fondos</h2>
+      <div style="display: flex; gap: 0.5rem;">
+        <button id="transferir-fondos-btn" class="btn btn-primary"><i class="fas fa-exchange-alt"></i> Transferir
+          Fondos</button>
+        <button id="reporte-balance-btn" class="btn" style="background: #EF4444; color: white;"><i
+            class="fas fa-file-pdf"></i> Balance PDF</button>
+      </div>
+    </div>
+
+    <div class="fondos-summary">
+      <div class="fondo-card">
+        <h3>Ahorro Acumulado</h3>
+        <p class="amount" id="ahorro-acumulado">$67,500</p>
+        <p class="description">Fondo para imprevistos</p>
+      </div>
+
+      <div class="fondo-card">
+        <h3>Gastos Mayores</h3>
+        <p class="amount" id="gastos-mayores">$125,000</p>
+        <p class="description">Fondo para proyectos</p>
+      </div>
+
+      <div class="fondo-card">
+        <h3>Dinero Operacional</h3>
+        <p class="amount" id="dinero-operacional">$48,000</p>
+        <p class="description">Fondo para gastos corrientes</p>
+      </div>
+
+      <div class="fondo-card total">
+        <h3>Patrimonio Total</h3>
+        <p class="amount" id="patrimonio-total-fondos">$240,500</p>
+        <p class="description">Actualizado: <span id="fondos-actualizacion">Cargando...</span></p>
+      </div>
+    </div>
+
+    <div class="fondos-history">
+      <h3>Historial de Movimientos</h3>
+      <div class="table-container">
+        <table id="movimientos-table" class="data-table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Tipo</th>
+              <th>Fondo</th>
+              <th>Monto</th>
+              <th>Concepto</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Movimientos will be loaded here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+    </div>
+
+    <!-- Modal for transferring funds -->
+    <div id="transferir-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Transferir Fondos</h2>
+
+        <form id="transferir-form">
+          <div class="form-group">
+            <label for="transferir-origen">Fondo Origen:</label>
+            <select id="transferir-origen" required>
+              <option value="ahorroAcumulado">Ahorro Acumulado</option>
+              <option value="gastosMayores">Gastos Mayores</option>
+              <option value="dineroOperacional">Dinero Operacional</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="transferir-destino">Fondo Destino:</label>
+            <select id="transferir-destino" required>
+              <option value="ahorroAcumulado">Ahorro Acumulado</option>
+              <option value="gastosMayores">Gastos Mayores</option>
+              <option value="dineroOperacional">Dinero Operacional</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="transferir-monto">Monto:</label>
+            <input type="number" id="transferir-monto" min="0" step="0.01" required>
+          </div>
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">Transferir</button>
+            <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Anuncios Section -->
+  <section id="anuncios-section" class="content-section">
+    <div class="section-header">
+      <h2>Gestión de Anuncios</h2>
+      <button id="nuevo-anuncio-btn" class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo Anuncio</button>
+    </div>
+
+    <div class="filter-controls">
+      <div class="filter-group">
+        <label for="anuncios-tipo">Prioridad:</label>
+        <select id="anuncios-tipo">
+          <option value="TODOS">Todos</option>
+          <option value="BAJA">Baja</option>
+          <option value="NORMAL">Normal</option>
+          <option value="ALTA">Alta</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="anuncios-container" id="anuncios-list">
+      <!-- Anuncios will be loaded here -->
+    </div>
+
+    <!-- Modal for new/edit anuncio -->
+    <div id="anuncio-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="anuncio-modal-title">Nuevo Anuncio</h2>
+
+        <form id="anuncio-form">
+          <input type="hidden" id="anuncio-id">
+
+          <div class="form-group">
+            <label for="anuncio-titulo">Título:</label>
+            <input type="text" id="anuncio-titulo" required>
+          </div>
+
+          <div class="form-group">
+            <label for="anuncio-tipo">Prioridad:</label>
+            <select id="anuncio-tipo" required>
+              <option value="BAJA">Baja</option>
+              <option value="NORMAL" selected>Normal</option>
+              <option value="ALTA">Alta</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="anuncio-contenido">Contenido:</label>
+            <textarea id="anuncio-contenido" rows="5" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="anuncio-imagen">Imagen/Archivo (opcional):</label>
+            <input type="file" id="anuncio-imagen" accept="image/*,.pdf">
+            <small>Formatos: JPG, PNG, PDF (máx 5MB)</small>
+          </div>
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cierres Section -->
+  <section id="cierres-section" class="content-section">
+    <div class="section-header">
+      <h2>Cierres Contables</h2>
+      <div class="button-group">
+        <button id="cierre-mensual-btn" class="btn btn-primary"><i class="fas fa-calendar-alt"></i> Cierre
+          Mensual</button>
+        <button id="cierre-anual-btn" class="btn btn-secondary"><i class="fas fa-calendar-check"></i> Cierre
+          Anual</button>
+      </div>
+    </div>
+
+    <div class="filter-controls">
+      <div class="filter-group">
+        <label for="cierres-año">Año:</label>
+        <select id="cierres-año">
+          <option value="2025">2025</option>
+          <option value="2026">2026</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="cierres-container">
+      <div class="cierres-mensuales">
+        <h3>Cierres Mensuales</h3>
         <div class="table-container">
-          <table id="gastos-table" class="data-table">
+          <table id="cierres-table" class="data-table">
             <thead>
               <tr>
-                <th>Fecha</th>
-                <th>Concepto</th>
-                <th>Monto</th>
-                <th>Categoría</th>
-                <th>Proveedor</th>
+                <th>Mes/Año</th>
+                <th>Ingresos</th>
+                <th>Gastos</th>
+                <th>Balance</th>
+                <th>Fecha Cierre</th>
                 <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
-              <!-- Gastos will be loaded here -->
+              <!-- Cierres will be loaded here -->
             </tbody>
-          </table></div>
+          </table>
         </div>
-        
-        <!-- Modal for new/edit gasto -->
-        <div id="gasto-modal" class="modal">
-          <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 id="gasto-modal-title">Nuevo Gasto</h2>
-            
-            <form id="gasto-form">
-              <input type="hidden" id="gasto-id">
-              
-              <div class="form-group">
-                <label for="gasto-concepto">Concepto:</label>
-                <input type="text" id="gasto-concepto" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="gasto-monto">Monto:</label>
-                <input type="number" id="gasto-monto" min="0" step="0.01" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="gasto-categoria">Categoría:</label>
-                <select id="gasto-categoria" required>
-                  <option value="MANTENIMIENTO">Mantenimiento</option>
-                  <option value="SERVICIOS">Servicios</option>
-                  <option value="REPARACIONES">Reparaciones</option>
-                  <option value="ADMINISTRATIVO">Administrativo</option>
-                  <option value="OTROS">Otros</option>
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label for="gasto-proveedor">Proveedor:</label>
-                <input type="text" id="gasto-proveedor" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="gasto-fecha">Fecha:</label>
-                <input type="date" id="gasto-fecha" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="gasto-fondo">Fondo:</label>
-                <select id="gasto-fondo" required>
-                  <option value="dineroOperacional">Dinero Operacional</option>
-                  <option value="ahorroAcumulado">Ahorro Acumulado</option>
-                  <option value="gastosMayores">Gastos Mayores</option>
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label for="gasto-comprobante">Comprobante:</label>
-                <input type="text" id="gasto-comprobante" placeholder="Referencia de factura">
-              </div>
-              
-              <div class="form-group">
-                <label for="gasto-notas">Notas:</label>
-                <textarea id="gasto-notas" rows="3"></textarea>
-              </div>
-              
-              <div class="form-group">
-                <button type="submit" class="btn btn-primary">Guardar</button>
-                <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
-              </div>
-            </form>
+      </div>
+    </div>
+
+    <div class="cierres-anuales">
+      <h3>Cierres Anuales</h3>
+      <div class="table-container">
+        <table id="cierres-anuales-table" class="data-table">
+          <thead>
+            <tr>
+              <th>Año</th>
+              <th>Ingresos</th>
+              <th>Gastos</th>
+              <th>Balance</th>
+              <th>Fecha Cierre</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Cierres anuales will be loaded here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+    </div>
+    </div>
+
+    <!-- Modal for monthly closing -->
+    <div id="cierre-mensual-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Realizar Cierre Mensual</h2>
+
+        <form id="cierre-mensual-form">
+          <div class="form-group">
+            <label for="cierre-mes">Mes:</label>
+            <select id="cierre-mes" required>
+              <option value="Enero">Enero</option>
+              <option value="Febrero">Febrero</option>
+              <option value="Marzo">Marzo</option>
+              <option value="Abril">Abril</option>
+              <option value="Mayo">Mayo</option>
+              <option value="Junio">Junio</option>
+              <option value="Julio">Julio</option>
+              <option value="Agosto">Agosto</option>
+              <option value="Septiembre">Septiembre</option>
+              <option value="Octubre">Octubre</option>
+              <option value="Noviembre" selected>Noviembre</option>
+              <option value="Diciembre">Diciembre</option>
+            </select>
           </div>
+
+          <div class="form-group">
+            <label for="cierre-año">Año:</label>
+            <input type="number" id="cierre-año" min="2025" max="2030" value="2025" required>
+          </div>
+
+          <div class="form-group">
+            <p class="warning-text">
+              <i class="fas fa-exclamation-triangle"></i>
+              Esta acción realizará el cierre contable del mes seleccionado.
+              Asegúrese de haber registrado todos los ingresos y gastos correspondientes.
+            </p>
+          </div>
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">Realizar Cierre</button>
+            <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal for annual closing -->
+    <div id="cierre-anual-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Realizar Cierre Anual</h2>
+
+        <form id="cierre-anual-form">
+          <div class="form-group">
+            <label for="cierre-anual-año">Año:</label>
+            <input type="number" id="cierre-anual-año" min="2025" max="2030" value="2025" required>
+          </div>
+
+          <div class="form-group">
+            <p class="warning-text">
+              <i class="fas fa-exclamation-triangle"></i>
+              Esta acción realizará el cierre contable anual.
+              Asegúrese de haber realizado todos los cierres mensuales correspondientes.
+            </p>
+          </div>
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">Realizar Cierre Anual</button>
+            <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal for viewing cierre details -->
+    <div id="cierre-detalle-modal" class="modal">
+      <div class="modal-content modal-lg">
+        <span class="close">&times;</span>
+        <h2 id="cierre-detalle-titulo">Detalle de Cierre</h2>
+
+        <div id="cierre-detalle-content">
+          <!-- Cierre details will be loaded here -->
         </div>
-      </section>
-      
-      <!-- Fondos Section -->
-      <section id="fondos-section" class="content-section">
-        <div class="section-header">
-          <h2>Gestión de Fondos</h2>
-          <div style="display: flex; gap: 0.5rem;">
-            <button id="transferir-fondos-btn" class="btn btn-primary"><i class="fas fa-exchange-alt"></i> Transferir Fondos</button>
-            <button id="reporte-balance-btn" class="btn" style="background: #EF4444; color: white;"><i class="fas fa-file-pdf"></i> Balance PDF</button>
-          </div>
+
+        <div class="form-group text-center">
+          <button type="button" class="btn btn-secondary modal-cancel">Cerrar</button>
+          <button type="button" id="cierre-print-btn" class="btn btn-primary"><i class="fas fa-print"></i>
+            Imprimir</button>
         </div>
-        
-        <div class="fondos-summary">
-          <div class="fondo-card">
-            <h3>Ahorro Acumulado</h3>
-            <p class="amount" id="ahorro-acumulado">$67,500</p>
-            <p class="description">Fondo para imprevistos</p>
-          </div>
-          
-          <div class="fondo-card">
-            <h3>Gastos Mayores</h3>
-            <p class="amount" id="gastos-mayores">$125,000</p>
-            <p class="description">Fondo para proyectos</p>
-          </div>
-          
-          <div class="fondo-card">
-            <h3>Dinero Operacional</h3>
-            <p class="amount" id="dinero-operacional">$48,000</p>
-            <p class="description">Fondo para gastos corrientes</p>
-          </div>
-          
-          <div class="fondo-card total">
-            <h3>Patrimonio Total</h3>
-            <p class="amount" id="patrimonio-total-fondos">$240,500</p>
-            <p class="description">Actualizado: <span id="fondos-actualizacion">Cargando...</span></p>
-          </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Proyectos Section -->
+  <section id="proyectos-section" class="content-section">
+    <div class="section-header">
+      <h2>Proyectos Críticos</h2>
+      <button id="nuevo-proyecto-btn-main" class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo Proyecto</button>
+    </div>
+
+    <div
+      style="background: #EFF6FF; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; border-left: 4px solid #4F46E5;">
+      <p style="margin: 0; color: #1F2937;">
+        <i class="fas fa-info-circle" style="color: #4F46E5;"></i>
+        <strong>Proyectos Críticos:</strong> Gestiona proyectos importantes del condominio como remodelaciones,
+        reparaciones mayores, actualizaciones legales, etc.
+      </p>
+    </div>
+
+    <div class="proyectos-list" id="proyectos-list-main" style="margin-bottom: 1rem;">
+      <!-- Proyectos will be loaded here -->
+    </div>
+
+    <div style="background: #F9FAFB; padding: 1.5rem; border-radius: 0.5rem; border: 2px solid #E5E7EB;">
+      <h3 style="margin-bottom: 1rem; color: #1F2937;">Resumen</h3>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+        <div>
+          <p style="color: #6B7280; font-size: 0.875rem;">Total Proyectos</p>
+          <p style="color: #1F2937; font-size: 1.5rem; font-weight: bold;" id="proyectos-total-main">$0</p>
         </div>
-        
-        <div class="fondos-history">
-          <h3>Historial de Movimientos</h3>
-          <div class="table-container">
-            <table id="movimientos-table" class="data-table">
-              <thead>
-                <tr>
-                  <th>Fecha</th>
-                  <th>Tipo</th>
-                  <th>Fondo</th>
-                  <th>Monto</th>
-                  <th>Concepto</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Movimientos will be loaded here -->
-              </tbody>
-            </table></div>
+        <div>
+          <p style="color: #6B7280; font-size: 0.875rem;">Por Departamento</p>
+          <p style="color: #1F2937; font-size: 1.5rem; font-weight: bold;" id="proyectos-por-depto-main">$0</p>
+        </div>
+        <div>
+          <p style="color: #6B7280; font-size: 0.875rem;">Total Unidades</p>
+          <p style="color: #1F2937; font-size: 1.5rem; font-weight: bold;" id="proyectos-unidades-main">0</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for new/edit proyecto -->
+    <div id="proyecto-modal-main" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="proyecto-modal-title-main">Nuevo Proyecto</h2>
+
+        <form id="proyecto-form-main">
+          <input type="hidden" id="proyecto-id-main">
+
+          <div class="form-group">
+            <label for="proyecto-nombre-main">Nombre del Proyecto:</label>
+            <input type="text" id="proyecto-nombre-main" required placeholder="ej: Reparación de elevador">
           </div>
-        </div>
-        
-        <!-- Modal for transferring funds -->
-        <div id="transferir-modal" class="modal">
-          <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Transferir Fondos</h2>
-            
-            <form id="transferir-form">
-              <div class="form-group">
-                <label for="transferir-origen">Fondo Origen:</label>
-                <select id="transferir-origen" required>
-                  <option value="ahorroAcumulado">Ahorro Acumulado</option>
-                  <option value="gastosMayores">Gastos Mayores</option>
-                  <option value="dineroOperacional">Dinero Operacional</option>
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label for="transferir-destino">Fondo Destino:</label>
-                <select id="transferir-destino" required>
-                  <option value="ahorroAcumulado">Ahorro Acumulado</option>
-                  <option value="gastosMayores">Gastos Mayores</option>
-                  <option value="dineroOperacional">Dinero Operacional</option>
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label for="transferir-monto">Monto:</label>
-                <input type="number" id="transferir-monto" min="0" step="0.01" required>
-              </div>
-              
-              <div class="form-group">
-                <button type="submit" class="btn btn-primary">Transferir</button>
-                <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
-              </div>
-            </form>
+
+          <div class="form-group">
+            <label for="proyecto-monto-main">Monto Total:</label>
+            <input type="number" id="proyecto-monto-main" min="0" step="0.01" required>
           </div>
-        </div>
-      </section>
-      
-      <!-- Anuncios Section -->
-      <section id="anuncios-section" class="content-section">
-        <div class="section-header">
-          <h2>Gestión de Anuncios</h2>
-          <button id="nuevo-anuncio-btn" class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo Anuncio</button>
-        </div>
-        
-        <div class="filter-controls">
-          <div class="filter-group">
-            <label for="anuncios-tipo">Prioridad:</label>
-            <select id="anuncios-tipo">
-              <option value="TODOS">Todos</option>
+
+          <div class="form-group">
+            <label for="proyecto-prioridad-main">Prioridad:</label>
+            <select id="proyecto-prioridad-main" required>
               <option value="BAJA">Baja</option>
-              <option value="NORMAL">Normal</option>
+              <option value="MEDIA">Media</option>
               <option value="ALTA">Alta</option>
+              <option value="URGENTE">Urgente</option>
             </select>
           </div>
-        </div>
-        
-        <div class="anuncios-container" id="anuncios-list">
-          <!-- Anuncios will be loaded here -->
-        </div>
-        
-        <!-- Modal for new/edit anuncio -->
-        <div id="anuncio-modal" class="modal">
-          <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 id="anuncio-modal-title">Nuevo Anuncio</h2>
-            
-            <form id="anuncio-form">
-              <input type="hidden" id="anuncio-id">
-              
-              <div class="form-group">
-                <label for="anuncio-titulo">Título:</label>
-                <input type="text" id="anuncio-titulo" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="anuncio-tipo">Prioridad:</label>
-                <select id="anuncio-tipo" required>
-                  <option value="BAJA">Baja</option>
-                  <option value="NORMAL" selected>Normal</option>
-                  <option value="ALTA">Alta</option>
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label for="anuncio-contenido">Contenido:</label>
-                <textarea id="anuncio-contenido" rows="5" required></textarea>
-              </div>
-              
-              <div class="form-group">
-                <label for="anuncio-imagen">Imagen/Archivo (opcional):</label>
-                <input type="file" id="anuncio-imagen" accept="image/*,.pdf">
-                <small>Formatos: JPG, PNG, PDF (máx 5MB)</small>
-              </div>
-              
-              <div class="form-group">
-                <button type="submit" class="btn btn-primary">Guardar</button>
-                <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
-              </div>
-            </form>
+
+          <div class="form-group">
+            <label for="proyecto-descripcion-main">Descripción:</label>
+            <textarea id="proyecto-descripcion-main" rows="4" placeholder="Describe el proyecto..."></textarea>
           </div>
-        </div>
-      </section>
-      
-      <!-- Cierres Section -->
-      <section id="cierres-section" class="content-section">
-        <div class="section-header">
-          <h2>Cierres Contables</h2>
-          <div class="button-group">
-            <button id="cierre-mensual-btn" class="btn btn-primary"><i class="fas fa-calendar-alt"></i> Cierre Mensual</button>
-            <button id="cierre-anual-btn" class="btn btn-secondary"><i class="fas fa-calendar-check"></i> Cierre Anual</button>
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">Guardar Proyecto</button>
+            <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
           </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Configuracion Section -->
+  <section id="configuracion-section" class="content-section">
+    <div class="section-header">
+      <h2>Configuración del Sistema</h2>
+    </div>
+
+    <!-- Tabs de configuración -->
+    <div class="config-tabs">
+      <button class="tab-btn active" data-tab="perfil">Mi Perfil</button>
+      <button class="tab-btn" data-tab="edificio">Información del Edificio</button>
+      <button class="tab-btn" data-tab="documentos">Documentos</button>
+    </div>
+
+    <!-- Tab: Mi Perfil -->
+    <div class="config-tab-content active" id="tab-perfil">
+      <div class="config-card" style="max-width: 600px; margin: 0 auto;">
+        <h3>Mi Información</h3>
+        <p class="description">Actualiza tu información personal</p>
+
+        <form id="perfil-form">
+          <div class="form-group">
+            <label for="perfil-nombre">Nombre Completo:</label>
+            <input type="text" id="perfil-nombre" required>
+          </div>
+
+          <div class="form-group">
+            <label for="perfil-email">Email:</label>
+            <input type="email" id="perfil-email" required>
+          </div>
+
+          <div class="form-group">
+            <label for="perfil-telefono">Teléfono:</label>
+            <input type="tel" id="perfil-telefono">
+          </div>
+
+          <div class="form-group">
+            <label for="perfil-departamento">Departamento:</label>
+            <input type="text" id="perfil-departamento" readonly>
+          </div>
+
+          <h4 style="margin-top: 0.5rem;">Personalización</h4>
+
+          <div class="form-group">
+            <label for="perfil-tema">Tema de Color:</label>
+            <select id="perfil-tema"
+              style="padding: 0.75rem; border: 2px solid #E5E7EB; border-radius: 0.5rem; font-size: 1rem;">
+              <option value="default">🔵 Azul Índigo (Predeterminado)</option>
+              <option value="green">🟢 Verde Esmeralda</option>
+              <option value="purple">🟣 Púrpura Místico</option>
+              <option value="orange">🟠 Naranja Sunset</option>
+              <option value="pink">💗 Rosa Magenta</option>
+              <option value="teal">🌊 Turquesa Océano</option>
+              <option value="red">🔴 Rojo Coral</option>
+              <option value="gold">🌟 Dorado Elegante</option>
+              <option value="dark">🌙 Modo Oscuro</option>
+              <option value="gradient-blue">🌈 Degradado Azul</option>
+              <option value="gradient-purple">💜 Degradado Púrpura</option>
+              <option value="gradient-sunset">🌅 Degradado Sunset</option>
+              <option value="gradient-ocean">🌊 Degradado Océano</option>
+              <option value="gradient-fire">🔥 Degradado Fuego</option>
+            </select>
+            <small style="color: #6B7280;">El tema se aplicará en toda la plataforma</small>
+          </div>
+
+          <h4 style="margin-top: 0.5rem;">Cambiar Contraseña</h4>
+
+          <div class="form-group">
+            <label for="perfil-password-actual">Contraseña Actual:</label>
+            <input type="password" id="perfil-password-actual" autocomplete="current-password">
+          </div>
+
+          <div class="form-group">
+            <label for="perfil-password-nueva">Nueva Contraseña:</label>
+            <input type="password" id="perfil-password-nueva">
+          </div>
+
+          <div class="form-group">
+            <label for="perfil-password-confirmar">Confirmar Nueva Contraseña:</label>
+            <input type="password" id="perfil-password-confirmar">
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Tab: Información del Edificio -->
+    <div class="config-tab-content" id="tab-edificio">
+      <div class="config-card" style="max-width: 600px; margin: 0 auto;">
+        <h3>Información del Edificio</h3>
+        <p class="description">Gestiona la información general del condominio</p>
+
+        <form id="edificio-form">
+          <div class="form-group">
+            <label for="edificio-nombre">Nombre:</label>
+            <input type="text" id="edificio-nombre" required>
+          </div>
+
+          <div class="form-group">
+            <label for="edificio-direccion">Dirección:</label>
+            <input type="text" id="edificio-direccion" required>
+          </div>
+
+          <div class="form-group">
+            <label for="edificio-total-unidades">Total de Unidades:</label>
+            <input type="number" id="edificio-total-unidades" min="1" required>
+          </div>
+
+          <div class="form-group">
+            <label for="edificio-cuota-mensual">Cuota Mensual:</label>
+            <input type="number" id="edificio-cuota-mensual" min="0" step="0.01" required>
+          </div>
+
+          <div class="form-group">
+            <label for="edificio-dia-corte">Día de Corte:</label>
+            <input type="number" id="edificio-dia-corte" min="1" max="31" required>
+          </div>
+
+          <div class="form-group">
+            <label for="edificio-dias-gracia">Días de Gracia:</label>
+            <input type="number" id="edificio-dias-gracia" min="0" max="30" required>
+            <small style="color: #6B7280;">Días después del corte antes de aplicar mora</small>
+          </div>
+
+          <div class="form-group">
+            <label for="edificio-porcentaje-mora">Porcentaje de Mora (%):</label>
+            <input type="number" id="edificio-porcentaje-mora" min="0" max="100" step="0.1" required>
+            <small style="color: #6B7280;">Porcentaje mensual de recargo por mora</small>
+          </div>
+
+          <div class="form-group">
+            <label for="edificio-fondo-ingresos">Fondo para Ingresos de Cuotas:</label>
+            <select id="edificio-fondo-ingresos">
+              <option value="">Sin asignar</option>
+            </select>
+            <small style="color: #6B7280;">Los pagos de cuotas se sumarán automáticamente a este fondo</small>
+          </div>
+
+          <h4 style="margin-top: 0.5rem;">Fondos Patrimoniales</h4>
+          <p class="description">Fondos configurados durante el setup inicial</p>
+
+          <div id="fondos-list" style="margin-bottom: 1rem;">
+            <!-- Fondos will be loaded here -->
+          </div>
+
+          <h4 style="margin-top: 0.5rem;">Políticas del Condominio</h4>
+
+          <div class="form-group">
+            <label for="edificio-reglamento">Reglamento Interno:</label>
+            <textarea id="edificio-reglamento" rows="6" placeholder="Reglamento del condominio..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="edificio-privacy-policy">Política de Privacidad:</label>
+            <textarea id="edificio-privacy-policy" rows="6"
+              placeholder="Política de privacidad y protección de datos..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="edificio-payment-policies">Políticas de Pago:</label>
+            <textarea id="edificio-payment-policies" rows="6"
+              placeholder="Políticas de vencimiento y mora..."></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            <button type="button" id="descargar-politicas-btn" class="btn btn-secondary">
+              <i class="fas fa-download"></i> Descargar Todas las Políticas
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Tab: Documentos -->
+    <div class="config-tab-content" id="tab-documentos">
+      <div class="config-card">
+        <h3>Documentos del Edificio</h3>
+        <p class="description">Gestiona los documentos oficiales del condominio</p>
+
+        <div class="documentos-container" id="documentos-container">
+          <!-- Documentos will be loaded here -->
         </div>
-        
-        <div class="filter-controls">
-          <div class="filter-group">
-            <label for="cierres-año">Año:</label>
-            <select id="cierres-año">
-              <option value="2025">2025</option>
-              <option value="2026">2026</option>
+
+        <div style="margin-top: 0.5rem;">
+          <h4>Subir Nuevo Documento</h4>
+          <form id="documento-form">
+            <div class="form-group">
+              <label for="documento-tipo">Tipo de Documento:</label>
+              <select id="documento-tipo" required>
+                <option value="">Seleccionar...</option>
+                <option value="acta_constitutiva">Acta Constitutiva</option>
+                <option value="escrituras">Escrituras</option>
+                <option value="reglamento">Reglamento Interno</option>
+                <option value="planos">Planos</option>
+                <option value="contratos">Contratos</option>
+                <option value="permisos">Permisos</option>
+                <option value="otro">Otro</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="documento-nombre">Nombre del Documento:</label>
+              <input type="text" id="documento-nombre" required>
+            </div>
+
+            <div class="form-group">
+              <label for="documento-archivo">Archivo:</label>
+              <input type="file" id="documento-archivo" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-upload"></i> Subir Documento
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for adding/editing proyecto -->
+    <div id="proyecto-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="proyecto-modal-title">Nuevo Proyecto</h2>
+
+        <form id="proyecto-form">
+          <input type="hidden" id="proyecto-id">
+
+          <div class="form-group">
+            <label for="proyecto-nombre">Nombre del Proyecto:</label>
+            <input type="text" id="proyecto-nombre" required>
+          </div>
+
+          <div class="form-group">
+            <label for="proyecto-monto">Monto Total:</label>
+            <input type="number" id="proyecto-monto" min="0" step="0.01" required>
+            <p class="help-text" style="font-size: 0.85rem; color: #666; margin-top: 0.25rem;">Se dividirá entre
+              departamentos activos</p>
+          </div>
+
+          <div class="form-group">
+            <label for="proyecto-meses">Diferir en meses:</label>
+            <input type="number" id="proyecto-meses" name="mesesDiferimiento" min="1" max="36" value="1" required>
+            <p class="help-text" style="font-size: 0.85rem; color: #666; margin-top: 0.25rem;">El monto por depto se
+              dividirá en estos meses</p>
+          </div>
+
+          <div class="form-group">
+            <label for="proyecto-prioridad">Prioridad:</label>
+            <select id="proyecto-prioridad" required>
+              <option value="URGENTE">URGENTE</option>
+              <option value="ALTA">ALTA</option>
+              <option value="MEDIA">MEDIA</option>
+              <option value="BAJA">BAJA</option>
             </select>
           </div>
-        </div>
-        
-        <div class="cierres-container">
-          <div class="cierres-mensuales">
-            <h3>Cierres Mensuales</h3>
-            <div class="table-container">
-              <table id="cierres-table" class="data-table">
-                <thead>
-                  <tr>
-                    <th>Mes/Año</th>
-                    <th>Ingresos</th>
-                    <th>Gastos</th>
-                    <th>Balance</th>
-                    <th>Fecha Cierre</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <!-- Cierres will be loaded here -->
-                </tbody>
-              </table></div>
-            </div>
-          </div>
-          
-          <div class="cierres-anuales">
-            <h3>Cierres Anuales</h3>
-            <div class="table-container">
-              <table id="cierres-anuales-table" class="data-table">
-                <thead>
-                  <tr>
-                    <th>Año</th>
-                    <th>Ingresos</th>
-                    <th>Gastos</th>
-                    <th>Balance</th>
-                    <th>Fecha Cierre</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <!-- Cierres anuales will be loaded here -->
-                </tbody>
-              </table></div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Modal for monthly closing -->
-        <div id="cierre-mensual-modal" class="modal">
-          <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Realizar Cierre Mensual</h2>
-            
-            <form id="cierre-mensual-form">
-              <div class="form-group">
-                <label for="cierre-mes">Mes:</label>
-                <select id="cierre-mes" required>
-                  <option value="Enero">Enero</option>
-                  <option value="Febrero">Febrero</option>
-                  <option value="Marzo">Marzo</option>
-                  <option value="Abril">Abril</option>
-                  <option value="Mayo">Mayo</option>
-                  <option value="Junio">Junio</option>
-                  <option value="Julio">Julio</option>
-                  <option value="Agosto">Agosto</option>
-                  <option value="Septiembre">Septiembre</option>
-                  <option value="Octubre">Octubre</option>
-                  <option value="Noviembre" selected>Noviembre</option>
-                  <option value="Diciembre">Diciembre</option>
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label for="cierre-año">Año:</label>
-                <input type="number" id="cierre-año" min="2025" max="2030" value="2025" required>
-              </div>
-              
-              <div class="form-group">
-                <p class="warning-text">
-                  <i class="fas fa-exclamation-triangle"></i> 
-                  Esta acción realizará el cierre contable del mes seleccionado. 
-                  Asegúrese de haber registrado todos los ingresos y gastos correspondientes.
-                </p>
-              </div>
-              
-              <div class="form-group">
-                <button type="submit" class="btn btn-primary">Realizar Cierre</button>
-                <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
-              </div>
-            </form>
-          </div>
-        </div>
-        
-        <!-- Modal for annual closing -->
-        <div id="cierre-anual-modal" class="modal">
-          <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Realizar Cierre Anual</h2>
-            
-            <form id="cierre-anual-form">
-              <div class="form-group">
-                <label for="cierre-anual-año">Año:</label>
-                <input type="number" id="cierre-anual-año" min="2025" max="2030" value="2025" required>
-              </div>
-              
-              <div class="form-group">
-                <p class="warning-text">
-                  <i class="fas fa-exclamation-triangle"></i> 
-                  Esta acción realizará el cierre contable anual. 
-                  Asegúrese de haber realizado todos los cierres mensuales correspondientes.
-                </p>
-              </div>
-              
-              <div class="form-group">
-                <button type="submit" class="btn btn-primary">Realizar Cierre Anual</button>
-                <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
-              </div>
-            </form>
-          </div>
-        </div>
-        
-        <!-- Modal for viewing cierre details -->
-        <div id="cierre-detalle-modal" class="modal">
-          <div class="modal-content modal-lg">
-            <span class="close">&times;</span>
-            <h2 id="cierre-detalle-titulo">Detalle de Cierre</h2>
-            
-            <div id="cierre-detalle-content">
-              <!-- Cierre details will be loaded here -->
-            </div>
-            
-            <div class="form-group text-center">
-              <button type="button" class="btn btn-secondary modal-cancel">Cerrar</button>
-              <button type="button" id="cierre-print-btn" class="btn btn-primary"><i class="fas fa-print"></i> Imprimir</button>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      <!-- Proyectos Section -->
-      <section id="proyectos-section" class="content-section">
-        <div class="section-header">
-          <h2>Proyectos Críticos</h2>
-          <button id="nuevo-proyecto-btn-main" class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo Proyecto</button>
-        </div>
 
-        <div style="background: #EFF6FF; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; border-left: 4px solid #4F46E5;">
-          <p style="margin: 0; color: #1F2937;">
-            <i class="fas fa-info-circle" style="color: #4F46E5;"></i>
-            <strong>Proyectos Críticos:</strong> Gestiona proyectos importantes del condominio como remodelaciones, reparaciones mayores, actualizaciones legales, etc.
-          </p>
-        </div>
-        
-        <div class="proyectos-list" id="proyectos-list-main" style="margin-bottom: 1rem;">
-          <!-- Proyectos will be loaded here -->
-        </div>
-
-        <div style="background: #F9FAFB; padding: 1.5rem; border-radius: 0.5rem; border: 2px solid #E5E7EB;">
-          <h3 style="margin-bottom: 1rem; color: #1F2937;">Resumen</h3>
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
-            <div>
-              <p style="color: #6B7280; font-size: 0.875rem;">Total Proyectos</p>
-              <p style="color: #1F2937; font-size: 1.5rem; font-weight: bold;" id="proyectos-total-main">$0</p>
-            </div>
-            <div>
-              <p style="color: #6B7280; font-size: 0.875rem;">Por Departamento</p>
-              <p style="color: #1F2937; font-size: 1.5rem; font-weight: bold;" id="proyectos-por-depto-main">$0</p>
-            </div>
-            <div>
-              <p style="color: #6B7280; font-size: 0.875rem;">Total Unidades</p>
-              <p style="color: #1F2937; font-size: 1.5rem; font-weight: bold;" id="proyectos-unidades-main">0</p>
-            </div>
+          <div class="info-box" id="proyecto-calculo"
+            style="display: none; background: #e7f3ff; padding: 1rem; border-radius: 0.5rem; margin-top: 1rem;">
+            <h4 style="margin-bottom: 0.5rem; font-size: 0.9rem;">📊 Cálculo:</h4>
+            <p style="margin: 0.25rem 0; font-size: 0.85rem;"><strong>Deptos activos:</strong> <span
+                id="calc-deptos">-</span></p>
+            <p style="margin: 0.25rem 0; font-size: 0.85rem;"><strong>Por depto (total):</strong> $<span
+                id="calc-por-depto">-</span></p>
+            <p style="margin: 0.25rem 0; font-size: 0.85rem;"><strong>Por mes/depto:</strong> $<span
+                id="calc-por-mes">-</span></p>
           </div>
-        </div>
-        
-        <!-- Modal for new/edit proyecto -->
-        <div id="proyecto-modal-main" class="modal">
-          <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 id="proyecto-modal-title-main">Nuevo Proyecto</h2>
-            
-            <form id="proyecto-form-main">
-              <input type="hidden" id="proyecto-id-main">
-              
-              <div class="form-group">
-                <label for="proyecto-nombre-main">Nombre del Proyecto:</label>
-                <input type="text" id="proyecto-nombre-main" required placeholder="ej: Reparación de elevador">
-              </div>
-              
-              <div class="form-group">
-                <label for="proyecto-monto-main">Monto Total:</label>
-                <input type="number" id="proyecto-monto-main" min="0" step="0.01" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="proyecto-prioridad-main">Prioridad:</label>
-                <select id="proyecto-prioridad-main" required>
-                  <option value="BAJA">Baja</option>
-                  <option value="MEDIA">Media</option>
-                  <option value="ALTA">Alta</option>
-                  <option value="URGENTE">Urgente</option>
-                </select>
-              </div>
 
-              <div class="form-group">
-                <label for="proyecto-descripcion-main">Descripción:</label>
-                <textarea id="proyecto-descripcion-main" rows="4" placeholder="Describe el proyecto..."></textarea>
-              </div>
-              
-              <div class="form-group">
-                <button type="submit" class="btn btn-primary">Guardar Proyecto</button>
-                <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
-              </div>
-            </form>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <button type="button" class="close-modal btn btn-outline">Cancelar</button>
           </div>
-        </div>
-      </section>
-      
-      <!-- Configuracion Section -->
-      <section id="configuracion-section" class="content-section">
-        <div class="section-header">
-          <h2>Configuración del Sistema</h2>
-        </div>
-        
-        <!-- Tabs de configuración -->
-        <div class="config-tabs">
-          <button class="tab-btn active" data-tab="perfil">Mi Perfil</button>
-          <button class="tab-btn" data-tab="edificio">Información del Edificio</button>
-          <button class="tab-btn" data-tab="documentos">Documentos</button>
-        </div>
-        
-        <!-- Tab: Mi Perfil -->
-        <div class="config-tab-content active" id="tab-perfil">
-          <div class="config-card" style="max-width: 600px; margin: 0 auto;">
-            <h3>Mi Información</h3>
-            <p class="description">Actualiza tu información personal</p>
-            
-            <form id="perfil-form">
-              <div class="form-group">
-                <label for="perfil-nombre">Nombre Completo:</label>
-                <input type="text" id="perfil-nombre" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="perfil-email">Email:</label>
-                <input type="email" id="perfil-email" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="perfil-telefono">Teléfono:</label>
-                <input type="tel" id="perfil-telefono">
-              </div>
-              
-              <div class="form-group">
-                <label for="perfil-departamento">Departamento:</label>
-                <input type="text" id="perfil-departamento" readonly>
-              </div>
-              
-              <h4 style="margin-top: 0.5rem;">Personalización</h4>
-              
-              <div class="form-group">
-                <label for="perfil-tema">Tema de Color:</label>
-                <select id="perfil-tema" style="padding: 0.75rem; border: 2px solid #E5E7EB; border-radius: 0.5rem; font-size: 1rem;">
-                  <option value="default">🔵 Azul Índigo (Predeterminado)</option>
-                  <option value="green">🟢 Verde Esmeralda</option>
-                  <option value="purple">🟣 Púrpura Místico</option>
-                  <option value="orange">🟠 Naranja Sunset</option>
-                  <option value="pink">💗 Rosa Magenta</option>
-                  <option value="teal">🌊 Turquesa Océano</option>
-                  <option value="red">🔴 Rojo Coral</option>
-                  <option value="gold">🌟 Dorado Elegante</option>
-                  <option value="dark">🌙 Modo Oscuro</option>
-                  <option value="gradient-blue">🌈 Degradado Azul</option>
-                  <option value="gradient-purple">💜 Degradado Púrpura</option>
-                  <option value="gradient-sunset">🌅 Degradado Sunset</option>
-                  <option value="gradient-ocean">🌊 Degradado Océano</option>
-                  <option value="gradient-fire">🔥 Degradado Fuego</option>
-                </select>
-                <small style="color: #6B7280;">El tema se aplicará en toda la plataforma</small>
-              </div>
-
-              <h4 style="margin-top: 0.5rem;">Cambiar Contraseña</h4>
-              
-              <div class="form-group">
-                <label for="perfil-password-actual">Contraseña Actual:</label>
-                <input type="password" id="perfil-password-actual" autocomplete="current-password">
-              </div>
-              
-              <div class="form-group">
-                <label for="perfil-password-nueva">Nueva Contraseña:</label>
-                <input type="password" id="perfil-password-nueva">
-              </div>
-              
-              <div class="form-group">
-                <label for="perfil-password-confirmar">Confirmar Nueva Contraseña:</label>
-                <input type="password" id="perfil-password-confirmar">
-              </div>
-              
-              <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-              </div>
-            </form>
-          </div>
-        </div>
-        
-        <!-- Tab: Información del Edificio -->
-        <div class="config-tab-content" id="tab-edificio">
-          <div class="config-card" style="max-width: 600px; margin: 0 auto;">
-            <h3>Información del Edificio</h3>
-            <p class="description">Gestiona la información general del condominio</p>
-            
-            <form id="edificio-form">
-              <div class="form-group">
-                <label for="edificio-nombre">Nombre:</label>
-                <input type="text" id="edificio-nombre" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="edificio-direccion">Dirección:</label>
-                <input type="text" id="edificio-direccion" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="edificio-total-unidades">Total de Unidades:</label>
-                <input type="number" id="edificio-total-unidades" min="1" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="edificio-cuota-mensual">Cuota Mensual:</label>
-                <input type="number" id="edificio-cuota-mensual" min="0" step="0.01" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="edificio-dia-corte">Día de Corte:</label>
-                <input type="number" id="edificio-dia-corte" min="1" max="31" required>
-              </div>
-
-              <div class="form-group">
-                <label for="edificio-dias-gracia">Días de Gracia:</label>
-                <input type="number" id="edificio-dias-gracia" min="0" max="30" required>
-                <small style="color: #6B7280;">Días después del corte antes de aplicar mora</small>
-              </div>
-
-              <div class="form-group">
-                <label for="edificio-porcentaje-mora">Porcentaje de Mora (%):</label>
-                <input type="number" id="edificio-porcentaje-mora" min="0" max="100" step="0.1" required>
-                <small style="color: #6B7280;">Porcentaje mensual de recargo por mora</small>
-              </div>
-
-              <div class="form-group">
-                <label for="edificio-fondo-ingresos">Fondo para Ingresos de Cuotas:</label>
-                <select id="edificio-fondo-ingresos">
-                  <option value="">Sin asignar</option>
-                </select>
-                <small style="color: #6B7280;">Los pagos de cuotas se sumarán automáticamente a este fondo</small>
-              </div>
-              
-              <h4 style="margin-top: 0.5rem;">Fondos Patrimoniales</h4>
-              <p class="description">Fondos configurados durante el setup inicial</p>
-              
-              <div id="fondos-list" style="margin-bottom: 1rem;">
-                <!-- Fondos will be loaded here -->
-              </div>
-              
-              <h4 style="margin-top: 0.5rem;">Políticas del Condominio</h4>
-              
-              <div class="form-group">
-                <label for="edificio-reglamento">Reglamento Interno:</label>
-                <textarea id="edificio-reglamento" rows="6" placeholder="Reglamento del condominio..."></textarea>
-              </div>
-
-              <div class="form-group">
-                <label for="edificio-privacy-policy">Política de Privacidad:</label>
-                <textarea id="edificio-privacy-policy" rows="6" placeholder="Política de privacidad y protección de datos..."></textarea>
-              </div>
-
-              <div class="form-group">
-                <label for="edificio-payment-policies">Políticas de Pago:</label>
-                <textarea id="edificio-payment-policies" rows="6" placeholder="Políticas de vencimiento y mora..."></textarea>
-              </div>
-              
-              <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                <button type="button" id="descargar-politicas-btn" class="btn btn-secondary">
-                  <i class="fas fa-download"></i> Descargar Todas las Políticas
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-        
-        <!-- Tab: Documentos -->
-        <div class="config-tab-content" id="tab-documentos">
-          <div class="config-card">
-            <h3>Documentos del Edificio</h3>
-            <p class="description">Gestiona los documentos oficiales del condominio</p>
-            
-            <div class="documentos-container" id="documentos-container">
-              <!-- Documentos will be loaded here -->
-            </div>
-            
-            <div style="margin-top: 0.5rem;">
-              <h4>Subir Nuevo Documento</h4>
-              <form id="documento-form">
-                <div class="form-group">
-                  <label for="documento-tipo">Tipo de Documento:</label>
-                  <select id="documento-tipo" required>
-                    <option value="">Seleccionar...</option>
-                    <option value="acta_constitutiva">Acta Constitutiva</option>
-                    <option value="escrituras">Escrituras</option>
-                    <option value="reglamento">Reglamento Interno</option>
-                    <option value="planos">Planos</option>
-                    <option value="contratos">Contratos</option>
-                    <option value="permisos">Permisos</option>
-                    <option value="otro">Otro</option>
-                  </select>
-                </div>
-                
-                <div class="form-group">
-                  <label for="documento-nombre">Nombre del Documento:</label>
-                  <input type="text" id="documento-nombre" required>
-                </div>
-                
-                <div class="form-group">
-                  <label for="documento-archivo">Archivo:</label>
-                  <input type="file" id="documento-archivo" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
-                </div>
-                
-                <div class="form-actions">
-                  <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-upload"></i> Subir Documento
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Modal for adding/editing proyecto -->
-        <div id="proyecto-modal" class="modal">
-          <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 id="proyecto-modal-title">Nuevo Proyecto</h2>
-            
-            <form id="proyecto-form">
-              <input type="hidden" id="proyecto-id">
-              
-              <div class="form-group">
-                <label for="proyecto-nombre">Nombre del Proyecto:</label>
-                <input type="text" id="proyecto-nombre" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="proyecto-monto">Monto Total:</label>
-                <input type="number" id="proyecto-monto" min="0" step="0.01" required>
-                <p class="help-text" style="font-size: 0.85rem; color: #666; margin-top: 0.25rem;">Se dividirá entre departamentos activos</p>
-              </div>
-              
-              <div class="form-group">
-                <label for="proyecto-meses">Diferir en meses:</label>
-                <input type="number" id="proyecto-meses" name="mesesDiferimiento" min="1" max="36" value="1" required>
-                <p class="help-text" style="font-size: 0.85rem; color: #666; margin-top: 0.25rem;">El monto por depto se dividirá en estos meses</p>
-              </div>
-              
-              <div class="form-group">
-                <label for="proyecto-prioridad">Prioridad:</label>
-                <select id="proyecto-prioridad" required>
-                  <option value="URGENTE">URGENTE</option>
-                  <option value="ALTA">ALTA</option>
-                  <option value="MEDIA">MEDIA</option>
-                  <option value="BAJA">BAJA</option>
-                </select>
-              </div>
-              
-              <div class="info-box" id="proyecto-calculo" style="display: none; background: #e7f3ff; padding: 1rem; border-radius: 0.5rem; margin-top: 1rem;">
-                <h4 style="margin-bottom: 0.5rem; font-size: 0.9rem;">📊 Cálculo:</h4>
-                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><strong>Deptos activos:</strong> <span id="calc-deptos">-</span></p>
-                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><strong>Por depto (total):</strong> $<span id="calc-por-depto">-</span></p>
-                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><strong>Por mes/depto:</strong> $<span id="calc-por-mes">-</span></p>
-              </div>
-              
-              <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Guardar</button>
-                <button type="button" class="close-modal btn btn-outline">Cancelar</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </section>
-    </main>
+        </form>
+      </div>
+    </div>
+  </section>
+  </main>
   </div>
-  
+
   <script>
     // Prevenir loops de recarga
     if (window.reloadCount) {
@@ -1445,15 +1476,15 @@
           const response = await fetch('/api/onboarding/building-info', {
             headers: { 'Authorization': `Bearer ${token}` }
           });
-          
+
           if (response.ok) {
             const data = await response.json();
             if (data.ok && data.buildingInfo) {
               const buildingName = data.buildingInfo.nombre || 'ChispartBuilding';
-              
+
               const buildingNameEl = document.getElementById('building-name');
               if (buildingNameEl) buildingNameEl.textContent = buildingName;
-              
+
               const titleEl = document.querySelector('title');
               if (titleEl) titleEl.textContent = `${buildingName} | Panel de Administración`;
             }
@@ -1547,7 +1578,7 @@
 
         const countdownEl = document.getElementById('modalCountdown');
         if (countdownEl) {
-          countdownEl.textContent = 
+          countdownEl.textContent =
             `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
       };
@@ -1560,68 +1591,69 @@
     checkPaymentStatus();
   </script>
 </body>
+
 </html>
-  <script>
-    // Aplicar tema guardado al cargar
-    const temaGuardado = localStorage.getItem('tema_usuario') || 'default';
-    document.documentElement.setAttribute('data-theme', temaGuardado);
-    
-    // Seleccionar en el selector
-    const selectorTema = document.getElementById('perfil-tema');
-    if (selectorTema) {
-      selectorTema.value = temaGuardado;
-      
-      selectorTema.addEventListener('change', (e) => {
-        const nuevoTema = e.target.value;
-        document.documentElement.setAttribute('data-theme', nuevoTema);
-        localStorage.setItem('tema_usuario', nuevoTema);
-        console.log('🎨 Tema cambiado a:', nuevoTema);
-      });
-    }
-  </script>
-  
-  <script>
-    // Toggle sidebar en móvil
-    function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      sidebar.classList.toggle('active');
-    }
-    
-    // Cerrar sidebar al hacer click en un enlace (móvil)
-    document.querySelectorAll('.sidebar-nav a').forEach(link => {
-      link.addEventListener('click', () => {
-        if (window.innerWidth <= 768) {
-          document.getElementById('sidebar').classList.remove('active');
-        }
-      });
+<script>
+  // Aplicar tema guardado al cargar
+  const temaGuardado = localStorage.getItem('tema_usuario') || 'default';
+  document.documentElement.setAttribute('data-theme', temaGuardado);
+
+  // Seleccionar en el selector
+  const selectorTema = document.getElementById('perfil-tema');
+  if (selectorTema) {
+    selectorTema.value = temaGuardado;
+
+    selectorTema.addEventListener('change', (e) => {
+      const nuevoTema = e.target.value;
+      document.documentElement.setAttribute('data-theme', nuevoTema);
+      localStorage.setItem('tema_usuario', nuevoTema);
+      console.log('🎨 Tema cambiado a:', nuevoTema);
     });
-  </script>
+  }
+</script>
 
 <script>
-// Calcular costos del proyecto en tiempo real
-function calcularProyecto() {
-  const monto = parseFloat(document.getElementById('proyecto-monto')?.value) || 0;
-  const meses = parseInt(document.getElementById('proyecto-meses')?.value) || 1;
-  
-  if (monto > 0) {
-    // Obtener deptos activos del sistema
-    fetch('/api/usuarios')
-      .then(res => res.json())
-      .then(data => {
-        const deptosActivos = data.usuarios.filter(u => u.rol === 'INQUILINO' && u.activo).length;
-        const porDepto = monto / (deptosActivos || 1);
-        const porMes = porDepto / meses;
-        
-        document.getElementById('calc-deptos').textContent = deptosActivos;
-        document.getElementById('calc-por-depto').textContent = porDepto.toFixed(2);
-        document.getElementById('calc-por-mes').textContent = porMes.toFixed(2);
-        document.getElementById('proyecto-calculo').style.display = 'block';
-      })
-      .catch(err => console.error('Error calculando:', err));
+  // Toggle sidebar en móvil
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('active');
   }
-}
 
-// Agregar listeners al modal de proyectos
-document.getElementById('proyecto-monto')?.addEventListener('input', calcularProyecto);
-document.getElementById('proyecto-meses')?.addEventListener('input', calcularProyecto);
+  // Cerrar sidebar al hacer click en un enlace (móvil)
+  document.querySelectorAll('.sidebar-nav a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 768) {
+        document.getElementById('sidebar').classList.remove('active');
+      }
+    });
+  });
+</script>
+
+<script>
+  // Calcular costos del proyecto en tiempo real
+  function calcularProyecto() {
+    const monto = parseFloat(document.getElementById('proyecto-monto')?.value) || 0;
+    const meses = parseInt(document.getElementById('proyecto-meses')?.value) || 1;
+
+    if (monto > 0) {
+      // Obtener deptos activos del sistema
+      fetch('/api/usuarios')
+        .then(res => res.json())
+        .then(data => {
+          const deptosActivos = data.usuarios.filter(u => u.rol === 'INQUILINO' && u.activo).length;
+          const porDepto = monto / (deptosActivos || 1);
+          const porMes = porDepto / meses;
+
+          document.getElementById('calc-deptos').textContent = deptosActivos;
+          document.getElementById('calc-por-depto').textContent = porDepto.toFixed(2);
+          document.getElementById('calc-por-mes').textContent = porMes.toFixed(2);
+          document.getElementById('proyecto-calculo').style.display = 'block';
+        })
+        .catch(err => console.error('Error calculando:', err));
+    }
+  }
+
+  // Agregar listeners al modal de proyectos
+  document.getElementById('proyecto-monto')?.addEventListener('input', calcularProyecto);
+  document.getElementById('proyecto-meses')?.addEventListener('input', calcularProyecto);
 </script>
