@@ -175,17 +175,16 @@ function otpTemplate({ code, email }) {
 function invitationTemplate({ name, invitedBy, buildingName, role, activationUrl, expiresAt }) {
   const roleNames = {
     ADMIN: 'Administrador',
-    COMITE: 'Miembro del Comité',
     INQUILINO: 'Inquilino',
   };
-  
+
   const roleName = roleNames[role] || role;
   const expiryDate = new Date(expiresAt).toLocaleDateString('es-ES', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   });
-  
+
   return `
     <!DOCTYPE html>
     <html lang="es">

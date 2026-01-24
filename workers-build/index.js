@@ -665,38 +665,27 @@ export default {
         });
       }
 
-      // POST /api/usuarios - Crear usuario
-      if (method === 'POST' && path === '/api/usuarios') {
+      // POST /api/usuarios/invite - Generar invitación para inquilino
+      if (method === 'POST' && path === '/api/usuarios/invite') {
         const authResult = await verifyAuth(request, env);
         if (authResult instanceof Response) return authResult;
 
         const buildingId = authResult.payload.buildingId;
         const body = await request.json();
-        const { nombre, email, password, rol, departamento, telefono, enviarInvitacion } = body;
+        const { nombre, email, departamento } = body;
 
-        // Validar campos requeridos básicos
-        if (!nombre || !email || !departamento) {
+        // Validar campos requeridos
+        if (!email || !departamento) {
           return new Response(JSON.stringify({
             success: false,
-            message: 'Faltan campos requeridos: nombre, email, departamento'
+            msg: 'Faltan campos requeridos: email, departamento'
           }), {
             status: 400,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           });
         }
 
-        // Si no es inquilino, password es requerido
-        if (rol !== 'INQUILINO' && !password) {
-          return new Response(JSON.stringify({
-            success: false,
-            message: 'La contraseña es requerida para Administradores y Comité'
-          }), {
-            status: 400,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-          });
-        }
-
-        // Verificar si el email ya existe
+        // Verificar si el email ya existe en DB (usuarios activos)
         const existingUser = await env.DB.prepare(
           'SELECT id FROM usuarios WHERE email = ? AND building_id = ?'
         ).bind(email, buildingId).first();
@@ -704,71 +693,37 @@ export default {
         if (existingUser) {
           return new Response(JSON.stringify({
             success: false,
-            message: 'El email ya está registrado'
+            msg: 'El email ya está registrado como usuario'
           }), {
             status: 400,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           });
         }
 
-        let hashedPassword = null;
-        let invitationToken = null;
-        let invitationLink = null;
+        // Generar token único de invitación (válido por 7 días)
+        const invitationToken = crypto.randomUUID();
+        const expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + 7);
 
-        // Si es inquilino y se solicita enviar invitación
-        if (rol === 'INQUILINO' && enviarInvitacion && !password) {
-          // Generar token único de invitación (válido por 7 días)
-          invitationToken = crypto.randomUUID();
-          const expiresAt = new Date();
-          expiresAt.setDate(expiresAt.getDate() + 7);
-
-          // Guardar token en KV
-          await env.KV.put(`invitation:${invitationToken}`, JSON.stringify({
-            email,
-            nombre,
-            rol,
-            departamento,
-            telefono,
-            buildingId,
-            createdAt: new Date().toISOString()
-          }), {
-            expirationTtl: 7 * 24 * 60 * 60 // 7 días
-          });
-
-          invitationLink = `${env.FRONTEND_URL || 'https://edificio-production.pages.dev'}/establecer-password.html?token=${invitationToken}`;
-
-          // Contraseña temporal (no podrá usarse hasta que establezca la real)
-          hashedPassword = await hashPassword(crypto.randomUUID());
-        } else {
-          // Hashear contraseña proporcionada
-          hashedPassword = await hashPassword(password);
-        }
-
-        // Insertar nuevo usuario
-        await env.DB.prepare(
-          'INSERT INTO usuarios (nombre, email, password, rol, departamento, telefono, building_id, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
-        ).bind(
-          nombre,
+        // Guardar datos de la invitación en KV (NO CREAR USUARIO EN DB AÚN)
+        await env.KV.put(`invitation:${invitationToken}`, JSON.stringify({
           email,
-          hashedPassword,
-          rol || 'INQUILINO',
+          nombre: nombre || 'Inquilino',
+          rol: 'INQUILINO', // Fuerza Rol Inquilino
           departamento,
-          telefono || '',
           buildingId,
-          invitationToken ? 0 : 1 // Inactivo hasta que establezca contraseña
-        ).run();
+          createdAt: new Date().toISOString()
+        }), {
+          expirationTtl: 7 * 24 * 60 * 60 // 7 días
+        });
 
-        const response = {
+        const invitationLink = `${env.FRONTEND_URL || 'https://edificio-production.pages.dev'}/establecer-password.html?token=${invitationToken}`;
+
+        return new Response(JSON.stringify({
           success: true,
-          message: 'Usuario creado exitosamente'
-        };
-
-        if (invitationLink) {
-          response.invitationLink = invitationLink;
-          response.message = 'Usuario creado. Link de invitación generado.';
-        }
-
-        return new Response(JSON.stringify(response), {
+          msg: 'Invitación generada exitosamente',
+          invitationLink
+        }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
       }
@@ -980,20 +935,18 @@ export default {
           // Hashear nueva contraseña
           const hashedPassword = await hashPassword(password);
 
-          // Actualizar usuario con la nueva contraseña y activarlo
-          const updateResult = await env.DB.prepare(
-            'UPDATE usuarios SET password = ?, activo = 1 WHERE email = ? AND building_id = ?'
-          ).bind(hashedPassword, data.email, data.buildingId).run();
-
-          if (updateResult.meta.changes === 0) {
-            return new Response(JSON.stringify({
-              ok: false,
-              msg: 'Usuario no encontrado'
-            }), {
-              status: 404,
-              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-            });
-          }
+          // INSERTAR nuevo usuario (ahora sí se crea)
+          // Se asume Inquilino y sin teléfono inicial (pueden editarlo luego)
+          await env.DB.prepare(
+            'INSERT INTO usuarios (nombre, email, password, rol, departamento, building_id, activo) VALUES (?, ?, ?, ?, ?, ?, 1)'
+          ).bind(
+            data.nombre,
+            data.email,
+            hashedPassword,
+            data.rol || 'INQUILINO',
+            data.departamento,
+            data.buildingId
+          ).run();
 
           // Eliminar token usado
           await env.KV.delete(`invitation:${token}`);
@@ -1286,7 +1239,7 @@ export default {
         const buildingId = authResult.payload.buildingId;
         const cuotaId = parseInt(path.split('/')[3]);
         const body = await request.json();
-        const { estado, fechaPago, comprobante, metodoPago } = body;
+        const { estado, fechaPago, comprobante, metodoPago, tipoValidacion } = body;
 
         // Verificar que la cuota existe y pertenece al building
         const cuota = await env.DB.prepare(
@@ -1303,19 +1256,76 @@ export default {
           });
         }
 
-        // Actualizar estado de la cuota
-        const pagado = estado === 'PAGADO' ? 1 : 0;
-        const estabaPagado = cuota.pagado === 1;
+        // --- LÓGICA DE VALIDACIÓN SELECTIVA ---
+        if (estado === 'PAGADO' && tipoValidacion && tipoValidacion !== 'TOTAL') {
+          const montoBase = parseFloat(cuota.monto || 0);
+          const montoExtra = parseFloat(cuota.monto_extraordinario || 0);
 
-        await env.DB.prepare(
-          'UPDATE cuotas SET pagado = ?, fecha_pago = ?, metodo_pago = ?, referencia = ? WHERE id = ?'
-        ).bind(
-          pagado,
-          fechaPago || null,
-          metodoPago || null,
-          comprobante || null,
-          cuotaId
-        ).run();
+          // CASO 1: Pagar SOLO MANTENIMIENTO
+          if (tipoValidacion === 'SOLO_NORMAL' && montoExtra > 0) {
+            // 1. Crear nueva cuota PENDIENTE solo con el Extra
+            await env.DB.prepare(`
+              INSERT INTO cuotas (departamento, mes, anio, monto, monto_extraordinario, concepto, concepto_extraordinario, tipo, pagado, fecha_vencimiento, building_id)
+              VALUES (?, ?, ?, 0, ?, NULL, ?, ?, 0, ?, ?)
+            `).bind(
+              cuota.departamento, cuota.mes, cuota.anio,
+              montoExtra, // El extra se mueve aquí
+              cuota.concepto_extraordinario,
+              'EXTRAORDINARIA',
+              cuota.fecha_vencimiento, cuota.building_id
+            ).run();
+
+            // 2. Marcar la actual como PAGADA pero quitándole el Extra
+            await env.DB.prepare(`
+              UPDATE cuotas SET 
+                monto_extraordinario = 0, concepto_extraordinario = NULL,
+                pagado = 1, fecha_pago = ?, metodo_pago = ?, referencia = ?
+              WHERE id = ?
+            `).bind(fechaPago || null, metodoPago || null, comprobante || null, cuotaId).run();
+          }
+
+          // CASO 2: Pagar SOLO EXTRAORDINARIA
+          else if (tipoValidacion === 'SOLO_EXTRA' && montoBase > 0) {
+            // 1. Crear nueva cuota PENDIENTE solo con lo Normal (monto base)
+            await env.DB.prepare(`
+              INSERT INTO cuotas (departamento, mes, anio, monto, monto_extraordinario, concepto, concepto_extraordinario, tipo, pagado, fecha_vencimiento, building_id)
+              VALUES (?, ?, ?, ?, 0, ?, NULL, ?, 0, ?, ?)
+            `).bind(
+              cuota.departamento, cuota.mes, cuota.anio,
+              montoBase, // El base se mueve aquí
+              cuota.concepto,
+              cuota.tipo, // Mantiene tipo original (ej MENSUAL)
+              cuota.fecha_vencimiento, cuota.building_id
+            ).run();
+
+            // 2. Marcar la actual como PAGADA pero quitándole lo Normal (queda solo como recibo del extra)
+            await env.DB.prepare(`
+              UPDATE cuotas SET 
+                monto = 0, concepto = NULL,
+                pagado = 1, fecha_pago = ?, metodo_pago = ?, referencia = ?
+              WHERE id = ?
+            `).bind(fechaPago || null, metodoPago || null, comprobante || null, cuotaId).run();
+          }
+          else {
+            // Fallback si no aplica (ej: pedir solo extra pero no hay base) -> Pagar todo normal
+            await env.DB.prepare(
+              'UPDATE cuotas SET pagado = 1, fecha_pago = ?, metodo_pago = ?, referencia = ? WHERE id = ?'
+            ).bind(fechaPago || null, metodoPago || null, comprobante || null, cuotaId).run();
+          }
+        }
+        // --- VALIDACIÓN TOTAL (Estándar) ---
+        else {
+          const pagado = estado === 'PAGADO' ? 1 : 0;
+          await env.DB.prepare(
+            'UPDATE cuotas SET pagado = ?, fecha_pago = ?, metodo_pago = ?, referencia = ? WHERE id = ?'
+          ).bind(
+            pagado,
+            fechaPago || null,
+            metodoPago || null,
+            comprobante || null,
+            cuotaId
+          ).run();
+        }
 
         // Si se marca como pagado y no estaba pagado antes, sumar al fondo de ingresos
         if (pagado && !estabaPagado) {

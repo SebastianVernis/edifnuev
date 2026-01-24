@@ -41,7 +41,7 @@ export const crearUsuario = async (req, res) => {
     }
 
     // Validar roles permitidos
-    const rolesPermitidos = ['ADMIN', 'INQUILINO', 'COMITE'];
+    const rolesPermitidos = ['ADMIN', 'INQUILINO'];
     if (!rolesPermitidos.includes(rol)) {
       return res.status(400).json({
         ok: false,
@@ -87,7 +87,7 @@ export const crearUsuario = async (req, res) => {
       departamento,
       telefono: telefono || null,
       legitimidad_entregada: false,
-      estatus_validacion: 'pendiente',
+
       fechaCreacion: new Date().toISOString(),
       activo: true
     };
@@ -124,7 +124,7 @@ export const actualizarUsuario = async (req, res) => {
     // Guardar datos anteriores para auditoría
     const usuarioAnterior = { ...usuario };
 
-    const { nombre, email, rol, departamento, telefono, estatus_validacion, esEditor, password } = req.body;
+    const { nombre, email, rol, departamento, telefono, password } = req.body;
 
     // Validar email único (excluyendo el usuario actual)
     if (email && data.usuarios.find(u => u.email === email && u.id !== id)) {
@@ -143,8 +143,7 @@ export const actualizarUsuario = async (req, res) => {
     if (rol !== undefined) usuario.rol = rol;
     if (departamento !== undefined) usuario.departamento = departamento;
     if (telefono !== undefined) usuario.telefono = telefono;
-    if (estatus_validacion !== undefined) usuario.estatus_validacion = estatus_validacion;
-    if (esEditor !== undefined) usuario.esEditor = esEditor;
+
     if (password) {
       usuario.password = await bcrypt.hash(password, 10);
     }

@@ -378,8 +378,10 @@ function handleDynamicButtons(e) {
 
   if (action === 'validar-cuota') {
     e.preventDefault();
-    console.log('🎯 Click en validar cuota:', id);
-    abrirModalValidarPago(id);
+    const monto = parseFloat(target.dataset.monto || 0);
+    const montoExtra = parseFloat(target.dataset.montoExtra || 0);
+    console.log('🎯 Click en validar cuota:', id, { monto, montoExtra });
+    abrirModalValidarPago(id, monto, montoExtra);
   }
   else if (action === 'editar-usuario') {
     e.preventDefault();
@@ -428,7 +430,7 @@ function handleDynamicButtons(e) {
   }
 }
 
-function abrirModalValidarPago(cuotaId) {
+function abrirModalValidarPago(cuotaId, monto = 0, montoExtra = 0) {
   console.log('📝 Abriendo modal validar pago para cuota:', cuotaId);
 
   const modal = document.getElementById('validar-pago-modal');
@@ -440,10 +442,42 @@ function abrirModalValidarPago(cuotaId) {
   // Guardar ID de cuota
   document.getElementById('validar-cuota-id').value = cuotaId;
 
-  // Reset form con valores por defecto
+  // Reset form
   document.getElementById('validar-estado').value = 'PAGADO';
   document.getElementById('validar-fecha-pago').value = new Date().toISOString().split('T')[0];
   document.getElementById('validar-comprobante').value = '';
+
+  // Configurar opciones de validación selectiva
+  const container = document.getElementById('tipo-validacion-container');
+  const opcionNormal = document.getElementById('opcion-solo-normal');
+  const opcionExtra = document.getElementById('opcion-solo-extra');
+  const montoTotalDisplay = document.getElementById('monto-total-display');
+  const montoNormalDisplay = document.getElementById('monto-normal-display');
+  const montoExtraDisplay = document.getElementById('monto-extra-display');
+
+  if (container) {
+    // Reset radio buttons (siempre volver a TOTAL)
+    document.getElementById('validar-tipo-total').checked = true;
+
+    // Calcular total
+    const total = monto + montoExtra;
+
+    // Actualizar labels de montos
+    if (montoTotalDisplay) montoTotalDisplay.textContent = `$${total.toLocaleString('es-MX')}`;
+    if (montoNormalDisplay) montoNormalDisplay.textContent = `$${monto.toLocaleString('es-MX')}`;
+    if (montoExtraDisplay) montoExtraDisplay.textContent = `$${montoExtra.toLocaleString('es-MX')}`;
+
+    // Lógica para mostrar/ocultar
+    if (monto > 0 && montoExtra > 0) {
+      // Caso mixto: Mostrar todas las opciones
+      container.style.display = 'block';
+      opcionNormal.style.display = 'block';
+      opcionExtra.style.display = 'block';
+    } else {
+      // Caso simple (solo normal o solo extra): Ocultar opciones complejas
+      container.style.display = 'none';
+    }
+  }
 
   modal.style.display = 'block';
   console.log('✓ Modal abierto');
@@ -612,31 +646,18 @@ async function showNuevoUsuarioModal() {
     <div id="usuario-modal" class="modal" style="display: block;">
       <div class="modal-content">
         <span class="close" onclick="document.getElementById('usuario-modal').remove()">&times;</span>
-        <h2>Nuevo Usuario</h2>
+        <h2>Invitar Nuevo Inquilino</h2>
+        <p style="color: #6B7280; font-size: 0.9rem; margin-bottom: 1.5rem;">Crea un enlace único para que el inquilino configure su contraseña.</p>
         
         <form id="usuario-form">
           <div class="form-group">
             <label for="usuario-nombre">Nombre:</label>
-            <input type="text" id="usuario-nombre" required>
+            <input type="text" id="usuario-nombre" required placeholder="Nombre del inquilino">
           </div>
           
           <div class="form-group">
             <label for="usuario-email">Email:</label>
-            <input type="email" id="usuario-email" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="usuario-password">Contraseña:</label>
-            <input type="password" id="usuario-password" required minlength="6">
-          </div>
-          
-          <div class="form-group">
-            <label for="usuario-rol">Rol:</label>
-            <select id="usuario-rol" required>
-              <option value="INQUILINO">Inquilino</option>
-              <option value="ADMIN">Administrador</option>
-              <option value="COMITE">Comité</option>
-            </select>
+            <input type="email" id="usuario-email" required placeholder="correo@ejemplo.com">
           </div>
           
           <div class="form-group">
@@ -645,12 +666,9 @@ async function showNuevoUsuarioModal() {
           </div>
           
           <div class="form-group">
-            <label for="usuario-telefono">Teléfono:</label>
-            <input type="tel" id="usuario-telefono" placeholder="Opcional">
-          </div>
-          
-          <div class="form-group">
-            <button type="submit" class="btn btn-primary">Crear Usuario</button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-link"></i> Generar Enlace de Invitación
+            </button>
             <button type="button" class="btn btn-secondary" onclick="document.getElementById('usuario-modal').remove()">Cancelar</button>
           </div>
         </form>
@@ -671,15 +689,13 @@ async function crearNuevoUsuario(form) {
   const formData = {
     nombre: document.getElementById('usuario-nombre').value,
     email: document.getElementById('usuario-email').value,
-    password: document.getElementById('usuario-password').value,
-    rol: document.getElementById('usuario-rol').value,
     departamento: document.getElementById('usuario-departamento').value,
-    telefono: document.getElementById('usuario-telefono').value || null
+    rol: 'INQUILINO' // Forzado a Inquilino
   };
 
   try {
     const token = localStorage.getItem('edificio_token');
-    const response = await fetch('/api/usuarios', {
+    const response = await fetch('/api/usuarios/invite', { // Nuevo endpoint explícito o usar /api/usuarios con lógica de invite
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -689,16 +705,46 @@ async function crearNuevoUsuario(form) {
     });
 
     if (response.ok) {
-      alert('Usuario creado exitosamente');
-      document.getElementById('usuario-modal').remove();
-      location.reload();
+      const data = await response.json();
+
+      // Mostrar el link en un nuevo modal o reemplazar el contenido
+      const modalContent = document.querySelector('#usuario-modal .modal-content');
+      modalContent.innerHTML = `
+        <span class="close" onclick="document.getElementById('usuario-modal').remove()">&times;</span>
+        <div style="text-align: center;">
+          <div style="font-size: 3rem; color: #10B981; margin-bottom: 1rem;"><i class="fas fa-check-circle"></i></div>
+          <h2>¡Invitación Generada!</h2>
+          <p style="margin-bottom: 1.5rem;">Comparte este enlace con el inquilino para que complete su registro.</p>
+          
+          <div style="background: #F3F4F6; padding: 1rem; border-radius: 0.5rem; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+            <input type="text" value="${data.invitationLink}" id="invite-link" readonly style="flex: 1; border: none; background: transparent; font-family: monospace; font-size: 0.9rem; color: #4B5563;">
+            <button class="btn btn-sm btn-secondary" onclick="navigator.clipboard.writeText(document.getElementById('invite-link').value).then(() => alert('Enlace copiado!'))">
+              <i class="fas fa-copy"></i>
+            </button>
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; justify-content: center; margin-bottom: 1.5rem;">
+            <button class="btn btn-success" onclick="window.open('https://wa.me/?text=' + encodeURIComponent('Hola ${formData.nombre}, te invito a unirte al sistema de gestión del edificio. Usa este enlace para completar tu registro: ${data.invitationLink}'), '_blank')" style="background: #25D366;">
+              <i class="fab fa-whatsapp"></i> Compartir por WhatsApp
+            </button>
+            <button class="btn btn-info" onclick="window.location.href='mailto:${formData.email}?subject=' + encodeURIComponent('Invitación al Sistema de Gestión del Edificio') + '&body=' + encodeURIComponent('Hola ${formData.nombre},\n\nTe invito a unirte al sistema de gestión del edificio. Por favor, usa el siguiente enlace para completar tu registro:\n\n${data.invitationLink}\n\nEste enlace es válido por 7 días y solo puede usarse una vez.\n\nSaludos')" style="background: #0EA5E9;">
+              <i class="fas fa-envelope"></i> Enviar por Email
+            </button>
+          </div>
+
+          <p style="font-size: 0.8rem; color: #EF4444;">Este enlace es válido solo una vez y expira en 7 días.</p>
+
+          <button class="btn btn-primary" onclick="document.getElementById('usuario-modal').remove(); cargarUsuarios();">Cerrar</button>
+        </div>
+      `;
+
     } else {
       const error = await response.json();
-      alert(`Error: ${error.msg || 'No se pudo crear el usuario'}`);
+      alert(`Error: ${error.msg || 'No se pudo generar la invitación'}`);
     }
   } catch (error) {
     console.error('Error:', error);
-    alert('Error al crear usuario');
+    alert('Error al generar invitación');
   }
 }
 
@@ -738,23 +784,18 @@ function renderUsuariosTable(usuarios) {
   tbody.innerHTML = '';
 
   if (!usuarios || usuarios.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="7" class="text-center">No hay usuarios</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="text-center">No hay usuarios</td></tr>';
     return;
   }
 
   usuarios.forEach(user => {
     const tr = document.createElement('tr');
 
-    const estadoClass = user.estatus_validacion === 'validado' ? 'text-success' : 'text-warning';
-    const editor = user.esEditor ? 'Sí' : 'No';
-
     tr.innerHTML = `
       <td>${user.nombre}</td>
       <td>${user.email}</td>
       <td>${user.departamento || '-'}</td>
       <td><span class="badge badge-${user.rol.toLowerCase()}">${user.rol}</span></td>
-      <td>${editor}</td>
-      <td class="${estadoClass}">${user.estatus_validacion}</td>
       <td>
         <button class="btn btn-sm btn-secondary" data-action="editar-usuario" data-id="${user.id}">
           <i class="fas fa-edit"></i>
@@ -859,7 +900,8 @@ function renderCuotasTable(cuotas) {
       <td>${fechaPago}</td>
       <td>
         ${!cuota.pagado ? `
-          <button class="btn btn-sm btn-primary" data-action="validar-cuota" data-id="${cuota.id}">
+          <button class="btn btn-sm btn-primary" data-action="validar-cuota" data-id="${cuota.id}" 
+            data-monto="${montoBase}" data-monto-extra="${montoExtra}">
             Validar
           </button>
         ` : '<span style="color: #10B981;">✓ Pagado</span>'}
@@ -1264,7 +1306,9 @@ function setupFormHandlers() {
       const formData = {
         estado: document.getElementById('validar-estado').value,
         fechaPago: document.getElementById('validar-fecha-pago').value,
-        comprobante: document.getElementById('validar-comprobante').value
+        comprobante: document.getElementById('validar-comprobante').value,
+        // Agregar tipo de validación (radio button seleccionado)
+        tipoValidacion: document.querySelector('input[name="tipoValidacion"]:checked')?.value || 'TOTAL'
       };
 
       console.log('Datos validación:', formData);
@@ -1657,7 +1701,6 @@ async function editarUsuario(userId) {
               <select id="editar-usuario-rol" required>
                 <option value="INQUILINO" ${user.rol === 'INQUILINO' ? 'selected' : ''}>Inquilino</option>
                 <option value="ADMIN" ${user.rol === 'ADMIN' ? 'selected' : ''}>Administrador</option>
-                <option value="COMITE" ${user.rol === 'COMITE' ? 'selected' : ''}>Comité</option>
               </select>
             </div>
             
@@ -1669,21 +1712,6 @@ async function editarUsuario(userId) {
             <div class="form-group">
               <label for="editar-usuario-telefono">Teléfono:</label>
               <input type="tel" id="editar-usuario-telefono" value="${user.telefono || ''}">
-            </div>
-            
-            <div class="form-group">
-              <label for="editar-usuario-estatus">Estado de Validación:</label>
-              <select id="editar-usuario-estatus" required>
-                <option value="pendiente" ${user.estatus_validacion === 'pendiente' ? 'selected' : ''}>Pendiente</option>
-                <option value="validado" ${user.estatus_validacion === 'validado' ? 'selected' : ''}>Validado</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label>
-                <input type="checkbox" id="editar-usuario-editor" ${user.esEditor ? 'checked' : ''}>
-                Es Editor
-              </label>
             </div>
             
             <div class="form-group">
@@ -1715,9 +1743,7 @@ async function actualizarUsuario(userId) {
     email: document.getElementById('editar-usuario-email').value,
     rol: document.getElementById('editar-usuario-rol').value,
     departamento: document.getElementById('editar-usuario-departamento').value,
-    telefono: document.getElementById('editar-usuario-telefono').value || null,
-    estatus_validacion: document.getElementById('editar-usuario-estatus').value,
-    esEditor: document.getElementById('editar-usuario-editor').checked
+    telefono: document.getElementById('editar-usuario-telefono').value || null
   };
 
   try {

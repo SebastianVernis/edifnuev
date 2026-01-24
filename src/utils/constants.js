@@ -15,7 +15,6 @@ export const HTTP_STATUS = {
 // Roles de usuario
 export const ROLES = {
   ADMIN: 'ADMIN',
-  COMITE: 'COMITE', 
   INQUILINO: 'INQUILINO'
 };
 
@@ -34,7 +33,7 @@ export const RESPONSE_FORMAT = {
 // Estados de cuotas
 export const ESTADOS_CUOTA = {
   PENDIENTE: 'PENDIENTE',
-  PAGADO: 'PAGADO', 
+  PAGADO: 'PAGADO',
   VENCIDO: 'VENCIDO',
   NO_GENERADA: 'NO_GENERADA'
 };
@@ -64,7 +63,7 @@ export const CONFIG = {
 // Departamentos válidos
 export const DEPARTAMENTOS = [
   '101', '102', '103', '104',
-  '201', '202', '203', '204', 
+  '201', '202', '203', '204',
   '301', '302', '303', '304',
   '401', '402', '403', '404',
   '501', '502', '503', '504'
@@ -74,7 +73,7 @@ export const DEPARTAMENTOS = [
 export const CATEGORIAS_GASTO = [
   'Servicios Públicos',
   'Mantenimiento',
-  'Seguridad', 
+  'Seguridad',
   'Limpieza',
   'Administración',
   'Emergencias',
@@ -109,7 +108,7 @@ export const ERROR_MESSAGES = {
 // Mensajes de éxito
 export const SUCCESS_MESSAGES = {
   USER_CREATED: 'Usuario creado exitosamente',
-  USER_UPDATED: 'Usuario actualizado exitosamente', 
+  USER_UPDATED: 'Usuario actualizado exitosamente',
   USER_DELETED: 'Usuario eliminado exitosamente',
   LOGIN_SUCCESS: 'Inicio de sesión exitoso',
   CUOTA_CREATED: 'Cuota creada exitosamente',

@@ -132,14 +132,14 @@ export const isComiteOrAdmin = (req, res, next) => {
   const ip = req.ip || req.connection.remoteAddress;
   const userAgent = req.get('User-Agent');
 
-  if (req.usuario && (req.usuario.rol === 'ADMIN' || req.usuario.rol === 'COMITE')) {
+  if (req.usuario && req.usuario.rol === 'ADMIN') {
     logAccess('COMITE_ADMIN_ACCESS_GRANTED', req.usuario.id, req.usuario.rol, req.path, 'comite_admin', true, ip, userAgent);
     next();
   } else {
     logAccess('COMITE_ADMIN_ACCESS_DENIED', req.usuario?.id, req.usuario?.rol, req.path, 'comite_admin', false, ip, userAgent);
     return res.status(403).json({
       success: false,
-      message: 'Acceso denegado. Se requiere rol de administrador o comité.'
+      message: 'Acceso denegado. Se requiere rol de administrador.'
     });
   }
 };

@@ -32,17 +32,7 @@ class Usuario {
       // Configurar permisos según el rol
       let permisos = {};
 
-      if (userData.rol === 'COMITE') {
-        // Permisos por defecto para el comité (todos desactivados)
-        permisos = {
-          anuncios: userData.permisos?.anuncios || false,
-          gastos: userData.permisos?.gastos || false,
-          presupuestos: userData.permisos?.presupuestos || false,
-          cuotas: userData.permisos?.cuotas || false,
-          usuarios: userData.permisos?.usuarios || false,
-          cierres: userData.permisos?.cierres || false
-        };
-      } else if (userData.rol === 'ADMIN') {
+      if (userData.rol === 'ADMIN') {
         // Administrador tiene todos los permisos
         permisos = {
           anuncios: true,
@@ -103,18 +93,8 @@ class Usuario {
     // No permitir actualizar la contraseña directamente
     const { password, ...actualizaciones } = updates;
 
-    // Si se están actualizando permisos y el rol es COMITE, asegurarse de que los permisos sean válidos
-    if (actualizaciones.permisos && actualizaciones.rol === 'COMITE') {
-      actualizaciones.permisos = {
-        anuncios: actualizaciones.permisos.anuncios || false,
-        gastos: actualizaciones.permisos.gastos || false,
-        presupuestos: actualizaciones.permisos.presupuestos || false,
-        cuotas: actualizaciones.permisos.cuotas || false,
-        usuarios: actualizaciones.permisos.usuarios || false,
-        cierres: actualizaciones.permisos.cierres || false
-      };
-    } else if (actualizaciones.rol === 'ADMIN') {
-      // Si se cambia el rol a ADMIN, asignar todos los permisos
+    // Si se cambia el rol a ADMIN, asignar todos los permisos
+    if (actualizaciones.rol === 'ADMIN') {
       actualizaciones.permisos = {
         anuncios: true,
         gastos: true,
@@ -220,9 +200,7 @@ class Usuario {
     }
 
     // Miembros del comité tienen permisos específicos
-    if (usuario.rol === 'COMITE' && usuario.permisos) {
-      return usuario.permisos[permiso] === true;
-    }
+
 
     // Inquilinos no tienen permisos administrativos
     return false;

@@ -46,7 +46,7 @@ export async function sendInvitation(req, res) {
     }
 
     // Validar rol
-    const rolesValidos = ['ADMIN', 'COMITE', 'INQUILINO'];
+    const rolesValidos = ['ADMIN', 'INQUILINO'];
     if (!rolesValidos.includes(role)) {
       return res.status(400).json({
         ok: false,

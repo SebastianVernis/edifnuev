@@ -62,7 +62,7 @@ export function validateUsers(usuarios) {
     if (!usuario.password) {
       errors.push(`${prefix}: Falta contraseña`);
     }
-    if (!['ADMIN', 'COMITE', 'INQUILINO'].includes(usuario.rol)) {
+    if (!['ADMIN', 'INQUILINO'].includes(usuario.rol)) {
       errors.push(`${prefix}: Rol inválido (${usuario.rol})`);
     }
 
@@ -92,19 +92,6 @@ export function validateUsers(usuarios) {
       }
     }
 
-    // Validar permisos para usuarios COMITE
-    if (usuario.rol === 'COMITE') {
-      if (!usuario.permisos) {
-        warnings.push(`${prefix}: Usuario COMITE sin permisos definidos`);
-      } else {
-        const validPermissions = ['anuncios', 'gastos', 'presupuestos', 'cuotas', 'usuarios', 'cierres'];
-        const hasAnyPermission = validPermissions.some(perm => usuario.permisos[perm] === true);
-                
-        if (!hasAnyPermission) {
-          warnings.push(`${prefix}: Usuario COMITE sin permisos activos`);
-        }
-      }
-    }
 
     // Validar campo activo
     if (typeof usuario.activo !== 'boolean') {
@@ -231,23 +218,10 @@ export function cleanInconsistentData() {
         changes.push(`Usuario ${usuario.id}: Campo 'activo' convertido a booleano`);
       }
 
-      // Limpiar permisos para usuarios no COMITE
-      if (usuario.rol !== 'COMITE' && usuario.permisos) {
+      // Limpiar permisos para usuarios no ADMIN
+      if (usuario.rol !== 'ADMIN' && usuario.permisos) {
         delete usuario.permisos;
         changes.push(`Usuario ${usuario.id}: Permisos eliminados (rol: ${usuario.rol})`);
-      }
-
-      // Asegurar permisos para usuarios COMITE
-      if (usuario.rol === 'COMITE' && !usuario.permisos) {
-        usuario.permisos = {
-          anuncios: false,
-          gastos: false,
-          presupuestos: false,
-          cuotas: false,
-          usuarios: false,
-          cierres: false
-        };
-        changes.push(`Usuario ${usuario.id}: Permisos inicializados para COMITE`);
       }
 
       // Normalizar departamento para admin
@@ -338,21 +312,21 @@ export async function createDataBackup(reason = 'manual') {
   const data = readData();
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
   const backupFilename = `data-backup-${timestamp}-${reason}.json`;
-    
+
   try {
     const fs = await import('fs');
     const path = await import('path');
-        
+
     const backupPath = path.join(process.cwd(), 'backups', backupFilename);
-        
+
     // Crear directorio de backups si no existe
     const backupsDir = path.join(process.cwd(), 'backups');
     if (!fs.existsSync(backupsDir)) {
       fs.mkdirSync(backupsDir, { recursive: true });
     }
-        
+
     fs.writeFileSync(backupPath, JSON.stringify(data, null, 2));
-        
+
     return {
       success: true,
       backupPath,
@@ -387,13 +361,13 @@ function isValidDate(dateString) {
 export function generateDataHealthReport() {
   const validation = validateDataStructure();
   const data = readData();
-    
+
   // Estadísticas adicionales
   const stats = {
     usuarios: {
       total: data.usuarios?.length || 0,
       admins: data.usuarios?.filter(u => u.rol === 'ADMIN').length || 0,
-      comite: data.usuarios?.filter(u => u.rol === 'COMITE').length || 0,
+
       inquilinos: data.usuarios?.filter(u => u.rol === 'INQUILINO').length || 0,
       activos: data.usuarios?.filter(u => u.activo).length || 0
     },
@@ -408,7 +382,7 @@ export function generateDataHealthReport() {
       totalMonto: data.gastos?.reduce((sum, g) => sum + (g.monto || 0), 0) || 0
     }
   };
-    
+
   return {
     timestamp: new Date().toISOString(),
     validation,
@@ -422,7 +396,7 @@ export function generateDataHealthReport() {
  */
 function generateRecommendations(validation, stats) {
   const recommendations = [];
-    
+
   if (validation.errors.length > 0) {
     recommendations.push({
       type: 'critical',
@@ -430,7 +404,7 @@ function generateRecommendations(validation, stats) {
       action: 'Ejecutar cleanInconsistentData()'
     });
   }
-    
+
   if (validation.warnings.length > 0) {
     recommendations.push({
       type: 'warning',
@@ -438,18 +412,9 @@ function generateRecommendations(validation, stats) {
       action: 'Revisar y corregir manualmente si es necesario'
     });
   }
-    
-  if (stats.usuarios.comite > 0) {
-    const comiteSinPermisos = validation.warnings.filter(w => w.includes('sin permisos')).length;
-    if (comiteSinPermisos > 0) {
-      recommendations.push({
-        type: 'info',
-        message: `${comiteSinPermisos} usuarios COMITE sin permisos activos`,
-        action: 'Revisar y asignar permisos apropiados'
-      });
-    }
-  }
-    
+
+
+
   if (stats.cuotas.vencidas > 0) {
     recommendations.push({
       type: 'info',
@@ -457,7 +422,7 @@ function generateRecommendations(validation, stats) {
       action: 'Revisar estado de pagos'
     });
   }
-    
+
   return recommendations;
 }
 
