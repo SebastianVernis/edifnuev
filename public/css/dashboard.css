@@ -134,8 +134,9 @@
 
 .section-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
+  gap: 1.5rem;
   margin-bottom: 1.5rem;
 }
 
@@ -202,12 +203,58 @@
   gap: 0.5rem;
 }
 
-/* Dashboard Summary */
-.dashboard-summary {
+/* Dashboard Grid System */
+.dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(12, 1fr);
   gap: 1.5rem;
   margin-bottom: 1.5rem;
+}
+
+.grid-col-span-4 {
+  grid-column: span 4;
+}
+
+.grid-col-span-6 {
+  grid-column: span 6;
+}
+
+.grid-col-span-3 {
+  grid-column: span 3;
+}
+
+.grid-col-span-12 {
+  grid-column: span 12;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid-col-span-4,
+  .grid-col-span-6,
+  .grid-col-span-3 {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-col-span-4,
+  .grid-col-span-6,
+  .grid-col-span-3,
+  .grid-col-span-12 {
+    grid-column: span 1;
+  }
+}
+
+/* Dashboard Summary */
+.dashboard-summary {
+  display: contents;
 }
 
 .summary-card {
@@ -239,10 +286,7 @@
 
 /* Dashboard Charts */
 .dashboard-charts {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
+  display: contents;
 }
 
 .chart-container {
@@ -264,9 +308,7 @@
 
 /* Dashboard Recent */
 .dashboard-recent {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 1.5rem;
+  display: contents;
 }
 
 .recent-container {

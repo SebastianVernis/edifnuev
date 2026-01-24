@@ -5,7 +5,7 @@
 }
 
 .main-content {
-  margin-left: 220px !important;
+  margin-left: 0 !important;
   padding: 1.5rem !important;
   padding-top: 1rem !important;
 }
@@ -17,6 +17,8 @@
 
 .section-header {
   margin-bottom: 1rem !important;
+  justify-content: flex-end !important;
+  gap: 1rem !important;
 }
 
 .dashboard-summary {
@@ -29,7 +31,7 @@
 }
 
 /* Eliminar espacios grandes en secciones */
-.content-section > div:first-child {
+.content-section>div:first-child {
   margin-top: 0 !important;
 }
 
@@ -39,7 +41,7 @@
 
 .content-section .dashboard-charts,
 .content-section .recent-activity,
-.content-section > .table-container:first-child {
+.content-section>.table-container:first-child {
   margin-top: 0 !important;
 }
 
@@ -97,11 +99,11 @@
   .sidebar {
     width: 200px !important;
   }
-  
+
   .main-content {
-    margin-left: 200px !important;
+    margin-left: 0 !important;
   }
-  
+
   .sidebar-nav a {
     font-size: 0.8rem !important;
     padding: 0.6rem 0.7rem !important;

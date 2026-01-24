@@ -204,31 +204,30 @@
             <p id="current-date-dashboard">Cargando...</p>
           </div>
         </div>
-        <!-- Métricas del inquilino -->
-        <div class="dashboard-summary">
-          <div class="summary-card">
+        <div class="dashboard-grid">
+          <!-- Métricas del inquilino (Row 1: 3 cards) -->
+          <div class="summary-card grid-col-span-4">
             <h3>Mi Cuota del Mes</h3>
             <p class="amount" id="mi-cuota-mes">$0</p>
             <p class="description" id="mi-cuota-estado">Cargando...</p>
           </div>
 
-          <div class="summary-card">
+          <div class="summary-card grid-col-span-4">
             <h3>Cuotas Pendientes</h3>
             <p class="amount" id="mis-cuotas-pendientes" style="color: #F59E0B;">0</p>
             <p class="description">De mi departamento</p>
           </div>
 
-          <div class="summary-card">
+          <div class="summary-card grid-col-span-4">
             <h3>Cuotas Pagadas</h3>
             <p class="amount" id="mis-cuotas-pagadas" style="color: #10B981;">0</p>
             <p class="description">Este año</p>
           </div>
-        </div>
 
-        <!-- Métricas del edificio (transparencia) -->
-        <h3 style="margin: 2rem 0 1rem;">Transparencia del Edificio</h3>
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;">
-          <div class="summary-card"
+          <!-- Transparencia del Edificio (Row 2: 4 cards) -->
+          <h3 class="grid-col-span-12" style="margin: 1rem 0 0.5rem;">Transparencia del Edificio</h3>
+
+          <div class="summary-card grid-col-span-3"
             style="background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #14b8a6 100%); color: white;">
             <div style="display: flex; justify-content: space-between;">
               <div>
@@ -240,45 +239,39 @@
             </div>
           </div>
 
-          <div class="summary-card">
+          <div class="summary-card grid-col-span-3">
             <h3>Cuotas del Edificio</h3>
             <p class="amount" id="cuotas-edificio-mes">0</p>
             <p class="description">Total del mes actual</p>
           </div>
 
-          <div class="summary-card">
+          <div class="summary-card grid-col-span-3">
             <h3>Gastos del Mes</h3>
             <p class="amount" id="gastos-edificio-mes" style="color: #EF4444;">$0</p>
             <p class="description">Del edificio</p>
           </div>
 
-          <div class="summary-card">
+          <div class="summary-card grid-col-span-3">
             <h3>Proyectos Activos</h3>
             <p class="amount" id="proyectos-activos-count">0</p>
             <p class="description">En curso</p>
           </div>
-        </div>
 
-        <!-- Actividad reciente del edificio -->
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 0.5rem;">
-          <div class="recent-container">
+          <!-- Actividad reciente (Row 3: 2 containers) -->
+          <div class="recent-container grid-col-span-6">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
               <h3>Anuncios Recientes</h3>
               <a href="#anuncios" style="color: #4F46E5; text-decoration: none; font-size: 0.875rem;">Ver todos →</a>
             </div>
-            <div id="recent-anuncios">
-              <!-- Anuncios will be loaded here -->
-            </div>
+            <div id="recent-anuncios"></div>
           </div>
 
-          <div class="recent-container">
+          <div class="recent-container grid-col-span-6">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
               <h3>Últimos Gastos del Edificio</h3>
               <a href="#gastos" style="color: #4F46E5; text-decoration: none; font-size: 0.875rem;">Ver todos →</a>
             </div>
-            <div id="recent-gastos-edificio">
-              <!-- Gastos will be loaded here -->
-            </div>
+            <div id="recent-gastos-edificio"></div>
           </div>
         </div>
       </section>
@@ -592,50 +585,50 @@
             </table>
           </div>
         </div>
-  <!-- Modal for reporting parcialidad payment -->
-  <div id="reportar-parcialidad-modal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>Reportar Pago de Parcialidad</h2>
+        <!-- Modal for reporting parcialidad payment -->
+        <div id="reportar-parcialidad-modal" class="modal">
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Reportar Pago de Parcialidad</h2>
 
-      <form id="reportar-parcialidad-form">
-        <div class="form-group">
-          <label for="parcialidad-monto">Monto:</label>
-          <input type="number" id="parcialidad-monto" min="0" step="0.01" required>
-        </div>
+            <form id="reportar-parcialidad-form">
+              <div class="form-group">
+                <label for="parcialidad-monto">Monto:</label>
+                <input type="number" id="parcialidad-monto" min="0" step="0.01" required>
+              </div>
 
-        <div class="form-group">
-          <label for="parcialidad-fecha">Fecha:</label>
-          <input type="date" id="parcialidad-fecha" required>
-        </div>
+              <div class="form-group">
+                <label for="parcialidad-fecha">Fecha:</label>
+                <input type="date" id="parcialidad-fecha" required>
+              </div>
 
-        <div class="form-group">
-          <label for="parcialidad-comprobante">Comprobante:</label>
-          <input type="text" id="parcialidad-comprobante" placeholder="Referencia de pago" required>
-        </div>
+              <div class="form-group">
+                <label for="parcialidad-comprobante">Comprobante:</label>
+                <input type="text" id="parcialidad-comprobante" placeholder="Referencia de pago" required>
+              </div>
 
-        <div class="form-group">
-          <label for="parcialidad-notas">Notas:</label>
-          <textarea id="parcialidad-notas" rows="3"></textarea>
-        </div>
+              <div class="form-group">
+                <label for="parcialidad-notas">Notas:</label>
+                <textarea id="parcialidad-notas" rows="3"></textarea>
+              </div>
 
-        <div class="form-group">
-          <p class="info-text">
-            <i class="fas fa-info-circle"></i>
-            Su pago será validado por el administrador. Una vez validado,
-            se actualizará su progreso de pago.
-          </p>
-        </div>
+              <div class="form-group">
+                <p class="info-text">
+                  <i class="fas fa-info-circle"></i>
+                  Su pago será validado por el administrador. Una vez validado,
+                  se actualizará su progreso de pago.
+                </p>
+              </div>
 
-        <div class="form-group">
-          <button type="submit" class="btn btn-primary">Reportar Pago</button>
-          <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary">Reportar Pago</button>
+                <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
+              </div>
+            </form>
+          </div>
         </div>
-      </form>
-    </div>
-  </div>
-  </section>
-  </main>
+      </section>
+    </main>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
