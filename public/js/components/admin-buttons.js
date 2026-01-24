@@ -3391,6 +3391,8 @@ if (proyectoFormMain) {
     const monto = parseFloat(document.getElementById('proyecto-monto-main').value);
     const prioridad = document.getElementById('proyecto-prioridad-main').value;
     const descripcion = document.getElementById('proyecto-descripcion-main').value;
+    const mesesDiferimiento = document.getElementById('proyecto-meses-diferimiento-main')?.value || 1;
+    const inicioCobro = document.getElementById('proyecto-inicio-cobro-main')?.value || 'actual';
 
     try {
       const token = localStorage.getItem('edificio_token');
@@ -3400,7 +3402,14 @@ if (proyectoFormMain) {
           'Content-Type': 'application/json',
           'x-auth-token': token
         },
-        body: JSON.stringify({ nombre, monto, prioridad, descripcion })
+        body: JSON.stringify({
+          nombre,
+          monto,
+          prioridad,
+          descripcion,
+          mesesDiferimiento: parseInt(mesesDiferimiento),
+          inicioCobro
+        })
       });
 
       if (response.ok) {
@@ -3489,30 +3498,34 @@ async function generarCuotasProyecto(proyectoId, nombreProyecto, montoTotal) {
     const anio = prompt(`¿Qué año?`, anioActual);
     if (!anio) return;
 
-    console.log(`⚡ Agregando monto extraordinario a cuotas de ${mes} ${anio}...`);
+    const mesesDif = prompt(`¿En cuántos meses desea diferir el pago?`, '1');
+    if (!mesesDif) return;
 
-    const response = await fetch('/api/cuotas/agregar-extraordinaria', {
+    const inicio = confirm(`¿Desea iniciar el cobro en la cuota del PRÓXIMO MES?\n\nOK = Próximo mes\nCancelar = Mes actual (${mes})`) ? 'siguiente' : 'actual';
+
+    console.log(`⚡ Generando ${mesesDif} cuotas para proyecto desde ${mes} ${anio} (${inicio})...`);
+
+    const response = await fetch(`/api/proyectos/${proyectoId}/generar-cuotas`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'x-auth-token': token
       },
       body: JSON.stringify({
-        mes: mes,
-        anio: parseInt(anio),
-        montoTotal: montoTotal,
-        concepto: `Proyecto: ${nombreProyecto}`
+        mesesDiferimiento: parseInt(mesesDif),
+        inicioCobro: inicio
       })
     });
 
     if (response.ok) {
       const data = await response.json();
       alert(
-        `✅ ${data.message}\n\n` +
-        `Cuotas actualizadas: ${data.cuotasActualizadas}\n` +
-        `Monto por unidad: $${parseFloat(data.montoPorUnidad).toLocaleString('es-MX')}\n` +
-        `Total proyecto: $${montoTotal.toLocaleString('es-MX')}\n\n` +
-        `Las cuotas ahora incluyen el monto extraordinario del proyecto.`
+        `✅ ${data.msg || data.message}\n\n` +
+        `Resumen:\n` +
+        `- Cuotas creadas: ${data.stats?.cuotasCreadas || 0}\n` +
+        `- Cuotas actualizadas: ${data.stats?.cuotasActualizadas || 0}\n` +
+        `- Monto por mes/depto: $${parseFloat(data.stats?.montoPorMes || 0).toLocaleString('es-MX')}\n` +
+        `- Meses de diferimiento: ${data.stats?.mesesDiferimiento || 1}`
       );
 
       // Recargar cuotas para ver actualizadas

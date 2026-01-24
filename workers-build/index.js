@@ -1935,9 +1935,10 @@ export default {
             });
           }
 
-          // Generar nombre único para el archivo
+          // Generar nombre único y sanitizar para el archivo
           const timestamp = Date.now();
-          const fileName = `${timestamp}_${file.name}`;
+          const sanitizedOriginalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+          const fileName = `${timestamp}_${sanitizedOriginalName}`;
           const key = `anuncios/${fileName}`;
 
           // Subir a R2
@@ -3544,7 +3545,15 @@ export default {
       // Servir archivos subidos desde R2
       if (method === 'GET' && path.startsWith('/uploads/')) {
         try {
-          const key = path.substring(9); // Remover '/uploads/' del inicio
+          let key = path.substring(9); // Remover '/uploads/' del inicio
+
+          // Importante: Decodificar URI para manejar espacios y caracteres especiales
+          try {
+            key = decodeURIComponent(key);
+          } catch (e) {
+            console.error('Error decodificando key:', e);
+          }
+
           console.log('📥 Sirviendo archivo desde R2:', key);
 
           if (env.UPLOADS) {

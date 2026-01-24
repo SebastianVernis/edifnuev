@@ -1128,7 +1128,29 @@
                 <textarea id="proyecto-descripcion-main" rows="4" placeholder="Describe el proyecto..."></textarea>
               </div>
 
-              <div class="form-group">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                  <label for="proyecto-meses-diferimiento-main">Dividir en (cuotas):</label>
+                  <select id="proyecto-meses-diferimiento-main">
+                    <option value="1">1 pago (Completo)</option>
+                    <option value="2">2 pagos</option>
+                    <option value="3">3 pagos</option>
+                    <option value="4">4 pagos</option>
+                    <option value="6">6 pagos</option>
+                    <option value="12">12 pagos</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="proyecto-inicio-cobro-main">Iniciar cobro en:</label>
+                  <select id="proyecto-inicio-cobro-main">
+                    <option value="actual">Cuota de este mes</option>
+                    <option value="siguiente">Cuota del próximo mes</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-top: 1rem;">
                 <button type="submit" class="btn btn-primary">Guardar Proyecto</button>
                 <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
               </div>
