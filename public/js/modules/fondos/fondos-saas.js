@@ -41,7 +41,7 @@ class FondosSaaSManager {
       if (response.ok) {
         const data = await response.json();
         console.log('   Datos recibidos:', data);
-        
+
         if (data.ok && data.buildingInfo) {
           this.fondos = data.buildingInfo.funds || [];
           console.log('✅ [Fondos] Cargados:', this.fondos.length, 'fondos');
@@ -64,7 +64,7 @@ class FondosSaaSManager {
   renderFondos() {
     console.log('🎨 [Fondos] Renderizando...');
     const container = document.querySelector('.fondos-summary');
-    
+
     if (!container) {
       console.error('❌ [Fondos] Container .fondos-summary no encontrado');
       return;
@@ -94,6 +94,16 @@ class FondosSaaSManager {
       return sum + (parseFloat(fondo.amount) || 0);
     }, 0);
 
+    // Agregar card de patrimonio total PRIMERO
+    const totalCard = document.createElement('div');
+    totalCard.className = 'fondo-card total';
+    totalCard.innerHTML = `
+      <h3>Patrimonio Total</h3>
+      <p class="amount">$${patrimonioTotal.toLocaleString('es-MX')}</p>
+      <p class="description">Actualizado: ${new Date().toLocaleDateString('es-MX')}</p>
+    `;
+    container.appendChild(totalCard);
+
     // Renderizar cada fondo
     this.fondos.forEach(fondo => {
       const card = document.createElement('div');
@@ -105,16 +115,6 @@ class FondosSaaSManager {
       `;
       container.appendChild(card);
     });
-
-    // Agregar card de patrimonio total
-    const totalCard = document.createElement('div');
-    totalCard.className = 'fondo-card total';
-    totalCard.innerHTML = `
-      <h3>Patrimonio Total</h3>
-      <p class="amount">$${patrimonioTotal.toLocaleString('es-MX')}</p>
-      <p class="description">Actualizado: ${new Date().toLocaleDateString('es-MX')}</p>
-    `;
-    container.appendChild(totalCard);
 
     console.log('✓ Fondos renderizados:', this.fondos.length, '- Total:', patrimonioTotal);
   }
@@ -141,9 +141,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const fondosSection = document.getElementById('fondos-section');
   if (fondosSection) {
-    observer.observe(fondosSection, { 
-      attributes: true, 
-      attributeFilter: ['style'] 
+    observer.observe(fondosSection, {
+      attributes: true,
+      attributeFilter: ['style']
     });
 
     // También inicializar si ya está visible

@@ -1,25 +1,25 @@
 // Inquilino Buttons Handler - Funcionalidad para panel de inquilino
 document.addEventListener('DOMContentLoaded', () => {
   console.log('🔧 Inquilino Buttons Handler cargado');
-  
+
   // ========== CUOTAS ==========
   const cuotasAnio = document.getElementById('cuotas-año');
   const cuotasEstado = document.getElementById('cuotas-estado');
-  
+
   if (cuotasAnio) {
     cuotasAnio.addEventListener('change', () => {
       console.log('🔍 Filtrando cuotas por año:', cuotasAnio.value);
       cargarCuotasInquilino();
     });
   }
-  
+
   if (cuotasEstado) {
     cuotasEstado.addEventListener('change', () => {
       console.log('🔍 Filtrando cuotas por estado:', cuotasEstado.value);
       cargarCuotasInquilino();
     });
   }
-  
+
   // ========== ANUNCIOS ==========
   const anunciosTipo = document.getElementById('anuncios-tipo');
   if (anunciosTipo) {
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cargarAnunciosInquilino();
     });
   }
-  
+
   // ========== PARCIALIDADES ==========
   const reportarParcialidadBtn = document.getElementById('reportar-parcialidad-btn');
   if (reportarParcialidadBtn) {
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
       resetParcialidadForm();
     });
   }
-  
+
   // Form reportar parcialidad
   const reportarParcialidadForm = document.getElementById('reportar-parcialidad-form');
   if (reportarParcialidadForm) {
@@ -48,10 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
       await reportarPagoParcialidad();
     });
   }
-  
+
   // Setup modal closers
   setupModalClosers();
-  
+
   // Cargar datos iniciales
   cargarDashboardInquilino();
 });
@@ -85,52 +85,52 @@ function resetParcialidadForm() {
 
 async function cargarDashboardInquilino() {
   console.log('📊 Cargando dashboard inquilino...');
-  
+
   const user = Auth.getCurrentUser();
   if (!user) return;
-  
+
   try {
     const token = localStorage.getItem('edificio_token');
-    
+
     // Cargar datos en paralelo (sin parcialidades por ahora)
     const [cuotasRes, anunciosRes, fondosRes] = await Promise.all([
       fetch(`/api/cuotas?departamento=${user.departamento}`, { headers: { 'x-auth-token': token } }),
       fetch('/api/anuncios?limit=5', { headers: { 'x-auth-token': token } }),
       fetch('/api/fondos', { headers: { 'x-auth-token': token } })
     ]);
-    
+
     // Procesar cuotas
     if (cuotasRes.ok) {
       const cuotasData = await cuotasRes.json();
       actualizarDashboardCuotas(cuotasData.cuotas);
     }
-    
+
     // Parcialidades deshabilitadas por ahora
     // TODO: Implementar endpoint de parcialidades
-    
+
     // Procesar anuncios
     if (anunciosRes.ok) {
       const anunciosData = await anunciosRes.json();
       renderAnunciosDashboard(anunciosData.anuncios || []);
     }
-    
+
     // Procesar fondos y cargar más datos
     if (fondosRes.ok) {
       const fondosData = await fondosRes.json();
       const fondos = fondosData.fondos || [];
       const patrimonioTotal = fondos.reduce((sum, f) => sum + parseFloat(f.saldo || 0), 0);
-      
+
       const patrimonioEl = document.getElementById('patrimonio-edificio');
       if (patrimonioEl) {
         patrimonioEl.textContent = `$${patrimonioTotal.toLocaleString('es-MX')}`;
       }
-      
+
       // Cargar gastos y proyectos para métricas
       const gastosRes2 = await fetch('/api/gastos', { headers: { 'x-auth-token': token } });
       if (gastosRes2.ok) {
         const gastosData = await gastosRes2.json();
         const gastos = gastosData.gastos || [];
-        
+
         // Gastos del mes actual
         const hoy = new Date();
         const gastosMes = gastos.filter(g => {
@@ -138,12 +138,12 @@ async function cargarDashboardInquilino() {
           return fechaG.getMonth() === hoy.getMonth() && fechaG.getFullYear() === hoy.getFullYear();
         });
         const totalGastosMes = gastosMes.reduce((sum, g) => sum + parseFloat(g.monto || 0), 0);
-        
+
         const gastosEl = document.getElementById('gastos-edificio-mes');
         if (gastosEl) {
           gastosEl.textContent = `$${totalGastosMes.toLocaleString('es-MX')}`;
         }
-        
+
         // Renderizar últimos gastos
         const recentGastos = document.getElementById('recent-gastos-edificio');
         if (recentGastos) {
@@ -160,20 +160,20 @@ async function cargarDashboardInquilino() {
           }
         }
       }
-      
+
       // Cargar proyectos
       const proyectosRes = await fetch('/api/proyectos', { headers: { 'x-auth-token': token } });
       if (proyectosRes.ok) {
         const proyectosData = await proyectosRes.json();
         const proyectos = proyectosData.proyectos || [];
-        
+
         const proyectosCountEl = document.getElementById('proyectos-activos-count');
         if (proyectosCountEl) {
           proyectosCountEl.textContent = proyectos.length;
         }
       }
     }
-    
+
   } catch (error) {
     console.error('Error cargando dashboard:', error);
   }
@@ -184,38 +184,38 @@ function actualizarDashboardCuotas(cuotas) {
     console.log('⚠️ No hay cuotas para mostrar');
     return;
   }
-  
+
   console.log('📊 Actualizando dashboard con', cuotas.length, 'cuotas');
-  
+
   // Buscar cuota del mes actual
   const fecha = new Date();
   const mesActual = fecha.toLocaleString('es-MX', { month: 'long' });
   const mesActualCapitalizado = mesActual.charAt(0).toUpperCase() + mesActual.slice(1);
   const anioActual = fecha.getFullYear();
-  
-  const cuotaActual = cuotas.find(c => 
-    c.mes.toLowerCase() === mesActualCapitalizado.toLowerCase() && 
+
+  const cuotaActual = cuotas.find(c =>
+    c.mes.toLowerCase() === mesActualCapitalizado.toLowerCase() &&
     c.anio === anioActual
   );
-  
+
   // Calcular métricas
   const cuotasPendientes = cuotas.filter(c => !c.pagado).length;
   const cuotasPagadas = cuotas.filter(c => c.pagado).length;
-  
+
   // Actualizar Mi Cuota del Mes
   const miCuotaMesEl = document.getElementById('mi-cuota-mes');
   const miCuotaEstadoEl = document.getElementById('mi-cuota-estado');
-  
+
   if (cuotaActual) {
-    const montoTotal = parseFloat(cuotaActual.monto || 0) + 
-                       parseFloat(cuotaActual.monto_extraordinario || 0) + 
-                       parseFloat(cuotaActual.monto_mora || 0);
+    const montoTotal = parseFloat(cuotaActual.monto || 0) +
+      parseFloat(cuotaActual.monto_extraordinario || 0) +
+      parseFloat(cuotaActual.monto_mora || 0);
     const estado = cuotaActual.pagado ? 'PAGADO' : (cuotaActual.vencida ? 'VENCIDO' : 'PENDIENTE');
-    
+
     if (miCuotaMesEl) {
       miCuotaMesEl.textContent = `$${montoTotal.toLocaleString('es-MX')}`;
     }
-    
+
     if (miCuotaEstadoEl) {
       miCuotaEstadoEl.textContent = `${mesActualCapitalizado} ${anioActual} - ${estado}`;
       miCuotaEstadoEl.style.color = cuotaActual.pagado ? '#10B981' : (cuotaActual.vencida ? '#EF4444' : '#F59E0B');
@@ -224,31 +224,31 @@ function actualizarDashboardCuotas(cuotas) {
     if (miCuotaMesEl) miCuotaMesEl.textContent = '$0';
     if (miCuotaEstadoEl) miCuotaEstadoEl.textContent = `No hay cuota de ${mesActualCapitalizado}`;
   }
-  
+
   // Actualizar Cuotas Pendientes
   const misCuotasPendientesEl = document.getElementById('mis-cuotas-pendientes');
   if (misCuotasPendientesEl) {
     misCuotasPendientesEl.textContent = cuotasPendientes;
   }
-  
+
   // Actualizar Cuotas Pagadas
   const misCuotasPagadasEl = document.getElementById('mis-cuotas-pagadas');
   if (misCuotasPagadasEl) {
     misCuotasPagadasEl.textContent = cuotasPagadas;
   }
-  
+
   // Actualizar Total de Cuotas del Edificio (todas las unidades del mes)
   const cuotasEdificioEl = document.getElementById('cuotas-edificio-mes');
   if (cuotasEdificioEl) {
-    
+
     // Próximo vencimiento
     const vencimientoElem = document.getElementById('proximo-vencimiento');
     const diasElem = document.getElementById('dias-vencimiento');
-    
+
     if (vencimientoElem && cuotaActual.fechaVencimiento) {
       const vencimiento = new Date(cuotaActual.fechaVencimiento);
       vencimientoElem.textContent = vencimiento.toLocaleDateString('es-MX');
-      
+
       if (diasElem) {
         const hoy = new Date();
         const diff = Math.ceil((vencimiento - hoy) / (1000 * 60 * 60 * 24));
@@ -260,40 +260,40 @@ function actualizarDashboardCuotas(cuotas) {
 
 function actualizarDashboardParcialidades(data) {
   const pagos = data.pagos || [];
-  
+
   // Solo contar pagos VALIDADOS
   const pagosValidados = pagos.filter(p => p.estado === 'validado');
   const montoValidado = pagosValidados.reduce((sum, p) => sum + p.monto, 0);
   const objetivo = 14250;
   const porcentaje = Math.min((montoValidado / objetivo) * 100, 100);
   const pendiente = Math.max(objetivo - montoValidado, 0);
-  
+
   console.log('💰 Pagos validados:', pagosValidados.length, 'Total:', montoValidado);
-  
+
   // Actualizar dashboard
   const progresoElem = document.getElementById('parcialidades-progreso');
   if (progresoElem) {
     progresoElem.textContent = `${porcentaje.toFixed(1)}%`;
   }
-  
+
   // Actualizar detalles en sección de parcialidades
   const progressBar = document.getElementById('mi-parcialidad-progress');
   if (progressBar) {
     progressBar.style.width = `${porcentaje}%`;
   }
-  
+
   const pagadoElem = document.getElementById('mi-parcialidad-pagado');
   const pendienteElem = document.getElementById('mi-parcialidad-pendiente');
   const porcentajeElem = document.getElementById('mi-parcialidad-porcentaje');
-  
+
   if (pagadoElem) {
     pagadoElem.textContent = `$${montoValidado.toLocaleString()}`;
   }
-  
+
   if (pendienteElem) {
     pendienteElem.textContent = `$${pendiente.toLocaleString()}`;
   }
-  
+
   if (porcentajeElem) {
     porcentajeElem.textContent = `${porcentaje.toFixed(1)}%`;
   }
@@ -301,32 +301,32 @@ function actualizarDashboardParcialidades(data) {
 
 async function cargarCuotasInquilino() {
   console.log('📋 Cargando cuotas inquilino...');
-  
+
   const user = Auth.getCurrentUser();
   if (!user) return;
-  
+
   const anio = document.getElementById('cuotas-año')?.value;
   const estado = document.getElementById('cuotas-estado')?.value;
-  
+
   console.log('🔍 Filtros:', { anio, estado, departamento: user.departamento });
-  
+
   try {
     const token = localStorage.getItem('edificio_token');
     const params = new URLSearchParams();
-    
+
     // SIEMPRE filtrar por departamento del usuario
     params.append('departamento', user.departamento);
-    
+
     if (anio) params.append('anio', anio);
     if (estado && estado !== 'TODOS') params.append('estado', estado);
-    
+
     const url = `/api/cuotas?${params.toString()}`;
     console.log('📡 URL:', url);
-    
+
     const response = await fetch(url, {
       headers: { 'x-auth-token': token }
     });
-    
+
     if (response.ok) {
       const data = await response.json();
       console.log('📊 Cuotas recibidas:', data.cuotas?.length);
@@ -340,35 +340,35 @@ async function cargarCuotasInquilino() {
 function renderCuotasTable(cuotas) {
   const tbody = document.querySelector('#mis-cuotas-table tbody');
   if (!tbody) return;
-  
+
   tbody.innerHTML = '';
-  
+
   if (!cuotas || cuotas.length === 0) {
     tbody.innerHTML = '<tr><td colspan="5" class="text-center">No hay cuotas registradas</td></tr>';
     return;
   }
-  
+
   cuotas.forEach(cuota => {
     const tr = document.createElement('tr');
-    
+
     // Evitar timezone usando split
-    const vencimiento = cuota.fecha_vencimiento ? 
+    const vencimiento = cuota.fecha_vencimiento ?
       cuota.fecha_vencimiento.split('T')[0].split('-').reverse().join('/') : '-';
-    const fechaPago = cuota.fecha_pago ? 
+    const fechaPago = cuota.fecha_pago ?
       cuota.fecha_pago.split('T')[0].split('-').reverse().join('/') : '-';
-    
+
     // Determinar estado basado en campos reales
     const estado = cuota.pagado ? 'PAGADO' : (cuota.vencida ? 'VENCIDO' : 'PENDIENTE');
     let estadoClass = '';
     if (cuota.pagado) estadoClass = 'text-success';
     else if (cuota.vencida) estadoClass = 'text-danger';
     else estadoClass = 'text-warning';
-    
+
     // Calcular monto total
-    const montoTotal = parseFloat(cuota.monto || 0) + 
-                       parseFloat(cuota.monto_extraordinario || 0) + 
-                       parseFloat(cuota.monto_mora || 0);
-    
+    const montoTotal = parseFloat(cuota.monto || 0) +
+      parseFloat(cuota.monto_extraordinario || 0) +
+      parseFloat(cuota.monto_mora || 0);
+
     tr.innerHTML = `
       <td>${cuota.mes} ${cuota.anio}</td>
       <td>$${montoTotal.toLocaleString('es-MX')}</td>
@@ -376,26 +376,26 @@ function renderCuotasTable(cuotas) {
       <td>${vencimiento}</td>
       <td>${fechaPago}</td>
     `;
-    
+
     tbody.appendChild(tr);
   });
 }
 
 async function cargarAnunciosInquilino() {
   console.log('📢 Cargando anuncios...');
-  
+
   const tipo = document.getElementById('anuncios-tipo')?.value;
-  
+
   try {
     const token = localStorage.getItem('edificio_token');
     let url = '/api/anuncios';
-    
+
     if (tipo && tipo !== 'TODOS') url += `?tipo=${tipo}`;
-    
+
     const response = await fetch(url, {
       headers: { 'x-auth-token': token }
     });
-    
+
     if (response.ok) {
       const data = await response.json();
       renderAnuncios(data.anuncios);
@@ -408,22 +408,22 @@ async function cargarAnunciosInquilino() {
 function renderAnuncios(anuncios) {
   const container = document.getElementById('anuncios-list');
   if (!container) return;
-  
+
   container.innerHTML = '';
-  
+
   if (!anuncios || anuncios.length === 0) {
     container.innerHTML = '<p class="text-center">No hay anuncios disponibles</p>';
     return;
   }
-  
+
   anuncios.forEach(anuncio => {
     const div = document.createElement('div');
     div.className = 'anuncio-card';
-    
+
     let tipoClass = 'bg-secondary';
     if (anuncio.tipo === 'URGENTE') tipoClass = 'bg-danger';
     else if (anuncio.tipo === 'IMPORTANTE') tipoClass = 'bg-warning';
-    
+
     div.innerHTML = `
       <div class="anuncio-header">
         <h4>${anuncio.titulo}</h4>
@@ -436,37 +436,37 @@ function renderAnuncios(anuncios) {
         <small>${new Date(anuncio.fechaPublicacion).toLocaleDateString('es-MX')}</small>
       </div>
     `;
-    
+
     container.appendChild(div);
   });
 }
 
 async function reportarPagoParcialidad() {
   console.log('📤 Reportando pago de parcialidad...');
-  
+
   const monto = document.getElementById('parcialidad-monto').value;
   const fecha = document.getElementById('parcialidad-fecha').value;
   const comprobante = document.getElementById('parcialidad-comprobante').value;
   const notas = document.getElementById('parcialidad-notas').value;
-  
+
   console.log('📋 Datos:', { monto, fecha, comprobante, notas });
-  
+
   if (!monto || !fecha || !comprobante) {
     alert('Por favor complete todos los campos obligatorios');
     return;
   }
-  
+
   const user = Auth.getCurrentUser();
   if (!user) {
     console.error('❌ Usuario no encontrado');
     return;
   }
-  
+
   console.log('👤 Usuario:', user.departamento);
-  
+
   try {
     const token = localStorage.getItem('edificio_token');
-    
+
     const bodyData = {
       departamento: user.departamento,
       monto: parseFloat(monto),
@@ -474,9 +474,9 @@ async function reportarPagoParcialidad() {
       comprobante,
       notas
     };
-    
+
     console.log('📤 Enviando a API:', bodyData);
-    
+
     const response = await fetch('/api/parcialidades', {
       method: 'POST',
       headers: {
@@ -485,9 +485,9 @@ async function reportarPagoParcialidad() {
       },
       body: JSON.stringify(bodyData)
     });
-    
+
     console.log('📡 Response status:', response.status);
-    
+
     if (response.ok) {
       const result = await response.json();
       console.log('✅ Respuesta:', result);
@@ -508,54 +508,54 @@ async function reportarPagoParcialidad() {
 function renderMisParcialidades(pagos) {
   const tbody = document.querySelector('#mis-parcialidades-table tbody');
   if (!tbody) return;
-  
+
   tbody.innerHTML = '';
-  
+
   if (!pagos || pagos.length === 0) {
     tbody.innerHTML = '<tr><td colspan="4" class="text-center">No hay pagos registrados</td></tr>';
     return;
   }
-  
+
   pagos.forEach(pago => {
     const tr = document.createElement('tr');
-    
+
     const fecha = new Date(pago.fecha).toLocaleDateString('es-MX');
     const estadoClass = pago.estado === 'validado' ? 'text-success' : 'text-warning';
     const estadoTexto = pago.estado === 'validado' ? 'Validado' : 'Pendiente de validación';
-    
+
     tr.innerHTML = `
       <td>${fecha}</td>
       <td>$${pago.monto.toLocaleString()}</td>
       <td>${pago.comprobante || '-'}</td>
       <td class="${estadoClass}">${estadoTexto}</td>
     `;
-    
+
     tbody.appendChild(tr);
   });
-  
+
   console.log(`✅ ${pagos.length} pagos de parcialidades renderizados`);
 }
 
 function renderAnunciosDashboard(anuncios) {
   const container = document.getElementById('dashboard-anuncios-list');
   if (!container) return;
-  
+
   container.innerHTML = '';
-  
+
   if (!anuncios || anuncios.length === 0) {
     container.innerHTML = '<p class="text-center">No hay anuncios importantes</p>';
     return;
   }
-  
+
   // Solo mostrar anuncios importantes o urgentes
   const importantes = anuncios.filter(a => a.tipo === 'IMPORTANTE' || a.tipo === 'URGENTE');
-  
+
   importantes.slice(0, 3).forEach(anuncio => {
     const div = document.createElement('div');
     div.className = 'anuncio-card-mini';
-    
+
     const tipoClass = anuncio.tipo === 'URGENTE' ? 'bg-danger' : 'bg-warning';
-    
+
     div.innerHTML = `
       <div class="anuncio-mini-header">
         <strong>${anuncio.titulo}</strong>
@@ -563,10 +563,10 @@ function renderAnunciosDashboard(anuncios) {
       </div>
       <p class="anuncio-mini-content">${anuncio.contenido.substring(0, 100)}${anuncio.contenido.length > 100 ? '...' : ''}</p>
     `;
-    
+
     container.appendChild(div);
   });
-  
+
   console.log(`✅ ${importantes.length} anuncios importantes en dashboard`);
 }
 
@@ -576,7 +576,7 @@ function renderFondosChartInquilino(fondos) {
   // Buscar canvas en el dashboard (puede no existir, lo creamos)
   const dashboardSection = document.getElementById('dashboard-section');
   if (!dashboardSection) return;
-  
+
   // Buscar o crear contenedor de gráfico
   let chartContainer = dashboardSection.querySelector('.dashboard-charts');
   if (!chartContainer) {
@@ -592,17 +592,17 @@ function renderFondosChartInquilino(fondos) {
     `;
     dashboardSection.querySelector('.dashboard-anuncios').insertAdjacentElement('beforebegin', chartContainer);
   }
-  
+
   const canvas = dashboardSection.querySelector('#fondos-chart-inquilino canvas');
   if (!canvas) return;
-  
+
   // Destruir chart anterior
   if (fondosChartInquilinoInstance) {
     fondosChartInquilinoInstance.destroy();
   }
-  
+
   const ctx = canvas.getContext('2d');
-  
+
   fondosChartInquilinoInstance = new Chart(ctx, {
     type: 'doughnut',
     data: {
@@ -626,14 +626,14 @@ function renderFondosChartInquilino(fondos) {
       }
     }
   });
-  
+
   console.log('✅ Gráfico de fondos (inquilino) renderizado');
 }
 
 function setupModalClosers() {
   // Botones cerrar (X)
   document.querySelectorAll('.modal .close').forEach(closeBtn => {
-    closeBtn.addEventListener('click', function() {
+    closeBtn.addEventListener('click', function () {
       console.log('❌ Click en cerrar modal');
       const modal = this.closest('.modal');
       if (modal) {
@@ -642,10 +642,10 @@ function setupModalClosers() {
       }
     });
   });
-  
+
   // Botones cancelar
   document.querySelectorAll('.modal-cancel').forEach(cancelBtn => {
-    cancelBtn.addEventListener('click', function(e) {
+    cancelBtn.addEventListener('click', function (e) {
       console.log('❌ Click en cancelar');
       e.preventDefault();
       const modal = this.closest('.modal');
@@ -655,7 +655,7 @@ function setupModalClosers() {
       }
     });
   });
-  
+
   // Click fuera del modal (usar once para cada modal que se abre)
   // Removido para evitar conflictos - se maneja individualmente
 }
@@ -666,26 +666,38 @@ async function cargarFondosInquilino() {
   try {
     const token = localStorage.getItem('edificio_token');
     console.log('   Token presente:', !!token);
-    
+
     const response = await fetch('/api/fondos', {
       headers: { 'x-auth-token': token }
     });
-    
+
     console.log('   Response status:', response.status);
-    
+
     if (response.ok) {
       const data = await response.json();
       const fondos = data.fondos || [];
       const movimientos = data.movimientos || [];
-      
+
       // Renderizar fondos
       const container = document.getElementById('fondos-summary-inquilino');
       if (container && fondos.length > 0) {
         let patrimonioTotal = 0;
-        
-        container.innerHTML = fondos.map(f => {
+
+        // Pre-calcular total
+        fondos.forEach(f => {
+          patrimonioTotal += parseFloat(f.saldo || 0);
+        });
+
+        const totalCard = `
+          <div class="fondo-card total">
+            <h3>Patrimonio Total</h3>
+            <p class="amount">$${patrimonioTotal.toLocaleString('es-MX')}</p>
+            <p class="description">Actualizado: ${new Date().toLocaleDateString('es-MX')}</p>
+          </div>
+        `;
+
+        const fondosCards = fondos.map(f => {
           const saldo = parseFloat(f.saldo || 0);
-          patrimonioTotal += saldo;
           return `
             <div class="fondo-card">
               <h3>${f.nombre}</h3>
@@ -693,15 +705,11 @@ async function cargarFondosInquilino() {
               <p class="description">Fondo del edificio</p>
             </div>
           `;
-        }).join('') + `
-          <div class="fondo-card total">
-            <h3>Patrimonio Total</h3>
-            <p class="amount">$${patrimonioTotal.toLocaleString('es-MX')}</p>
-            <p class="description">Actualizado: ${new Date().toLocaleDateString('es-MX')}</p>
-          </div>
-        `;
+        }).join('');
+
+        container.innerHTML = totalCard + fondosCards;
       }
-      
+
       // Renderizar movimientos
       const tbody = document.getElementById('movimientos-fondos-tbody');
       if (tbody) {
@@ -736,17 +744,17 @@ async function cargarGastosInquilino() {
   try {
     const token = localStorage.getItem('edificio_token');
     console.log('   Token presente:', !!token);
-    
+
     const response = await fetch('/api/gastos', {
       headers: { 'x-auth-token': token }
     });
-    
+
     console.log('   Response status:', response.status);
-    
+
     if (response.ok) {
       const data = await response.json();
       const gastos = data.gastos || [];
-      
+
       const tbody = document.getElementById('gastos-edificio-tbody');
       if (tbody) {
         if (gastos.length === 0) {
@@ -779,11 +787,11 @@ async function cargarProyectosInquilino() {
     const response = await fetch('/api/proyectos', {
       headers: { 'x-auth-token': token }
     });
-    
+
     if (response.ok) {
       const data = await response.json();
       const proyectos = data.proyectos || [];
-      
+
       const container = document.getElementById('proyectos-list-inquilino');
       if (container) {
         if (proyectos.length === 0) {
@@ -826,22 +834,22 @@ async function cargarDocumentosInquilino() {
     const response = await fetch('/api/onboarding/building-info', {
       headers: { 'Authorization': `Bearer ${token}` }
     });
-    
+
     if (response.ok) {
       const data = await response.json();
       if (data.ok && data.buildingInfo) {
         const info = data.buildingInfo;
-        
+
         const reglamentoEl = document.getElementById('reglamento-content');
         if (reglamentoEl) {
           reglamentoEl.textContent = info.reglamento || 'No hay reglamento disponible';
         }
-        
+
         const privacyEl = document.getElementById('privacy-content');
         if (privacyEl) {
           privacyEl.textContent = info.privacyPolicy || 'No hay política de privacidad disponible';
         }
-        
+
         const paymentEl = document.getElementById('payment-content');
         if (paymentEl) {
           paymentEl.textContent = info.paymentPolicies || 'No hay políticas de pago disponibles';
@@ -856,15 +864,15 @@ async function cargarDocumentosInquilino() {
 // Cargar perfil del inquilino
 async function cargarPerfilInquilino() {
   console.log('👤 Cargando perfil inquilino...');
-  
+
   const user = Auth.getCurrentUser();
   if (!user) return;
-  
+
   document.getElementById('inquilino-nombre').value = user.nombre || '';
   document.getElementById('inquilino-email').value = user.email || '';
   document.getElementById('inquilino-telefono').value = user.telefono || '';
   document.getElementById('inquilino-departamento').value = user.departamento || '';
-  
+
   console.log('✅ Perfil cargado');
 }
 
@@ -873,13 +881,13 @@ const perfilInquilinoForm = document.getElementById('perfil-inquilino-form');
 if (perfilInquilinoForm) {
   perfilInquilinoForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     const nombre = document.getElementById('inquilino-nombre').value;
     const telefono = document.getElementById('inquilino-telefono').value;
     const passwordActual = document.getElementById('inquilino-password-actual').value;
     const passwordNueva = document.getElementById('inquilino-password-nueva').value;
     const passwordConfirmar = document.getElementById('inquilino-password-confirmar').value;
-    
+
     // Validar contraseñas si se están cambiando
     if (passwordNueva || passwordConfirmar) {
       if (!passwordActual) {
@@ -895,11 +903,11 @@ if (perfilInquilinoForm) {
         return;
       }
     }
-    
+
     try {
       const token = localStorage.getItem('edificio_token');
       const user = Auth.getCurrentUser();
-      
+
       // 1. Actualizar datos básicos
       const updateRes = await fetch(`/api/usuarios/${user.userId}`, {
         method: 'PUT',
@@ -909,15 +917,15 @@ if (perfilInquilinoForm) {
         },
         body: JSON.stringify({ nombre, telefono })
       });
-      
+
       if (!updateRes.ok) {
         const error = await updateRes.json();
         alert('❌ Error al actualizar datos: ' + error.message);
         return;
       }
-      
+
       console.log('✅ Datos actualizados');
-      
+
       // 2. Cambiar contraseña si se proporcionó
       if (passwordNueva) {
         const passwordRes = await fetch('/api/usuarios/cambiar-password', {
@@ -931,26 +939,26 @@ if (perfilInquilinoForm) {
             passwordNueva
           })
         });
-        
+
         const passwordData = await passwordRes.json();
-        
+
         if (!passwordData.success) {
           alert('⚠️ Datos actualizados pero error al cambiar contraseña: ' + passwordData.message);
           return;
         }
-        
+
         console.log('✅ Contraseña actualizada');
-        
+
         // Limpiar campos
         document.getElementById('inquilino-password-actual').value = '';
         document.getElementById('inquilino-password-nueva').value = '';
         document.getElementById('inquilino-password-confirmar').value = '';
-        
+
         alert('✅ Perfil y contraseña actualizados exitosamente');
       } else {
         alert('✅ Datos del perfil actualizados exitosamente');
       }
-      
+
     } catch (error) {
       console.error('Error guardando perfil:', error);
       alert('❌ Error al guardar perfil');
