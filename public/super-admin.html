@@ -10,67 +10,202 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/dashboard.css">
   <style>
+    :root {
+      --cyber-gradient: linear-gradient(90deg, rgba(166, 247, 236, 1) 0%, rgba(204, 117, 255, 1) 35%, rgba(253, 117, 255, 1) 65%, rgba(217, 76, 85, 1) 100%);
+      --bg-dark: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #cc75ff;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image:
+        radial-gradient(at 0% 0%, rgba(166, 247, 236, 0.15) 0, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(217, 76, 85, 0.15) 0, transparent 50%);
+      color: var(--text-main);
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Inter', -apple-system, sans-serif;
+    }
+
+    .dashboard-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+      display: block;
+      /* Asegurar que no hay flex/grid de sidebar */
+    }
+
     .super-admin-header {
-      background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #14b8a6 100%);
+      background: var(--cyber-gradient);
+      padding: 3rem 2rem;
+      border-radius: 1.5rem;
+      margin-bottom: 3rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 20px rgba(204, 117, 255, 0.2);
+      text-align: center;
+    }
+
+    .super-admin-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      font-weight: 800;
+      letter-spacing: -1px;
       color: white;
-      padding: 1rem 2rem;
-      margin-bottom: 2rem;
-      border-radius: 0.5rem;
+    }
+
+    .super-admin-header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      color: white;
     }
 
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 1.5rem;
-      margin-bottom: 2rem;
+      margin-bottom: 3rem;
     }
 
     .stat-card {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 0.75rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      border-left: 4px solid #4F46E5;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 2rem;
+      border-radius: 1.25rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(204, 117, 255, 0.4);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     }
 
     .stat-card h3 {
-      color: #6B7280;
-      font-size: 0.875rem;
-      margin-bottom: 0.5rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
     }
 
     .stat-card .value {
-      font-size: 2rem;
-      font-weight: bold;
-      color: #1F2937;
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: var(--cyber-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .buildings-table {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 0.75rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      margin-bottom: 2rem;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      padding: 2rem;
+      border-radius: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 3rem;
+      overflow-x: auto;
     }
 
-    .action-buttons {
-      display: flex;
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 0.5rem;
+    }
+
+    .data-table th {
+      padding: 1rem;
+      text-align: left;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .data-table td {
+      padding: 1.25rem 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .data-table tr td:first-child {
+      border-radius: 0.75rem 0 0 0.75rem;
+      border-left: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .data-table tr td:last-child {
+      border-radius: 0 0.75rem 0.75rem 0;
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .badge {
+      padding: 0.4rem 0.8rem;
+      border-radius: 2rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn {
+      padding: 0.6rem 1.2rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      display: inline-flex;
+      align-items: center;
       gap: 0.5rem;
     }
 
-    .btn-danger {
-      background: #EF4444;
+    .btn-primary {
+      background: var(--cyber-gradient);
       color: white;
     }
 
-    .btn-warning {
-      background: #F59E0B;
-      color: white;
+    .btn-primary:hover {
+      filter: brightness(1.1);
+      transform: scale(1.02);
     }
 
-    .btn-success {
-      background: #10B981;
+    .btn-sm {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
+    }
+
+    input,
+    select {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       color: white;
+      padding: 0.8rem 1.2rem;
+      border-radius: 0.75rem;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(204, 117, 255, 0.2);
+    }
+
+    .support-box {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 1.5rem;
+      border-radius: 1rem;
+      margin-top: 1.5rem;
     }
   </style>
   <script src="/config.js"></script>
@@ -83,103 +218,102 @@
       <p>Gestión completa de la plataforma ChispartBuilding</p>
     </div>
 
-    <div class="main-content" style="padding: 2rem;">
-      <!-- Estadísticas globales -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <h3>Total Edificios</h3>
-          <div class="value" id="total-buildings">0</div>
-        </div>
-        <div class="stat-card">
-          <h3>Total Usuarios</h3>
-          <div class="value" id="total-usuarios">0</div>
-        </div>
-        <div class="stat-card">
-          <h3>Edificios Activos</h3>
-          <div class="value" id="buildings-activos">0</div>
-        </div>
-        <div class="stat-card">
-          <h3>Pagos Pendientes</h3>
-          <div class="value" id="pagos-pendientes">0</div>
-        </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>Total Edificios</h3>
+        <div class="value" id="total-buildings">0</div>
       </div>
-
-      <!-- Sección de Edificios -->
-      <div class="buildings-table">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-          <h2>Gestión de Edificios</h2>
-          <div>
-            <button class="btn btn-primary" onclick="recargarDatos()">
-              <i class="fas fa-sync"></i> Recargar
-            </button>
-          </div>
-        </div>
-
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Admin</th>
-              <th>Unidades</th>
-              <th>Plan</th>
-              <th>Estado</th>
-              <th>Pago</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="buildings-tbody">
-            <tr>
-              <td colspan="8" style="text-align: center; padding: 2rem;">Cargando...</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="stat-card">
+        <h3>Total Usuarios</h3>
+        <div class="value" id="total-usuarios">0</div>
       </div>
-
-      <!-- Sección de Validación de Pagos (Placeholder) -->
-      <div class="buildings-table">
-        <h2>Validación de Pagos Pendientes</h2>
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Building</th>
-              <th>Email</th>
-              <th>Método</th>
-              <th>Referencia</th>
-              <th>Monto</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="pagos-tbody">
-            <tr>
-              <td colspan="6" style="text-align: center; padding: 2rem;">No hay pagos pendientes</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="stat-card">
+        <h3>Edificios Activos</h3>
+        <div class="value" id="buildings-activos">0</div>
       </div>
+      <div class="stat-card">
+        <h3>Pagos Pendientes</h3>
+        <div class="value" id="pagos-pendientes">0</div>
+      </div>
+    </div>
 
-      <!-- Sección de Diagnóstico y Soporte -->
-      <div class="buildings-table">
-        <h2>Diagnóstico y Soporte de Sistema</h2>
-        <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: flex-end;">
-          <div class="form-group" style="margin-bottom: 0; flex: 1;">
-            <label>Tipo de Inspección</label>
-            <select id="support-type">
-              <option value="building">Edificio (Integridad)</option>
-              <option value="user">Usuario (Accesos)</option>
-            </select>
-          </div>
-          <div class="form-group" style="margin-bottom: 0; flex: 1;">
-            <label>ID Objetivo</label>
-            <input type="number" id="support-target-id" placeholder="Ej: 1">
-          </div>
-          <button class="btn btn-warning" onclick="generarReporteSoporte()">
-            <i class="fas fa-search-plus"></i> Analizar
+    <!-- Sección de Edificios -->
+    <div class="buildings-table">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2>Gestión de Edificios</h2>
+        <div>
+          <button class="btn btn-primary" onclick="recargarDatos()">
+            <i class="fas fa-sync"></i> Recargar
           </button>
         </div>
-        <div id="support-results" style="padding: 1rem; border-radius: 0.5rem; background: #f3f4f6; display: none;">
-          <ul id="support-findings" style="margin-left: 1.5rem; color: #374151;"></ul>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Admin</th>
+            <th>Unidades</th>
+            <th>Plan</th>
+            <th>Estado</th>
+            <th>Pago</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="buildings-tbody">
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 2rem;">Cargando...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Sección de Validación de Pagos (Placeholder) -->
+    <div class="buildings-table">
+      <h2>Validación de Pagos Pendientes</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Building</th>
+            <th>Email</th>
+            <th>Método</th>
+            <th>Referencia</th>
+            <th>Monto</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="pagos-tbody">
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 2rem;">No hay pagos pendientes</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Sección de Diagnóstico y Soporte -->
+    <div class="buildings-table">
+      <h2>Diagnóstico y Soporte de Sistema</h2>
+      <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: flex-end; flex-wrap: wrap;">
+        <div class="form-group" style="margin-bottom: 0; min-width: 200px; flex: 1;">
+          <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.8rem;">Tipo de
+            Inspección</label>
+          <select id="support-type" style="width: 100%;">
+            <option value="building">Edificio (Integridad)</option>
+            <option value="user">Usuario (Accesos)</option>
+          </select>
         </div>
+        <div class="form-group" style="margin-bottom: 0; min-width: 200px; flex: 1;">
+          <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.8rem;">ID
+            Objetivo</label>
+          <input type="number" id="support-target-id" placeholder="Ej: 1" style="width: 100%;">
+        </div>
+        <button class="btn btn-primary" style="background: var(--cyber-gradient);" onclick="generarReporteSoporte()">
+          <i class="fas fa-search-plus"></i> Analizar Sistema
+        </button>
+      </div>
+      <div id="support-results" class="support-box" style="display: none;">
+        <ul id="support-findings" style="margin-left: 1.5rem; color: var(--text-main);"></ul>
       </div>
     </div>
   </div>
