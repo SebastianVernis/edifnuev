@@ -3238,48 +3238,49 @@ export default {
       // === SUPER ADMIN ENDPOINTS ===
 
       // POST /api/super-admin/login - Login de super admin
+      // POST /api/super-admin/login - Login de super admin (Basado en Secretos)
       if (method === 'POST' && path === '/api/super-admin/login') {
         const body = await request.json();
         const { email, password } = body;
 
-        const superAdmin = await env.DB.prepare(
-          'SELECT * FROM super_admins WHERE email = ? AND activo = 1'
-        ).bind(email).first();
+        const SA_EMAIL = env.SUPER_ADMIN_EMAIL;
+        const SA_PASSWORD = env.SUPER_ADMIN_PASSWORD;
 
-        if (!superAdmin) {
+        if (!SA_EMAIL || !SA_PASSWORD) {
           return new Response(JSON.stringify({
             ok: false,
-            msg: 'Credenciales incorrectas'
+            msg: 'Error de configuración en el servidor. Secretos no encontrados.'
+          }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        if (email !== SA_EMAIL || password !== SA_PASSWORD) {
+          return new Response(JSON.stringify({
+            ok: false,
+            msg: 'Credenciales de Super Admin inválidas'
           }), {
             status: 401,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           });
         }
 
-        const isValid = await verifyPassword(password, superAdmin.password);
-        if (!isValid) {
-          return new Response(JSON.stringify({
-            ok: false,
-            msg: 'Credenciales incorrectas'
-          }), {
-            status: 401,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-          });
-        }
-
+        // Generar JWT para el Super Admin virtual (ID 0)
         const token = await generateJWT({
-          superAdminId: superAdmin.id,
-          email: superAdmin.email,
-          rol: 'SUPER_ADMIN'
+          userId: 0,
+          email: SA_EMAIL,
+          rol: 'SUPERADMIN',
+          departamento: 'System'
         }, env);
 
         return new Response(JSON.stringify({
           ok: true,
           token,
-          superAdmin: {
-            id: superAdmin.id,
-            nombre: superAdmin.nombre,
-            email: superAdmin.email
+          usuario: {
+            id: 0,
+            nombre: 'System Administrator',
+            rol: 'SUPERADMIN'
           }
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
