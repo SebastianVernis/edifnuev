@@ -198,6 +198,12 @@
 
       <!-- Dashboard Section -->
       <section id="dashboard-section" class="content-section active">
+        <div class="section-header">
+          <h1>Dashboard</h1>
+          <div class="date-display">
+            <p id="current-date-dashboard">Cargando...</p>
+          </div>
+        </div>
         <!-- Métricas del inquilino -->
         <div class="dashboard-summary">
           <div class="summary-card">
@@ -280,7 +286,7 @@
       <!-- Cuotas Section -->
       <section id="cuotas-section" class="content-section">
         <div class="section-header">
-          <h2>Mis Cuotas</h2>
+          <h1>Mis Cuotas</h1>
         </div>
 
         <div class="filter-controls">
@@ -319,318 +325,315 @@
             </tbody>
           </table>
         </div>
-  </div>
 
-  </section>
+      </section>
 
-  <!-- Anuncios Section -->
-  <section id="anuncios-section" class="content-section">
-    <div class="section-header">
-      <h2>Anuncios</h2>
-    </div>
-
-    <div class="filter-controls">
-      <div class="filter-group">
-        <label for="anuncios-tipo">Tipo:</label>
-        <select id="anuncios-tipo">
-          <option value="TODOS">Todos</option>
-          <option value="GENERAL">General</option>
-          <option value="IMPORTANTE">Importante</option>
-          <option value="URGENTE">Urgente</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="anuncios-container" id="anuncios-list">
-      <!-- Anuncios will be loaded here -->
-    </div>
-  </section>
-
-  <!-- Fondos Section -->
-  <section id="fondos-section" class="content-section">
-    <div class="section-header">
-      <h2>Fondos del Edificio</h2>
-      <p style="color: #6B7280; font-size: 0.875rem;">Transparencia financiera del condominio</p>
-    </div>
-
-    <div class="fondos-summary" id="fondos-summary-inquilino">
-      <!-- Fondos will be loaded here -->
-    </div>
-
-    <div class="recent-container" style="margin-top: 0.5rem;">
-      <h3>Últimos Movimientos</h3>
-      <div class="table-container">
-        <div class="table-responsive">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Fecha</th>
-                <th>Tipo</th>
-                <th>Fondo</th>
-                <th>Monto</th>
-                <th>Concepto</th>
-              </tr>
-            </thead>
-            <tbody id="movimientos-fondos-tbody">
-              <tr>
-                <td colspan="5" style="text-align: center;">Cargando...</td>
-              </tr>
-            </tbody>
-          </table>
+      <!-- Anuncios Section -->
+      <section id="anuncios-section" class="content-section">
+        <div class="section-header">
+          <h1>Anuncios</h1>
         </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- Gastos Section -->
-  <section id="gastos-section" class="content-section">
-    <div class="section-header">
-      <h2>Gastos del Edificio</h2>
-      <p style="color: #6B7280; font-size: 0.875rem;">Registro de gastos y mantenimientos</p>
-    </div>
-
-    <div class="table-container">
-      <div class="table-responsive">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>Concepto</th>
-              <th>Categoría</th>
-              <th>Proveedor</th>
-              <th>Monto</th>
-            </tr>
-          </thead>
-          <tbody id="gastos-edificio-tbody">
-            <tr>
-              <td colspan="5" style="text-align: center;">Cargando...</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- Proyectos Section -->
-  <section id="proyectos-section" class="content-section">
-    <div class="section-header">
-      <h2>Proyectos del Edificio</h2>
-      <p style="color: #6B7280; font-size: 0.875rem;">Proyectos críticos y mejoras planificadas</p>
-    </div>
-
-    <div id="proyectos-list-inquilino">
-      <!-- Proyectos will be loaded here -->
-    </div>
-  </section>
-
-  <!-- Documentos Section -->
-  <section id="documentos-section" class="content-section">
-    <div class="section-header">
-      <h2>Documentos del Edificio</h2>
-      <p style="color: #6B7280; font-size: 0.875rem;">Reglamentos, políticas y documentos oficiales</p>
-    </div>
-
-    <div style="display: grid; gap: 1.5rem;">
-      <div class="config-card">
-        <h3>Reglamento Interno</h3>
-        <div id="reglamento-content"
-          style="white-space: pre-wrap; color: #374151; max-height: 400px; overflow-y: auto; padding: 1rem; background: #F9FAFB; border-radius: 0.5rem;">
-          Cargando...
+        <div class="filter-controls">
+          <div class="filter-group">
+            <label for="anuncios-tipo">Tipo:</label>
+            <select id="anuncios-tipo">
+              <option value="TODOS">Todos</option>
+              <option value="GENERAL">General</option>
+              <option value="IMPORTANTE">Importante</option>
+              <option value="URGENTE">Urgente</option>
+            </select>
+          </div>
         </div>
-      </div>
 
-      <div class="config-card">
-        <h3>Política de Privacidad</h3>
-        <div id="privacy-content"
-          style="white-space: pre-wrap; color: #374151; max-height: 400px; overflow-y: auto; padding: 1rem; background: #F9FAFB; border-radius: 0.5rem;">
-          Cargando...
+        <div class="anuncios-container" id="anuncios-list">
+          <!-- Anuncios will be loaded here -->
         </div>
-      </div>
+      </section>
 
-      <div class="config-card">
-        <h3>Políticas de Pago</h3>
-        <div id="payment-content"
-          style="white-space: pre-wrap; color: #374151; max-height: 400px; overflow-y: auto; padding: 1rem; background: #F9FAFB; border-radius: 0.5rem;">
-          Cargando...
+      <!-- Fondos Section -->
+      <section id="fondos-section" class="content-section">
+        <div class="section-header">
+          <h1>Fondos del Edificio</h1>
+          <p style="color: #6B7280; font-size: 0.875rem;">Transparencia financiera del condominio</p>
         </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- Configuración Section -->
-  <section id="configuracion-section" class="content-section">
-    <div class="section-header">
-      <h2>Mi Perfil</h2>
-      <p style="color: #6B7280; font-size: 0.875rem;">Actualiza tu información personal</p>
-    </div>
+        <div class="fondos-summary" id="fondos-summary-inquilino">
+          <!-- Fondos will be loaded here -->
+        </div>
 
-    <div class="config-card" style="max-width: 600px; margin: 0 auto;">
-      <form id="perfil-inquilino-form">
+        <div class="recent-container" style="margin-top: 0.5rem;">
+          <h3>Últimos Movimientos</h3>
+          <div class="table-container">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Fondo</th>
+                    <th>Monto</th>
+                    <th>Concepto</th>
+                  </tr>
+                </thead>
+                <tbody id="movimientos-fondos-tbody">
+                  <tr>
+                    <td colspan="5" style="text-align: center;">Cargando...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Gastos Section -->
+      <section id="gastos-section" class="content-section">
+        <div class="section-header">
+          <h1>Gastos del Edificio</h1>
+          <p style="color: #6B7280; font-size: 0.875rem;">Registro de gastos y mantenimientos</p>
+        </div>
+
+        <div class="table-container">
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Concepto</th>
+                  <th>Categoría</th>
+                  <th>Proveedor</th>
+                  <th>Monto</th>
+                </tr>
+              </thead>
+              <tbody id="gastos-edificio-tbody">
+                <tr>
+                  <td colspan="5" style="text-align: center;">Cargando...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Proyectos Section -->
+      <section id="proyectos-section" class="content-section">
+        <div class="section-header">
+          <h1>Proyectos del Edificio</h1>
+          <p style="color: #6B7280; font-size: 0.875rem;">Proyectos críticos y mejoras planificadas</p>
+        </div>
+
+        <div id="proyectos-list-inquilino">
+          <!-- Proyectos will be loaded here -->
+        </div>
+      </section>
+
+      <!-- Documentos Section -->
+      <section id="documentos-section" class="content-section">
+        <div class="section-header">
+          <h1>Documentos del Edificio</h1>
+          <p style="color: #6B7280; font-size: 0.875rem;">Reglamentos, políticas y documentos oficiales</p>
+        </div>
+
+        <div style="display: grid; gap: 1.5rem;">
+          <div class="config-card">
+            <h3>Reglamento Interno</h3>
+            <div id="reglamento-content"
+              style="white-space: pre-wrap; color: #374151; max-height: 400px; overflow-y: auto; padding: 1rem; background: #F9FAFB; border-radius: 0.5rem;">
+              Cargando...
+            </div>
+          </div>
+
+          <div class="config-card">
+            <h3>Política de Privacidad</h3>
+            <div id="privacy-content"
+              style="white-space: pre-wrap; color: #374151; max-height: 400px; overflow-y: auto; padding: 1rem; background: #F9FAFB; border-radius: 0.5rem;">
+              Cargando...
+            </div>
+          </div>
+
+          <div class="config-card">
+            <h3>Políticas de Pago</h3>
+            <div id="payment-content"
+              style="white-space: pre-wrap; color: #374151; max-height: 400px; overflow-y: auto; padding: 1rem; background: #F9FAFB; border-radius: 0.5rem;">
+              Cargando...
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Configuración Section -->
+      <section id="configuracion-section" class="content-section">
+        <div class="section-header">
+          <h1>Mi Perfil</h1>
+          <p style="color: #6B7280; font-size: 0.875rem;">Actualiza tu información personal</p>
+        </div>
+
+        <div class="config-card" style="max-width: 600px; margin: 0 auto;">
+          <form id="perfil-inquilino-form">
+            <div class="form-group">
+              <label for="inquilino-nombre">Nombre Completo:</label>
+              <input type="text" id="inquilino-nombre" required>
+            </div>
+
+            <div class="form-group">
+              <label for="inquilino-email">Email:</label>
+              <input type="email" id="inquilino-email" readonly style="background: #F3F4F6; cursor: not-allowed;">
+              <small style="color: #6B7280;">El email no se puede modificar</small>
+            </div>
+
+            <div class="form-group">
+              <label for="inquilino-telefono">Teléfono:</label>
+              <input type="tel" id="inquilino-telefono">
+            </div>
+
+            <div class="form-group">
+              <label for="inquilino-departamento">Departamento:</label>
+              <input type="text" id="inquilino-departamento" readonly style="background: #F3F4F6; cursor: not-allowed;">
+              <small style="color: #6B7280;">El departamento no se puede modificar</small>
+            </div>
+
+            <h4 style="margin-top: 0.5rem;">Personalización</h4>
+
+            <div class="form-group">
+              <label for="inquilino-tema">Tema Visual:</label>
+              <select id="inquilino-tema"
+                style="padding: 0.75rem; border: 2px solid #E5E7EB; border-radius: 0.5rem; font-size: 1rem;">
+                <option value="default">🔵 Azul Índigo (Predeterminado)</option>
+                <option value="green">🟢 Verde Esmeralda</option>
+                <option value="purple">🟣 Púrpura Místico</option>
+                <option value="orange">🟠 Naranja Sunset</option>
+                <option value="pink">💗 Rosa Magenta</option>
+                <option value="teal">🌊 Turquesa Océano</option>
+                <option value="red">🔴 Rojo Coral</option>
+                <option value="gold">🌟 Dorado Elegante</option>
+                <option value="dark">🌙 Modo Oscuro</option>
+                <option value="gradient-blue">🌈 Degradado Azul</option>
+                <option value="gradient-purple">💜 Degradado Púrpura</option>
+                <option value="gradient-sunset">🌅 Degradado Sunset</option>
+                <option value="gradient-ocean">🌊 Degradado Océano</option>
+                <option value="gradient-fire">🔥 Degradado Fuego</option>
+              </select>
+              <small style="color: #6B7280;">Selecciona tu tema favorito y se aplicará inmediatamente</small>
+            </div>
+
+            <h4 style="margin-top: 0.5rem;">Cambiar Contraseña</h4>
+
+            <div class="form-group">
+              <label for="inquilino-password-actual">Contraseña Actual:</label>
+              <input type="password" id="inquilino-password-actual" autocomplete="current-password">
+            </div>
+
+            <div class="form-group">
+              <label for="inquilino-password-nueva">Nueva Contraseña:</label>
+              <input type="password" id="inquilino-password-nueva" autocomplete="new-password">
+            </div>
+
+            <div class="form-group">
+              <label for="inquilino-password-confirmar">Confirmar Nueva Contraseña:</label>
+              <input type="password" id="inquilino-password-confirmar" autocomplete="new-password">
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Parcialidades Section -->
+      <section id="parcialidades-section" class="content-section">
+        <div class="section-header">
+          <h1>Parcialidades 2026</h1>
+          <button id="reportar-parcialidad-btn" class="btn btn-primary"><i class="fas fa-receipt"></i> Reportar
+            Pago</button>
+        </div>
+
+        <div class="parcialidades-info">
+          <div class="info-card">
+            <h3>Proyectos Críticos 2026</h3>
+            <ul id="proyectos-criticos-list">
+              <li>Cargando proyectos...</li>
+            </ul>
+            <p><strong>Total:</strong> <span id="proyectos-total">$0</span></p>
+            <p><strong>Por Departamento:</strong> <span id="proyectos-por-depto">$0</span></p>
+          </div>
+
+          <div class="info-card">
+            <h3>Mi Progreso</h3>
+            <div class="progress-container">
+              <div class="progress-bar">
+                <div id="mi-parcialidad-progress" class="progress" style="width: 0%"></div>
+              </div>
+              <div class="progress-info">
+                <p><strong>Pagado:</strong> <span id="mi-parcialidad-pagado">$0</span></p>
+                <p><strong>Pendiente:</strong> <span id="mi-parcialidad-pendiente">$14,250</span></p>
+                <p><strong>Progreso:</strong> <span id="mi-parcialidad-porcentaje">0%</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="parcialidades-pagos">
+          <h3>Mis Pagos</h3>
+          <div class="table-container">
+            <table id="mis-parcialidades-table" class="data-table">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Monto</th>
+                  <th>Comprobante</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Pagos will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+  <!-- Modal for reporting parcialidad payment -->
+  <div id="reportar-parcialidad-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Reportar Pago de Parcialidad</h2>
+
+      <form id="reportar-parcialidad-form">
         <div class="form-group">
-          <label for="inquilino-nombre">Nombre Completo:</label>
-          <input type="text" id="inquilino-nombre" required>
+          <label for="parcialidad-monto">Monto:</label>
+          <input type="number" id="parcialidad-monto" min="0" step="0.01" required>
         </div>
 
         <div class="form-group">
-          <label for="inquilino-email">Email:</label>
-          <input type="email" id="inquilino-email" readonly style="background: #F3F4F6; cursor: not-allowed;">
-          <small style="color: #6B7280;">El email no se puede modificar</small>
+          <label for="parcialidad-fecha">Fecha:</label>
+          <input type="date" id="parcialidad-fecha" required>
         </div>
 
         <div class="form-group">
-          <label for="inquilino-telefono">Teléfono:</label>
-          <input type="tel" id="inquilino-telefono">
+          <label for="parcialidad-comprobante">Comprobante:</label>
+          <input type="text" id="parcialidad-comprobante" placeholder="Referencia de pago" required>
         </div>
 
         <div class="form-group">
-          <label for="inquilino-departamento">Departamento:</label>
-          <input type="text" id="inquilino-departamento" readonly style="background: #F3F4F6; cursor: not-allowed;">
-          <small style="color: #6B7280;">El departamento no se puede modificar</small>
-        </div>
-
-        <h4 style="margin-top: 0.5rem;">Personalización</h4>
-
-        <div class="form-group">
-          <label for="inquilino-tema">Tema Visual:</label>
-          <select id="inquilino-tema"
-            style="padding: 0.75rem; border: 2px solid #E5E7EB; border-radius: 0.5rem; font-size: 1rem;">
-            <option value="default">🔵 Azul Índigo (Predeterminado)</option>
-            <option value="green">🟢 Verde Esmeralda</option>
-            <option value="purple">🟣 Púrpura Místico</option>
-            <option value="orange">🟠 Naranja Sunset</option>
-            <option value="pink">💗 Rosa Magenta</option>
-            <option value="teal">🌊 Turquesa Océano</option>
-            <option value="red">🔴 Rojo Coral</option>
-            <option value="gold">🌟 Dorado Elegante</option>
-            <option value="dark">🌙 Modo Oscuro</option>
-            <option value="gradient-blue">🌈 Degradado Azul</option>
-            <option value="gradient-purple">💜 Degradado Púrpura</option>
-            <option value="gradient-sunset">🌅 Degradado Sunset</option>
-            <option value="gradient-ocean">🌊 Degradado Océano</option>
-            <option value="gradient-fire">🔥 Degradado Fuego</option>
-          </select>
-          <small style="color: #6B7280;">Selecciona tu tema favorito y se aplicará inmediatamente</small>
-        </div>
-
-        <h4 style="margin-top: 0.5rem;">Cambiar Contraseña</h4>
-
-        <div class="form-group">
-          <label for="inquilino-password-actual">Contraseña Actual:</label>
-          <input type="password" id="inquilino-password-actual" autocomplete="current-password">
+          <label for="parcialidad-notas">Notas:</label>
+          <textarea id="parcialidad-notas" rows="3"></textarea>
         </div>
 
         <div class="form-group">
-          <label for="inquilino-password-nueva">Nueva Contraseña:</label>
-          <input type="password" id="inquilino-password-nueva" autocomplete="new-password">
+          <p class="info-text">
+            <i class="fas fa-info-circle"></i>
+            Su pago será validado por el administrador. Una vez validado,
+            se actualizará su progreso de pago.
+          </p>
         </div>
 
         <div class="form-group">
-          <label for="inquilino-password-confirmar">Confirmar Nueva Contraseña:</label>
-          <input type="password" id="inquilino-password-confirmar" autocomplete="new-password">
-        </div>
-
-        <div class="form-actions">
-          <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+          <button type="submit" class="btn btn-primary">Reportar Pago</button>
+          <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
         </div>
       </form>
     </div>
-  </section>
-
-  <!-- Parcialidades Section -->
-  <section id="parcialidades-section" class="content-section">
-    <div class="section-header">
-      <h2>Parcialidades 2026</h2>
-      <button id="reportar-parcialidad-btn" class="btn btn-primary"><i class="fas fa-receipt"></i> Reportar
-        Pago</button>
-    </div>
-
-    <div class="parcialidades-info">
-      <div class="info-card">
-        <h3>Proyectos Críticos 2026</h3>
-        <ul id="proyectos-criticos-list">
-          <li>Cargando proyectos...</li>
-        </ul>
-        <p><strong>Total:</strong> <span id="proyectos-total">$0</span></p>
-        <p><strong>Por Departamento:</strong> <span id="proyectos-por-depto">$0</span></p>
-      </div>
-
-      <div class="info-card">
-        <h3>Mi Progreso</h3>
-        <div class="progress-container">
-          <div class="progress-bar">
-            <div id="mi-parcialidad-progress" class="progress" style="width: 0%"></div>
-          </div>
-          <div class="progress-info">
-            <p><strong>Pagado:</strong> <span id="mi-parcialidad-pagado">$0</span></p>
-            <p><strong>Pendiente:</strong> <span id="mi-parcialidad-pendiente">$14,250</span></p>
-            <p><strong>Progreso:</strong> <span id="mi-parcialidad-porcentaje">0%</span></p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="parcialidades-pagos">
-      <h3>Mis Pagos</h3>
-      <div class="table-container">
-        <table id="mis-parcialidades-table" class="data-table">
-          <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>Monto</th>
-              <th>Comprobante</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Pagos will be loaded here -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-    </div>
-
-    <!-- Modal for reporting parcialidad payment -->
-    <div id="reportar-parcialidad-modal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Reportar Pago de Parcialidad</h2>
-
-        <form id="reportar-parcialidad-form">
-          <div class="form-group">
-            <label for="parcialidad-monto">Monto:</label>
-            <input type="number" id="parcialidad-monto" min="0" step="0.01" required>
-          </div>
-
-          <div class="form-group">
-            <label for="parcialidad-fecha">Fecha:</label>
-            <input type="date" id="parcialidad-fecha" required>
-          </div>
-
-          <div class="form-group">
-            <label for="parcialidad-comprobante">Comprobante:</label>
-            <input type="text" id="parcialidad-comprobante" placeholder="Referencia de pago" required>
-          </div>
-
-          <div class="form-group">
-            <label for="parcialidad-notas">Notas:</label>
-            <textarea id="parcialidad-notas" rows="3"></textarea>
-          </div>
-
-          <div class="form-group">
-            <p class="info-text">
-              <i class="fas fa-info-circle"></i>
-              Su pago será validado por el administrador. Una vez validado,
-              se actualizará su progreso de pago.
-            </p>
-          </div>
-
-          <div class="form-group">
-            <button type="submit" class="btn btn-primary">Reportar Pago</button>
-            <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
-          </div>
-        </form>
-      </div>
-    </div>
+  </div>
   </section>
   </main>
   </div>
@@ -684,8 +687,12 @@
       const mesCapitalizado = mesActual.charAt(0).toUpperCase() + mesActual.slice(1);
 
       const currentDateEl = document.getElementById('current-date');
+      const currentDateDashboardEl = document.getElementById('current-date-dashboard');
       if (currentDateEl) {
         currentDateEl.textContent = mesCapitalizado;
+      }
+      if (currentDateDashboardEl) {
+        currentDateDashboardEl.textContent = mesCapitalizado;
       }
     });
   </script>

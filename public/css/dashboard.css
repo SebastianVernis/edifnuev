@@ -1499,3 +1499,25 @@
   background-color: var(--primary-dark);
   transform: scale(1.05);
 }
+
+/* Centering and spacing fixes for header-less layout */
+.section-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--secondary-color);
+  margin-bottom: 0.5rem;
+}
+
+[data-theme="dark"] .section-header h1 {
+  color: white;
+}
+
+.content-section {
+  padding-top: 1rem;
+}
+
+.date-display p {
+  font-size: 1rem;
+  color: #6B7280;
+  margin-top: 0.25rem;
+}
