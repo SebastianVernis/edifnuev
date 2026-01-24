@@ -3256,7 +3256,8 @@ export default {
           });
         }
 
-        if (email !== SA_EMAIL || password !== SA_PASSWORD) {
+        // Validación estricta contra secretos (Normalizada)
+        if (email.trim().toLowerCase() !== SA_EMAIL.trim().toLowerCase() || password !== SA_PASSWORD) {
           return new Response(JSON.stringify({
             ok: false,
             msg: 'Credenciales de Super Admin inválidas'

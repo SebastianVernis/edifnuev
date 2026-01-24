@@ -25,8 +25,8 @@ export const login = async (req, res) => {
             });
         }
 
-        // Validación estricta contra secretos
-        if (email !== SA_EMAIL || password !== SA_PASSWORD) {
+        // Validación estricta contra secretos (Normalizada)
+        if (email.trim().toLowerCase() !== SA_EMAIL.trim().toLowerCase() || password !== SA_PASSWORD) {
             return res.status(401).json({
                 ok: false,
                 msg: 'Credenciales de Super Admin inválidas'
