@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,7 +32,7 @@
     /* Header */
     header {
       background: white;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       position: fixed;
       width: 100%;
       top: 0;
@@ -167,7 +168,7 @@
       padding: 2rem;
       background: white;
       border-radius: 1rem;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       transition: transform 0.3s;
     }
 
@@ -209,7 +210,7 @@
       background: white;
       padding: 2rem;
       border-radius: 1rem;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       text-align: center;
     }
 
@@ -281,15 +282,15 @@
       nav {
         padding: 1rem;
       }
-      
+
       .logo img {
         height: 40px !important;
       }
-      
+
       .mobile-menu-btn {
         display: block;
       }
-      
+
       .nav-links {
         position: fixed;
         top: 65px;
@@ -299,36 +300,38 @@
         flex-direction: column;
         gap: 0;
         padding: 1rem;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         display: none;
         z-index: 1000;
       }
-      
+
       .nav-links.active {
         display: flex !important;
       }
-      
+
       .nav-links a {
         padding: 1rem;
         width: 100%;
         text-align: center;
         border-bottom: 1px solid #f0f0f0;
       }
-      
+
       .nav-links a:last-child {
         border-bottom: none;
       }
-      
+
       .hero {
         margin-top: 65px;
         padding: 3rem 1rem;
       }
-      
+
       .hero h1 {
         font-size: 2rem;
       }
 
-      .features h2, .pricing h2, .cta h2 {
+      .features h2,
+      .pricing h2,
+      .cta h2 {
         font-size: 1.75rem;
       }
 
@@ -340,6 +343,7 @@
   </style>
   <script src="/config.js"></script>
 </head>
+
 <body>
   <!-- Header -->
   <header>
@@ -361,7 +365,8 @@
   <!-- Hero Section -->
   <section class="hero">
     <h1>Administración Inteligente para tu Edificio</h1>
-    <p>Control total de cuotas, auditorías en tiempo real y respaldos automáticos. La solución definitiva para tu comunidad.</p>
+    <p>Control total de cuotas, auditorías en tiempo real y respaldos automáticos. La solución definitiva para tu
+      comunidad.</p>
     <div class="hero-buttons">
       <a href="#pricing" class="btn btn-primary">Ver Planes</a>
       <a href="/login" class="btn btn-outline">Acceso Portal</a>
@@ -464,12 +469,12 @@
   <section class="cta">
     <h2>¿Listo para simplificar tu administración?</h2>
     <p>Únete a cientos de condominios que ya confían en nosotros</p>
-    <a href="/register" class="btn btn-primary" style="background: white; color: var(--primary);">Comenzar Ahora</a>
+    <a href="#pricing" class="btn btn-primary" style="background: white; color: var(--primary);">Ver Planes</a>
   </section>
 
   <!-- Footer -->
   <footer>
-    <p>&copy; 2024 ChispartBuilding. Todos los derechos reservados.</p>
+    <p>&copy; 2025 ChispartBuilding. Todos los derechos reservados.</p>
     <p style="margin-top: 0.5rem;">
       <a href="/login" style="color: white; margin: 0 1rem;">Iniciar Sesión</a> |
       <a href="/admin" style="color: white; margin: 0 1rem;">Panel Admin</a> |
@@ -482,7 +487,7 @@
       const navLinks = document.getElementById('navLinks');
       navLinks.classList.toggle('active');
     }
-    
+
     // Cerrar menú al hacer click en un enlace
     document.querySelectorAll('.nav-links a').forEach(link => {
       link.addEventListener('click', () => {
@@ -491,4 +496,5 @@
     });
   </script>
 </body>
+
 </html>
