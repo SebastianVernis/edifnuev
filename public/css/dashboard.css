@@ -259,16 +259,9 @@
 
 .summary-card {
   background-color: #fff;
-  border-radius: 0.5rem;
   box-shadow: var(--shadow);
   padding: 1.5rem;
   text-align: center;
-}
-
-.summary-card h3 {
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
-  color: #666;
 }
 
 .summary-card .amount {
@@ -1433,7 +1426,7 @@
   /* Botones full width */
   .btn,
   .btn-primary,
-  .btn-secondary {
+  .btn-primary {
     width: 100%;
     margin-bottom: 0.5rem;
   }

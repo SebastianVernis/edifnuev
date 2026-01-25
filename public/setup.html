@@ -453,6 +453,27 @@
             </select>
           </div>
         </div>
+        
+        <div class="form-group">
+          <label for="numberingScheme">Esquema de Numeración *</label>
+          <select id="numberingScheme" name="numberingScheme" required onchange="toggleNumberingFields()">
+            <option value="estandar">Estándar (101, 102, 201, 202...)</option>
+            <option value="pb_pisos">PB + Pisos (1-5, 101-105...)</option>
+            <option value="consecutivo">Consecutivo (1, 2, 3, 4, 5...)</option>
+          </select>
+          <p class="help-text">Cómo se generarán los números de departamento por defecto</p>
+        </div>
+
+        <div id="pbNumberingFields" style="display: none;" class="form-grid">
+          <div class="form-group">
+            <label for="unitsPB">Unidades en Piso PB</label>
+            <input type="number" id="unitsPB" name="unitsPB" min="1" value="5">
+          </div>
+          <div class="form-group">
+            <label for="unitsPerFloor">Unidades por Piso (1, 2, 3...)</label>
+            <input type="number" id="unitsPerFloor" name="unitsPerFloor" min="1" value="5">
+          </div>
+        </div>
 
         <!-- Información del Administrador -->
         <div class="section-title">
@@ -1044,6 +1065,19 @@ En caso de venta, debe notificar y liquidar adeudos.`
       document.getElementById('paymentPolicies').value = template;
     }
 
+    function toggleNumberingFields() {
+      const scheme = document.getElementById('numberingScheme').value;
+      const pbFields = document.getElementById('pbNumberingFields');
+      if (scheme === 'pb_pisos') {
+        pbFields.style.display = 'grid';
+      } else {
+        pbFields.style.display = 'none';
+      }
+    }
+
+    // Verificar estado de validación al cargar si es posible
+    // (Opcional: podrías agregar un endpoint /status para esto)
+
     // Form submission
     document.getElementById('setupForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -1095,6 +1129,9 @@ En caso de venta, debe notificar y liquidar adeudos.`
           address: document.getElementById('address').value,
           totalUnits: parseInt(document.getElementById('totalUnits').value),
           type: document.getElementById('buildingType').value,
+          numberingScheme: document.getElementById('numberingScheme').value,
+          unitsPB: parseInt(document.getElementById('unitsPB').value) || 0,
+          unitsPerFloor: parseInt(document.getElementById('unitsPerFloor').value) || 0,
           monthlyFee: parseFloat(document.getElementById('monthlyFee').value),
           extraordinaryFee: parseFloat(document.getElementById('extraordinaryFee').value) || 0,
           cutoffDay: parseInt(document.getElementById('cutoffDay').value),
@@ -1136,6 +1173,13 @@ En caso de venta, debe notificar y liquidar adeudos.`
             window.location.href = '/activate';
           }, 2000);
         } else {
+          if (response.status === 403) {
+            alert.className = 'alert warning';
+            alert.innerHTML = `<i class="fas fa-clock"></i> ${result.msg || 'Pago pendiente de validación'}`;
+            // Mantener el botón deshabilitado o cambiarle el texto
+            submitBtn.innerHTML = '<i class="fas fa-pause"></i> Esperando validación...';
+            return;
+          }
           throw new Error(result.msg || 'Error en la configuración');
         }
       } catch (error) {

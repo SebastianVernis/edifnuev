@@ -59,7 +59,7 @@ router.post('/register', register);
 router.post('/send-otp', sendOtp);
 router.post('/verify-otp', verifyOtp);
 router.post('/checkout', checkout);
-router.post('/setup-building', setupBuilding);
+router.post('/complete-setup', setupBuilding);
 router.get('/status/:email', getOnboardingStatus);
 
 // Rutas protegidas (requieren autenticación)

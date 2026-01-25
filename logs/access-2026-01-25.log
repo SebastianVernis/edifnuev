@@ -1,0 +1,3 @@
+{"timestamp":"2026-01-25T00:38:11.753Z","type":"AUTH_SUCCESS","userId":0,"userRole":"SUPERADMIN","resource":"/admins/1/restrict","permission":null,"granted":true,"ip":"::ffff:127.0.0.1"}
+{"timestamp":"2026-01-25T00:38:11.753Z","type":"SUPERADMIN_ACCESS_GRANTED","userId":0,"userRole":"SUPERADMIN","resource":"/admins/1/restrict","permission":"superadmin","granted":true,"ip":"::ffff:127.0.0.1"}
+{"timestamp":"2026-01-25T00:38:11.768Z","type":"AUTH_REVOKED","userId":1,"userRole":"ADMIN","resource":"/perfil","permission":null,"granted":false,"ip":"::ffff:127.0.0.1"}

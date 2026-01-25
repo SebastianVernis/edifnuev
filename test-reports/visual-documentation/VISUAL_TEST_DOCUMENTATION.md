@@ -34,11 +34,13 @@
 #### Modal: Credenciales de Acceso Demo
 
 **ADMINISTRADOR:**
+
 - Email: `admin@edificio205.com`
 - Password: `Gemelo1`
 - Acceso completo al sistema
 
 **INQUILINOS:**
+
 - María García (Depto 101): `maria.garcia@edificio205.com`
 - Carlos López (Depto 102): `carlos.lopez@edificio205.com`
 - Ana Martínez (Depto 201): `ana.martinez@edificio205.com`
@@ -64,7 +66,6 @@
 
 ##### Navigation Menu
 
-
 **Navigation Buttons:**
 
 - **Usuarios** (ID: `btn-usuarios`) - Icon: fa-users - Permission: ADMIN
@@ -78,7 +79,6 @@
 
 ##### Dashboard Cards
 
-
 **Dashboard Cards:**
 
 - **Total Usuarios**: 6 [fa-users] (blue)
@@ -88,8 +88,7 @@
 
 ##### Main Content Area
 
-
-*Dynamic content area that changes based on selected menu option*
+_Dynamic content area that changes based on selected menu option_
 
 ---
 
@@ -109,7 +108,6 @@
 
 ##### Navigation Menu
 
-
 **Navigation Buttons:**
 
 - **Mis Cuotas** (ID: `btn-mis-cuotas`) - Icon: fa-money-bill-wave - Permission: undefined
@@ -118,7 +116,6 @@
 - **Estado de Cuenta** (ID: `btn-estado-cuenta`) - Icon: fa-file-invoice-dollar - Permission: undefined
 
 ##### Dashboard Cards
-
 
 **Dashboard Cards:**
 
@@ -141,6 +138,7 @@
 **Description:** User opens the login page and sees the authentication form
 
 **Visible UI Elements:**
+
 - Email input field
 - Password input field
 - Ingresar button
@@ -155,6 +153,7 @@
 **Description:** Modal opens showing demo credentials for all user types
 
 **Visible UI Elements:**
+
 - Admin credentials card
 - Inquilinos credentials card
 - Close button
@@ -168,6 +167,7 @@
 **Description:** User enters email: admin@edificio205.com and password: Gemelo1
 
 **Visible UI Elements:**
+
 - Filled email field
 - Filled password field (masked)
 
@@ -182,6 +182,7 @@
 **API Call:** `POST /api/auth/login`
 
 **Expected Response:**
+
 ```json
 {
   "ok": true,
@@ -201,6 +202,7 @@
 **Description:** Admin dashboard displays with full navigation menu and statistics cards
 
 **Visible UI Elements:**
+
 - Navigation menu with 8 options
 - Dashboard cards showing statistics
 - User info in header
@@ -214,6 +216,7 @@
 **Description:** Usuarios management panel opens showing list of all users
 
 **Visible UI Elements:**
+
 - Users table
 - Add user button
 - Edit/Delete actions
@@ -230,6 +233,7 @@
 **Description:** Cuotas management panel shows all monthly fees
 
 **Visible UI Elements:**
+
 - Cuotas table with filters
 - Payment status indicators
 - Mark as paid button
@@ -245,6 +249,7 @@
 **Description:** Gastos panel displays all expenses
 
 **Visible UI Elements:**
+
 - Expenses table
 - Add expense button
 - Category filters
@@ -261,6 +266,7 @@
 **Description:** Presupuestos section shows budget planning
 
 **Visible UI Elements:**
+
 - Budget list
 - Create budget button
 - Budget status indicators
@@ -276,6 +282,7 @@
 **Description:** Fondos panel displays financial funds information
 
 **Visible UI Elements:**
+
 - Fund cards
 - Total patrimony display
 - Fund movement history
@@ -291,6 +298,7 @@
 **Description:** Anuncios section shows all announcements
 
 **Visible UI Elements:**
+
 - Announcements list
 - Create announcement button
 - Priority indicators
@@ -306,6 +314,7 @@
 **Description:** Solicitudes panel displays all tenant requests
 
 **Visible UI Elements:**
+
 - Requests table
 - Status filters
 - Respond button
@@ -322,6 +331,7 @@
 **Description:** Audit logs section shows system activity
 
 **Visible UI Elements:**
+
 - Activity log table
 - Date filters
 - User filters
@@ -338,6 +348,7 @@
 **Description:** Profile dropdown menu appears
 
 **Visible UI Elements:**
+
 - Profile option
 - Settings option
 - Logout option
@@ -368,6 +379,7 @@
 **Description:** Tenant opens the login page
 
 **Visible UI Elements:**
+
 - Email input field
 - Password input field
 - Ingresar button
@@ -381,6 +393,7 @@
 **Description:** User enters email: maria.garcia@edificio205.com and password: Gemelo1
 
 **Visible UI Elements:**
+
 - Filled email field
 - Filled password field (masked)
 
@@ -395,6 +408,7 @@
 **API Call:** `POST /api/auth/login`
 
 **Expected Response:**
+
 ```json
 {
   "ok": true,
@@ -415,6 +429,7 @@
 **Description:** Inquilino dashboard displays with limited navigation menu
 
 **Visible UI Elements:**
+
 - Navigation menu with 4 options
 - Dashboard cards
 - User info showing department
@@ -428,6 +443,7 @@
 **Description:** Personal cuotas panel shows only this tenant's fees
 
 **Visible UI Elements:**
+
 - Personal cuotas table
 - Payment status
 - Due dates
@@ -444,6 +460,7 @@
 **Description:** Announcements section shows building-wide announcements
 
 **Visible UI Elements:**
+
 - Announcements list
 - Priority indicators
 - Date posted
@@ -459,6 +476,7 @@
 **Description:** Personal requests panel shows only this tenant's requests
 
 **Visible UI Elements:**
+
 - Personal requests table
 - Create request button
 - Status indicators
@@ -474,6 +492,7 @@
 **Description:** Account statement shows payment history and balance
 
 **Visible UI Elements:**
+
 - Payment history table
 - Current balance
 - Download PDF button
@@ -495,11 +514,13 @@
 ## 🔌 API Endpoints Reference
 
 ### Authentication
+
 - `POST /api/auth/login` - User login
 - `POST /api/auth/registro` - User registration
 - `GET /api/auth/renovar` - Renew JWT token
 
 ### Admin Endpoints
+
 - `GET /api/usuarios` - Get all users (ADMIN only)
 - `GET /api/cuotas` - Get all cuotas (ADMIN/COMITE)
 - `GET /api/gastos` - Get all expenses (ADMIN/COMITE)
@@ -510,6 +531,7 @@
 - `GET /api/audit` - Get audit logs (ADMIN)
 
 ### Inquilino Endpoints
+
 - `GET /api/usuarios/profile` - Get own profile
 - `GET /api/cuotas/mis-cuotas` - Get personal cuotas
 - `GET /api/cuotas/estado-cuenta` - Get account statement
@@ -523,12 +545,14 @@
 ### Common Elements
 
 #### Buttons
+
 - **Primary Button** (`.btn-primary`) - Main action buttons (e.g., "Ingresar", "Guardar")
-- **Secondary Button** (`.btn-secondary`) - Secondary actions
+- **Secondary Button** (`.btn-primary`) - Secondary actions
 - **Danger Button** (`.btn-danger`) - Destructive actions (e.g., "Eliminar")
 - **Icon Button** - Buttons with Font Awesome icons
 
 #### Forms
+
 - **Text Input** - Standard text input fields
 - **Password Input** - Masked password fields
 - **Email Input** - Email validation fields
@@ -536,17 +560,20 @@
 - **Date Picker** - Date selection inputs
 
 #### Tables
+
 - **Data Table** - Sortable, filterable data tables
 - **Action Buttons** - Edit, Delete, View actions
 - **Status Badges** - Color-coded status indicators
 - **Pagination** - Table pagination controls
 
 #### Cards
+
 - **Stat Card** - Dashboard statistics cards
 - **Info Card** - Information display cards
 - **Action Card** - Cards with action buttons
 
 #### Modals
+
 - **Confirmation Modal** - Confirm/Cancel dialogs
 - **Form Modal** - Forms in modal windows
 - **Info Modal** - Information display modals
@@ -556,6 +583,7 @@
 ## ✅ Testing Checklist
 
 ### Admin Flow
+
 - [x] Login with admin credentials
 - [x] Access all admin menu options
 - [x] View usuarios list
@@ -568,6 +596,7 @@
 - [x] Logout successfully
 
 ### Inquilino Flow
+
 - [x] Login with inquilino credentials
 - [x] View personal dashboard
 - [x] View mis cuotas

@@ -1,6 +1,7 @@
 import Cuota from '../models/Cuota.js';
 import Fondo from '../models/Fondo.js';
 import { handleControllerError, validateId, validateRequired } from '../middleware/error-handler.js';
+import { uploadBase64File } from '../utils/upload.js';
 
 export const getCuotas = async (req, res) => {
   try {
@@ -13,14 +14,14 @@ export const getCuotas = async (req, res) => {
       cuotas = cuotas.filter(c => c.departamento === departamento);
     }
     
-    // Filtrar por mes
-    if (mes) {
-      cuotas = cuotas.filter(c => c.mes === mes);
-    }
-    
     // Filtrar por año
     if (anio) {
       cuotas = cuotas.filter(c => c.anio === parseInt(anio));
+    }
+    
+    // Filtrar por mes
+    if (mes && mes !== 'TODOS') {
+      cuotas = cuotas.filter(c => c.mes === mes);
     }
     
     // Filtrar por estado
@@ -74,13 +75,13 @@ export const getCuotasByDepartamento = async (req, res) => {
 };
 
 export const crearCuota = async (req, res) => {
-  const { mes, anio, monto, departamento, fechaVencimiento } = req.body;
+  const { mes, anio, monto, departamento, fechaVencimiento, meses } = req.body;
   
   try {
     // Si departamento es TODOS, generar para todos
     if (departamento === 'TODOS') {
       try {
-        const cuotasGeneradas = Cuota.generarCuotasMensuales(mes, anio, monto, fechaVencimiento);
+        const cuotasGeneradas = Cuota.generarCuotasMensuales(mes, anio, monto, fechaVencimiento, meses || 1);
         
         return res.json({
           ok: true,
@@ -129,7 +130,7 @@ export const crearCuota = async (req, res) => {
 
 export const actualizarCuota = async (req, res) => {
   const { id } = req.params;
-  const { estado, fechaPago, comprobante } = req.body;
+  const { estado, fechaPago, comprobante, base64Comprobante, fileNameComprobante } = req.body;
   
   try {
     const cuota = Cuota.obtenerPorId(parseInt(id));
@@ -140,6 +141,21 @@ export const actualizarCuota = async (req, res) => {
         msg: 'Cuota no encontrada'
       });
     }
+
+    // Si hay un archivo base64, subirlo
+    let comprobanteUrl = comprobante;
+    if (base64Comprobante) {
+        try {
+            comprobanteUrl = await uploadBase64File(
+                base64Comprobante,
+                fileNameComprobante || `cuota_${id}_pago.jpg`,
+                'payments',
+                req.env || process.env
+            );
+        } catch (uploadError) {
+            console.error('Error al subir comprobante de cuota:', uploadError);
+        }
+    }
     
     // Si se está marcando como pagada, actualizar fondos
     if (estado === 'PAGADO' && cuota.estado !== 'PAGADO') {
@@ -148,7 +164,7 @@ export const actualizarCuota = async (req, res) => {
       console.log(`✅ Ingreso de $${cuota.monto} a Dinero Operacional por pago de cuota`);
       
       // Actualizar estado de cuota
-      const cuotaActualizada = Cuota.actualizarEstado(parseInt(id), estado, fechaPago, comprobante);
+      const cuotaActualizada = Cuota.actualizarEstado(parseInt(id), estado, fechaPago, comprobanteUrl);
       
       return res.json({
         ok: true,
@@ -157,7 +173,7 @@ export const actualizarCuota = async (req, res) => {
     }
     
     // Actualización normal
-    const cuotaActualizada = Cuota.actualizarEstado(parseInt(id), estado, fechaPago, comprobante);
+    const cuotaActualizada = Cuota.actualizarEstado(parseInt(id), estado, fechaPago, comprobanteUrl);
     
     res.json({
       ok: true,
@@ -257,5 +273,52 @@ export const getCuotasPendientes = async (req, res) => {
     });
   } catch (error) {
     return handleControllerError(error, res, 'getCuotasPendientes');
+  }
+};
+
+export const actualizarCuotasBulk = async (req, res) => {
+  const { cuotaIds, estado, fechaPago, comprobante, base64Comprobante, fileNameComprobante } = req.body;
+  
+  try {
+    if (!cuotaIds || !Array.isArray(cuotaIds)) {
+      return res.status(400).json({ ok: false, msg: 'IDs de cuotas requeridos' });
+    }
+
+    // Subir comprobante si existe
+    let comprobanteUrl = comprobante;
+    if (base64Comprobante) {
+      try {
+        comprobanteUrl = await uploadBase64File(
+          base64Comprobante,
+          fileNameComprobante || `bulk_payment_${Date.now()}.jpg`,
+          'payments',
+          req.env || process.env
+        );
+      } catch (uploadError) {
+        console.error('Error al subir comprobante bulk:', uploadError);
+      }
+    }
+
+    // Actualizar estados
+    const cuotasActualizadas = [];
+    for (const id of cuotaIds) {
+      const cuota = Cuota.obtenerPorId(id);
+      if (!cuota) continue;
+
+      if (estado === 'PAGADO' && cuota.estado !== 'PAGADO') {
+        await Fondo.registrarIngreso(cuota.monto, 'dineroOperacional');
+      }
+      
+      const actualizada = Cuota.actualizarEstado(id, estado, fechaPago, comprobanteUrl);
+      if (actualizada) cuotasActualizadas.push(actualizada);
+    }
+
+    res.json({
+      ok: true,
+      message: `${cuotasActualizadas.length} cuotas actualizadas`,
+      cuotas: cuotasActualizadas
+    });
+  } catch (error) {
+    return handleControllerError(error, res, 'actualizarCuotasBulk');
   }
 };

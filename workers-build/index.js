@@ -1045,9 +1045,14 @@ export default {
         let query = 'SELECT * FROM cuotas WHERE building_id = ?';
         const params = [buildingId];
 
-        if (mes && anio) {
-          query += ' AND mes = ? AND anio = ?';
-          params.push(mes, anio);
+        if (anio) {
+          query += ' AND anio = ?';
+          params.push(anio);
+        }
+
+        if (mes && mes !== 'TODOS') {
+          query += ' AND mes = ?';
+          params.push(mes);
         }
 
         if (tipo && tipo !== 'TODOS') {
@@ -1080,7 +1085,7 @@ export default {
 
         const buildingId = authResult.payload.buildingId;
         const body = await request.json();
-        const { mes, anio, monto, departamentos, concepto, tipo } = body;
+        const { mes, anio, monto, departamentos, concepto, tipo, meses = 1 } = body;
 
         if (!mes || !anio || !monto) {
           return new Response(JSON.stringify({
@@ -1118,56 +1123,59 @@ export default {
           let cuotasExistentes = 0;
           let errores = [];
           const totalUnits = building.units_count || 20;
+          const numMeses = parseInt(meses) || 1;
+          const nombresMeses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+          
+          let mesInicialIndex = nombresMeses.indexOf(mes);
+          if (mesInicialIndex === -1) mesInicialIndex = 0;
 
-          // Si se especificó "TODOS", generar para todas las unidades
           if (departamentos === 'TODOS') {
             const cutoffDay = building.cutoff_day || 5;
-            const mesIndex = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-              'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'].indexOf(mes);
-            const fechaVencimiento = new Date(anio, mesIndex, cutoffDay).toISOString().split('T')[0];
 
-            // Obtener cuotas existentes en batch
-            const existentes = await env.DB.prepare(
-              'SELECT departamento FROM cuotas WHERE mes = ? AND anio = ? AND building_id = ?'
-            ).bind(mes, anio, buildingId).all();
+            for (let m = 0; m < numMeses; m++) {
+              let currentMesIdx = (mesInicialIndex + m) % 12;
+              let currentAnio = anio + Math.floor((mesInicialIndex + m) / 12);
+              let currentMesNombre = nombresMeses[currentMesIdx];
+              
+              const fechaVencimiento = new Date(currentAnio, currentMesIdx, cutoffDay).toISOString().split('T')[0];
 
-            const deptosExistentes = new Set(existentes.results.map(c => c.departamento));
+              // Obtener cuotas existentes en batch para este mes específico
+              const existentes = await env.DB.prepare(
+                'SELECT departamento FROM cuotas WHERE mes = ? AND anio = ? AND building_id = ?'
+              ).bind(currentMesNombre, currentAnio, buildingId).all();
 
-            // Preparar batch insert
-            const batch = [];
-            for (let i = 1; i <= totalUnits; i++) {
-              const depto = i.toString().padStart(3, '0');
+              const deptosExistentes = new Set(existentes.results.map(c => c.departamento));
 
-              if (deptosExistentes.has(depto)) {
-                cuotasExistentes++;
-              } else {
-                batch.push(
-                  env.DB.prepare(
-                    'INSERT INTO cuotas (mes, anio, departamento, monto, pagado, fecha_vencimiento, tipo, concepto, building_id) VALUES (?, ?, ?, ?, 0, ?, ?, ?, ?)'
-                  ).bind(mes, anio, depto, monto, fechaVencimiento, tipo || 'ORDINARIA', concepto || null, buildingId)
-                );
+              // Preparar batch insert
+              const batch = [];
+              for (let i = 1; i <= totalUnits; i++) {
+                const depto = i.toString().padStart(3, '0');
+
+                if (deptosExistentes.has(depto)) {
+                  cuotasExistentes++;
+                } else {
+                  batch.push(
+                    env.DB.prepare(
+                      'INSERT INTO cuotas (mes, anio, departamento, monto, pagado, fecha_vencimiento, tipo, concepto, building_id) VALUES (?, ?, ?, ?, 0, ?, ?, ?, ?)'
+                    ).bind(currentMesNombre, currentAnio, depto, monto, fechaVencimiento, tipo || 'ORDINARIA', concepto || null, buildingId)
+                  );
+                }
               }
-            }
 
-            // Ejecutar batch
-            if (batch.length > 0) {
-              try {
-                console.log(`   Ejecutando batch de ${batch.length} inserts...`);
-                const results = await env.DB.batch(batch);
-                cuotasCreadas = batch.length;
-                console.log(`   ✅ Batch completado: ${cuotasCreadas} cuotas creadas`);
-              } catch (error) {
-                console.error('   ❌ Error en batch:', error);
-                errores.push(`Error en batch: ${error.message}`);
-
-                // Intentar insertar una por una si batch falla
-                console.log('   🔄 Intentando inserts individuales...');
-                for (const stmt of batch) {
-                  try {
-                    await stmt.run();
-                    cuotasCreadas++;
-                  } catch (e) {
-                    errores.push(`Error individual: ${e.message}`);
+              // Ejecutar batch
+              if (batch.length > 0) {
+                try {
+                  console.log(`   Ejecutando batch de ${batch.length} inserts para ${currentMesNombre} ${currentAnio}...`);
+                  await env.DB.batch(batch);
+                  cuotasCreadas += batch.length;
+                } catch (error) {
+                  console.error('   ❌ Error en batch:', error);
+                  errores.push(`Error en batch ${currentMesNombre}: ${error.message}`);
+                  
+                  // Fallback uno por uno
+                  for (const stmt of batch) {
+                    try { await stmt.run(); cuotasCreadas++; } catch (e) { }
                   }
                 }
               }
@@ -1176,28 +1184,32 @@ export default {
             // Generar para departamentos específicos
             const deptos = Array.isArray(departamentos) ? departamentos : [departamentos];
 
-            for (const depto of deptos) {
-              try {
-                const existe = await env.DB.prepare(
-                  'SELECT id FROM cuotas WHERE mes = ? AND anio = ? AND departamento = ? AND building_id = ?'
-                ).bind(mes, anio, depto, buildingId).first();
+            for (let m = 0; m < numMeses; m++) {
+              let currentMesIdx = (mesInicialIndex + m) % 12;
+              let currentAnio = anio + Math.floor((mesInicialIndex + m) / 12);
+              let currentMesNombre = nombresMeses[currentMesIdx];
 
-                if (existe) {
-                  cuotasExistentes++;
-                } else {
-                  const cutoffDay = building.cutoff_day || 5;
-                  const mesIndex = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-                    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'].indexOf(mes);
-                  const fechaVencimiento = new Date(anio, mesIndex, cutoffDay).toISOString().split('T')[0];
+              for (const depto of deptos) {
+                try {
+                  const existe = await env.DB.prepare(
+                    'SELECT id FROM cuotas WHERE mes = ? AND anio = ? AND departamento = ? AND building_id = ?'
+                  ).bind(currentMesNombre, currentAnio, depto, buildingId).first();
 
-                  await env.DB.prepare(
-                    'INSERT INTO cuotas (mes, anio, departamento, monto, pagado, fecha_vencimiento, tipo, concepto, building_id) VALUES (?, ?, ?, ?, 0, ?, ?, ?, ?)'
-                  ).bind(mes, anio, depto, monto, fechaVencimiento, tipo || 'ORDINARIA', concepto || null, buildingId).run();
+                  if (existe) {
+                    cuotasExistentes++;
+                  } else {
+                    const cutoffDay = building.cutoff_day || 5;
+                    const fechaVencimiento = new Date(currentAnio, currentMesIdx, cutoffDay).toISOString().split('T')[0];
 
-                  cuotasCreadas++;
+                    await env.DB.prepare(
+                      'INSERT INTO cuotas (mes, anio, departamento, monto, pagado, fecha_vencimiento, tipo, concepto, building_id) VALUES (?, ?, ?, ?, 0, ?, ?, ?, ?)'
+                    ).bind(currentMesNombre, currentAnio, depto, monto, fechaVencimiento, tipo || 'ORDINARIA', concepto || null, buildingId).run();
+
+                    cuotasCreadas++;
+                  }
+                } catch (error) {
+                  errores.push(`Depto ${depto} (${currentMesNombre}): ${error.message}`);
                 }
-              } catch (error) {
-                errores.push(`Depto ${depto}: ${error.message}`);
               }
             }
           }
@@ -1239,7 +1251,7 @@ export default {
         const buildingId = authResult.payload.buildingId;
         const cuotaId = parseInt(path.split('/')[3]);
         const body = await request.json();
-        const { estado, fechaPago, comprobante, metodoPago, tipoValidacion } = body;
+        const { estado, fechaPago, comprobante, metodoPago, tipoValidacion, base64Comprobante, fileNameComprobante } = body;
 
         // Verificar que la cuota existe y pertenece al building
         const cuota = await env.DB.prepare(
@@ -1254,6 +1266,39 @@ export default {
             status: 404,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           });
+        }
+
+        const estabaPagado = cuota.pagado === 1;
+        let finalPagado = 1; // Por defecto asumimos pagado si entra en lógica selectiva
+        let comprobantePath = comprobante || null;
+
+        // --- SUBIDA DE COMPROBANTE (R2) ---
+        if (base64Comprobante && env.UPLOADS) {
+          try {
+            const timestamp = Date.now();
+            const fileName = `${timestamp}_${fileNameComprobante || 'comprobante_pago.png'}`;
+            const key = `comprobantes/${fileName}`;
+            
+            // Decodificar base64
+            const base64Data = base64Comprobante.split(',')[1];
+            const binaryString = atob(base64Data);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+              bytes[i] = binaryString.charCodeAt(i);
+            }
+            
+            await env.UPLOADS.put(key, bytes.buffer, {
+              httpMetadata: {
+                contentType: base64Comprobante.split(',')[0].split(':')[1].split(';')[0]
+              }
+            });
+            
+            comprobantePath = `/uploads/${key}`;
+            console.log('✅ Comprobante subido a R2:', comprobantePath);
+          } catch (uploadError) {
+            console.error('❌ Error subiendo comprobante:', uploadError);
+            // Seguimos adelante pero logueamos el error
+          }
         }
 
         // --- LÓGICA DE VALIDACIÓN SELECTIVA ---
@@ -1281,7 +1326,7 @@ export default {
                 monto_extraordinario = 0, concepto_extraordinario = NULL,
                 pagado = 1, fecha_pago = ?, metodo_pago = ?, referencia = ?
               WHERE id = ?
-            `).bind(fechaPago || null, metodoPago || null, comprobante || null, cuotaId).run();
+            `).bind(fechaPago || null, metodoPago || null, comprobantePath, cuotaId).run();
           }
 
           // CASO 2: Pagar SOLO EXTRAORDINARIA
@@ -1304,31 +1349,31 @@ export default {
                 monto = 0, concepto = NULL,
                 pagado = 1, fecha_pago = ?, metodo_pago = ?, referencia = ?
               WHERE id = ?
-            `).bind(fechaPago || null, metodoPago || null, comprobante || null, cuotaId).run();
+            `).bind(fechaPago || null, metodoPago || null, comprobantePath, cuotaId).run();
           }
           else {
             // Fallback si no aplica (ej: pedir solo extra pero no hay base) -> Pagar todo normal
             await env.DB.prepare(
               'UPDATE cuotas SET pagado = 1, fecha_pago = ?, metodo_pago = ?, referencia = ? WHERE id = ?'
-            ).bind(fechaPago || null, metodoPago || null, comprobante || null, cuotaId).run();
+            ).bind(fechaPago || null, metodoPago || null, comprobantePath, cuotaId).run();
           }
         }
         // --- VALIDACIÓN TOTAL (Estándar) ---
         else {
-          const pagado = estado === 'PAGADO' ? 1 : 0;
+          finalPagado = estado === 'PAGADO' ? 1 : 0;
           await env.DB.prepare(
             'UPDATE cuotas SET pagado = ?, fecha_pago = ?, metodo_pago = ?, referencia = ? WHERE id = ?'
           ).bind(
-            pagado,
+            finalPagado,
             fechaPago || null,
             metodoPago || null,
-            comprobante || null,
+            comprobantePath,
             cuotaId
           ).run();
         }
 
         // Si se marca como pagado y no estaba pagado antes, sumar al fondo de ingresos
-        if (pagado && !estabaPagado) {
+        if (finalPagado && !estabaPagado) {
           const building = await env.DB.prepare(
             'SELECT fondo_ingresos_id FROM buildings WHERE id = ?'
           ).bind(buildingId).first();
@@ -1357,8 +1402,77 @@ export default {
 
         return new Response(JSON.stringify({
           success: true,
-          message: pagado ? 'Pago validado y agregado al fondo exitosamente' : 'Cuota marcada como pendiente'
+          message: finalPagado ? 'Pago validado y agregado al fondo exitosamente' : 'Cuota marcada como pendiente'
         }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // PUT /api/cuotas/bulk-estado - Validar pago de varias cuotas con un solo comprobante
+      if (method === 'PUT' && path === '/api/cuotas/bulk-estado') {
+        const authResult = await verifyAuth(request, env);
+        if (authResult instanceof Response) return authResult;
+
+        const buildingId = authResult.payload.buildingId;
+        const body = await request.json();
+        const { cuotaIds, estado, fechaPago, metodoPago, referencia, base64Comprobante, fileNameComprobante } = body;
+
+        if (!cuotaIds || !Array.isArray(cuotaIds) || cuotaIds.length === 0) {
+          return new Response(JSON.stringify({ success: false, message: 'IDs de cuotas requeridos' }), {
+            status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        let comprobantePath = referencia || null;
+
+        // --- SUBIDA DE COMPROBANTE (R2) ---
+        if (base64Comprobante && env.UPLOADS) {
+          try {
+            const timestamp = Date.now();
+            const fileName = `${timestamp}_${fileNameComprobante || 'bulk_comprobante.png'}`;
+            const key = `comprobantes/${fileName}`;
+            const base64Data = base64Comprobante.split(',')[1];
+            const binaryString = atob(base64Data);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
+            await env.UPLOADS.put(key, bytes.buffer, { httpMetadata: { contentType: base64Comprobante.split(',')[0].split(':')[1].split(';')[0] } });
+            comprobantePath = `/uploads/${key}`;
+          } catch (e) {
+            console.error('Error subiendo comprobante bulk:', e);
+          }
+        }
+
+        let actualizadas = 0;
+        let montoTotalProcesado = 0;
+
+        for (const id of cuotaIds) {
+          const cuota = await env.DB.prepare('SELECT * FROM cuotas WHERE id = ? AND building_id = ?').bind(id, buildingId).first();
+          if (!cuota) continue;
+
+          const estabaPagado = cuota.pagado === 1;
+          const nuevoPagado = estado === 'PAGADO' ? 1 : 0;
+
+          await env.DB.prepare(
+            'UPDATE cuotas SET pagado = ?, fecha_pago = ?, metodo_pago = ?, referencia = ? WHERE id = ?'
+          ).bind(nuevoPagado, fechaPago || null, metodoPago || null, comprobantePath, id).run();
+
+          if (nuevoPagado && !estabaPagado) {
+            montoTotalProcesado += (parseFloat(cuota.monto) || 0) + (parseFloat(cuota.monto_extraordinario) || 0) + (parseFloat(cuota.monto_mora) || 0);
+          }
+          actualizadas++;
+        }
+
+        // Si hubo ingresos, sumarlos al fondo
+        if (montoTotalProcesado > 0) {
+          const building = await env.DB.prepare('SELECT fondo_ingresos_id FROM buildings WHERE id = ?').bind(buildingId).first();
+          if (building && building.fondo_ingresos_id) {
+            await env.DB.prepare('UPDATE fondos SET saldo = saldo + ? WHERE id = ?').bind(montoTotalProcesado, building.fondo_ingresos_id).run();
+            await env.DB.prepare('INSERT INTO movimientos_fondos (fondo_id, tipo, monto, concepto, fecha, building_id) VALUES (?, ?, ?, ?, ?, ?)')
+              .bind(building.fondo_ingresos_id, 'INGRESO', montoTotalProcesado, `Pago bulk (${actualizadas} cuotas)`, fechaPago || new Date().toISOString().split('T')[0], buildingId).run();
+          }
+        }
+
+        return new Response(JSON.stringify({ success: true, message: `${actualizadas} cuotas actualizadas correctamente`, actualizadas }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
       }

@@ -333,13 +333,13 @@
       background: var(--primary-dark);
     }
 
-    .btn-secondary {
+    .btn-primary {
       background: white;
       color: var(--primary);
       border: 2px solid var(--primary);
     }
 
-    .btn-secondary:hover {
+    .btn-primary:hover {
       background: var(--primary);
       color: white;
     }
@@ -582,14 +582,28 @@
                 <li>Selecciona "Transferencia SPEI"</li>
                 <li>Copia la CLABE y la referencia de arriba</li>
                 <li>Realiza la transferencia por el monto indicado</li>
-                <li>Conserva tu comprobante de pago</li>
-                <li>Una vez realizada la transferencia, presiona el botón "Confirmar Transferencia"</li>
-                <li>Recibirás acceso inmediato por 48 horas</li>
-                <li>Tu pago será validado en máximo 24 horas</li>
+                <li>Conserva tu comprobante de pago (Captura de pantalla o foto)</li>
+                <li>Adjunta tu comprobante abajo y presiona "Confirmar Transferencia"</li>
+                <li>Recibirás acceso inmediato por 48 horas mientras validamos</li>
               </ol>
             </div>
 
-            <button class="btn btn-primary" onclick="confirmarTransferencia()">
+            <!-- Selector de Comprobante -->
+            <div style="margin-top: 1.5rem; padding: 1.5rem; border: 2px dashed #E5E7EB; border-radius: 0.75rem; text-align: center;">
+              <label for="paymentProofInput" style="cursor: pointer; display: block;">
+                <i class="fas fa-camera" style="font-size: 1.5rem; color: var(--primary); margin-bottom: 0.5rem;"></i>
+                <p style="font-weight: 600; color: var(--dark);">Adjuntar comprobante de pago</p>
+                <p style="font-size: 0.8rem; color: var(--gray);">PNG, JPG o PDF. Máximo 5MB.</p>
+                <input type="file" id="paymentProofInput" accept="image/*,application/pdf" style="display: none;" onchange="handleFileSelect(this)">
+              </label>
+              <div id="filePreviewContainer" style="display: none; margin-top: 1rem;">
+                <img id="filePreview" src="" alt="Vista previa" style="max-height: 200px; border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <p id="fileNameDisplay" style="font-size: 0.8rem; color: var(--secondary); font-weight: 600; margin-top: 0.5rem;"></p>
+                <button type="button" onclick="clearFileSelection()" style="background: none; border: none; color: var(--danger); font-size: 0.8rem; cursor: pointer; text-decoration: underline;">Quitar archivo</button>
+              </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="confirmarTransferencia()" id="confirmBtn">
               <i class="fas fa-check-circle"></i>
               Confirmar Transferencia Realizada
             </button>
@@ -782,9 +796,62 @@
       });
     }
 
+    // Variables para el comprobante
+    let selectedFileData = null;
+    let selectedFileName = null;
+
+    function handleFileSelect(input) {
+      const file = input.files[0];
+      if (!file) return;
+
+      if (file.size > 5 * 1024 * 1024) {
+        alert('El archivo es demasiado grande. Máximo 5MB.');
+        input.value = '';
+        return;
+      }
+
+      selectedFileName = file.name;
+      document.getElementById('fileNameDisplay').textContent = file.name;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        selectedFileData = e.target.result;
+        
+        // Mostrar vista previa si es una imagen
+        if (file.type.startsWith('image/')) {
+          const preview = document.getElementById('filePreview');
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        } else {
+          document.getElementById('filePreview').style.display = 'none';
+        }
+        
+        document.getElementById('filePreviewContainer').style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearFileSelection() {
+      selectedFileData = null;
+      selectedFileName = null;
+      document.getElementById('paymentProofInput').value = '';
+      document.getElementById('filePreviewContainer').style.display = 'none';
+    }
+
     // Confirmar transferencia y activar acceso temporal
     async function confirmarTransferencia() {
+      if (!selectedFileData) {
+        alert('Por favor, adjunta tu comprobante de pago para continuar.');
+        return;
+      }
+
+      const confirmBtn = document.getElementById('confirmBtn');
+      const originalHTML = confirmBtn.innerHTML;
+      
       try {
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo y procesando...';
+
         // Llamar al endpoint para marcar como "pago pendiente de validación"
         const response = await fetch('/api/onboarding/checkout', {
           method: 'POST',
@@ -793,7 +860,9 @@
             email,
             paymentMethod: 'transfer',
             reference: 'CHIS-' + document.getElementById('timestamp').textContent,
-            amount: total
+            amount: total,
+            paymentProof: selectedFileData,
+            fileName: selectedFileName
           })
         });
 
@@ -813,6 +882,9 @@
       } catch (error) {
         console.error('Error:', error);
         alert('Error al confirmar. Intenta nuevamente.');
+      } finally {
+        confirmBtn.disabled = false;
+        confirmBtn.innerHTML = originalHTML;
       }
     }
 

@@ -8,6 +8,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { sendOtpEmail, sendWelcomeEmail, checkEmailRateLimit } from '../utils/smtp.js';
 import { verifyEmailWithCache } from '../utils/emailVerification.js';
+import { uploadBase64File } from '../utils/upload.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'edificio-admin-secret-key-2025';
 
@@ -111,8 +112,8 @@ export async function register(req, res) {
       });
     }
 
-    // Guardar registro pendiente
-    pendingRegistrations.set(email, {
+    // Guardar registro pendiente en memoria y en DB para persistencia
+    const pendingData = {
       email,
       fullName,
       phone: phone || null,
@@ -121,8 +122,22 @@ export async function register(req, res) {
       planDetails: PLANS[selectedPlan],
       otpVerified: false,
       checkoutCompleted: false,
+      validated: false,
+      status: 'pending_otp',
       createdAt: new Date().toISOString(),
-    });
+    };
+
+    pendingRegistrations.set(email, pendingData);
+    
+    // Persistir en data.json
+    if (!data.registros_pendientes) data.registros_pendientes = [];
+    const existingIndex = data.registros_pendientes.findIndex(r => r.email === email);
+    if (existingIndex >= 0) {
+      data.registros_pendientes[existingIndex] = pendingData;
+    } else {
+      data.registros_pendientes.push(pendingData);
+    }
+    writeData(data);
 
     res.json({
       ok: true,
@@ -294,8 +309,17 @@ export async function verifyOtp(req, res) {
     const pendingReg = pendingRegistrations.get(email);
     if (pendingReg) {
       pendingReg.otpVerified = true;
+      pendingReg.status = 'pending_checkout';
       pendingReg.verifiedAt = new Date().toISOString();
       pendingRegistrations.set(email, pendingReg);
+
+      // Actualizar en DB
+      const data = readData();
+      const dbRegIndex = data.registros_pendientes?.findIndex(r => r.email === email);
+      if (dbRegIndex >= 0) {
+        data.registros_pendientes[dbRegIndex] = pendingReg;
+        writeData(data);
+      }
     }
 
     res.json({
@@ -321,7 +345,7 @@ export async function verifyOtp(req, res) {
  */
 export async function checkout(req, res) {
   try {
-    const { email, cardNumber, cardExpiry, cardCvc, cardName } = req.body;
+    const { email, cardNumber, cardExpiry, cardCvc, cardName, paymentProof, fileName } = req.body;
 
     // Validar datos
     if (!email) {
@@ -347,11 +371,28 @@ export async function checkout(req, res) {
       });
     }
 
+    // Si hay comprobante de pago, subirlo
+    let paymentProofUrl = null;
+    if (paymentProof) {
+        try {
+            paymentProofUrl = await uploadBase64File(
+                paymentProof, 
+                fileName || 'comprobante.jpg', 
+                'payments', 
+                req.env || process.env
+            );
+        } catch (uploadError) {
+            console.error('Error subiendo comprobante:', uploadError);
+            // No bloqueamos el proceso si falla la subida, pero avisamos
+        }
+    }
+
     // Validar datos de tarjeta (mockup - validación básica)
-    if (!cardNumber || !cardExpiry || !cardCvc || !cardName) {
+    // Solo si no se proporcionó un comprobante (pago con tarjeta vs transferencia)
+    if (!paymentProof && (!cardNumber || !cardExpiry || !cardCvc || !cardName)) {
       return res.status(400).json({
         ok: false,
-        msg: 'Información de tarjeta incompleta'
+        msg: 'Información de pago incompleta'
       });
     }
 
@@ -362,9 +403,21 @@ export async function checkout(req, res) {
     // Actualizar registro pendiente
     pendingReg.checkoutCompleted = true;
     pendingReg.transactionId = transactionId;
-    pendingReg.cardLastFour = cardNumber.slice(-4);
+    pendingReg.status = 'pending_validation';
+    pendingReg.cardLastFour = cardNumber ? cardNumber.slice(-4) : null;
+    pendingReg.cardName = cardName || null;
+    pendingReg.paymentProofUrl = paymentProofUrl;
+    pendingReg.paymentMethod = paymentProof ? 'transfer' : 'card';
     pendingReg.checkoutAt = new Date().toISOString();
     pendingRegistrations.set(email, pendingReg);
+
+    // Actualizar en DB
+    const data = readData();
+    const dbRegIndex = data.registros_pendientes?.findIndex(r => r.email === email);
+    if (dbRegIndex >= 0) {
+      data.registros_pendientes[dbRegIndex] = pendingReg;
+      writeData(data);
+    }
 
     res.json({
       ok: true,
@@ -423,12 +476,57 @@ export async function setupBuilding(req, res) {
       });
     }
 
+    if (!pendingReg.validated) {
+      return res.status(403).json({
+        ok: false,
+        msg: 'Tu pago está pendiente de validación por un Super Administrador'
+      });
+    }
+
     // Validar datos del edificio
     if (!buildingData.totalUnits || !buildingData.address) {
       return res.status(400).json({
         ok: false,
         msg: 'Datos del edificio incompletos'
       });
+    }
+
+    // Generar lista de unidades si se solicita un esquema específico
+    let unidades = [];
+    const { numberingScheme, totalUnits, unitsPB, unitsPerFloor } = buildingData;
+
+    if (numberingScheme === 'pb_pisos') {
+      // Generar PB (1, 2, 3...)
+      for (let i = 1; i <= unitsPB; i++) {
+        unidades.push(i.toString());
+      }
+      // Generar pisos (101, 102..., 201, 202...)
+      const unitsRemaining = totalUnits - unitsPB;
+      if (unitsRemaining > 0 && unitsPerFloor > 0) {
+        const floors = Math.ceil(unitsRemaining / unitsPerFloor);
+        for (let f = 1; f <= floors; f++) {
+          for (let u = 1; u <= unitsPerFloor; u++) {
+            if (unidades.length < totalUnits) {
+              unidades.push(`${f}${u.toString().padStart(2, '0')}`);
+            }
+          }
+        }
+      }
+    } else if (numberingScheme === 'consecutivo') {
+      for (let i = 1; i <= totalUnits; i++) {
+        unidades.push(i.toString());
+      }
+    } else {
+      // Estándar (101, 102...)
+      const upf = unitsPerFloor || 5; 
+      const floors = Math.ceil(totalUnits / upf);
+      for (let f = 1; f <= floors; f++) {
+        for (let u = 1; u <= upf; u++) {
+          if (unidades.length < totalUnits) {
+            unidades.push(`${f}${u.toString().padStart(2, '0')}`);
+          }
+        }
+      }
     }
 
     // Crear usuario administrador
@@ -457,6 +555,10 @@ export async function setupBuilding(req, res) {
         type: buildingData.type || 'edificio',
         monthlyFee: buildingData.monthlyFee || 0,
         cutoffDay: buildingData.cutoffDay || 1,
+        numberingScheme: buildingData.numberingScheme || 'estandar',
+        unitsPB: buildingData.unitsPB || 0,
+        unitsPerFloor: buildingData.unitsPerFloor || 0,
+        unidades: unidades // Lista generada de departamentos
       }
     };
 

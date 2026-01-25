@@ -98,17 +98,6 @@ p {
   border-color: var(--primary-dark);
 }
 
-.btn-secondary {
-  color: #fff;
-  background-color: var(--secondary-color);
-  border-color: var(--secondary-color);
-}
-
-.btn-secondary:hover {
-  background-color: #1a252f;
-  border-color: #1a252f;
-}
-
 .btn-success {
   color: #fff;
   background-color: var(--success-color);

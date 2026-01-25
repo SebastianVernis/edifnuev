@@ -5,294 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ChispartBuilding | Panel de Inquilino</title>
-  <style>
-    /* Sistema de Temas Avanzado - Fondos tonales coherentes */
-    :root,
-    [data-theme="default"] {
-      --primary: #0ea5e9;
-      --primary-dark: #0284c7;
-      --gradient: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #14b8a6 100%);
-      --bg-primary: #f0f9ff;
-      --bg-secondary: #e0f2fe;
-      --text-primary: #0c4a6e;
-      --text-secondary: #075985;
-      --card-bg: rgba(255, 255, 255, 0.9);
-      --card-border: #7dd3fc;
-    }
-
-    [data-theme="green"] {
-      --primary: #059669;
-      --primary-dark: #047857;
-      --gradient: linear-gradient(135deg, #34d399 0%, #059669 100%);
-      --bg-primary: #ecfdf5;
-      --bg-secondary: #d1fae5;
-      --text-primary: #064e3b;
-      --text-secondary: #065f46;
-      --card-bg: rgba(255, 255, 255, 0.9);
-      --card-border: #6ee7b7;
-    }
-
-    [data-theme="purple"] {
-      --primary: #7C3AED;
-      --primary-dark: #6D28D9;
-      --gradient: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
-      --bg-primary: #f5f3ff;
-      --bg-secondary: #ede9fe;
-      --text-primary: #4c1d95;
-      --text-secondary: #5b21b6;
-      --card-bg: rgba(255, 255, 255, 0.9);
-      --card-border: #c4b5fd;
-    }
-
-    [data-theme="orange"] {
-      --primary: #EA580C;
-      --primary-dark: #C2410C;
-      --gradient: linear-gradient(135deg, #fb923c 0%, #ea580c 100%);
-      --bg-primary: #fff7ed;
-      --bg-secondary: #ffedd5;
-      --text-primary: #7c2d12;
-      --text-secondary: #9a3412;
-      --card-bg: rgba(255, 255, 255, 0.9);
-      --card-border: #fdba74;
-    }
-
-    [data-theme="pink"] {
-      --primary: #DB2777;
-      --primary-dark: #BE185D;
-      --gradient: linear-gradient(135deg, #f472b6 0%, #db2777 100%);
-      --bg-primary: #fdf2f8;
-      --bg-secondary: #fce7f3;
-      --text-primary: #831843;
-      --text-secondary: #9d174d;
-      --card-bg: rgba(255, 255, 255, 0.9);
-      --card-border: #f9a8d4;
-    }
-
-    [data-theme="teal"] {
-      --primary: #0D9488;
-      --primary-dark: #0F766E;
-      --gradient: linear-gradient(135deg, #5eead4 0%, #0d9488 100%);
-      --bg-primary: #f0fdfa;
-      --bg-secondary: #ccfbf1;
-      --text-primary: #134e4a;
-      --text-secondary: #115e59;
-      --card-bg: rgba(255, 255, 255, 0.9);
-      --card-border: #5eead4;
-    }
-
-    [data-theme="red"] {
-      --primary: #DC2626;
-      --primary-dark: #B91C1C;
-      --gradient: linear-gradient(135deg, #f87171 0%, #dc2626 100%);
-      --bg-primary: #fef2f2;
-      --bg-secondary: #fee2e2;
-      --text-primary: #7f1d1d;
-      --text-secondary: #991b1b;
-      --card-bg: rgba(255, 255, 255, 0.9);
-      --card-border: #fca5a5;
-    }
-
-    [data-theme="gold"] {
-      --primary: #D97706;
-      --primary-dark: #B45309;
-      --gradient: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
-      --bg-primary: #fffbeb;
-      --bg-secondary: #fef3c7;
-      --text-primary: #78350f;
-      --text-secondary: #92400e;
-      --card-bg: rgba(255, 255, 255, 0.9);
-      --card-border: #fcd34d;
-    }
-
-    [data-theme="gradient-blue"] {
-      --primary: #3B82F6;
-      --primary-dark: #2563EB;
-      --gradient: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #2563eb 100%);
-      --bg-primary: #eff6ff;
-      --bg-secondary: #dbeafe;
-      --text-primary: #1e3a8a;
-      --text-secondary: #1e40af;
-      --card-bg: rgba(255, 255, 255, 0.9);
-      --card-border: #93c5fd;
-    }
-
-    [data-theme="gradient-purple"] {
-      --primary: #8B5CF6;
-      --primary-dark: #7C3AED;
-      --gradient: linear-gradient(135deg, #c084fc 0%, #8b5cf6 50%, #6d28d9 100%);
-      --bg-primary: #f5f3ff;
-      --bg-secondary: #ede9fe;
-      --text-primary: #4c1d95;
-      --text-secondary: #5b21b6;
-      --card-bg: rgba(255, 255, 255, 0.9);
-      --card-border: #c4b5fd;
-    }
-
-    [data-theme="gradient-sunset"] {
-      --primary: #F59E0B;
-      --primary-dark: #D97706;
-      --gradient: linear-gradient(135deg, #fbbf24 0%, #f59e0b 30%, #ef4444 70%, #dc2626 100%);
-      --bg-primary: #fff7ed;
-      --bg-secondary: #ffedd5;
-      --text-primary: #7c2d12;
-      --text-secondary: #9a3412;
-      --card-bg: rgba(255, 255, 255, 0.9);
-      --card-border: #fdba74;
-    }
-
-    [data-theme="gradient-ocean"] {
-      --primary: #0EA5E9;
-      --primary-dark: #0284C7;
-      --gradient: linear-gradient(135deg, #7dd3fc 0%, #0ea5e9 50%, #0284c7 100%);
-      --bg-primary: #f0f9ff;
-      --bg-secondary: #e0f2fe;
-      --text-primary: #0c4a6e;
-      --text-secondary: #075985;
-      --card-bg: rgba(255, 255, 255, 0.9);
-      --card-border: #7dd3fc;
-    }
-
-    [data-theme="gradient-fire"] {
-      --primary: #EF4444;
-      --primary-dark: #DC2626;
-      --gradient: linear-gradient(135deg, #fbbf24 0%, #f97316 30%, #ef4444 70%, #dc2626 100%);
-      --bg-primary: #fef2f2;
-      --bg-secondary: #fee2e2;
-      --text-primary: #7f1d1d;
-      --text-secondary: #991b1b;
-      --card-bg: rgba(255, 255, 255, 0.9);
-      --card-border: #fca5a5;
-    }
-
-    [data-theme="indigo"] {
-      --primary: #6366f1;
-      --primary-dark: #4f46e5;
-      --gradient: linear-gradient(135deg, #818cf8 0%, #6366f1 50%, #4f46e5 100%);
-      --bg-primary: #eef2ff;
-      --bg-secondary: #e0e7ff;
-      --text-primary: #312e81;
-      --text-secondary: #3730a3;
-      --card-bg: rgba(255, 255, 255, 0.9);
-      --card-border: #a5b4fc;
-    }
-
-    [data-theme="dark"] {
-      --primary: #1F2937;
-      --primary-dark: #111827;
-      --gradient: linear-gradient(135deg, #374151 0%, #1f2937 100%);
-      --bg-primary: #111827;
-      --bg-secondary: #1F2937;
-      --text-primary: #F9FAFB;
-      --text-secondary: #D1D5DB;
-      --card-bg: #1F2937;
-      --card-border: #374151;
-    }
-
-    /* Aplicar temas a TODOS los elementos */
-    body {
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-
-    .sidebar {
-      background: var(--gradient) !important;
-    }
-
-    .main-content {
-      background: var(--bg-primary) !important;
-    }
-
-    .btn-primary {
-      background: var(--primary) !important;
-    }
-
-    .btn-primary:hover {
-      background: var(--primary-dark) !important;
-    }
-
-    .sidebar-nav a:hover,
-    .sidebar-nav li.active a {
-      background: rgba(255, 255, 255, 0.1) !important;
-    }
-
-    /* Cards y contenedores */
-    .summary-card,
-    .info-card,
-    .chart-container,
-    .recent-container,
-    .config-card,
-    .filter-controls,
-    .table-container,
-    .fondo-card,
-    .anuncio-card,
-    .modal-content {
-      background: var(--card-bg) !important;
-      color: var(--text-primary);
-      border-color: var(--card-border);
-    }
-
-    .data-table {
-      background: var(--card-bg) !important;
-      color: var(--text-primary);
-    }
-
-    .data-table th {
-      background: var(--bg-secondary) !important;
-      color: var(--text-primary);
-    }
-
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      color: var(--text-primary);
-    }
-
-    p,
-    label,
-    span,
-    .close {
-      color: var(--text-secondary);
-    }
-
-    .mobile-sidebar-toggle {
-      background: var(--primary) !important;
-    }
-
-    .mobile-sidebar-toggle:hover {
-      background: var(--primary-dark) !important;
-    }
-
-    /* Inputs */
-    input,
-    select,
-    textarea {
-      background: var(--bg-primary) !important;
-      color: var(--text-primary) !important;
-      border-color: var(--card-border) !important;
-    }
-
-    /* Grid de Fondos Responsive (Full Width) */
-    #fondos-summary-inquilino,
-    .fondos-summary {
-      display: flex !important;
-      flex-wrap: wrap !important;
-      gap: 1.5rem !important;
-      width: 100% !important;
-    }
-
-    .fondo-card {
-      flex: 1 1 250px !important;
-      min-width: 250px !important;
-    }
-  </style>
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/dashboard.css">
-  <link rel="stylesheet" href="css/dashboard-compact.css">
-  <link rel="stylesheet" href="css/dashboard-spacing-fix.css">
+  <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="/config.js"></script>
 </head>
@@ -302,18 +15,15 @@
     <!-- Sidebar Hotspot -->
     <div class="sidebar-hotspot"></div>
 
-    <!-- Hamburguesa Button -->
-    <button class="mobile-sidebar-toggle fixed-toggle" onclick="toggleSidebar()">
-      <i class="fas fa-bars"></i>
-    </button>
-
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
-        <button class="sidebar-close" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
-        <img src="/logo.png" alt="Logo" style="height: 50px; margin-bottom: 10px;">
-        <h2 id="building-name">Cargando...</h2>
-        <p>Panel de Inquilino</p>
+        <div class="sidebar-header-content">
+          <button class="sidebar-close" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+          <h2 id="building-name">Cargando...</h2>
+          <p>Panel de Inquilino</p>
+        </div>
+        <img src="/logo.png" alt="Logo" style="height: 50px;">
       </div>
 
       <nav class="sidebar-nav">
@@ -335,6 +45,11 @@
         <button id="logout-btn" class="btn btn-outline">Cerrar Sesión</button>
       </div>
     </aside>
+
+    <!-- Hamburguesa Button -->
+    <button class="mobile-sidebar-toggle fixed-toggle" onclick="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </button>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -370,15 +85,14 @@
           <!-- Transparencia del Edificio (Row 2: 4 cards) -->
           <h3 class="grid-col-span-12" style="margin: 1rem 0 0.5rem;">Transparencia del Edificio</h3>
 
-          <div class="summary-card grid-col-span-3"
-            style="background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #14b8a6 100%); color: white;">
+          <div class="summary-card grid-col-span-3">
             <div style="display: flex; justify-content: space-between;">
               <div>
-                <h3 style="color: white; opacity: 0.9;">Patrimonio Total</h3>
-                <p class="amount" id="patrimonio-edificio" style="color: white;">$0</p>
-                <p class="description" style="color: white; opacity: 0.8;">Fondos del edificio</p>
+                <h3>Patrimonio Total</h3>
+                <p class="amount-total" id="patrimonio-edificio">$0</p>
+                <p class="description">Fondos del edificio</p>
               </div>
-              <i class="fas fa-building" style="font-size: 2.5rem; opacity: 0.3;"></i>
+              <i class="fas fa-building"></i>
             </div>
           </div>
 
@@ -746,8 +460,19 @@
               </div>
 
               <div class="form-group">
-                <label for="parcialidad-comprobante">Comprobante:</label>
-                <input type="text" id="parcialidad-comprobante" placeholder="Referencia de pago" required>
+                <label for="parcialidad-comprobante">Referencia/Operación:</label>
+                <input type="text" id="parcialidad-comprobante" placeholder="Referencia de pago o banco" required>
+              </div>
+
+              <div class="form-group">
+                <label for="parcialidad-archivo">Archivo Comprobante (Imagen):</label>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem; border: 1px dashed var(--gray); padding: 10px; border-radius: 8px;">
+                  <input type="file" id="parcialidad-archivo" accept="image/*,application/pdf" onchange="handleParcialidadFileSelect(this)">
+                  <div id="parcialidad-preview-container" style="display: none; margin-top: 10px; text-align: center;">
+                    <img id="parcialidad-preview" src="" style="max-width: 100%; max-height: 150px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <button type="button" onclick="clearParcialidadFile()" style="background: none; border: none; color: #EF4444; font-size: 0.8rem; cursor: pointer; text-decoration: underline; margin-top: 5px;">Quitar archivo</button>
+                  </div>
+                </div>
               </div>
 
               <div class="form-group">
@@ -765,7 +490,7 @@
 
               <div class="form-group">
                 <button type="submit" class="btn btn-primary">Reportar Pago</button>
-                <button type="button" class="btn btn-secondary modal-cancel">Cancelar</button>
+                <button type="button" class="btn btn-primary modal-cancel">Cancelar</button>
               </div>
             </form>
           </div>
@@ -869,6 +594,7 @@
     sidebar.classList.toggle('active');
   }
 
+
   // Cerrar sidebar al hacer click en un enlace (móvil)
   document.querySelectorAll('.sidebar-nav a').forEach(link => {
     link.addEventListener('click', () => {
@@ -876,5 +602,10 @@
         document.getElementById('sidebar').classList.remove('active');
       }
     });
+  });
+
+  // Inicializar visibilidad del botón al cargar
+  document.addEventListener('DOMContentLoaded', () => {
+    // handled by CSS
   });
 </script>

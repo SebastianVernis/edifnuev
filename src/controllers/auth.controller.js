@@ -56,6 +56,14 @@ export const login = async (req, res) => {
       });
     }
 
+    // Verificar si el usuario está activo
+    if (usuario.activo === false) {
+      return res.status(403).json({
+        ok: false,
+        msg: 'Su cuenta ha sido desactivada o restringida. Contacte al administrador del sistema.'
+      });
+    }
+
     // Verificar la contraseña
     const validPassword = await Usuario.validatePassword(usuario, password);
     if (!validPassword) {

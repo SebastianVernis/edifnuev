@@ -7,8 +7,7 @@
   <title>Super Admin - ChispartBuilding</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/main.css">
   <style>
     :root {
       --cyber-gradient: linear-gradient(90deg, rgba(166, 247, 236, 1) 0%, rgba(204, 117, 255, 1) 35%, rgba(253, 117, 255, 1) 65%, rgba(217, 76, 85, 1) 100%);
@@ -447,9 +446,70 @@
     }
 
     async function cargarPagosPendientes() {
-      // Placeholder para funcionalidad futura
-      document.getElementById('pagos-tbody').innerHTML =
-        '<tr><td colspan="6" style="text-align: center; color: #6B7280;">No hay pagos pendientes de validación</td></tr>';
+      try {
+        const response = await fetch('/api/super-admin/pending-payments', {
+          headers: { 'Authorization': `Bearer ${superAdminToken}` }
+        });
+
+        const data = await response.json();
+        const tbody = document.getElementById('pagos-tbody');
+
+        if (data.ok && data.pending) {
+          if (data.pending.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #6B7280;">No hay pagos pendientes de validación</td></tr>';
+            return;
+          }
+
+          tbody.innerHTML = data.pending.map(p => `
+            <tr>
+              <td>${p.buildingName}</td>
+              <td>${p.email}</td>
+              <td><span class="badge">${p.paymentMethod || 'N/A'}</span></td>
+              <td><code style="font-size: 0.8rem; opacity: 0.8;">${p.paymentReference || p.transactionId || 'N/A'}</code></td>
+              <td style="font-weight: 700;">$${p.paymentAmount || 0}</td>
+              <td>
+                <div style="display: flex; gap: 0.5rem;">
+                  ${p.paymentProofUrl ? `
+                    <a href="${p.paymentProofUrl}" target="_blank" class="btn btn-sm" style="background: rgba(204, 117, 255, 0.2); color: var(--accent); border: 1px solid var(--accent);" title="Ver Comprobante">
+                      <i class="fas fa-image"></i>
+                    </a>
+                  ` : ''}
+                  <button class="btn btn-sm btn-success" onclick="validarPago('${p.email}')">
+                    <i class="fas fa-check"></i> Validar
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `).join('');
+        }
+      } catch (error) {
+        console.error('Error cargando pagos pendientes:', error);
+      }
+    }
+
+    async function validarPago(email) {
+      if (!confirm(`¿Confirmar validación del pago para ${email}?`)) return;
+
+      try {
+        const response = await fetch(`/api/super-admin/payments/${email}/validate`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${superAdminToken}`
+          }
+        });
+
+        const data = await response.json();
+        if (data.ok) {
+          alert('✅ Pago validado correctamente');
+          recargarDatos();
+        } else {
+          alert('❌ Error: ' + data.msg);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error al validar pago');
+      }
     }
 
     function recargarDatos() {

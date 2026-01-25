@@ -1,6 +1,52 @@
 // Inquilino Buttons Handler - Funcionalidad para panel de inquilino
+// Variables para archivos de parcialidades
+let selectedParcialidadFileData = null;
+let selectedParcialidadFileName = null;
+
 document.addEventListener('DOMContentLoaded', () => {
   console.log('🔧 Inquilino Buttons Handler cargado');
+
+  window.handleParcialidadFileSelect = function(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('El archivo es demasiado grande. Máximo 5MB.');
+      input.value = '';
+      return;
+    }
+
+    selectedParcialidadFileName = file.name;
+    console.log("📎 Archivo seleccionado para reporte de parcialidad:", selectedParcialidadFileName);
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      selectedParcialidadFileData = e.target.result;
+      
+      if (file.type.startsWith('image/')) {
+        const preview = document.getElementById('parcialidad-preview');
+        if (preview) {
+          preview.src = e.target.result;
+          const container = document.getElementById('parcialidad-preview-container');
+          if (container) container.style.display = 'block';
+        }
+      } else {
+        const container = document.getElementById('parcialidad-preview-container');
+        if (container) container.style.display = 'none';
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  window.clearParcialidadFile = function() {
+    selectedParcialidadFileData = null;
+    selectedParcialidadFileName = null;
+    const input = document.getElementById('parcialidad-archivo');
+    if (input) input.value = '';
+    const container = document.getElementById('parcialidad-preview-container');
+    if (container) container.style.display = 'none';
+    console.log("🗑️ Archivo de parcialidad quitado");
+  };
 
   // ========== CUOTAS ==========
   const cuotasAnio = document.getElementById('cuotas-año');
@@ -369,12 +415,22 @@ function renderCuotasTable(cuotas) {
       parseFloat(cuota.monto_extraordinario || 0) +
       parseFloat(cuota.monto_mora || 0);
 
+    const comprobanteUrl = cuota.comprobantePago || cuota.comprobante_pago;
+    const isUrl = comprobanteUrl && (comprobanteUrl.startsWith('/api/') || comprobanteUrl.startsWith('/uploads/') || comprobanteUrl.startsWith('http'));
+
     tr.innerHTML = `
       <td>${cuota.mes} ${cuota.anio}</td>
       <td>$${montoTotal.toLocaleString('es-MX')}</td>
       <td class="${estadoClass}">${estado}</td>
       <td>${vencimiento}</td>
-      <td>${fechaPago}</td>
+      <td>
+        ${fechaPago}
+        ${isUrl ? `
+          <a href="${comprobanteUrl}" target="_blank" style="margin-left: 5px; color: #4F46E5;" title="Ver Comprobante">
+            <i class="fas fa-image"></i>
+          </a>
+        ` : ''}
+      </td>
     `;
 
     tbody.appendChild(tr);
@@ -472,36 +528,57 @@ async function reportarPagoParcialidad() {
       monto: parseFloat(monto),
       fecha,
       comprobante,
-      notas
+      notas,
+      base64Comprobante: selectedParcialidadFileData,
+      fileNameComprobante: selectedParcialidadFileName
     };
 
-    console.log('📤 Enviando a API:', bodyData);
+    console.log('📤 Enviando a API:', bodyData.base64Comprobante ? "Con archivo" : "Sin archivo");
 
-    const response = await fetch('/api/parcialidades', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-auth-token': token
-      },
-      body: JSON.stringify(bodyData)
-    });
+    const submitBtn = document.querySelector('#reportar-parcialidad-form button[type="submit"]');
+    const originalHTML = submitBtn.innerHTML;
 
-    console.log('📡 Response status:', response.status);
+    try {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
 
-    if (response.ok) {
-      const result = await response.json();
-      console.log('✅ Respuesta:', result);
-      alert('✅ Pago reportado exitosamente. Será validado por el administrador.');
-      hideModal('reportar-parcialidad-modal');
-      cargarDashboardInquilino();
-    } else {
-      const error = await response.json();
-      console.error('❌ Error servidor:', error);
-      alert(`❌ Error: ${error.msg || 'No se pudo reportar el pago'}`);
+      const token = localStorage.getItem('edificio_token');
+
+      const response = await fetch('/api/parcialidades', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token
+        },
+        body: JSON.stringify(bodyData)
+      });
+
+      console.log('📡 Response status:', response.status);
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('✅ Respuesta:', result);
+        alert('✅ Pago reportado exitosamente. Será validado por el administrador.');
+        hideModal('reportar-parcialidad-modal');
+        
+        // Limpiar archivo
+        window.clearParcialidadFile();
+
+        cargarDashboardInquilino();
+      } else {
+        const error = await response.json();
+        console.error('❌ Error servidor:', error);
+        alert(`❌ Error: ${error.msg || 'No se pudo reportar el pago'}`);
+      }
+    } catch (error) {
+      console.error('❌ Exception:', error);
+      alert('❌ Error al reportar el pago: ' + error.message);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalHTML;
     }
   } catch (error) {
-    console.error('❌ Exception:', error);
-    alert('❌ Error al reportar el pago: ' + error.message);
+    console.error('❌ Exception in outer block:', error);
   }
 }
 
@@ -522,11 +599,20 @@ function renderMisParcialidades(pagos) {
     const fecha = new Date(pago.fecha).toLocaleDateString('es-MX');
     const estadoClass = pago.estado === 'validado' ? 'text-success' : 'text-warning';
     const estadoTexto = pago.estado === 'validado' ? 'Validado' : 'Pendiente de validación';
+    const compUrl = pago.comprobante;
+    const isCompUrl = compUrl && (compUrl.startsWith('/api/') || compUrl.startsWith('/uploads/') || compUrl.startsWith('http'));
 
     tr.innerHTML = `
       <td>${fecha}</td>
       <td>$${pago.monto.toLocaleString()}</td>
-      <td>${pago.comprobante || '-'}</td>
+      <td>
+        ${pago.comprobante || '-'}
+        ${isCompUrl ? `
+          <a href="${compUrl}" target="_blank" style="margin-left: 5px; color: #4F46E5;" title="Ver Comprobante">
+            <i class="fas fa-image"></i>
+          </a>
+        ` : ''}
+      </td>
       <td class="${estadoClass}">${estadoTexto}</td>
     `;
 
@@ -762,10 +848,20 @@ async function cargarGastosInquilino() {
         } else {
           tbody.innerHTML = gastos.slice(0, 50).map(g => {
             const fecha = g.fecha ? g.fecha.split('T')[0].split('-').reverse().join('/') : '-';
+            const compUrl = g.comprobante;
+            const isCompUrl = compUrl && (compUrl.startsWith('/api/') || compUrl.startsWith('/uploads/') || compUrl.startsWith('http'));
+            
             return `
               <tr>
                 <td>${fecha}</td>
-                <td>${g.concepto}</td>
+                <td>
+                  ${g.concepto}
+                  ${isCompUrl ? `
+                    <a href="${compUrl}" target="_blank" style="margin-left: 5px; color: #4F46E5;" title="Ver Comprobante">
+                      <i class="fas fa-image"></i>
+                    </a>
+                  ` : ''}
+                </td>
                 <td><span class="badge">${g.categoria}</span></td>
                 <td>${g.proveedor || '-'}</td>
                 <td>$${parseFloat(g.monto || 0).toLocaleString('es-MX')}</td>

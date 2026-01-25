@@ -32,7 +32,7 @@ class Cuota {
   }
   
   // Método para generar cuotas para todos los departamentos
-  static generarCuotasMensuales(mes, anio, monto, fechaVencimiento) {
+  static generarCuotasMensuales(mes, anio, monto, fechaVencimiento, numMeses = 1) {
     try {
       const data = readData();
       // CAMBIO: Solo generar para usuarios ACTIVOS
@@ -51,25 +51,47 @@ class Cuota {
         throw new Error(`Ya existen cuotas generadas para ${mes}/${anio}`);
       }
       
-      // Crear cuotas para cada departamento
+      // Crear cuotas para cada departamento y mes
       const cuotasGeneradas = [];
+      const meses = [
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+      ];
       
-      for (const departamento of departamentos) {
-        const nuevaCuota = new Cuota(
-          mes,
-          anio,
-          monto,
-          fechaVencimiento,
-          departamento
-        );
+      let mesInicialIndex = meses.indexOf(mes);
+      if (mesInicialIndex === -1) mesInicialIndex = 0;
+
+      for (let m = 0; m < numMeses; m++) {
+        const currentMesIdx = (mesInicialIndex + m) % 12;
+        const currentAnio = anio + Math.floor((mesInicialIndex + m) / 12);
+        const currentMesNombre = meses[currentMesIdx];
         
-        const cuotaCreada = addItem('cuotas', nuevaCuota);
-        if (cuotaCreada) {
-          cuotasGeneradas.push(cuotaCreada);
+        // Calcular fecha de vencimiento para cada mes (heurística: mismo día)
+        const d = new Date(fechaVencimiento);
+        const currentVencimiento = new Date(currentAnio, currentMesIdx, d.getDate()).toISOString().split('T')[0];
+
+        for (const departamento of departamentos) {
+          // Verificar si ya existe para este mes/año/depto específico
+          const existe = data.cuotas.some(c => c.mes === currentMesNombre && c.anio === currentAnio && c.departamento === departamento);
+          
+          if (!existe) {
+            const nuevaCuota = new Cuota(
+              currentMesNombre,
+              currentAnio,
+              monto,
+              currentVencimiento,
+              departamento
+            );
+            
+            const cuotaCreada = addItem('cuotas', nuevaCuota);
+            if (cuotaCreada) {
+              cuotasGeneradas.push(cuotaCreada);
+            }
+          }
         }
       }
       
-      console.log(`✅ ${cuotasGeneradas.length} cuotas generadas`);
+      console.log(`✅ ${cuotasGeneradas.length} cuotas generadas en total`);
       return cuotasGeneradas;
     } catch (error) {
       console.error('Error al generar cuotas mensuales:', error);
@@ -110,6 +132,16 @@ class Cuota {
     };
     
     return updateItem('cuotas', id, updates);
+  }
+
+  // Método para actualizar estado de varias cuotas
+  static actualizarEstadoBulk(ids, estado, fechaPago = null, comprobantePago = null) {
+    const resultados = [];
+    for (const id of ids) {
+      const res = this.actualizarEstado(id, estado, fechaPago, comprobantePago);
+      if (res) resultados.push(res);
+    }
+    return resultados;
   }
   
   // Método para registrar pago

@@ -1,0 +1,352 @@
+<!-- 
+    EJEMPLO DE ACTUALIZACIÓN HTML
+    Cómo actualizar tus archivos HTML para usar main.css
+-->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edificio Admin - Ejemplo de Consolidación CSS</title>
+    
+    <!-- ============================================
+         ANTES: Múltiples archivos CSS (9 solicitudes)
+         ============================================ -->
+    
+    <!-- COMENTADO - Reemplazado por main.css
+    <link rel="stylesheet" href="/css/base/reset.css">
+    <link rel="stylesheet" href="/css/base/variables.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/themes.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/dashboard-spacing-fix.css">
+    <link rel="stylesheet" href="/css/dashboard-compact.css">
+    <link rel="stylesheet" href="/css/inquilino.css">
+    <link rel="stylesheet" href="/css/file-upload.css">
+    -->
+    
+    <!-- ============================================
+         DESPUÉS: Un único archivo CSS (1 solicitud)
+         ============================================ -->
+    
+    <!-- Archivo consolidado con todo el CSS -->
+    <link rel="stylesheet" href="/css/main.css">
+    
+    <!-- Opcional: Para producción, usar versión minificada -->
+    <!-- <link rel="stylesheet" href="/css/main.min.css?v=1.0"> -->
+    
+</head>
+<body>
+    <!-- Contenido de la página -->
+    
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Edificio Admin</h2>
+                <p>Sistema de Gestión</p>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active">
+                        <a href="#dashboard">
+                            <i class="fas fa-home"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#usuarios">
+                            <i class="fas fa-users"></i>
+                            Usuarios
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#cuotas">
+                            <i class="fas fa-money-bill"></i>
+                            Cuotas
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <h1>Dashboard</h1>
+                <div class="date-display">
+                    <p id="current-date"></p>
+                </div>
+            </header>
+            
+            <!-- Dashboard Summary -->
+            <section class="content-section active">
+                <div class="section-header">
+                    <h2>Resumen</h2>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <div class="grid-col-span-3 summary-card">
+                        <h3>Total Usuarios</h3>
+                        <div class="amount">125</div>
+                        <p class="description">Usuarios activos</p>
+                    </div>
+                    
+                    <div class="grid-col-span-3 summary-card">
+                        <h3>Cuotas Pagadas</h3>
+                        <div class="amount text-success">$45,000</div>
+                        <p class="description">Este mes</p>
+                    </div>
+                    
+                    <div class="grid-col-span-3 summary-card">
+                        <h3>Cuotas Pendientes</h3>
+                        <div class="amount text-warning">$12,500</div>
+                        <p class="description">Por cobrar</p>
+                    </div>
+                    
+                    <div class="grid-col-span-3 summary-card">
+                        <h3>Gastos</h3>
+                        <div class="amount text-danger">$8,200</div>
+                        <p class="description">Este mes</p>
+                    </div>
+                </div>
+                
+                <!-- Anuncios -->
+                <div class="section-header">
+                    <h2>Anuncios</h2>
+                </div>
+                
+                <div class="anuncios-container">
+                    <div class="anuncio-card">
+                        <div class="anuncio-header">
+                            <h4>Mantenimiento Programado</h4>
+                            <span class="anuncio-badge general">General</span>
+                        </div>
+                        <div class="anuncio-meta">
+                            <span>Publicado: 2024-01-15</span>
+                            <span>Por: Admin</span>
+                        </div>
+                        <div class="anuncio-content">
+                            Se realizará mantenimiento en el edificio el próximo sábado.
+                        </div>
+                    </div>
+                    
+                    <div class="anuncio-card importante">
+                        <div class="anuncio-header">
+                            <h4>Pago de Cuotas</h4>
+                            <span class="anuncio-badge importante">Importante</span>
+                        </div>
+                        <div class="anuncio-meta">
+                            <span>Publicado: 2024-01-14</span>
+                            <span>Por: Admin</span>
+                        </div>
+                        <div class="anuncio-content">
+                            Recordatorio: Las cuotas vencen el 20 de enero.
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Fondos -->
+                <div class="section-header">
+                    <h2>Fondos</h2>
+                </div>
+                
+                <div class="fondos-summary">
+                    <div class="fondo-card">
+                        <h3>Fondo de Reserva</h3>
+                        <div class="amount">$25,000</div>
+                        <p class="description">Disponible</p>
+                    </div>
+                    
+                    <div class="fondo-card">
+                        <h3>Fondo de Mantenimiento</h3>
+                        <div class="amount">$15,000</div>
+                        <p class="description">Disponible</p>
+                    </div>
+                    
+                    <div class="fondo-card total">
+                        <h3>Total Fondos</h3>
+                        <div class="amount">$40,000</div>
+                        <p class="description">Disponible</p>
+                    </div>
+                </div>
+                
+                <!-- Tabla de Usuarios -->
+                <div class="section-header">
+                    <h2>Usuarios Recientes</h2>
+                </div>
+                
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Rol</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Juan Pérez</td>
+                                <td>juan@example.com</td>
+                                <td>Admin</td>
+                                <td><span class="badge badge-success">Activo</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary">Editar</button>
+                                    <button class="btn btn-sm btn-danger">Eliminar</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>María García</td>
+                                <td>maria@example.com</td>
+                                <td>Comité</td>
+                                <td><span class="badge badge-success">Activo</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary">Editar</button>
+                                    <button class="btn btn-sm btn-danger">Eliminar</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Carlos López</td>
+                                <td>carlos@example.com</td>
+                                <td>Inquilino</td>
+                                <td><span class="badge badge-warning">Inactivo</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary">Editar</button>
+                                    <button class="btn btn-sm btn-danger">Eliminar</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Formulario de Ejemplo -->
+                <div class="section-header">
+                    <h2>Crear Usuario</h2>
+                </div>
+                
+                <div style="background: white; padding: 2rem; border-radius: 0.5rem; box-shadow: var(--shadow);">
+                    <form>
+                        <div class="form-group">
+                            <label for="nombre">Nombre</label>
+                            <input type="text" id="nombre" class="form-control" placeholder="Ingrese el nombre">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" class="form-control" placeholder="Ingrese el email">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="rol">Rol</label>
+                            <select id="rol" class="form-control">
+                                <option>Seleccione un rol</option>
+                                <option>Admin</option>
+                                <option>Comité</option>
+                                <option>Inquilino</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="mensaje">Mensaje</label>
+                            <textarea id="mensaje" class="form-control" rows="4" placeholder="Ingrese un mensaje"></textarea>
+                        </div>
+                        
+                        <div class="button-group">
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                            <button type="reset" class="btn btn-outline">Limpiar</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Alertas -->
+                <div class="section-header">
+                    <h2>Ejemplos de Alertas</h2>
+                </div>
+                
+                <div class="alert alert-info">
+                    <strong>Información:</strong> Este es un mensaje informativo.
+                </div>
+                
+                <div class="alert alert-success">
+                    <strong>Éxito:</strong> La operación se completó correctamente.
+                </div>
+                
+                <div class="alert alert-warning">
+                    <strong>Advertencia:</strong> Tenga cuidado con esta acción.
+                </div>
+                
+                <div class="alert alert-danger">
+                    <strong>Error:</strong> Ocurrió un error durante la operación.
+                </div>
+                
+            </section>
+        </main>
+    </div>
+    
+    <!-- Modal de Ejemplo -->
+    <div id="exampleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Modal de Ejemplo</h2>
+                <button class="close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Este es un ejemplo de modal con los estilos consolidados.</p>
+                <p>Todos los estilos están incluidos en main.css</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script>
+        // Ejemplo de función para abrir/cerrar modal
+        function openModal() {
+            document.getElementById('exampleModal').style.display = 'block';
+        }
+        
+        function closeModal() {
+            document.getElementById('exampleModal').style.display = 'none';
+        }
+        
+        // Mostrar fecha actual
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('es-ES', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    </script>
+    
+</body>
+</html>
+
+<!-- 
+    NOTAS IMPORTANTES:
+    
+    1. Este archivo es un ejemplo de cómo usar main.css
+    2. Solo necesitas una línea: <link rel="stylesheet" href="/css/main.css">
+    3. Todos los estilos están incluidos en main.css
+    4. No necesitas cargar múltiples archivos CSS
+    5. El rendimiento mejora significativamente
+    
+    CAMBIOS REALIZADOS:
+    - Reemplazado 9 archivos CSS por 1 archivo (main.css)
+    - Eliminadas 150+ duplicidades
+    - Mejorado el rendimiento (89% menos solicitudes HTTP)
+    - Mejor organización del código
+    - Más fácil de mantener
+    
+    BENEFICIOS:
+    ✅ Mejor rendimiento
+    ✅ Código más limpio
+    ✅ Más fácil de mantener
+    ✅ Mejor caché
+    ✅ Consistencia garantizada
+-->

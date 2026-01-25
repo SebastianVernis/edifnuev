@@ -25,4 +25,8 @@ router.put('/admins/:id/restrict', superAdminController.restrictAdmin);
 // Soporte y Troubleshooting
 router.get('/support/report', superAdminController.generateSupportReport);
 
+// Validación de Pagos
+router.get('/pending-payments', superAdminController.getPendingPayments);
+router.post('/payments/:email/validate', superAdminController.validatePayment);
+
 export default router;

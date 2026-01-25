@@ -112,22 +112,29 @@ export const updateFondos = (updates) => {
   const data = readData();
   if (!data) return false;
   
-  console.log('💾 Actualizando fondos. Antes:', data.fondos);
-  console.log('📝 Updates:', updates);
+  console.log('Ambiente:', process.env.NODE_ENV || 'development');
   
-  data.fondos = { ...data.fondos, ...updates };
-  
-  // Actualizar patrimonio total
-  data.fondos.patrimonioTotal = 
-    data.fondos.ahorroAcumulado + 
-    data.fondos.gastosMayores + 
-    data.fondos.dineroOperacional;
-  
-  console.log('💾 Después:', data.fondos);
+  if (Array.isArray(data.fondos)) {
+    console.log('💾 Detectado fondos como ARRAY (estilo DB)');
+    // Si es array, actualizamos cada fondo que coincida con la llave en updates
+    data.fondos = data.fondos.map(f => {
+      if (updates[f.nombre] !== undefined) {
+        return { ...f, saldo: updates[f.nombre] };
+      }
+      return f;
+    });
+  } else {
+    console.log('💾 Detectado fondos como OBJECT (legacy)');
+    data.fondos = { ...data.fondos, ...updates };
+    
+    // Solo para el objeto legacy calculamos patrimonioTotal aquí
+    data.fondos.patrimonioTotal = 
+      (data.fondos.ahorroAcumulado || 0) + 
+      (data.fondos.gastosMayores || 0) + 
+      (data.fondos.dineroOperacional || 0);
+  }
   
   const saved = writeData(data);
-  console.log('💾 Guardado:', saved ? 'SI' : 'NO');
-  
   return saved ? data.fondos : null;
 };
 

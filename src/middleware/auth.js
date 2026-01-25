@@ -77,6 +77,20 @@ export const verifyToken = (req, res, next) => {
     // Si no, asumir que el decoded ya es el usuario
     req.usuario = decoded.usuario || decoded;
 
+    // VALIDACIÓN CRÍTICA: Verificar si el usuario sigue activo en la DB (excepto SuperAdmin virtual)
+    if (req.usuario.id !== 0) {
+      const data = readData();
+      const usuarioEnDB = data.usuarios.find(u => u.id === req.usuario.id);
+      
+      if (!usuarioEnDB || usuarioEnDB.activo === false) {
+        logAccess('AUTH_REVOKED', req.usuario.id, req.usuario.rol, req.path, null, false, ip, userAgent);
+        return res.status(401).json({
+          success: false,
+          message: 'Su sesión ha sido invalidada o su cuenta ha sido desactivada.'
+        });
+      }
+    }
+
     // Log de autenticación exitosa
     logAccess('AUTH_SUCCESS', req.usuario.id, req.usuario.rol, req.path, null, true, ip, userAgent);
 

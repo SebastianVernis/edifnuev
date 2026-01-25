@@ -1,6 +1,7 @@
 import Parcialidad from '../models/Parcialidad.js';
 import Fondo from '../models/Fondo.js';
 import { handleControllerError } from '../middleware/error-handler.js';
+import { uploadBase64File } from '../utils/upload.js';
 
 export const getConfig = async (req, res) => {
   try {
@@ -71,7 +72,7 @@ export const getPagosByDepartamento = async (req, res) => {
 };
 
 export const registrarPago = async (req, res) => {
-  const { departamento, monto, fecha, comprobante, notas } = req.body;
+  const { departamento, monto, fecha, comprobante, notas, base64Comprobante, fileNameComprobante } = req.body;
   
   try {
     // Validar que inquilinos solo puedan registrar para su propio departamento
@@ -80,6 +81,21 @@ export const registrarPago = async (req, res) => {
         ok: false,
         msg: 'Solo puedes registrar pagos para tu propio departamento'
       });
+    }
+
+    // Si hay un archivo base64, subirlo
+    let comprobanteUrl = comprobante;
+    if (base64Comprobante) {
+        try {
+            comprobanteUrl = await uploadBase64File(
+                base64Comprobante,
+                fileNameComprobante || `parcialidad_${departamento}_${Date.now()}.jpg`,
+                'payments',
+                req.env || process.env
+            );
+        } catch (uploadError) {
+            console.error('Error al subir comprobante de parcialidad:', uploadError);
+        }
     }
     
     // Registrar el ingreso en el fondo de gastos mayores
@@ -90,7 +106,7 @@ export const registrarPago = async (req, res) => {
       departamento,
       monto,
       fecha,
-      comprobante,
+      comprobante: comprobanteUrl,
       notas
     });
     

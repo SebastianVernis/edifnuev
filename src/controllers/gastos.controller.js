@@ -1,6 +1,7 @@
 import Gasto from '../models/Gasto.js';
 import Fondo from '../models/Fondo.js';
 import { handleControllerError, validateId, validateRequired, validateNumber } from '../middleware/error-handler.js';
+import { uploadBase64File } from '../utils/upload.js';
 
 export const getGastos = async (req, res) => {
   try {
@@ -75,12 +76,27 @@ export const getGastosByMesAño = async (req, res) => {
 };
 
 export const crearGasto = async (req, res) => {
-  const { concepto, monto, categoria, proveedor, fecha, comprobante, notas, fondo } = req.body;
+  const { concepto, monto, categoria, proveedor, fecha, comprobante, notas, fondo, base64Comprobante, fileNameComprobante } = req.body;
   
   try {
     // Registrar el gasto en el fondo correspondiente
     await Fondo.registrarGasto(monto, fondo || 'dineroOperacional');
     
+    // Si se subió un archivo base64, procesarlo
+    let comprobanteUrl = comprobante;
+    if (base64Comprobante) {
+        try {
+            comprobanteUrl = await uploadBase64File(
+                base64Comprobante,
+                fileNameComprobante || 'comprobante.jpg',
+                'expenses',
+                req.env || process.env
+            );
+        } catch (uploadError) {
+            console.error('Error al subir comprobante de gasto:', uploadError);
+        }
+    }
+
     // Crear registro de gasto
     const gasto = await Gasto.create({
       concepto,
@@ -88,7 +104,7 @@ export const crearGasto = async (req, res) => {
       categoria,
       proveedor,
       fecha,
-      comprobante,
+      comprobante: comprobanteUrl,
       notas,
       createdBy: req.usuario.id
     });
@@ -99,10 +115,6 @@ export const crearGasto = async (req, res) => {
     });
   } catch (error) {
     return handleControllerError(error, res, 'gastos');
-    res.status(500).json({
-      ok: false,
-      msg: error.message || 'Error en el servidor'
-    });
   }
 };
 
@@ -118,6 +130,23 @@ export const actualizarGasto = async (req, res) => {
         ok: false,
         msg: 'Gasto no encontrado'
       });
+    }
+
+    // Si hay un nuevo comprobante en base64
+    if (updates.base64Comprobante) {
+        try {
+            updates.comprobante = await uploadBase64File(
+                updates.base64Comprobante,
+                updates.fileNameComprobante || 'comprobante_actualizado.jpg',
+                'expenses',
+                req.env || process.env
+            );
+            // Evitar que estos campos lleguen al modelo
+            delete updates.base64Comprobante;
+            delete updates.fileNameComprobante;
+        } catch (uploadError) {
+            console.error('Error al actualizar comprobante de gasto:', uploadError);
+        }
     }
     
     // Si se actualiza el monto, ajustar fondos
@@ -141,10 +170,6 @@ export const actualizarGasto = async (req, res) => {
     });
   } catch (error) {
     return handleControllerError(error, res, 'gastos');
-    res.status(500).json({
-      ok: false,
-      msg: error.message || 'Error en el servidor'
-    });
   }
 };
 

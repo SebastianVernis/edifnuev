@@ -62,7 +62,7 @@ export const getStats = async (req, res) => {
             totalBuildings: data.buildings ? data.buildings.length : 0,
             totalUsuarios: data.usuarios.length,
             buildingsActivos: data.buildings ? data.buildings.filter(b => b.active).length : 0,
-            pagosPendientes: data.pagos_temporales ? data.pagos_temporales.length : 0 // Ejemplo de tabla futura
+            pagosPendientes: data.registros_pendientes ? data.registros_pendientes.filter(r => r.checkoutCompleted && !r.validated).length : 0
         };
 
         res.json({ ok: true, stats });
@@ -200,5 +200,44 @@ export const generateSupportReport = async (req, res) => {
         res.json({ ok: true, report });
     } catch (error) {
         return handleControllerError(error, res, 'superAdmin.generateSupportReport');
+    }
+};
+
+/**
+ * Obtener pagos pendientes de validación
+ */
+export const getPendingPayments = async (req, res) => {
+    try {
+        const data = readData();
+        const pending = (data.registros_pendientes || []).filter(r => r.checkoutCompleted && !r.validated);
+        res.json({ ok: true, pending });
+    } catch (error) {
+        return handleControllerError(error, res, 'superAdmin.getPendingPayments');
+    }
+};
+
+/**
+ * Validar un pago de suscripción
+ */
+export const validatePayment = async (req, res) => {
+    const { email } = req.params;
+
+    try {
+        const data = readData();
+        const index = data.registros_pendientes?.findIndex(r => r.email === email);
+
+        if (index === -1 || index === undefined) {
+            return res.status(404).json({ ok: false, msg: 'Registro no encontrado' });
+        }
+
+        data.registros_pendientes[index].validated = true;
+        data.registros_pendientes[index].status = 'validated';
+        data.registros_pendientes[index].validatedAt = new Date().toISOString();
+
+        writeData(data);
+
+        res.json({ ok: true, msg: 'Pago validado correctamente' });
+    } catch (error) {
+        return handleControllerError(error, res, 'superAdmin.validatePayment');
     }
 };
