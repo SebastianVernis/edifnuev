@@ -98,7 +98,7 @@ export const updateItems = (collection, updates) => {
   const data = readData();
   if (!data) return false;
 
-  let updatedCount = 0;
+  const updatedIds = [];
 
   // updates is array of { id, ...changes }
   for (const update of updates) {
@@ -108,14 +108,14 @@ export const updateItems = (collection, updates) => {
 
     if (index !== -1) {
       data[collection][index] = { ...data[collection][index], ...changes };
-      updatedCount++;
+      updatedIds.push(id);
     }
   }
 
-  if (updatedCount === 0) return [];
+  if (updatedIds.length === 0) return [];
 
   // Write once
-  return writeData(data) ? updates.map(u => u.id) : null;
+  return writeData(data) ? updatedIds : null;
 };
 
 // Función para eliminar un elemento
