@@ -18,7 +18,8 @@
         "cuotas": true,
         "usuarios": true,
         "cierres": true
-      }
+      },
+      "restringido": true
     }
   ],
   "cuotas": [],
@@ -33,5 +34,6 @@
     "dineroOperacional": 0,
     "patrimonioTotal": 0
   },
-  "proyectos": []
+  "proyectos": [],
+  "registros_pendientes": []
 }
