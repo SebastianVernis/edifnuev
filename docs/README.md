@@ -9,22 +9,22 @@ Sistema completo de administración para edificios de departamentos con gestión
 
 ## 🌐 Demo en Vivo
 
-- **🌍 Frontend**: [https://chispartbuilding.pages.dev](https://chispartbuilding.pages.dev)
-- **⚡ Backend API**: [https://edificio-admin.sebastianvernis.workers.dev](https://edificio-admin.sebastianvernis.workers.dev)
+- **🌍 Frontend**: [https://edificio-production.pages.dev](edificio-production.pages.dev)
+- **⚡ Backend API**: [https://edificio-production.sebastianvernis.workers.dev](https://edificio-production.sebastianvernis.workers.dev)
 
 ## 📸 Capturas de Pantalla
 
-> **Nota**: Screenshots completos de todos los flujos disponibles en [`docs/screenshots/`](docs/screenshots/)  
+> **Nota**: Screenshots completos de todos los flujos disponibles en [`test/screenshots/`](test/screenshots/)  
 > Ver [Issue #18](https://github.com/SebastianVernis/edifnuev/issues/18) para documentación visual completa
 
 ### Panel de Administrador
-![Dashboard Admin](docs/screenshots/admin/dashboard-preview.png)
+![Dashboard Admin](test/screenshots/admin/dashboard-preview.png)
 
 ### Panel de Inquilino
-![Dashboard Inquilino](docs/screenshots/inquilino/dashboard-preview.png)
+![Dashboard Inquilino](test/screenshots/inquilino/dashboard-preview.png)
 
 ### Sistema de Temas
-![Temas](docs/screenshots/admin/temas-preview.png)
+![Temas](test/screenshots/admin/temas-preview.png)
 
 ## 🚀 Inicio Rápido
 
