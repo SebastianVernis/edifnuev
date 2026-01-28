@@ -10,6 +10,79 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-auth-token, Accept',
 };
 
+// Helper: Generar HTML para OTP
+function getOTPTemplate(code, email) {
+  return `
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <meta charset="UTF-8">
+      <style>
+        body { font-family: sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header { text-align: center; margin-bottom: 20px; }
+        .code { font-size: 32px; font-weight: bold; text-align: center; letter-spacing: 5px; color: #4F46E5; margin: 20px 0; background: #EEF2FF; padding: 15px; border-radius: 8px; }
+        .footer { font-size: 12px; color: #666; text-align: center; margin-top: 20px; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h2>Código de Verificación</h2>
+        </div>
+        <p>Hola,</p>
+        <p>Has solicitado un código de verificación para completar tu registro o inicio de sesión.</p>
+        <div class="code">${code}</div>
+        <p>Este código es válido por 10 minutos. No lo compartas con nadie.</p>
+        <div class="footer">
+          <p>Enviado a ${email}</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+}
+
+// Helper: Enviar email (Soporte para Resend)
+async function sendEmail(env, to, subject, html) {
+  const apiKey = env.RESEND_API_KEY;
+  const fromEmail = env.EMAIL_FROM || 'onboarding@resend.dev';
+
+  if (!apiKey) {
+    console.warn('⚠️ No RESEND_API_KEY configured. Email not sent.');
+    return { ok: false, msg: 'Email service not configured' };
+  }
+
+  try {
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: fromEmail,
+        to: to,
+        subject: subject,
+        html: html
+      })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log(`✅ Email sent to ${to}: ${data.id}`);
+      return { ok: true, id: data.id };
+    } else {
+      console.error('❌ Resend API Error:', data);
+      return { ok: false, error: data };
+    }
+  } catch (error) {
+    console.error('❌ Error sending email:', error);
+    return { ok: false, error: error.message };
+  }
+}
+
 // Helper: Base64 URL encode
 function base64urlEncode(data) {
   let base64;
@@ -2430,14 +2503,24 @@ export default {
           }), { expirationTtl: 300 }); // 5 minutos
         }
 
-        // TODO: Enviar email con OTP usando servicio de email
-        // Por ahora, retornar OTP en respuesta (solo para desarrollo)
-        console.log(`OTP para ${email}: ${otpCode}`);
+        // Enviar email con OTP
+        let emailSent = false;
+
+        if (env.RESEND_API_KEY) {
+          const html = getOTPTemplate(otpCode, email);
+          const result = await sendEmail(env, email, 'Código de Verificación - Edificio Admin', html);
+          emailSent = result.ok;
+        }
+
+        // Fallback para desarrollo o si falla el envío
+        if (!emailSent || env.OTP_DEV_MODE === 'true') {
+          console.log(`OTP para ${email}: ${otpCode}`);
+        }
 
         return new Response(JSON.stringify({
           ok: true,
-          msg: 'Código OTP enviado correctamente',
-          otp: otpCode // REMOVER EN PRODUCCIÓN
+          msg: emailSent ? 'Código enviado por email' : 'Código generado (Dev Mode)',
+          otp: (env.OTP_DEV_MODE === 'true' || !emailSent) ? otpCode : undefined
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
@@ -2487,13 +2570,24 @@ export default {
           }), { expirationTtl: 600 }); // 10 minutos
         }
 
-        // TODO: Enviar email con OTP
-        // Por ahora, retornar OTP en respuesta (solo para desarrollo)
+        // Enviar email con OTP
+        let emailSent = false;
+
+        if (env.RESEND_API_KEY) {
+          const html = getOTPTemplate(otpCode, email);
+          const result = await sendEmail(env, email, 'Código de Verificación - Edificio Admin', html);
+          emailSent = result.ok;
+        }
+
+        // Fallback para desarrollo o si falla el envío
+        if (!emailSent || env.OTP_DEV_MODE === 'true') {
+          console.log(`OTP para ${email}: ${otpCode}`);
+        }
 
         return new Response(JSON.stringify({
           ok: true,
-          msg: 'Registro iniciado. Revisa tu email para el código OTP.',
-          otp: otpCode // REMOVER EN PRODUCCIÓN
+          msg: emailSent ? 'Registro iniciado. Revisa tu email para el código OTP.' : 'Registro iniciado (Dev Mode).',
+          otp: (env.OTP_DEV_MODE === 'true' || !emailSent) ? otpCode : undefined
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
