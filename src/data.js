@@ -79,6 +79,27 @@ export const addItem = (collection, item) => {
   return writeData(data) ? newItem : null;
 };
 
+// Función para agregar múltiples elementos a una colección
+export const addItems = (collection, items) => {
+  const data = readData();
+  if (!data) return false;
+
+  // Generar ID inicial
+  let nextId = data[collection].length > 0
+    ? Math.max(...data[collection].map(i => i.id)) + 1
+    : 1;
+
+  const newItems = items.map(item => {
+    const newItem = { ...item, id: nextId };
+    nextId++;
+    return newItem;
+  });
+
+  data[collection].push(...newItems);
+
+  return writeData(data) ? newItems : null;
+};
+
 // Función para actualizar un elemento existente
 export const updateItem = (collection, id, updates) => {
   const data = readData();
@@ -145,6 +166,7 @@ export const getAll = (collection) => {
 };
 
 export const create = addItem;
+export const createMany = addItems;
 export const update = updateItem;
 export const remove = deleteItem;
 export const getFondos = () => {
@@ -158,7 +180,9 @@ export default {
   getById,
   getAll,
   addItem,
+  addItems,
   create,
+  createMany,
   updateItem,
   update,
   deleteItem,

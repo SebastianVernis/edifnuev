@@ -1,4 +1,4 @@
-import { readData, addItem, updateItem, deleteItem } from '../data.js';
+import { readData, addItem, addItems, updateItem, deleteItem } from '../data.js';
 
 class Cuota {
   constructor(mes, anio, monto, fechaVencimiento, departamento) {
@@ -61,6 +61,9 @@ class Cuota {
       let mesInicialIndex = meses.indexOf(mes);
       if (mesInicialIndex === -1) mesInicialIndex = 0;
 
+      // Recolectar todas las cuotas a crear
+      const cuotasParaCrear = [];
+
       for (let m = 0; m < numMeses; m++) {
         const currentMesIdx = (mesInicialIndex + m) % 12;
         const currentAnio = anio + Math.floor((mesInicialIndex + m) / 12);
@@ -83,11 +86,16 @@ class Cuota {
               departamento
             );
             
-            const cuotaCreada = addItem('cuotas', nuevaCuota);
-            if (cuotaCreada) {
-              cuotasGeneradas.push(cuotaCreada);
-            }
+            cuotasParaCrear.push(nuevaCuota);
           }
+        }
+      }
+
+      // Guardar todas las cuotas en una sola operación
+      if (cuotasParaCrear.length > 0) {
+        const guardadas = addItems('cuotas', cuotasParaCrear);
+        if (guardadas) {
+          cuotasGeneradas.push(...guardadas);
         }
       }
       
