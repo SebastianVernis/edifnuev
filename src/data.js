@@ -97,6 +97,7 @@ export const updateItem = (collection, id, updates) => {
 export const updateItems = (collection, updates) => {
   const data = readData();
   if (!data) return false;
+  if (!Array.isArray(data[collection])) return [];
 
   const updatedIds = [];
 
