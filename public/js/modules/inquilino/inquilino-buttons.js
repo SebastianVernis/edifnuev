@@ -138,11 +138,12 @@ async function cargarDashboardInquilino() {
   try {
     const token = localStorage.getItem('edificio_token');
 
-    // Cargar datos en paralelo (sin parcialidades por ahora)
-    const [cuotasRes, anunciosRes, fondosRes] = await Promise.all([
+    // Cargar datos en paralelo
+    const [cuotasRes, anunciosRes, fondosRes, parcialidadesRes] = await Promise.all([
       fetch(`/api/cuotas?departamento=${user.departamento}`, { headers: { 'x-auth-token': token } }),
       fetch('/api/anuncios?limit=5', { headers: { 'x-auth-token': token } }),
-      fetch('/api/fondos', { headers: { 'x-auth-token': token } })
+      fetch('/api/fondos', { headers: { 'x-auth-token': token } }),
+      fetch(`/api/parcialidades/pagos?departamento=${user.departamento}`, { headers: { 'x-auth-token': token } })
     ]);
 
     // Procesar cuotas
@@ -151,8 +152,12 @@ async function cargarDashboardInquilino() {
       actualizarDashboardCuotas(cuotasData.cuotas);
     }
 
-    // Parcialidades deshabilitadas por ahora
-    // TODO: Implementar endpoint de parcialidades
+    // Procesar parcialidades
+    if (parcialidadesRes && parcialidadesRes.ok) {
+      const parcialidadesData = await parcialidadesRes.json();
+      actualizarDashboardParcialidades(parcialidadesData);
+      renderMisParcialidades(parcialidadesData.pagos);
+    }
 
     // Procesar anuncios
     if (anunciosRes.ok) {
@@ -529,6 +534,7 @@ async function reportarPagoParcialidad() {
       fecha,
       comprobante,
       notas,
+      referencia: comprobante, // Mapping comprobante to referencia for backend compatibility
       base64Comprobante: selectedParcialidadFileData,
       fileNameComprobante: selectedParcialidadFileName
     };
@@ -544,7 +550,7 @@ async function reportarPagoParcialidad() {
 
       const token = localStorage.getItem('edificio_token');
 
-      const response = await fetch('/api/parcialidades', {
+      const response = await fetch('/api/parcialidades/pagos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
