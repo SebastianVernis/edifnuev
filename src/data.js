@@ -103,7 +103,7 @@ export const updateItems = (collection, updates) => {
   // updates is array of { id, ...changes }
   for (const update of updates) {
     const { id, ...changes } = update;
-    const numId = typeof id === 'string' ? parseInt(id) : id;
+    const numId = Number(id);
     const index = data[collection].findIndex(item => item.id === numId);
 
     if (index !== -1) {
