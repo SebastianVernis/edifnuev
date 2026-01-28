@@ -83,7 +83,7 @@ async function testResponseTimes() {
     
     const response = await request(app)
       [endpoint.method](endpoint.path)
-      .set('x-auth-token', adminToken);
+      .set('Authorization', `Bearer ${adminToken}`);
     
     const responseTime = Date.now() - startTime;
     
@@ -115,7 +115,7 @@ async function testLoadCapacity() {
   const promises = Array(concurrentCount).fill().map((_, index) => 
     request(app)
       .get('/api/usuarios')
-      .set('x-auth-token', adminToken)
+      .set('Authorization', `Bearer ${adminToken}`)
       .then(response => ({
         index,
         status: response.status,
@@ -160,7 +160,7 @@ async function testLoadCapacity() {
     try {
       const response = await request(app)
         .get('/api/usuarios')
-        .set('x-auth-token', adminToken);
+        .set('Authorization', `Bearer ${adminToken}`);
       
       sustainedResults.push({
         index: i,
@@ -203,11 +203,11 @@ async function testMemoryUsage() {
   for (let i = 0; i < 20; i++) {
     await request(app)
       .get('/api/usuarios')
-      .set('x-auth-token', adminToken);
+      .set('Authorization', `Bearer ${adminToken}`);
     
     await request(app)
       .get('/api/cuotas')
-      .set('x-auth-token', adminToken);
+      .set('Authorization', `Bearer ${adminToken}`);
   }
   
   const memoryAfter = getMemoryUsage();
@@ -237,7 +237,7 @@ async function testMemoryUsage() {
   const heavyPromises = Array(100).fill().map(() => 
     request(app)
       .get('/api/usuarios')
-      .set('x-auth-token', adminToken)
+      .set('Authorization', `Bearer ${adminToken}`)
   );
   
   await Promise.all(heavyPromises);
@@ -277,7 +277,7 @@ async function testDataConsistencyUnderLoad() {
   const readPromises = Array(30).fill().map(async (_, index) => {
     const response = await request(app)
       .get('/api/usuarios')
-      .set('x-auth-token', adminToken);
+      .set('Authorization', `Bearer ${adminToken}`);
     
     return {
       index,
@@ -309,7 +309,7 @@ async function testDataConsistencyUnderLoad() {
   // Crear usuario de prueba
   const createResponse = await request(app)
     .post('/api/usuarios')
-    .set('x-auth-token', adminToken)
+    .set('Authorization', `Bearer ${adminToken}`)
     .send({
       nombre: 'Usuario Performance Test',
       email: 'performance@edificio205.com',
@@ -328,13 +328,13 @@ async function testDataConsistencyUnderLoad() {
       ...Array(10).fill().map(() => 
         request(app)
           .get('/api/usuarios')
-          .set('x-auth-token', adminToken)
+          .set('Authorization', `Bearer ${adminToken}`)
       ),
       // Actualizaciones
       ...Array(3).fill().map(() => 
         request(app)
           .put(`/api/usuarios/${testUserId}`)
-          .set('x-auth-token', adminToken)
+          .set('Authorization', `Bearer ${adminToken}`)
           .send({ telefono: `555-${Math.floor(Math.random() * 10000)}` })
       )
     ];
@@ -345,7 +345,7 @@ async function testDataConsistencyUnderLoad() {
     // Limpiar - eliminar usuario de prueba
     await request(app)
       .delete(`/api/usuarios/${testUserId}`)
-      .set('x-auth-token', adminToken);
+      .set('Authorization', `Bearer ${adminToken}`);
     
     assert(successfulOperations >= 12, 'Most mixed operations should succeed');
     console.log(`✅ ${successfulOperations}/13 operaciones mixtas exitosas`);
@@ -363,13 +363,13 @@ async function testErrorRateAndResilience() {
   
   const invalidRequests = [
     // Token inválido
-    request(app).get('/api/usuarios').set('x-auth-token', 'invalid_token'),
+    request(app).get('/api/usuarios').set('Authorization', 'Bearer invalid_token'),
     // Endpoint inexistente
-    request(app).get('/api/nonexistent').set('x-auth-token', adminToken),
+    request(app).get('/api/nonexistent').set('Authorization', `Bearer ${adminToken}`),
     // Método no permitido
-    request(app).patch('/api/usuarios').set('x-auth-token', adminToken),
+    request(app).patch('/api/usuarios').set('Authorization', `Bearer ${adminToken}`),
     // Datos inválidos
-    request(app).post('/api/usuarios').set('x-auth-token', adminToken).send({ invalid: 'data' })
+    request(app).post('/api/usuarios').set('Authorization', `Bearer ${adminToken}`).send({ invalid: 'data' })
   ];
   
   const invalidResults = await Promise.all(invalidRequests.map(p => 
@@ -389,7 +389,7 @@ async function testErrorRateAndResilience() {
   const errorPromises = Array(20).fill().map(() => 
     request(app)
       .get('/api/usuarios')
-      .set('x-auth-token', 'invalid_token')
+      .set('Authorization', 'Bearer invalid_token')
       .catch(() => ({ status: 401 }))
   );
   
@@ -398,7 +398,7 @@ async function testErrorRateAndResilience() {
   // Verificar que el sistema sigue funcionando normalmente
   const recoveryResponse = await request(app)
     .get('/api/usuarios')
-    .set('x-auth-token', adminToken);
+    .set('Authorization', `Bearer ${adminToken}`);
   
   assert.strictEqual(recoveryResponse.status, 200);
   console.log('✅ Sistema estable después de múltiples errores');

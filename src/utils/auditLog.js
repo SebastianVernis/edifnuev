@@ -1,4 +1,5 @@
 import fs from 'fs';
+import fsPromises from 'fs/promises';
 import path from 'path';
 
 /**
@@ -134,21 +135,25 @@ export const logUserUpdate = (userId, oldData, newData, actor, ip, userAgent) =>
 /**
  * Obtiene logs de auditoría por fecha
  */
-export const getAuditLogs = (date = null, limit = 100) => {
+export const getAuditLogs = async (date = null, limit = 100) => {
   const targetDate = date || new Date().toISOString().split('T')[0];
   const auditFile = path.join(auditDir, `audit-${targetDate}.log`);
   
   try {
-    if (fs.existsSync(auditFile)) {
-      const content = fs.readFileSync(auditFile, 'utf8');
+    try {
+      const content = await fsPromises.readFile(auditFile, 'utf8');
       const logs = content.split('\n')
         .filter(line => line.trim())
         .map(line => JSON.parse(line))
         .slice(-limit); // Obtener los últimos N registros
       
       return logs.reverse(); // Más recientes primero
+    } catch (err) {
+      if (err.code === 'ENOENT') {
+        return [];
+      }
+      throw err;
     }
-    return [];
   } catch (error) {
     console.error('Error leyendo logs de auditoría:', error);
     return [];
@@ -158,22 +163,27 @@ export const getAuditLogs = (date = null, limit = 100) => {
 /**
  * Obtiene logs de auditoría por usuario
  */
-export const getAuditLogsByUser = (userId, days = 7) => {
+export const getAuditLogsByUser = async (userId, days = 7) => {
   const logs = [];
   const today = new Date();
+  const promises = [];
   
   for (let i = 0; i < days; i++) {
     const date = new Date(today);
     date.setDate(date.getDate() - i);
     const dateStr = date.toISOString().split('T')[0];
     
-    const dayLogs = getAuditLogs(dateStr, 1000);
+    promises.push(getAuditLogs(dateStr, 1000));
+  }
+
+  const results = await Promise.all(promises);
+  results.forEach(dayLogs => {
     const userLogs = dayLogs.filter(log => 
       log.actor.id === userId || log.targetId === userId
     );
     
     logs.push(...userLogs);
-  }
+  });
   
   return logs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 };
@@ -181,7 +191,7 @@ export const getAuditLogsByUser = (userId, days = 7) => {
 /**
  * Obtiene estadísticas de auditoría
  */
-export const getAuditStats = (days = 30) => {
+export const getAuditStats = async (days = 30) => {
   const stats = {
     totalEvents: 0,
     eventsByAction: {},
@@ -191,13 +201,19 @@ export const getAuditStats = (days = 30) => {
   };
   
   const today = new Date();
+  const promises = [];
   
   for (let i = 0; i < days; i++) {
     const date = new Date(today);
     date.setDate(date.getDate() - i);
     const dateStr = date.toISOString().split('T')[0];
     
-    const dayLogs = getAuditLogs(dateStr, 1000);
+    promises.push(getAuditLogs(dateStr, 1000));
+  }
+
+  const results = await Promise.all(promises);
+
+  results.forEach((dayLogs, i) => {
     stats.totalEvents += dayLogs.length;
     
     dayLogs.forEach(log => {
@@ -216,7 +232,7 @@ export const getAuditStats = (days = 30) => {
     if (i === 0) {
       stats.recentActivity = dayLogs.slice(0, 10);
     }
-  }
+  });
   
   return stats;
 };
