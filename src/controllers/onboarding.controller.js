@@ -464,7 +464,19 @@ export async function setupBuilding(req, res) {
     }
 
     // Verificar registro pendiente
-    const pendingReg = pendingRegistrations.get(email);
+    let pendingReg = pendingRegistrations.get(email);
+
+    // Si no está en memoria o no está validado, verificar en persistencia (DB)
+    if (!pendingReg || !pendingReg.validated) {
+      const data = readData();
+      const dbReg = data.registros_pendientes?.find(r => r.email === email);
+      if (dbReg) {
+        // Actualizar memoria con lo que hay en DB
+        pendingReg = dbReg;
+        pendingRegistrations.set(email, pendingReg);
+      }
+    }
+
     if (!pendingReg) {
       return res.status(404).json({
         ok: false,
@@ -695,23 +707,25 @@ export async function getOnboardingStatus(req, res) {
 }
 
 // Limpiar registros pendientes expirados cada hora
-setInterval(() => {
-  const now = Date.now();
-  const expirationTime = 24 * 60 * 60 * 1000; // 24 horas
+if (process.env.NODE_ENV !== 'test') {
+  setInterval(() => {
+    const now = Date.now();
+    const expirationTime = 24 * 60 * 60 * 1000; // 24 horas
 
-  for (const [email, data] of pendingRegistrations.entries()) {
-    const createdAt = new Date(data.createdAt).getTime();
-    if (now - createdAt > expirationTime) {
-      pendingRegistrations.delete(email);
-      console.log(`Registro pendiente expirado eliminado: ${email}`);
+    for (const [email, data] of pendingRegistrations.entries()) {
+      const createdAt = new Date(data.createdAt).getTime();
+      if (now - createdAt > expirationTime) {
+        pendingRegistrations.delete(email);
+        console.log(`Registro pendiente expirado eliminado: ${email}`);
+      }
     }
-  }
 
-  // Limpiar OTPs expirados
-  for (const [email, data] of otpStore.entries()) {
-    if (new Date() > new Date(data.expiresAt)) {
-      otpStore.delete(email);
-      console.log(`OTP expirado eliminado: ${email}`);
+    // Limpiar OTPs expirados
+    for (const [email, data] of otpStore.entries()) {
+      if (new Date() > new Date(data.expiresAt)) {
+        otpStore.delete(email);
+        console.log(`OTP expirado eliminado: ${email}`);
+      }
     }
-  }
-}, 3600000); // Cada hora
+  }, 3600000); // Cada hora
+}

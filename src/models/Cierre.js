@@ -133,23 +133,14 @@ export default class Cierre {
     try {
       console.log(`📅 Generando cuotas completas para el año ${añoSiguiente}...`);
       
-      // Generar cuotas para cada uno de los 12 meses
-      for (const mes of meses) {
-        try {
-          // Verificar si ya existen cuotas para este mes
-          const cuotasExistentes = Cuota.obtenerPorMesAnio(mes, añoSiguiente);
-          
-          if (cuotasExistentes.length === 0) {
-            // Generar cuotas para este mes usando la función de programación
-            const cuotasMes = await programarCuotasAnuales(añoSiguiente);
-            cuotasGeneradasTotal += cuotasMes;
-            console.log(`✅ Generadas cuotas para ${mes} ${añoSiguiente}`);
-          } else {
-            console.log(`ℹ️ Ya existen cuotas para ${mes} ${añoSiguiente}`);
-          }
-        } catch (error) {
-          console.error(`❌ Error generando cuotas para ${mes} ${añoSiguiente}:`, error.message);
-        }
+      // Generar cuotas para el año siguiente
+      try {
+        console.log(`📅 Iniciando generación de cuotas para el año ${añoSiguiente}...`);
+        const cuotasMes = await programarCuotasAnuales(añoSiguiente);
+        cuotasGeneradasTotal = cuotasMes;
+        console.log(`✅ Proceso de generación de cuotas completado para ${añoSiguiente}`);
+      } catch (error) {
+        console.error(`❌ Error generando cuotas para ${añoSiguiente}:`, error.message);
       }
       
       // Verificar que se generaron cuotas para todos los 12 meses

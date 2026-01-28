@@ -14,7 +14,7 @@ import { getTodayAccessLogs, getCacheStats, clearPermissionsCache } from '../mid
 export const obtenerLogs = async (req, res) => {
   try {
     const { date, limit } = req.query;
-    const logs = getAuditLogs(date, parseInt(limit) || 100);
+    const logs = await getAuditLogs(date, parseInt(limit) || 100);
     
     res.json({
       ok: true,
@@ -39,7 +39,7 @@ export const obtenerLogsPorUsuario = async (req, res) => {
     const { userId } = req.params;
     const { days } = req.query;
     
-    const logs = getAuditLogsByUser(parseInt(userId), parseInt(days) || 7);
+    const logs = await getAuditLogsByUser(parseInt(userId), parseInt(days) || 7);
     
     res.json({
       ok: true,
@@ -63,7 +63,7 @@ export const obtenerLogsPorUsuario = async (req, res) => {
 export const obtenerEstadisticas = async (req, res) => {
   try {
     const { days } = req.query;
-    const stats = getAuditStats(parseInt(days) || 30);
+    const stats = await getAuditStats(parseInt(days) || 30);
     
     res.json({
       ok: true,
@@ -143,7 +143,7 @@ export const limpiarCache = async (req, res) => {
  */
 export const obtenerResumenActividad = async (req, res) => {
   try {
-    const auditStats = getAuditStats(7); // Últimos 7 días
+    const auditStats = await getAuditStats(7); // Últimos 7 días
     const accessLogs = getTodayAccessLogs();
     const cacheStats = getCacheStats();
     
