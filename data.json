@@ -22,7 +22,32 @@
       "restringido": true
     }
   ],
-  "cuotas": [],
+  "cuotas": [
+    {
+      "mes": "Enero",
+      "anio": 2025,
+      "monto": 550,
+      "fechaVencimiento": "2025-01-31T23:59:59.000Z",
+      "departamento": "TEST-101",
+      "estado": "VENCIDO",
+      "fechaPago": null,
+      "comprobantePago": null,
+      "fechaCreacion": "2026-01-28T10:47:48.270Z",
+      "id": 1
+    },
+    {
+      "mes": "Test",
+      "anio": 2024,
+      "monto": 550,
+      "fechaVencimiento": "2026-01-27T10:47:48.276Z",
+      "departamento": "TEST-VENCIDA",
+      "estado": "VENCIDO",
+      "fechaPago": null,
+      "comprobantePago": null,
+      "fechaCreacion": "2026-01-28T10:47:48.276Z",
+      "id": 2
+    }
+  ],
   "gastos": [],
   "presupuestos": [],
   "cierres": [],

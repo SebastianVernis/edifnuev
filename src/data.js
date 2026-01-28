@@ -93,6 +93,31 @@ export const updateItem = (collection, id, updates) => {
   return writeData(data) ? data[collection][index] : null;
 };
 
+// Función para actualizar múltiples elementos
+export const updateItems = (collection, updates) => {
+  const data = readData();
+  if (!data) return false;
+
+  let updatedCount = 0;
+
+  // updates is array of { id, ...changes }
+  for (const update of updates) {
+    const { id, ...changes } = update;
+    const numId = typeof id === 'string' ? parseInt(id) : id;
+    const index = data[collection].findIndex(item => item.id === numId);
+
+    if (index !== -1) {
+      data[collection][index] = { ...data[collection][index], ...changes };
+      updatedCount++;
+    }
+  }
+
+  if (updatedCount === 0) return [];
+
+  // Write once
+  return writeData(data) ? updates.map(u => u.id) : null;
+};
+
 // Función para eliminar un elemento
 export const deleteItem = (collection, id) => {
   const data = readData();
@@ -160,6 +185,7 @@ export default {
   addItem,
   create,
   updateItem,
+  updateItems,
   update,
   deleteItem,
   remove,
