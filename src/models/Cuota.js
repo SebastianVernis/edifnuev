@@ -1,4 +1,4 @@
-import { readData, addItem, addItems, updateItem, deleteItem } from '../data.js';
+import { readData, addItem, updateItem, deleteItem, updateItems, addItems } from '../data.js';
 
 class Cuota {
   constructor(mes, anio, monto, fechaVencimiento, departamento) {
@@ -144,12 +144,15 @@ class Cuota {
 
   // Método para actualizar estado de varias cuotas
   static actualizarEstadoBulk(ids, estado, fechaPago = null, comprobantePago = null) {
-    const resultados = [];
-    for (const id of ids) {
-      const res = this.actualizarEstado(id, estado, fechaPago, comprobantePago);
-      if (res) resultados.push(res);
-    }
-    return resultados;
+    const updates = ids.map(id => ({
+      id,
+      estado,
+      fechaPago: fechaPago || (estado === 'PAGADO' ? new Date().toISOString() : null),
+      comprobantePago
+    }));
+
+    const result = updateItems('cuotas', updates);
+    return result || [];
   }
   
   // Método para registrar pago
@@ -161,20 +164,21 @@ class Cuota {
   static actualizarVencidas() {
     const data = readData();
     const hoy = new Date();
-    let actualizadas = 0;
     
-    for (const cuota of data.cuotas) {
-      if (cuota.estado === 'PENDIENTE') {
+    const vencidasIds = data.cuotas
+      .filter(cuota => {
+        if (cuota.estado !== 'PENDIENTE') return false;
         const fechaVencimiento = new Date(cuota.fechaVencimiento);
-        
-        if (fechaVencimiento < hoy) {
-          const actualizada = Cuota.actualizarEstado(cuota.id, 'VENCIDO');
-          if (actualizada) actualizadas++;
-        }
-      }
+        return fechaVencimiento < hoy;
+      })
+      .map(c => c.id);
+
+    if (vencidasIds.length > 0) {
+      const updated = Cuota.actualizarEstadoBulk(vencidasIds, 'VENCIDO');
+      return updated.length;
     }
     
-    return actualizadas;
+    return 0;
   }
   
   // Método para eliminar una cuota
