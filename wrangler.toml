@@ -9,6 +9,10 @@ APP_URL = "https://edificio-production.sebastianvernis.workers.dev"
 FRONTEND_URL = "https://edificio-production.pages.dev"
 OTP_DEV_MODE = "false"
 
+# Email Configuration (Set via Cloudflare Dashboard Secrets)
+# RESEND_API_KEY = "re_..."
+# EMAIL_FROM = "onboarding@resend.dev"
+
 # Super Admin Configuration (Set these via Cloudflare Dashboard Secrets)
 # SUPER_ADMIN_EMAIL = "admin@example.com"
 # SUPER_ADMIN_PASSWORD = "your-secure-password"

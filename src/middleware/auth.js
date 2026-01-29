@@ -51,7 +51,9 @@ const cleanExpiredCache = () => {
 };
 
 // Limpiar cache cada 10 minutos
-setInterval(cleanExpiredCache, 10 * 60 * 1000);
+if (process.env.NODE_ENV !== 'test') {
+  setInterval(cleanExpiredCache, 10 * 60 * 1000);
+}
 
 // Middleware para verificar token JWT
 export const verifyToken = (req, res, next) => {

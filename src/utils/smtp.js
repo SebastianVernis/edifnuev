@@ -212,13 +212,15 @@ export function checkEmailRateLimit(email) {
 }
 
 // Limpiar rate limit store cada hora
-setInterval(() => {
-  const now = Date.now();
-  const window = 3600000;
-  
-  for (const [key, value] of rateLimitStore.entries()) {
-    if (now - value.firstRequest > window) {
-      rateLimitStore.delete(key);
+if (process.env.NODE_ENV !== 'test') {
+  setInterval(() => {
+    const now = Date.now();
+    const window = 3600000;
+
+    for (const [key, value] of rateLimitStore.entries()) {
+      if (now - value.firstRequest > window) {
+        rateLimitStore.delete(key);
+      }
     }
-  }
-}, 3600000);
+  }, 3600000);
+}

@@ -22,32 +22,7 @@
       "restringido": true
     }
   ],
-  "cuotas": [
-    {
-      "mes": "Enero",
-      "anio": 2025,
-      "monto": 550,
-      "fechaVencimiento": "2025-01-31T23:59:59.000Z",
-      "departamento": "TEST-101",
-      "estado": "VENCIDO",
-      "fechaPago": null,
-      "comprobantePago": null,
-      "fechaCreacion": "2026-01-28T10:47:48.270Z",
-      "id": 1
-    },
-    {
-      "mes": "Test",
-      "anio": 2024,
-      "monto": 550,
-      "fechaVencimiento": "2026-01-27T10:47:48.276Z",
-      "departamento": "TEST-VENCIDA",
-      "estado": "VENCIDO",
-      "fechaPago": null,
-      "comprobantePago": null,
-      "fechaCreacion": "2026-01-28T10:47:48.276Z",
-      "id": 2
-    }
-  ],
+  "cuotas": [],
   "gastos": [],
   "presupuestos": [],
   "cierres": [],
@@ -85,31 +60,6 @@
       "validated": false,
       "status": "pending_otp",
       "createdAt": "2026-01-28T11:39:40.824Z"
-    },
-    {
-      "email": "admin-1769600460058@example.com",
-      "fullName": "Sebastian Admin",
-      "phone": "5511223344",
-      "buildingName": "Residencial Las Palmas",
-      "selectedPlan": "profesional",
-      "planDetails": {
-        "name": "Comunidad Mediana",
-        "price": 949,
-        "maxUnits": 50,
-        "features": [
-          "Gestión de cuotas 2026-2027",
-          "Historial de auditoría (Logs)",
-          "Respaldos horários automáticos",
-          "Gestión de fondos y presupuesto",
-          "Portal completo para residentes",
-          "Soporte técnico prioritario"
-        ]
-      },
-      "otpVerified": false,
-      "checkoutCompleted": false,
-      "validated": false,
-      "status": "pending_otp",
-      "createdAt": "2026-01-28T11:41:03.362Z"
     }
   ]
 }

@@ -155,28 +155,30 @@ async function programarRespaldos() {
   }
 }
 
-// Iniciar servidor
-app.listen(PORT, async () => {
-  console.log(`Servidor corriendo en puerto ${PORT}`);
-  console.log('DNS configurado: http://ec2-18-223-32-141.us-east-2.compute.amazonaws.com');
+// Iniciar servidor solo si no estamos en modo test
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, async () => {
+    console.log(`Servidor corriendo en puerto ${PORT}`);
+    console.log('DNS configurado: http://ec2-18-223-32-141.us-east-2.compute.amazonaws.com');
 
-  // Inicializar SMTP
-  await getTransporter();
+    // Inicializar SMTP
+    await getTransporter();
 
-  // Inicializar sistema después de que el servidor esté corriendo
-  await inicializarSistema();
+    // Inicializar sistema después de que el servidor esté corriendo
+    await inicializarSistema();
 
-  // Configurar respaldos automáticos
-  await programarRespaldos();
+    // Configurar respaldos automáticos
+    await programarRespaldos();
 
-  // Programar actualización de cuotas vencidas cada día
-  setInterval(async () => {
-    try {
-      await actualizarCuotasVencidas();
-    } catch (error) {
-      console.error('Error en actualización programada de cuotas:', error);
-    }
-  }, 24 * 60 * 60 * 1000); // Cada 24 horas
-});
+    // Programar actualización de cuotas vencidas cada día
+    setInterval(async () => {
+      try {
+        await actualizarCuotasVencidas();
+      } catch (error) {
+        console.error('Error en actualización programada de cuotas:', error);
+      }
+    }, 24 * 60 * 60 * 1000); // Cada 24 horas
+  });
+}
 
 export default app;
