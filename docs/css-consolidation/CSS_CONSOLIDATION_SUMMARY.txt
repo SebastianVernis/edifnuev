@@ -7,7 +7,7 @@
 ═══════════════════════════════════════════════════════════════════════════
 
   Métrica                    Antes      Después    Mejora
-  ──────────────────────────────────────────────��──────────
+  ──────────────────────────────────────────────────────────────
   Archivos CSS                 9          1        -89%
   Solicitudes HTTP             9          1        -89%
   Líneas de código         3,272      3,100      -5.3%
@@ -33,7 +33,7 @@
 
   ⭐ NUEVO: main.css (3,100 líneas - Optimizado)
 
-═════════════════��═════════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════════════════
 
 🔍 DUPLICIDADES ENCONTRADAS Y RESUELTAS
 ═══════════════════════════════════════════════════════════════════════════
@@ -52,8 +52,8 @@
   Utilidades              10         2            20
   Variables CSS            4         3            12
   Media Queries           13         4            13
-  ─���───────────────────────────────────────────────────────
-  TOTAL                   68         9           133+
+  ─────────────────────────────────────────────────────────
+  TOTAL                   68         9           150+
 
 ═══════════════════════════════════════════════════════════════════════════
 
@@ -108,23 +108,23 @@
 ═══════════════════════════════════════════════════════════════════════════
 
 🚀 CÓMO USAR
-════════════════════════════════════════════════════════════���══════════════
+═══════════════════════════════════════════════════════════════════════════
 
   1. Reemplaza en tus archivos HTML:
 
-     ANTES:
-     <link rel="stylesheet" href="/css/base/reset.css">
-     <link rel="stylesheet" href="/css/base/variables.css">
-     <link rel="stylesheet" href="/css/styles.css">
-     <link rel="stylesheet" href="/css/themes.css">
-     <link rel="stylesheet" href="/css/dashboard.css">
-     <link rel="stylesheet" href="/css/dashboard-spacing-fix.css">
-     <link rel="stylesheet" href="/css/dashboard-compact.css">
-     <link rel="stylesheet" href="/css/inquilino.css">
-     <link rel="stylesheet" href="/css/file-upload.css">
+      ANTES:
+      <link rel="stylesheet" href="/css/base/reset.css">
+      <link rel="stylesheet" href="/css/base/variables.css">
+      <link rel="stylesheet" href="/css/styles.css">
+      <link rel="stylesheet" href="/css/themes.css">
+      <link rel="stylesheet" href="/css/dashboard.css">
+      <link rel="stylesheet" href="/css/dashboard-spacing-fix.css">
+      <link rel="stylesheet" href="/css/dashboard-compact.css">
+      <link rel="stylesheet" href="/css/inquilino.css">
+      <link rel="stylesheet" href="/css/file-upload.css">
 
-     DESPUÉS:
-     <link rel="stylesheet" href="/css/main.css">
+      DESPUÉS:
+      <link rel="stylesheet" href="/css/main.css">
 
   2. Verifica que todo funcione correctamente
 
@@ -159,7 +159,7 @@
   [ ] El sidebar se abre/cierra correctamente
   [ ] Los badges y alertas se ven bien
 
-═══════════════════════════���═══════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════════════════
 
 🎯 PRÓXIMOS PASOS
 ═══════════════════════════════════════════════════════════════════════════
@@ -182,7 +182,7 @@
   3. Abre DevTools (F12) y verifica los errores
   4. Compara con el archivo de consolidación report
 
-════════════════════��══════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════════════════
 
 📊 ESTADÍSTICAS FINALES
 ═══════════════════════════════════════════════════════════════════════════

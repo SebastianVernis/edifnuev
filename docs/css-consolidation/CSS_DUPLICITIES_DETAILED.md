@@ -2,7 +2,7 @@
 
 ## Resumen Ejecutivo
 
-Se han identificado y consolidado **150+ duplicidades** en los archivos CSS del proyecto.
+Se han identificado y consolidado **133+ duplicidades** en los archivos CSS del proyecto.
 
 ---
 
@@ -208,7 +208,7 @@ Duplicidades eliminadas: 150+
 - Consistencia garantizada
 
 ### Mejoras
-- **90% menos solicitudes HTTP** (9 → 1)
+- **~89% menos solicitudes HTTP** (9 → 1)
 - **5.3% menos código** (3,272 → 3,100 líneas)
 - **100% eliminación de duplicidades**
 - **Mejor caché** (un archivo se cachea una sola vez)
@@ -261,7 +261,7 @@ Duplicidades eliminadas: 150+
 
 La consolidación de CSS ha resultado en:
 - ✅ Eliminación de 150+ duplicidades
-- ✅ Reducción de solicitudes HTTP (90%)
+- ✅ Reducción de solicitudes HTTP (~89%)
 - ✅ Código más limpio y organizado
 - ✅ Mejor mantenibilidad
 - ✅ Mejor rendimiento

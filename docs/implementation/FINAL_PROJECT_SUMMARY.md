@@ -64,7 +64,7 @@
 ## 📁 Estructura Final del Proyecto
 
 ```
-/home/sebastianvernis/Proyectos/edifnuev/
+<project_root>/
 │
 ├── 📁 docs/ ⭐ (Documentación Centralizada)
 │   ├── INDEX.md (Índice general)

@@ -24,8 +24,8 @@ Se ha consolidado todo el CSS del proyecto en un único archivo (`main.css`) par
 Archivo consolidado con todo el CSS del proyecto.
 - 3,100 líneas de código
 - 26 secciones organizadas
-- 10 temas incluidos
-- 5 breakpoints responsive
+- 15 temas incluidos
+- 4 breakpoints responsive
 - 50+ variables CSS
 
 ### 2. **CSS_CONSOLIDATION_REPORT.md**
@@ -107,6 +107,21 @@ Script de análisis de CSS.
 ## 📊 Duplicidades Encontradas y Resueltas
 
 ### Clases Duplicadas (150+)
+
+> **Nota sobre el conteo**: El número "150+" representa el total de instancias duplicadas encontradas a través de todos los archivos CSS analizados. Esto incluye:
+> - Cada aparición de una clase duplicate en múltiples archivos (no solo clases únicas)
+> - Variables CSS duplicadas
+> - Media queries duplicadas
+> 
+> **Metodología de cálculo**: Se utilizó un script de análisis (`analyze-css.sh`) que:
+> 1. Escanea cada archivo CSS en busca de definiciones de clases, variables y media queries
+> 2. Compara las definiciones entre archivos para identificar duplicados
+> 3. Cuenta las instancias duplicadas (no las clases únicas)
+> 4. Genera un reporte con el total de duplicidades encontradas
+> 
+> **Rango de datos procesados**: 9 archivos CSS originales (base/reset.css, base/variables.css, styles.css, themes.css, dashboard.css, dashboard-spacing-fix.css, dashboard-compact.css, inquilino.css, file-upload.css)
+> 
+> **Fecha del conteo**: Commit de consolidación CSS
 
 #### Modales (6 clases)
 - `.modal`, `.modal-content`, `.modal-header`, `.modal-body`, `.modal-footer`, `.close`

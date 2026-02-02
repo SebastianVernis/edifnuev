@@ -11,35 +11,34 @@ docs/
 ├── inline-styles-cleanup/     # Documentación existente de limpieza de estilos
 ├── deployment/                # Documentación existente de despliegue
 ├── setup/                     # Documentación existente de configuración
-├── archive-legacy/            # Documentación histórica
+├── implementation/            # Documentación de implementación
+├── technical-reports/         # Reportes técnicos
+├── archive-legacy/            # Documentación histórica (archivos heredados)
 ├── screenshots/               # Capturas de pantalla
-├── project-management/        # Nueva: Documentación de gestión de proyecto
-├── technical-reports/         # Nueva: Reportes técnicos
-├── implementation/            # Nueva: Documentación de implementación
 └── INDEX.md                   # Índice principal actualizado
 ```
 
 ## 📋 Archivos a Mover de Raíz a docs/
 
 ### 1. Documentación de Consolidación CSS
-- `CSS_ARCHIVING_COMPLETE.md` → `docs/css-consolidation/`
-- `CSS_CONSOLIDATION_INDEX.md` → `docs/css-consolidation/`
-- `CSS_CONSOLIDATION_REPORT.md` → `docs/css-consolidation/`
-- `CSS_CONSOLIDATION_SUMMARY.txt` → `docs/css-consolidation/`
-- `CSS_DUPLICITIES_DETAILED.md` → `docs/css-consolidation/`
-- `CSS_MIGRATION_GUIDE.md` → `docs/css-consolidation/`
+- `CSS_ARCHIVING_COMPLETE.md` → `docs/css-consolidation/` (existente)
+- `CSS_CONSOLIDATION_INDEX.md` → `docs/css-consolidation/` (existente)
+- `CSS_CONSOLIDATION_REPORT.md` → `docs/css-consolidation/` (existente)
+- `CSS_CONSOLIDATION_SUMMARY.txt` → `docs/css-consolidation/` (existente)
+- `CSS_DUPLICITIES_DETAILED.md` → `docs/css-consolidation/` (existente)
+- `CSS_MIGRATION_GUIDE.md` → `docs/css-consolidation/` (existente)
 
 ### 2. Documentación de Limpieza de Estilos
-- `INLINE_STYLES_CLEANUP_REPORT.md` → `docs/inline-styles-cleanup/`
+- `INLINE_STYLES_CLEANUP_REPORT.md` → `docs/inline-styles-cleanup/` (existente)
 
 ### 3. Documentación de Implementación
-- `IMPLEMENTATION_COMPLETE.md` → `docs/implementation/`
-- `FINAL_PROJECT_SUMMARY.md` → `docs/implementation/`
-- `PROJECT_ORGANIZATION_SUMMARY.md` → `docs/implementation/`
+- `IMPLEMENTATION_COMPLETE.md` → `docs/implementation/` (existente)
+- `FINAL_PROJECT_SUMMARY.md` → `docs/implementation/` (existente)
+- `PROJECT_ORGANIZATION_SUMMARY.md` → `docs/implementation/` (existente)
 
 ### 4. Documentación Técnica
-- `CLEANUP_GUIDE.md` → `docs/technical-reports/`
-- `README_CSS_CONSOLIDATION.md` → `docs/technical-reports/`
+- `CLEANUP_GUIDE.md` → `docs/technical-reports/` (existente)
+- `README_CSS_CONSOLIDATION.md` → `docs/technical-reports/` (existente)
 
 ### 5. Documentación de Gestión de Proyecto
 - `README.md` → Mantener en raíz (archivo principal del proyecto)
@@ -61,57 +60,155 @@ docs/
 ### docs/css-consolidation/
 - `README.md` (existente)
 - `CSS_CONSOLIDATION_REPORT.md` (existente)
-- `CSS_ARCHIVING_COMPLETE.md` (nuevo)
-- `CSS_CONSOLIDATION_INDEX.md` (nuevo)
-- `CSS_CONSOLIDATION_SUMMARY.txt` (nuevo)
-- `CSS_DUPLICITIES_DETAILED.md` (nuevo)
-- `CSS_MIGRATION_GUIDE.md` (nuevo)
+- `CSS_ARCHIVING_COMPLETE.md` (existente)
+- `CSS_CONSOLIDATION_INDEX.md` (existente)
+- `CSS_CONSOLIDATION_SUMMARY.txt` (existente)
+- `CSS_DUPLICITIES_DETAILED.md` (existente)
+- `CSS_MIGRATION_GUIDE.md` (existente)
+- `EXAMPLE_HTML_UPDATE.html` (existente)
 
 ### docs/inline-styles-cleanup/
 - `README.md` (existente)
 - `INLINE_STYLES_CLEANUP_REPORT.md` (existente)
 
 ### docs/implementation/
-- `IMPLEMENTATION_COMPLETE.md` (nuevo)
-- `FINAL_PROJECT_SUMMARY.md` (nuevo)
-- `PROJECT_ORGANIZATION_SUMMARY.md` (nuevo)
+- `IMPLEMENTATION_COMPLETE.md` (existente)
+- `FINAL_PROJECT_SUMMARY.md` (existente)
+- `PROJECT_ORGANIZATION_SUMMARY.md` (existente)
 
 ### docs/technical-reports/
-- `CLEANUP_GUIDE.md` (nuevo)
-- `README_CSS_CONSOLIDATION.md` (nuevo)
+- `CLEANUP_GUIDE.md` (existente)
+- `README_CSS_CONSOLIDATION.md` (existente)
+- `DOCUMENTATION_REORGANIZATION_PLAN.md` (este archivo)
+
+### docs/archive-legacy/
+**Propósito**: Documentación histórica y archivos heredados de versiones anteriores.
+**Archivos de ejemplo a mover**:
+- `BLACKBOX.md`
+- `CHECKOUT_PAYMENT_CHANGES.md`
+- `CORRECCION_RUTAS_FRONTEND.md`
+- `CREDENCIALES_CORRECTAS.md`
+- `CREDENCIALES_DEMO_ACTUALIZADAS.md`
+- `CRUSH.md`
+- Y otros archivos históricos del proyecto
+
+### docs/screenshots/
+**Propósito**: Capturas de pantalla de la aplicación para documentación.
+**Estructura esperada**:
+```
+screenshots/
+├── auth/                      # Capturas de autenticación
+├── admin/                     # Capturas de interfaz admin
+└── user/                      # Capturas de interfaz de usuario
+```
 
 ## 🔧 Pasos de Implementación
 
-1. **Crear nuevos directorios**
-   ```bash
-   mkdir -p docs/implementation
-   mkdir -p docs/technical-reports
-   ```
+### 1. Crear nuevos directorios
+```bash
+# Crear directorios necesarios
+mkdir -p docs/implementation
+mkdir -p docs/technical-reports
+mkdir -p docs/archive-legacy
+mkdir -p docs/screenshots/auth docs/screenshots/admin docs/screenshots/user
+```
 
-2. **Mover archivos a sus ubicaciones correspondientes**
-   ```bash
-   mv CSS_ARCHIVING_COMPLETE.md docs/css-consolidation/
-   mv CSS_CONSOLIDATION_INDEX.md docs/css-consolidation/
-   mv CSS_CONSOLIDATION_REPORT.md docs/css-consolidation/
-   mv CSS_CONSOLIDATION_SUMMARY.txt docs/css-consolidation/
-   mv CSS_DUPLICITIES_DETAILED.md docs/css-consolidation/
-   mv CSS_MIGRATION_GUIDE.md docs/css-consolidation/
-   mv INLINE_STYLES_CLEANUP_REPORT.md docs/inline-styles-cleanup/
-   mv IMPLEMENTATION_COMPLETE.md docs/implementation/
-   mv FINAL_PROJECT_SUMMARY.md docs/implementation/
-   mv PROJECT_ORGANIZATION_SUMMARY.md docs/implementation/
-   mv CLEANUP_GUIDE.md docs/technical-reports/
-   mv README_CSS_CONSOLIDATION.md docs/technical-reports/
-   ```
+### 2. Mover archivos con verificación de seguridad
+```bash
+# ⚠️ ADVERTENCIA: Estos comandos mueven archivos
+# Asegúrate de estar en la raíz del proyecto y hacer backup primero
 
-3. **Actualizar el índice principal**
-   - Crear un nuevo `INDEX.md` completo en `/docs/`
-   - Incluir todas las secciones y archivos organizados
+# Función helper para mover con verificación
+move_file() {
+    local src="$1"
+    local dest="$2"
+    if [ -f "$src" ]; then
+        echo "Moviendo: $src → $dest"
+        mv "$src" "$dest"
+    else
+        echo "ADVERTENCIA: $src no existe, saltando..."
+    fi
+}
 
-4. **Verificar la organización**
-   - Confirmar que todos los archivos se han movido correctamente
-   - Verificar que los enlaces en la documentación funcionan
-   - Asegurar que la raíz del proyecto esté limpia
+# Crear respaldo antes de mover
+git status
+git backup-tag-or-branch  # Opcional: crear backup en git
+
+# Mover archivos de consolidación CSS
+move_file "CSS_ARCHIVING_COMPLETE.md" "docs/css-consolidation/"
+move_file "CSS_CONSOLIDATION_INDEX.md" "docs/css-consolidation/"
+move_file "CSS_CONSOLIDATION_REPORT.md" "docs/css-consolidation/"
+move_file "CSS_CONSOLIDATION_SUMMARY.txt" "docs/css-consolidation/"
+move_file "CSS_DUPLICITIES_DETAILED.md" "docs/css-consolidation/"
+move_file "CSS_MIGRATION_GUIDE.md" "docs/css-consolidation/"
+
+# Mover archivos de limpieza de estilos
+move_file "INLINE_STYLES_CLEANUP_REPORT.md" "docs/inline-styles-cleanup/"
+
+# Mover archivos de implementación
+move_file "IMPLEMENTATION_COMPLETE.md" "docs/implementation/"
+move_file "FINAL_PROJECT_SUMMARY.md" "docs/implementation/"
+move_file "PROJECT_ORGANIZATION_SUMMARY.md" "docs/implementation/"
+
+# Mover archivos de reportes técnicos
+move_file "CLEANUP_GUIDE.md" "docs/technical-reports/"
+move_file "README_CSS_CONSOLIDATION.md" "docs/technical-reports/"
+```
+
+### 3. Actualizar el índice principal
+- Crear un nuevo `INDEX.md` completo en `/docs/`
+- Incluir todas las secciones y archivos organizados
+- Verificar que todos los enlaces sean correctos
+
+### 4. Actualizar referencias y enlaces
+```bash
+# Buscar tokens de archivos movidos en el repositorio
+echo "Buscando referencias a archivosmovidos..."
+
+# Buscar y actualizar enlaces rotos
+grep -r "CSS_CONSOLIDATION_REPORT" --include="*.md" .
+grep -r "INLINE_STYLES_CLEANUP_REPORT" --include="*.md" .
+grep -r "IMPLEMENTATION_COMPLETE" --include="*.md" .
+grep -r "CLEANUP_GUIDE" --include="*.md" .
+
+# Verificar scripts con rutas codificadas
+grep -r "/home/sebastianvernis/Proyectos/edifnuev" --include="*.sh" --include="*.js" .
+
+# Ejecutar verificador de enlaces Markdown
+# (Si está disponible: markdown-link-check o similar)
+
+# Actualizar README.md principal si es necesario
+```
+
+### 5. Verificar la organización
+- Confirmar que todos los archivos se han movido correctamente
+- Verificar que los enlaces en la documentación funcionan
+- Asegurar que la raíz del proyecto esté limpia
+- Ejecutar pruebas o scripts de verificación si existen
+
+### 6. Hacer commit de los cambios
+```bash
+# Verificar estado final
+git status
+git diff --stat
+
+# Añadir cambios
+git add .
+git add -u  # Solo archivos modificados/eliminados
+
+# Commit con mensaje descriptivo
+git commit -m "docs: reorganizar estructura de documentación
+
+- Mover archivos de consolidación CSS a docs/css-consolidation/
+- Mover archivos de cleanup a docs/technical-reports/
+- Mover archivos de implementación a docs/implementation/
+- Crear estructura para archive-legacy y screenshots
+- Actualizar INDEX.md con nueva estructura
+- Corregir enlaces y referencias a archivos movidos"
+
+# Opcional:推 al remoto
+git push origin main
+```
 
 ## ✅ Beneficios Esperados
 
@@ -125,5 +222,6 @@ docs/
 - Creación de directorios: 5 minutos
 - Movimiento de archivos: 10 minutos
 - Actualización de índices: 15 minutos
-- Verificación: 10 minutos
-- **Total estimado**: 40 minutos
+- Verificación de enlaces: 10 minutos
+- Commit y push: 5 minutos
+- **Total estimado**: 45 minutos

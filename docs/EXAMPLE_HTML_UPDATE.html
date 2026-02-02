@@ -5,15 +5,16 @@
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edificio Admin - Ejemplo de Consolidación CSS</title>
-    
+
     <!-- ============================================
          ANTES: Múltiples archivos CSS (9 solicitudes)
          ============================================ -->
-    
+
     <!-- COMENTADO - Reemplazado por main.css
     <link rel="stylesheet" href="/css/base/reset.css">
     <link rel="stylesheet" href="/css/base/variables.css">
@@ -25,21 +26,25 @@
     <link rel="stylesheet" href="/css/inquilino.css">
     <link rel="stylesheet" href="/css/file-upload.css">
     -->
-    
+
     <!-- ============================================
          DESPUÉS: Un único archivo CSS (1 solicitud)
          ============================================ -->
-    
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <!-- Archivo consolidado con todo el CSS -->
     <link rel="stylesheet" href="/css/main.css">
-    
+
     <!-- Opcional: Para producción, usar versión minificada -->
     <!-- <link rel="stylesheet" href="/css/main.min.css?v=1.0"> -->
-    
+
 </head>
+
 <body>
     <!-- Contenido de la página -->
-    
+
     <div class="dashboard-container">
         <!-- Sidebar -->
         <aside class="sidebar">
@@ -70,7 +75,7 @@
                 </ul>
             </nav>
         </aside>
-        
+
         <!-- Main Content -->
         <main class="main-content">
             <header class="main-header">
@@ -79,44 +84,44 @@
                     <p id="current-date"></p>
                 </div>
             </header>
-            
+
             <!-- Dashboard Summary -->
             <section class="content-section active">
                 <div class="section-header">
                     <h2>Resumen</h2>
                 </div>
-                
+
                 <div class="dashboard-grid">
                     <div class="grid-col-span-3 summary-card">
                         <h3>Total Usuarios</h3>
                         <div class="amount">125</div>
                         <p class="description">Usuarios activos</p>
                     </div>
-                    
+
                     <div class="grid-col-span-3 summary-card">
                         <h3>Cuotas Pagadas</h3>
                         <div class="amount text-success">$45,000</div>
                         <p class="description">Este mes</p>
                     </div>
-                    
+
                     <div class="grid-col-span-3 summary-card">
                         <h3>Cuotas Pendientes</h3>
                         <div class="amount text-warning">$12,500</div>
                         <p class="description">Por cobrar</p>
                     </div>
-                    
+
                     <div class="grid-col-span-3 summary-card">
                         <h3>Gastos</h3>
                         <div class="amount text-danger">$8,200</div>
                         <p class="description">Este mes</p>
                     </div>
                 </div>
-                
+
                 <!-- Anuncios -->
                 <div class="section-header">
                     <h2>Anuncios</h2>
                 </div>
-                
+
                 <div class="anuncios-container">
                     <div class="anuncio-card">
                         <div class="anuncio-header">
@@ -131,7 +136,7 @@
                             Se realizará mantenimiento en el edificio el próximo sábado.
                         </div>
                     </div>
-                    
+
                     <div class="anuncio-card importante">
                         <div class="anuncio-header">
                             <h4>Pago de Cuotas</h4>
@@ -146,37 +151,37 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Fondos -->
                 <div class="section-header">
                     <h2>Fondos</h2>
                 </div>
-                
+
                 <div class="fondos-summary">
                     <div class="fondo-card">
                         <h3>Fondo de Reserva</h3>
                         <div class="amount">$25,000</div>
                         <p class="description">Disponible</p>
                     </div>
-                    
+
                     <div class="fondo-card">
                         <h3>Fondo de Mantenimiento</h3>
                         <div class="amount">$15,000</div>
                         <p class="description">Disponible</p>
                     </div>
-                    
+
                     <div class="fondo-card total">
                         <h3>Total Fondos</h3>
                         <div class="amount">$40,000</div>
                         <p class="description">Disponible</p>
                     </div>
                 </div>
-                
+
                 <!-- Tabla de Usuarios -->
                 <div class="section-header">
                     <h2>Usuarios Recientes</h2>
                 </div>
-                
+
                 <div class="table-container">
                     <table class="data-table">
                         <thead>
@@ -222,24 +227,24 @@
                         </tbody>
                     </table>
                 </div>
-                
+
                 <!-- Formulario de Ejemplo -->
                 <div class="section-header">
                     <h2>Crear Usuario</h2>
                 </div>
-                
+
                 <div style="background: white; padding: 2rem; border-radius: 0.5rem; box-shadow: var(--shadow);">
                     <form>
                         <div class="form-group">
                             <label for="nombre">Nombre</label>
                             <input type="text" id="nombre" class="form-control" placeholder="Ingrese el nombre">
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="email">Email</label>
                             <input type="email" id="email" class="form-control" placeholder="Ingrese el email">
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="rol">Rol</label>
                             <select id="rol" class="form-control">
@@ -249,82 +254,157 @@
                                 <option>Inquilino</option>
                             </select>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="mensaje">Mensaje</label>
-                            <textarea id="mensaje" class="form-control" rows="4" placeholder="Ingrese un mensaje"></textarea>
+                            <textarea id="mensaje" class="form-control" rows="4"
+                                placeholder="Ingrese un mensaje"></textarea>
                         </div>
-                        
+
                         <div class="button-group">
                             <button type="submit" class="btn btn-primary">Guardar</button>
                             <button type="reset" class="btn btn-outline">Limpiar</button>
                         </div>
                     </form>
                 </div>
-                
+
                 <!-- Alertas -->
                 <div class="section-header">
                     <h2>Ejemplos de Alertas</h2>
                 </div>
-                
+
                 <div class="alert alert-info">
                     <strong>Información:</strong> Este es un mensaje informativo.
                 </div>
-                
+
                 <div class="alert alert-success">
                     <strong>Éxito:</strong> La operación se completó correctamente.
                 </div>
-                
+
                 <div class="alert alert-warning">
                     <strong>Advertencia:</strong> Tenga cuidado con esta acción.
                 </div>
-                
+
                 <div class="alert alert-danger">
                     <strong>Error:</strong> Ocurrió un error durante la operación.
                 </div>
-                
+
+                <!-- Botón para abrir el modal de ejemplo -->
+                <button id="openModalBtn" class="btn btn-primary">Abrir Modal de Ejemplo</button>
+
             </section>
         </main>
     </div>
-    
+
     <!-- Modal de Ejemplo -->
-    <div id="exampleModal" class="modal">
+    <div id="exampleModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="exampleModalTitle"
+        aria-hidden="true">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Modal de Ejemplo</h2>
-                <button class="close" onclick="closeModal()">&times;</button>
+                <h2 id="exampleModalTitle">Modal de Ejemplo</h2>
+                <button class="close" aria-label="Cerrar modal">&times;</button>
             </div>
             <div class="modal-body">
                 <p>Este es un ejemplo de modal con los estilos consolidados.</p>
                 <p>Todos los estilos están incluidos en main.css</p>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" onclick="closeModal()">Cerrar</button>
+                <button class="btn btn-primary">Cerrar</button>
             </div>
         </div>
     </div>
-    
+
     <!-- Scripts -->
     <script>
-        // Ejemplo de función para abrir/cerrar modal
-        function openModal() {
-            document.getElementById('exampleModal').style.display = 'block';
-        }
-        
-        function closeModal() {
-            document.getElementById('exampleModal').style.display = 'none';
-        }
-        
-        // Mostrar fecha actual
-        document.getElementById('current-date').textContent = new Date().toLocaleDateString('es-ES', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
+        (function () {
+            'use strict';
+
+            const modal = document.getElementById('exampleModal');
+            const openModalBtn = document.getElementById('openModalBtn');
+            const closeButtons = modal.querySelectorAll('.close, .modal-footer .btn');
+            let previousFocus = null;
+
+            // Function to trap focus inside modal
+            function trapFocus(modalElement) {
+                const focusableElements = modalElement.querySelectorAll(
+                    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                );
+                const firstElement = focusableElements[0];
+                const lastElement = focusableElements[focusableElements.length - 1];
+
+                modalElement.addEventListener('keydown', function (e) {
+                    if (e.key === 'Tab') {
+                        if (e.shiftKey && document.activeElement === firstElement) {
+                            e.preventDefault();
+                            lastElement.focus();
+                        } else if (!e.shiftKey && document.activeElement === lastElement) {
+                            e.preventDefault();
+                            firstElement.focus();
+                        }
+                    }
+                });
+            }
+
+            // Open modal function
+            function openModal() {
+                previousFocus = document.activeElement;
+                modal.style.display = 'block';
+                modal.setAttribute('aria-hidden', 'false');
+
+                // Trap focus and set initial focus
+                trapFocus(modal);
+                const firstFocusable = modal.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                if (firstFocusable) {
+                    firstFocusable.focus();
+                }
+            }
+
+            // Close modal function
+            function closeModal() {
+                modal.style.display = 'none';
+                modal.setAttribute('aria-hidden', 'true');
+
+                // Restore focus to the element that opened the modal
+                if (previousFocus) {
+                    previousFocus.focus();
+                }
+            }
+
+            // Event listeners
+            if (openModalBtn) {
+                openModalBtn.addEventListener('click', openModal);
+            }
+
+            closeButtons.forEach(function (button) {
+                button.addEventListener('click', closeModal);
+            });
+
+            // Close on Escape key
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && modal.style.display === 'block') {
+                    closeModal();
+                }
+            });
+
+            // Close on backdrop click
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+
+            // Mostrar fecha actual
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('es-ES', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        })();
     </script>
-    
+
 </body>
+
 </html>
 
 <!-- 

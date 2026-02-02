@@ -84,38 +84,49 @@ Estos archivos CSS fueron consolidados en `main.css` pero se mantienen como resp
 
 ### Paso 2: Eliminar Documentación Temporal de Raíz
 ```bash
-# Verificar que los archivos están en /docs/
-ls -la /home/sebastianvernis/Proyectos/edifnuev/docs/
+# Configurar variable PROJECT_ROOT
+PROJECT_ROOT="$(pwd)"
+
+# Verificar que los archivos están en ./docs/
+ls -la ./docs/
 
 # Eliminar archivos de raíz (después de verificar)
-rm /home/sebastianvernis/Proyectos/edifnuev/CSS_CONSOLIDATION_REPORT.md
-rm /home/sebastianvernis/Proyectos/edifnuev/CSS_CONSOLIDATION_SUMMARY.txt
-rm /home/sebastianvernis/Proyectos/edifnuev/CSS_CONSOLIDATION_INDEX.md
-rm /home/sebastianvernis/Proyectos/edifnuev/CSS_MIGRATION_GUIDE.md
-rm /home/sebastianvernis/Proyectos/edifnuev/CSS_DUPLICITIES_DETAILED.md
-rm /home/sebastianvernis/Proyectos/edifnuev/README_CSS_CONSOLIDATION.md
-rm /home/sebastianvernis/Proyectos/edifnuev/INLINE_STYLES_CLEANUP_REPORT.md
-rm /home/sebastianvernis/Proyectos/edifnuev/EXAMPLE_HTML_UPDATE.html
+rm ./CSS_CONSOLIDATION_REPORT.md
+rm ./CSS_CONSOLIDATION_SUMMARY.txt
+rm ./CSS_CONSOLIDATION_INDEX.md
+rm ./CSS_MIGRATION_GUIDE.md
+rm ./CSS_DUPLICITIES_DETAILED.md
+rm ./README_CSS_CONSOLIDATION.md
+rm ./INLINE_STYLES_CLEANUP_REPORT.md
+rm ./EXAMPLE_HTML_UPDATE.html
 ```
 
 ### Paso 3: Mantener Archivos CSS Antiguos (1-2 semanas)
 ```bash
+# Configurar variable PROJECT_ROOT
+PROJECT_ROOT="$(pwd)"
+
 # Crear respaldo de archivos CSS antiguos
-mkdir -p /home/sebastianvernis/Proyectos/edifnuev/archive/css-backup-$(date +%Y%m%d)
-cp -r /home/sebastianvernis/Proyectos/edifnuev/public/css/* /home/sebastianvernis/Proyectos/edifnuev/archive/css-backup-$(date +%Y%m%d)/
+mkdir -p "${PROJECT_ROOT}/archive/css-backup-$(date +%Y%m%d)"
+cp -r "${PROJECT_ROOT}/public/css/"* "${PROJECT_ROOT}/archive/css-backup-$(date +%Y%m%d)/"
 ```
 
 ### Paso 4: Eliminar Archivos CSS Antiguos (Después de 1-2 semanas)
 ```bash
+# ⚠️ ADVERTENCIA: Estos comandos eliminan archivos permanentemente
+# Configurar variable PROJECT_ROOT
+PROJECT_ROOT="$(pwd)"
+
 # Después de verificar que main.css funciona correctamente
-rm -rf /home/sebastianvernis/Proyectos/edifnuev/public/css/base/
-rm /home/sebastianvernis/Proyectos/edifnuev/public/css/styles.css
-rm /home/sebastianvernis/Proyectos/edifnuev/public/css/themes.css
-rm /home/sebastianvernis/Proyectos/edifnuev/public/css/dashboard.css
-rm /home/sebastianvernis/Proyectos/edifnuev/public/css/dashboard-spacing-fix.css
-rm /home/sebastianvernis/Proyectos/edifnuev/public/css/dashboard-compact.css
-rm /home/sebastianvernis/Proyectos/edifnuev/public/css/inquilino.css
-rm /home/sebastianvernis/Proyectos/edifnuev/public/css/file-upload.css
+# ¡Confirme antes de ejecutar estos comandos!
+rm -rf "${PROJECT_ROOT}/public/css/base/"
+rm "${PROJECT_ROOT}/public/css/styles.css"
+rm "${PROJECT_ROOT}/public/css/themes.css"
+rm "${PROJECT_ROOT}/public/css/dashboard.css"
+rm "${PROJECT_ROOT}/public/css/dashboard-spacing-fix.css"
+rm "${PROJECT_ROOT}/public/css/dashboard-compact.css"
+rm "${PROJECT_ROOT}/public/css/inquilino.css"
+rm "${PROJECT_ROOT}/public/css/file-upload.css"
 ```
 
 ---
@@ -124,25 +135,25 @@ rm /home/sebastianvernis/Proyectos/edifnuev/public/css/file-upload.css
 
 ### Verificar Documentación
 ```bash
-# Verificar que la documentación está en /docs/
-ls -la /home/sebastianvernis/Proyectos/edifnuev/docs/
-ls -la /home/sebastianvernis/Proyectos/edifnuev/docs/css-consolidation/
-ls -la /home/sebastianvernis/Proyectos/edifnuev/docs/inline-styles-cleanup/
+# Verificar que la documentación está en ./docs/
+ls -la ./docs/
+ls -la ./docs/css-consolidation/
+ls -la ./docs/inline-styles-cleanup/
 ```
 
 ### Verificar Scripts
 ```bash
-# Verificar que los scripts están en /scripts/analysis/
-ls -la /home/sebastianvernis/Proyectos/edifnuev/scripts/analysis/
+# Verificar que los scripts están en ./scripts/analysis/
+ls -la ./scripts/analysis/
 ```
 
 ### Verificar CSS
 ```bash
 # Verificar que main.css existe
-ls -la /home/sebastianvernis/Proyectos/edifnuev/public/css/main.css
+ls -la ./public/css/main.css
 
 # Verificar tamaño de main.css
-wc -l /home/sebastianvernis/Proyectos/edifnuev/public/css/main.css
+wc -l ./public/css/main.css
 ```
 
 ---
@@ -150,7 +161,7 @@ wc -l /home/sebastianvernis/Proyectos/edifnuev/public/css/main.css
 ## 📊 Estructura Final Esperada
 
 ```
-/home/sebastianvernis/Proyectos/edifnuev/
+<project_root>/
 ├── docs/
 │   ├── INDEX.md
 │   ├── IMPLEMENTATION_COMPLETE.md
@@ -200,6 +211,11 @@ wc -l /home/sebastianvernis/Proyectos/edifnuev/public/css/main.css
    - No eliminar archivos de `/docs/`
    - Actualizar según sea necesario
 
+4. **⚠️ Peligro de los comandos rm**
+   - Los comandos `rm` y `rm -rf` son irreversibles
+   - Siempre verifique twice antes de ejecutar
+   - Considere usar `rm -i` para confirmación interactiva
+
 ---
 
 ## 🚀 Próximos Pasos
@@ -231,6 +247,6 @@ Si tienes dudas sobre la limpieza:
 
 ---
 
-**Generado**: 2024
+**Generado**: 2024-01-15
 **Proyecto**: Edificio Admin
 **Estado**: Listo para Limpieza

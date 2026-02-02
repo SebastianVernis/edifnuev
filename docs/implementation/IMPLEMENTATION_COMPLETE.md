@@ -8,7 +8,7 @@ Se ha completado exitosamente la consolidación de CSS en el proyecto Edificio A
 
 ## 📊 Resultados de la Implementación
 
-### Archivos HTML Actualizados (5 archivos principales)
+### Archivos HTML Actualizados (6 archivos principales)
 
 | Archivo | Estado | Cambios |
 |---------|--------|---------|

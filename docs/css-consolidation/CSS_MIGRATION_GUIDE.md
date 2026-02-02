@@ -131,6 +131,8 @@ public/css/
 
 ### Checklist de Verificación:
 
+- [ ] **Hacer backup/commit en control de versiones antes de migración**
+- [ ] **Probar en Chrome, Firefox, Safari y Edge (desktop y móvil cuando aplique)**
 - [ ] Todos los estilos se aplican correctamente
 - [ ] Los temas funcionan (cambiar tema en settings)
 - [ ] El responsive funciona en móvil
@@ -240,7 +242,7 @@ Si encuentras algún problema durante la migración:
 1. Verifica que el archivo `main.css` esté en la ruta correcta
 2. Limpia el caché del navegador
 3. Abre DevTools y verifica los errores
-4. Compara con el archivo de consolidación report
+4. Compara con el [archivo de consolidación](/docs/css-consolidation/CSS_CONSOLIDATION_INDEX.md)
 
 ---
 

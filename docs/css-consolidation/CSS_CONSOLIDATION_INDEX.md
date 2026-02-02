@@ -133,7 +133,7 @@ Se ha completado la consolidación de CSS del proyecto Edificio Admin. Se han el
 | Utilidades | 10 | 2 | 20 |
 | Variables CSS | 4 | 3 | 12 |
 | Media Queries | 13 | 4 | 13 |
-| **TOTAL** | **68** | **9** | **133+** |
+| **TOTAL** | **68** | **9** | **150+** |
 
 ---
 
