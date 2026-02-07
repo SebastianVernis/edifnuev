@@ -172,13 +172,13 @@ public/css/
 
 ## 📝 Documentación Generada
 
-1. **README_CSS_CONSOLIDATION.md** - Resumen general
-2. **CSS_CONSOLIDATION_REPORT.md** - Reporte detallado
-3. **CSS_MIGRATION_GUIDE.md** - Guía de migración
-4. **CSS_DUPLICITIES_DETAILED.md** - Análisis de duplicidades
-5. **CSS_CONSOLIDATION_INDEX.md** - Índice y resumen
+1. **README_CONSOLIDACION_CSS.md** - Resumen general
+2. **REPORTE_CONSOLIDACION_CSS.md** - Reporte detallado
+3. **GUIA_MIGRACION_CSS.md** - Guía de migración
+4. **ANALISIS_DUPLICIDADES_CSS.md** - Análisis de duplicidades
+5. **INDICE_CONSOLIDACION_CSS.md** - Índice y resumen
 6. **EXAMPLE_HTML_UPDATE.html** - Ejemplo de actualización
-7. **IMPLEMENTATION_COMPLETE.md** - Este archivo
+7. **IMPLEMENTACION_COMPLETADA.md** - Este archivo
 
 ---
 

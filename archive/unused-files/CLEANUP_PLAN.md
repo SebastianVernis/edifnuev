@@ -7,18 +7,18 @@ Este documento lista los archivos que pueden ser archivados o eliminados del pro
 Estos archivos fueron creados durante el proceso de consolidación y ahora están organizados en `/docs/`:
 
 ### Archivos a Mover a `/docs/css-consolidation/`
-- ✅ `CSS_CONSOLIDATION_REPORT.md` → `/docs/css-consolidation/CSS_CONSOLIDATION_REPORT.md`
+- ✅ `REPORTE_CONSOLIDACION_CSS.md` → `/docs/css-consolidation/REPORTE_CONSOLIDACION_CSS.md`
 - ✅ `CSS_CONSOLIDATION_SUMMARY.txt` → `/docs/css-consolidation/CSS_CONSOLIDATION_SUMMARY.txt`
-- ✅ `CSS_CONSOLIDATION_INDEX.md` → `/docs/css-consolidation/CSS_CONSOLIDATION_INDEX.md`
-- ✅ `CSS_MIGRATION_GUIDE.md` → `/docs/css-consolidation/CSS_MIGRATION_GUIDE.md`
-- ✅ `CSS_DUPLICITIES_DETAILED.md` → `/docs/css-consolidation/CSS_DUPLICITIES_DETAILED.md`
-- ✅ `README_CSS_CONSOLIDATION.md` → `/docs/css-consolidation/README_CSS_CONSOLIDATION.md`
+- ✅ `INDICE_CONSOLIDACION_CSS.md` → `/docs/css-consolidation/INDICE_CONSOLIDACION_CSS.md`
+- ✅ `GUIA_MIGRACION_CSS.md` → `/docs/css-consolidation/GUIA_MIGRACION_CSS.md`
+- ✅ `ANALISIS_DUPLICIDADES_CSS.md` → `/docs/css-consolidation/ANALISIS_DUPLICIDADES_CSS.md`
+- ✅ `README_CONSOLIDACION_CSS.md` → `/docs/css-consolidation/README_CONSOLIDACION_CSS.md`
 
 ### Archivos a Mover a `/docs/inline-styles-cleanup/`
-- ✅ `INLINE_STYLES_CLEANUP_REPORT.md` → `/docs/inline-styles-cleanup/INLINE_STYLES_CLEANUP_REPORT.md`
+- ✅ `REPORTE_LIMPIEZA_ESTILOS_INLINE.md` → `/docs/inline-styles-cleanup/REPORTE_LIMPIEZA_ESTILOS_INLINE.md`
 
 ### Archivos a Mover a `/docs/`
-- ✅ `IMPLEMENTATION_COMPLETE.md` → `/docs/IMPLEMENTATION_COMPLETE.md`
+- ✅ `IMPLEMENTACION_COMPLETADA.md` → `/docs/IMPLEMENTACION_COMPLETADA.md`
 
 ### Archivos a Mover a `/scripts/analysis/`
 - ✅ `analyze-css.sh` → `/scripts/analysis/analyze-css.sh`
@@ -70,14 +70,14 @@ Estos archivos CSS fueron consolidados en `main.css` pero se mantienen como resp
 
 | Archivo | Ubicación Actual | Ubicación Nueva | Estado |
 |---------|-----------------|-----------------|--------|
-| CSS_CONSOLIDATION_REPORT.md | Raíz | `/docs/css-consolidation/` | ⏳ Pendiente |
+| REPORTE_CONSOLIDACION_CSS.md | Raíz | `/docs/css-consolidation/` | ⏳ Pendiente |
 | CSS_CONSOLIDATION_SUMMARY.txt | Raíz | `/docs/css-consolidation/` | ⏳ Pendiente |
-| CSS_CONSOLIDATION_INDEX.md | Raíz | `/docs/css-consolidation/` | ⏳ Pendiente |
-| CSS_MIGRATION_GUIDE.md | Raíz | `/docs/css-consolidation/` | ⏳ Pendiente |
-| CSS_DUPLICITIES_DETAILED.md | Raíz | `/docs/css-consolidation/` | ⏳ Pendiente |
-| README_CSS_CONSOLIDATION.md | Raíz | `/docs/css-consolidation/` | ⏳ Pendiente |
-| INLINE_STYLES_CLEANUP_REPORT.md | Raíz | `/docs/inline-styles-cleanup/` | ⏳ Pendiente |
-| IMPLEMENTATION_COMPLETE.md | Raíz | `/docs/` | ⏳ Pendiente |
+| INDICE_CONSOLIDACION_CSS.md | Raíz | `/docs/css-consolidation/` | ⏳ Pendiente |
+| GUIA_MIGRACION_CSS.md | Raíz | `/docs/css-consolidation/` | ⏳ Pendiente |
+| ANALISIS_DUPLICIDADES_CSS.md | Raíz | `/docs/css-consolidation/` | ⏳ Pendiente |
+| README_CONSOLIDACION_CSS.md | Raíz | `/docs/css-consolidation/` | ⏳ Pendiente |
+| REPORTE_LIMPIEZA_ESTILOS_INLINE.md | Raíz | `/docs/inline-styles-cleanup/` | ⏳ Pendiente |
+| IMPLEMENTACION_COMPLETADA.md | Raíz | `/docs/` | ⏳ Pendiente |
 | EXAMPLE_HTML_UPDATE.html | Raíz | `/docs/css-consolidation/` | ⏳ Pendiente |
 | analyze-css.sh | Raíz | `/scripts/analysis/` | ✅ Completado |
 
@@ -89,19 +89,19 @@ Estos archivos CSS fueron consolidados en `main.css` pero se mantienen como resp
 /home/sebastianvernis/Proyectos/edifnuev/
 ├── docs/
 │   ├── INDEX.md (Índice general)
-│   ├── IMPLEMENTATION_COMPLETE.md
+│   ├── IMPLEMENTACION_COMPLETADA.md
 │   ├── css-consolidation/
 │   │   ├── README.md
-│   │   ├── CSS_CONSOLIDATION_REPORT.md
+│   │   ├── REPORTE_CONSOLIDACION_CSS.md
 │   │   ├── CSS_CONSOLIDATION_SUMMARY.txt
-│   │   ├── CSS_CONSOLIDATION_INDEX.md
-│   │   ├── CSS_MIGRATION_GUIDE.md
-│   │   ├── CSS_DUPLICITIES_DETAILED.md
-│   │   ├── README_CSS_CONSOLIDATION.md
+│   │   ├── INDICE_CONSOLIDACION_CSS.md
+│   │   ├── GUIA_MIGRACION_CSS.md
+│   │   ├── ANALISIS_DUPLICIDADES_CSS.md
+│   │   ├── README_CONSOLIDACION_CSS.md
 │   │   └── EXAMPLE_HTML_UPDATE.html
 │   └── inline-styles-cleanup/
 │       ├── README.md
-│       └── INLINE_STYLES_CLEANUP_REPORT.md
+│       └── REPORTE_LIMPIEZA_ESTILOS_INLINE.md
 ├── scripts/
 │   └── analysis/
 │       ├── README.md
@@ -123,14 +123,14 @@ Estos archivos CSS fueron consolidados en `main.css` pero se mantienen como resp
 ## ✅ Checklist de Organización
 
 ### Documentación
-- [ ] Mover `CSS_CONSOLIDATION_REPORT.md` a `/docs/css-consolidation/`
+- [ ] Mover `REPORTE_CONSOLIDACION_CSS.md` a `/docs/css-consolidation/`
 - [ ] Mover `CSS_CONSOLIDATION_SUMMARY.txt` a `/docs/css-consolidation/`
-- [ ] Mover `CSS_CONSOLIDATION_INDEX.md` a `/docs/css-consolidation/`
-- [ ] Mover `CSS_MIGRATION_GUIDE.md` a `/docs/css-consolidation/`
-- [ ] Mover `CSS_DUPLICITIES_DETAILED.md` a `/docs/css-consolidation/`
-- [ ] Mover `README_CSS_CONSOLIDATION.md` a `/docs/css-consolidation/`
-- [ ] Mover `INLINE_STYLES_CLEANUP_REPORT.md` a `/docs/inline-styles-cleanup/`
-- [ ] Mover `IMPLEMENTATION_COMPLETE.md` a `/docs/`
+- [ ] Mover `INDICE_CONSOLIDACION_CSS.md` a `/docs/css-consolidation/`
+- [ ] Mover `GUIA_MIGRACION_CSS.md` a `/docs/css-consolidation/`
+- [ ] Mover `ANALISIS_DUPLICIDADES_CSS.md` a `/docs/css-consolidation/`
+- [ ] Mover `README_CONSOLIDACION_CSS.md` a `/docs/css-consolidation/`
+- [ ] Mover `REPORTE_LIMPIEZA_ESTILOS_INLINE.md` a `/docs/inline-styles-cleanup/`
+- [ ] Mover `IMPLEMENTACION_COMPLETADA.md` a `/docs/`
 - [ ] Mover `EXAMPLE_HTML_UPDATE.html` a `/docs/css-consolidation/`
 
 ### Scripts

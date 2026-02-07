@@ -23,7 +23,7 @@ a5204b6 - docs: add GitHub repository setup guide
 - ✅ .gitattributes
 - ✅ LICENSE (MIT)
 - ✅ CHANGELOG.md
-- ✅ DEPLOY.md
+- ✅ DESPLIEGUE.md
 - ✅ .github/workflows/cloud-run-deploy.yml
 - ✅ README.md (actualizado)
 - ✅ 9 documentos nuevos en docs/deployment/
@@ -93,7 +93,7 @@ Si cambias organización, actualizar:
 - [ ] Git remoto (git remote set-url)
 - [ ] package.json (repository, bugs, homepage)
 - [ ] README.md (badges si los hay)
-- [ ] docs/deployment/GITHUB_SETUP.md
+- [ ] docs/deployment/CONFIGURACION_GITHUB.md
 - [ ] GitHub Secrets para CI/CD
 - [ ] Webhooks si los tienes
 - [ ] README badges con nueva URL
@@ -123,7 +123,7 @@ git tag -l
 
 ## 🆘 Soporte
 
-**Guía completa:** [docs/deployment/GITHUB_SETUP.md](docs/deployment/GITHUB_SETUP.md)
+**Guía completa:** [docs/deployment/CONFIGURACION_GITHUB.md](docs/deployment/CONFIGURACION_GITHUB.md)
 
 **Comandos útiles:**
 ```bash

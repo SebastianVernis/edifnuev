@@ -104,8 +104,8 @@ edifnuev/
 
 **Documentación:**
 - [Quick Start (5 min)](docs/deployment/QUICK_START_CLOUD_RUN.md)
-- [Guía completa](docs/deployment/CLOUD_RUN_DEPLOYMENT.md)
-- [Checklist](docs/deployment/DEPLOYMENT_CHECKLIST.md)
+- [Guía completa](docs/deployment/DESPLIEGUE_CLOUD_RUN.md)
+- [Checklist](docs/deployment/LISTA_VERIFICACION_DESPLIEGUE.md)
 
 ### 2. VPS / Servidor Tradicional
 **Deploy con PM2:**
@@ -146,14 +146,14 @@ docker run -p 8080:8080 -e NODE_ENV=production edificio-admin
 
 ### Guías Principales
 1. **[README.md](README.md)** - Inicio rápido
-2. **[DEPLOY.md](DEPLOY.md)** - Hub de deployment
+2. **[DESPLIEGUE.md](DESPLIEGUE.md)** - Hub de deployment
 3. **[CHANGELOG.md](CHANGELOG.md)** - Historial de cambios
 
 ### Deployment
 4. **[Quick Start Cloud Run](docs/deployment/QUICK_START_CLOUD_RUN.md)** - 5 minutos
-5. **[Guía completa Cloud Run](docs/deployment/CLOUD_RUN_DEPLOYMENT.md)** - Detallada
-6. **[Deployment Checklist](docs/deployment/DEPLOYMENT_CHECKLIST.md)** - Verificación
-7. **[GitHub Setup](docs/deployment/GITHUB_SETUP.md)** - Configurar repo
+5. **[Guía completa Cloud Run](docs/deployment/DESPLIEGUE_CLOUD_RUN.md)** - Detallada
+6. **[Deployment Checklist](docs/deployment/LISTA_VERIFICACION_DESPLIEGUE.md)** - Verificación
+7. **[GitHub Setup](docs/deployment/CONFIGURACION_GITHUB.md)** - Configurar repo
 
 ### Técnicas
 8. **[Proyecto Completo](docs/technical/PROYECTO_COMPLETO.md)** - Arquitectura
@@ -241,7 +241,7 @@ a5204b6 - docs: add GitHub repository setup guide
 - Activar GitHub Actions CI/CD
 
 ### Para Cambiar Organización
-Ver [REMOTE_UPDATE.md](REMOTE_UPDATE.md) o [docs/deployment/GITHUB_SETUP.md](docs/deployment/GITHUB_SETUP.md)
+Ver [REMOTE_UPDATE.md](REMOTE_UPDATE.md) o [docs/deployment/CONFIGURACION_GITHUB.md](docs/deployment/CONFIGURACION_GITHUB.md)
 
 ## 💡 Comandos Útiles
 
@@ -270,7 +270,7 @@ git status              # Estado actual
 
 - **Documentación:** [docs/](docs/)
 - **Issues:** [GitHub Issues](https://github.com/SebastianVernis/edifnuev/issues)
-- **Setup GitHub:** [docs/deployment/GITHUB_SETUP.md](docs/deployment/GITHUB_SETUP.md)
+- **Setup GitHub:** [docs/deployment/CONFIGURACION_GITHUB.md](docs/deployment/CONFIGURACION_GITHUB.md)
 - **Deploy Cloud Run:** [docs/deployment/QUICK_START_CLOUD_RUN.md](docs/deployment/QUICK_START_CLOUD_RUN.md)
 
 ---

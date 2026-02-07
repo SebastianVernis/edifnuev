@@ -135,13 +135,13 @@ edifnuev/
 ✅ **Pros:** Auto-scaling, managed, HTTPS incluido  
 ❌ **Contras:** Requiere container, cold starts  
 💰 **Costo:** ~$5-15/mes  
-📚 **Docs:** [CLOUD_RUN_DEPLOYMENT.md](docs/deployment/CLOUD_RUN_DEPLOYMENT.md)
+📚 **Docs:** [DESPLIEGUE_CLOUD_RUN.md](docs/deployment/DESPLIEGUE_CLOUD_RUN.md)
 
 ### Cloudflare Workers
 ✅ **Pros:** Ultra-fast, global edge, sin cold starts, D1 incluido  
 ✅ **Contras:** Requiere adaptar código Express  
 💰 **Costo:** $5/mes (Workers Paid)  
-📚 **Docs:** [WORKERS_DEPLOYMENT.md](docs/deployment/WORKERS_DEPLOYMENT.md)
+📚 **Docs:** [DESPLIEGUE_WORKERS.md](docs/deployment/DESPLIEGUE_WORKERS.md)
 
 ### VPS / Servidor Tradicional
 ✅ **Pros:** Control total, sin restricciones  
@@ -204,14 +204,14 @@ wrangler r2 bucket create edificio-admin-uploads
 ## 📚 Documentación Completa
 
 ### Deployment Guides
-1. **[DEPLOY.md](DEPLOY.md)** - Hub principal de deployment
-2. **[WORKERS_DEPLOYMENT.md](docs/deployment/WORKERS_DEPLOYMENT.md)** - Guía completa Workers
+1. **[DESPLIEGUE.md](DESPLIEGUE.md)** - Hub principal de deployment
+2. **[DESPLIEGUE_WORKERS.md](docs/deployment/DESPLIEGUE_WORKERS.md)** - Guía completa Workers
 3. **[WORKERS_COMPLETE_SETUP.md](docs/deployment/WORKERS_COMPLETE_SETUP.md)** - Setup paso a paso
-4. **[CLOUD_RUN_DEPLOYMENT.md](docs/deployment/CLOUD_RUN_DEPLOYMENT.md)** - Google Cloud Run
+4. **[DESPLIEGUE_CLOUD_RUN.md](docs/deployment/DESPLIEGUE_CLOUD_RUN.md)** - Google Cloud Run
 5. **[QUICK_START_CLOUD_RUN.md](docs/deployment/QUICK_START_CLOUD_RUN.md)** - Cloud Run 5-min
 
 ### Status Reports
-6. **[WORKERS_DEPLOYMENT_STATUS.md](WORKERS_DEPLOYMENT_STATUS.md)** - Estado Workers
+6. **[WORKERS_ESTADO_DESPLIEGUE.md](WORKERS_ESTADO_DESPLIEGUE.md)** - Estado Workers
 7. **[SAAS_STATUS.md](SAAS_STATUS.md)** - Verificación lógica SAAS
 8. **[PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)** - Resumen del proyecto
 

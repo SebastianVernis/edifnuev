@@ -21,8 +21,8 @@
 - ✅ README.md - Punto de entrada principal
 - ✅ START_HERE.md - Guía de inicio rápido
 - ✅ CHANGELOG.md - Historial de versiones
-- ✅ DEPLOY.md - Hub de deployment
-- ✅ DOCUMENTATION_INDEX.md - Índice completo
+- ✅ DESPLIEGUE.md - Hub de deployment
+- ✅ INDICE_DOCUMENTACION.md - Índice completo
 - ✅ QWEN.md - Documentación de IA
 
 #### Estructura de docs/ (Ya Organizada)
@@ -96,7 +96,7 @@ docs/
 
 ### 4. Documentos Creados
 
-#### DEPLOYMENT_OPTIMIZATION_REPORT.md
+#### REPORTE_OPTIMIZACION_DESPLIEGUE.md
 Reporte completo con:
 - ✅ Análisis de configuración actual
 - ✅ Problemas detectados y soluciones
@@ -204,7 +204,7 @@ Script de verificación automática:
 1. Implementar cache headers
 2. Configurar Wrangler secrets
 3. Agregar rate limiting básico
-4. Actualizar DOCUMENTATION_INDEX.md
+4. Actualizar INDICE_DOCUMENTACION.md
 
 ### Mediano Plazo (Este Mes)
 1. Minificar assets (CSS/JS)
@@ -254,10 +254,10 @@ npm test
 ## 📞 Recursos
 
 ### Documentación del Proyecto
-- **Índice Principal:** [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md)
+- **Índice Principal:** [INDICE_DOCUMENTACION.md](INDICE_DOCUMENTACION.md)
 - **Inicio Rápido:** [START_HERE.md](START_HERE.md)
-- **Deployment:** [DEPLOY.md](DEPLOY.md)
-- **Optimización:** [DEPLOYMENT_OPTIMIZATION_REPORT.md](DEPLOYMENT_OPTIMIZATION_REPORT.md)
+- **Deployment:** [DESPLIEGUE.md](DESPLIEGUE.md)
+- **Optimización:** [REPORTE_OPTIMIZACION_DESPLIEGUE.md](REPORTE_OPTIMIZACION_DESPLIEGUE.md)
 
 ### Cloudflare
 - **Workers Docs:** https://developers.cloudflare.com/workers/

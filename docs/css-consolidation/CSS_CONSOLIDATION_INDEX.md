@@ -20,8 +20,8 @@ Se ha completado la consolidación de CSS del proyecto Edificio Admin. Se han el
   - Todos los breakpoints responsive
   - Todas las animaciones
 
-### 2. **README_CSS_CONSOLIDATION.md** 📖
-- **Ubicación**: `/README_CSS_CONSOLIDATION.md`
+### 2. **README_CONSOLIDACION_CSS.md** 📖
+- **Ubicación**: `/README_CONSOLIDACION_CSS.md`
 - **Descripción**: Resumen general de la consolidación
 - **Contiene**:
   - Resultados de la consolidación
@@ -29,8 +29,8 @@ Se ha completado la consolidación de CSS del proyecto Edificio Admin. Se han el
   - Beneficios
   - Checklist de verificación
 
-### 3. **CSS_CONSOLIDATION_REPORT.md** 📊
-- **Ubicación**: `/CSS_CONSOLIDATION_REPORT.md`
+### 3. **REPORTE_CONSOLIDACION_CSS.md** 📊
+- **Ubicación**: `/REPORTE_CONSOLIDACION_CSS.md`
 - **Descripción**: Reporte detallado de la consolidación
 - **Contiene**:
   - Archivos consolidados
@@ -38,8 +38,8 @@ Se ha completado la consolidación de CSS del proyecto Edificio Admin. Se han el
   - Estructura del archivo
   - Próximos pasos
 
-### 4. **CSS_MIGRATION_GUIDE.md** 🚀
-- **Ubicación**: `/CSS_MIGRATION_GUIDE.md`
+### 4. **GUIA_MIGRACION_CSS.md** 🚀
+- **Ubicación**: `/GUIA_MIGRACION_CSS.md`
 - **Descripción**: Guía paso a paso para migrar a main.css
 - **Contiene**:
   - Instrucciones de actualización
@@ -47,8 +47,8 @@ Se ha completado la consolidación de CSS del proyecto Edificio Admin. Se han el
   - Checklist de verificación
   - Troubleshooting
 
-### 5. **CSS_DUPLICITIES_DETAILED.md** 🔍
-- **Ubicación**: `/CSS_DUPLICITIES_DETAILED.md`
+### 5. **ANALISIS_DUPLICIDADES_CSS.md** 🔍
+- **Ubicación**: `/ANALISIS_DUPLICIDADES_CSS.md`
 - **Descripción**: Análisis detallado de duplicidades
 - **Contiene**:
   - Tabla de duplicidades por categoría
@@ -77,12 +77,12 @@ Se ha completado la consolidación de CSS del proyecto Edificio Admin. Se han el
 ## 🎯 Cómo Empezar
 
 ### Paso 1: Revisar la Consolidación
-1. Lee `README_CSS_CONSOLIDATION.md` para entender qué se hizo
-2. Revisa `CSS_CONSOLIDATION_REPORT.md` para detalles técnicos
-3. Consulta `CSS_DUPLICITIES_DETAILED.md` para ver las duplicidades
+1. Lee `README_CONSOLIDACION_CSS.md` para entender qué se hizo
+2. Revisa `REPORTE_CONSOLIDACION_CSS.md` para detalles técnicos
+3. Consulta `ANALISIS_DUPLICIDADES_CSS.md` para ver las duplicidades
 
 ### Paso 2: Preparar la Migración
-1. Lee `CSS_MIGRATION_GUIDE.md` para instrucciones paso a paso
+1. Lee `GUIA_MIGRACION_CSS.md` para instrucciones paso a paso
 2. Revisa `EXAMPLE_HTML_UPDATE.html` para ver ejemplos
 3. Prepara una lista de archivos HTML a actualizar
 
@@ -159,8 +159,8 @@ public/css/
 ## ✅ Checklist de Verificación
 
 ### Antes de Implementar
-- [ ] He leído `README_CSS_CONSOLIDATION.md`
-- [ ] He revisado `CSS_CONSOLIDATION_REPORT.md`
+- [ ] He leído `README_CONSOLIDACION_CSS.md`
+- [ ] He revisado `REPORTE_CONSOLIDACION_CSS.md`
 - [ ] He entendido las duplicidades encontradas
 - [ ] He revisado `EXAMPLE_HTML_UPDATE.html`
 
@@ -231,10 +231,10 @@ El archivo `main.css` incluye todos los breakpoints:
 
 ## 📚 Documentación Relacionada
 
-- **README_CSS_CONSOLIDATION.md** - Resumen general
-- **CSS_CONSOLIDATION_REPORT.md** - Reporte detallado
-- **CSS_MIGRATION_GUIDE.md** - Guía de migración
-- **CSS_DUPLICITIES_DETAILED.md** - Análisis de duplicidades
+- **README_CONSOLIDACION_CSS.md** - Resumen general
+- **REPORTE_CONSOLIDACION_CSS.md** - Reporte detallado
+- **GUIA_MIGRACION_CSS.md** - Guía de migración
+- **ANALISIS_DUPLICIDADES_CSS.md** - Análisis de duplicidades
 - **EXAMPLE_HTML_UPDATE.html** - Ejemplo de actualización
 
 ---

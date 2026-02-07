@@ -240,7 +240,7 @@ node workers-test-complete.js
 
 ## 📚 Documentación
 
-- [Workers Deployment Guide](docs/deployment/WORKERS_DEPLOYMENT.md)
+- [Workers Deployment Guide](docs/deployment/DESPLIEGUE_WORKERS.md)
 - [Wrangler Configuration](wrangler.toml)
 - [SQL Migrations](migrations/)
 - [Test Scripts](workers-test-complete.js)

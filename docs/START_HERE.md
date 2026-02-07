@@ -61,17 +61,17 @@ node workers-test-complete.js
 ### Para Usuarios
 - **[README.md](README.md)** - Introducción y quick start
 - **[PRODUCTION_READY.md](docs/reports/PRODUCTION_READY.md)** - Estado de producción
-- **[DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md)** - 📚 Índice completo de documentación
+- **[INDICE_DOCUMENTACION.md](INDICE_DOCUMENTACION.md)** - 📚 Índice completo de documentación
 
 ### Para Developers
 - **[FINAL_DEPLOYMENT_REPORT.md](docs/reports/FINAL_DEPLOYMENT_REPORT.md)** - Reporte técnico completo
 - **[DEPLOYMENT_SUMMARY.md](docs/reports/DEPLOYMENT_SUMMARY.md)** - Resumen de todos los deployments
-- **[WORKERS_DEPLOYMENT_STATUS.md](docs/reports/WORKERS_DEPLOYMENT_STATUS.md)** - Estado Workers
+- **[WORKERS_ESTADO_DESPLIEGUE.md](docs/reports/WORKERS_ESTADO_DESPLIEGUE.md)** - Estado Workers
 
 ### Guías de Deployment
 - **[docs/deployment/WORKERS_COMPLETE_SETUP.md](docs/deployment/WORKERS_COMPLETE_SETUP.md)** - Setup Workers
-- **[docs/deployment/CLOUD_RUN_DEPLOYMENT.md](docs/deployment/CLOUD_RUN_DEPLOYMENT.md)** - Setup Cloud Run
-- **[DEPLOY.md](DEPLOY.md)** - Hub de deployment
+- **[docs/deployment/DESPLIEGUE_CLOUD_RUN.md](docs/deployment/DESPLIEGUE_CLOUD_RUN.md)** - Setup Cloud Run
+- **[DESPLIEGUE.md](DESPLIEGUE.md)** - Hub de deployment
 
 ---
 

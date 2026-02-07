@@ -146,8 +146,8 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 
 ## 📚 Más Información
 
-- [Guía completa de deployment](CLOUD_RUN_DEPLOYMENT.md)
-- [Checklist de deployment](DEPLOYMENT_CHECKLIST.md)
+- [Guía completa de deployment](DESPLIEGUE_CLOUD_RUN.md)
+- [Checklist de deployment](LISTA_VERIFICACION_DESPLIEGUE.md)
 - [Documentación técnica](../technical/PROYECTO_COMPLETO.md)
 
 ## 🆘 Soporte
@@ -158,4 +158,4 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 
 ---
 
-**¿Listo para producción?** Ver [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md)
+**¿Listo para producción?** Ver [LISTA_VERIFICACION_DESPLIEGUE.md](LISTA_VERIFICACION_DESPLIEGUE.md)

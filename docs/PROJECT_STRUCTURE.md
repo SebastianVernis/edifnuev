@@ -15,7 +15,7 @@ edifnuev/
 │   ├── README.md                   # Documentación principal
 │   ├── START_HERE.md               # Punto de entrada rápido
 │   ├── CHANGELOG.md                # Historial de versiones
-│   ├── DOCUMENTATION_INDEX.md      # Índice completo de docs
+│   ├── INDICE_DOCUMENTACION.md      # Índice completo de docs
 │   ├── EDIFICIO_DEMO_CREDENCIALES.md  # Usuarios demo
 │   └── SETUP_SECRETS.md            # Configuración de secrets
 │
@@ -162,8 +162,8 @@ edifnuev/
 │   │   └── auth/                   # Screenshots flujo auth
 │   │
 │   ├── deployment/                 # Docs de despliegue
-│   │   ├── DEPLOY.md
-│   │   ├── DEPLOYMENT_STATUS.md
+│   │   ├── DESPLIEGUE.md
+│   │   ├── ESTADO_DESPLIEGUE.md
 │   │   └── ...
 │   │
 │   ├── features/                   # Docs de features

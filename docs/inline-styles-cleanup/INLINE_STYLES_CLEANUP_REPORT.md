@@ -349,8 +349,8 @@ color: #EF4444
 ## 📚 Referencias
 
 - **Archivo CSS consolidado**: `/public/css/main.css`
-- **Documentación CSS**: Ver `CSS_CONSOLIDATION_REPORT.md`
-- **Guía de migración**: Ver `CSS_MIGRATION_GUIDE.md`
+- **Documentación CSS**: Ver `REPORTE_CONSOLIDACION_CSS.md`
+- **Guía de migración**: Ver `GUIA_MIGRACION_CSS.md`
 
 ---
 

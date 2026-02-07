@@ -85,19 +85,19 @@
 
 ## 📁 Documentación Creada
 
-### ✅ DEPLOYMENT_TEST_RESULTS.md
+### ✅ RESULTADOS_PRUEBAS_DESPLIEGUE.md
 - Resultados completos de testing
 - Métricas de performance
 - Hallazgos y recomendaciones
 - Scripts de testing
 
-### ✅ DEPLOYMENT_OPTIMIZATION_REPORT.md
+### ✅ REPORTE_OPTIMIZACION_DESPLIEGUE.md
 - Análisis de configuración actual
 - Problemas detectados y soluciones
 - Optimizaciones priorizadas
 - Plan de acción detallado
 
-### ✅ DOCUMENTATION_INDEX.md
+### ✅ INDICE_DOCUMENTACION.md
 - Índice completo de 102 archivos
 - Organizado en 10 categorías
 - Guías de navegación por caso de uso
@@ -273,11 +273,11 @@ curl https://edificio-admin.sebastianvernis.workers.dev/api/usuarios \
 
 ## 📖 Documentación Relacionada
 
-- [DEPLOYMENT_TEST_RESULTS.md](DEPLOYMENT_TEST_RESULTS.md) - Resultados detallados de testing
-- [DEPLOYMENT_OPTIMIZATION_REPORT.md](DEPLOYMENT_OPTIMIZATION_REPORT.md) - Análisis y optimizaciones
-- [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) - Índice completo de documentación
+- [RESULTADOS_PRUEBAS_DESPLIEGUE.md](RESULTADOS_PRUEBAS_DESPLIEGUE.md) - Resultados detallados de testing
+- [REPORTE_OPTIMIZACION_DESPLIEGUE.md](REPORTE_OPTIMIZACION_DESPLIEGUE.md) - Análisis y optimizaciones
+- [INDICE_DOCUMENTACION.md](INDICE_DOCUMENTACION.md) - Índice completo de documentación
 - [START_HERE.md](START_HERE.md) - Guía de inicio rápido
-- [DEPLOY.md](DEPLOY.md) - Guía de deployment
+- [DESPLIEGUE.md](DESPLIEGUE.md) - Guía de deployment
 
 ---
 

@@ -118,7 +118,7 @@ cp /archive/css-old/themes.css /public/css/
 ### Documentación Relacionada
 - ✅ `/docs/css-consolidation/` - Documentación de consolidación
 - ✅ `/docs/INDEX.md` - Índice general
-- ✅ `CLEANUP_GUIDE.md` - Guía de limpieza
+- ✅ `GUIA_LIMPIEZA_PROYECTO.md` - Guía de limpieza
 
 ---
 
@@ -208,7 +208,7 @@ cp /archive/css-old/themes.css /public/css/
 | Archivos Archivados | `/archive/css-old/` |
 | Documentación CSS | `/docs/css-consolidation/` |
 | Índice General | `/docs/INDEX.md` |
-| Guía de Limpieza | `CLEANUP_GUIDE.md` |
+| Guía de Limpieza | `GUIA_LIMPIEZA_PROYECTO.md` |
 
 ---
 

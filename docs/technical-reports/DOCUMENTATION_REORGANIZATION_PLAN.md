@@ -21,24 +21,24 @@ docs/
 ## 📋 Archivos a Mover de Raíz a docs/
 
 ### 1. Documentación de Consolidación CSS
-- `CSS_ARCHIVING_COMPLETE.md` → `docs/css-consolidation/` (existente)
-- `CSS_CONSOLIDATION_INDEX.md` → `docs/css-consolidation/` (existente)
-- `CSS_CONSOLIDATION_REPORT.md` → `docs/css-consolidation/` (existente)
+- `ARCHIVADO_CSS_COMPLETADO.md` → `docs/css-consolidation/` (existente)
+- `INDICE_CONSOLIDACION_CSS.md` → `docs/css-consolidation/` (existente)
+- `REPORTE_CONSOLIDACION_CSS.md` → `docs/css-consolidation/` (existente)
 - `CSS_CONSOLIDATION_SUMMARY.txt` → `docs/css-consolidation/` (existente)
-- `CSS_DUPLICITIES_DETAILED.md` → `docs/css-consolidation/` (existente)
-- `CSS_MIGRATION_GUIDE.md` → `docs/css-consolidation/` (existente)
+- `ANALISIS_DUPLICIDADES_CSS.md` → `docs/css-consolidation/` (existente)
+- `GUIA_MIGRACION_CSS.md` → `docs/css-consolidation/` (existente)
 
 ### 2. Documentación de Limpieza de Estilos
-- `INLINE_STYLES_CLEANUP_REPORT.md` → `docs/inline-styles-cleanup/` (existente)
+- `REPORTE_LIMPIEZA_ESTILOS_INLINE.md` → `docs/inline-styles-cleanup/` (existente)
 
 ### 3. Documentación de Implementación
-- `IMPLEMENTATION_COMPLETE.md` → `docs/implementation/` (existente)
-- `FINAL_PROJECT_SUMMARY.md` → `docs/implementation/` (existente)
-- `PROJECT_ORGANIZATION_SUMMARY.md` → `docs/implementation/` (existente)
+- `IMPLEMENTACION_COMPLETADA.md` → `docs/implementation/` (existente)
+- `RESUMEN_FINAL_PROYECTO.md` → `docs/implementation/` (existente)
+- `RESUMEN_ORGANIZACION_PROYECTO.md` → `docs/implementation/` (existente)
 
 ### 4. Documentación Técnica
-- `CLEANUP_GUIDE.md` → `docs/technical-reports/` (existente)
-- `README_CSS_CONSOLIDATION.md` → `docs/technical-reports/` (existente)
+- `GUIA_LIMPIEZA_PROYECTO.md` → `docs/technical-reports/` (existente)
+- `README_CONSOLIDACION_CSS.md` → `docs/technical-reports/` (existente)
 
 ### 5. Documentación de Gestión de Proyecto
 - `README.md` → Mantener en raíz (archivo principal del proyecto)
@@ -59,27 +59,27 @@ docs/
 
 ### docs/css-consolidation/
 - `README.md` (existente)
-- `CSS_CONSOLIDATION_REPORT.md` (existente)
-- `CSS_ARCHIVING_COMPLETE.md` (existente)
-- `CSS_CONSOLIDATION_INDEX.md` (existente)
+- `REPORTE_CONSOLIDACION_CSS.md` (existente)
+- `ARCHIVADO_CSS_COMPLETADO.md` (existente)
+- `INDICE_CONSOLIDACION_CSS.md` (existente)
 - `CSS_CONSOLIDATION_SUMMARY.txt` (existente)
-- `CSS_DUPLICITIES_DETAILED.md` (existente)
-- `CSS_MIGRATION_GUIDE.md` (existente)
+- `ANALISIS_DUPLICIDADES_CSS.md` (existente)
+- `GUIA_MIGRACION_CSS.md` (existente)
 - `EXAMPLE_HTML_UPDATE.html` (existente)
 
 ### docs/inline-styles-cleanup/
 - `README.md` (existente)
-- `INLINE_STYLES_CLEANUP_REPORT.md` (existente)
+- `REPORTE_LIMPIEZA_ESTILOS_INLINE.md` (existente)
 
 ### docs/implementation/
-- `IMPLEMENTATION_COMPLETE.md` (existente)
-- `FINAL_PROJECT_SUMMARY.md` (existente)
-- `PROJECT_ORGANIZATION_SUMMARY.md` (existente)
+- `IMPLEMENTACION_COMPLETADA.md` (existente)
+- `RESUMEN_FINAL_PROYECTO.md` (existente)
+- `RESUMEN_ORGANIZACION_PROYECTO.md` (existente)
 
 ### docs/technical-reports/
-- `CLEANUP_GUIDE.md` (existente)
-- `README_CSS_CONSOLIDATION.md` (existente)
-- `DOCUMENTATION_REORGANIZATION_PLAN.md` (este archivo)
+- `GUIA_LIMPIEZA_PROYECTO.md` (existente)
+- `README_CONSOLIDACION_CSS.md` (existente)
+- `PLAN_REORGANIZACION_DOCUMENTACION.md` (este archivo)
 
 ### docs/archive-legacy/
 **Propósito**: Documentación histórica y archivos heredados de versiones anteriores.
@@ -135,24 +135,24 @@ git status
 git backup-tag-or-branch  # Opcional: crear backup en git
 
 # Mover archivos de consolidación CSS
-move_file "CSS_ARCHIVING_COMPLETE.md" "docs/css-consolidation/"
-move_file "CSS_CONSOLIDATION_INDEX.md" "docs/css-consolidation/"
-move_file "CSS_CONSOLIDATION_REPORT.md" "docs/css-consolidation/"
+move_file "ARCHIVADO_CSS_COMPLETADO.md" "docs/css-consolidation/"
+move_file "INDICE_CONSOLIDACION_CSS.md" "docs/css-consolidation/"
+move_file "REPORTE_CONSOLIDACION_CSS.md" "docs/css-consolidation/"
 move_file "CSS_CONSOLIDATION_SUMMARY.txt" "docs/css-consolidation/"
-move_file "CSS_DUPLICITIES_DETAILED.md" "docs/css-consolidation/"
-move_file "CSS_MIGRATION_GUIDE.md" "docs/css-consolidation/"
+move_file "ANALISIS_DUPLICIDADES_CSS.md" "docs/css-consolidation/"
+move_file "GUIA_MIGRACION_CSS.md" "docs/css-consolidation/"
 
 # Mover archivos de limpieza de estilos
-move_file "INLINE_STYLES_CLEANUP_REPORT.md" "docs/inline-styles-cleanup/"
+move_file "REPORTE_LIMPIEZA_ESTILOS_INLINE.md" "docs/inline-styles-cleanup/"
 
 # Mover archivos de implementación
-move_file "IMPLEMENTATION_COMPLETE.md" "docs/implementation/"
-move_file "FINAL_PROJECT_SUMMARY.md" "docs/implementation/"
-move_file "PROJECT_ORGANIZATION_SUMMARY.md" "docs/implementation/"
+move_file "IMPLEMENTACION_COMPLETADA.md" "docs/implementation/"
+move_file "RESUMEN_FINAL_PROYECTO.md" "docs/implementation/"
+move_file "RESUMEN_ORGANIZACION_PROYECTO.md" "docs/implementation/"
 
 # Mover archivos de reportes técnicos
-move_file "CLEANUP_GUIDE.md" "docs/technical-reports/"
-move_file "README_CSS_CONSOLIDATION.md" "docs/technical-reports/"
+move_file "GUIA_LIMPIEZA_PROYECTO.md" "docs/technical-reports/"
+move_file "README_CONSOLIDACION_CSS.md" "docs/technical-reports/"
 ```
 
 ### 3. Actualizar el índice principal

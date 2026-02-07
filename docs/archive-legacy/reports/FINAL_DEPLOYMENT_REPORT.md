@@ -209,15 +209,15 @@ wrangler d1 export edificio-admin-db --remote \
 1. **[README.md](README.md)** - Inicio rápido
 2. **[PRODUCTION_READY.md](PRODUCTION_READY.md)** - Este archivo
 3. **[DEPLOYMENT_SUMMARY.md](DEPLOYMENT_SUMMARY.md)** - Resumen completo
-4. **[DEPLOY.md](DEPLOY.md)** - Hub de deployment
+4. **[DESPLIEGUE.md](DESPLIEGUE.md)** - Hub de deployment
 
 ### Workers/Cloudflare
-5. **[WORKERS_DEPLOYMENT_STATUS.md](WORKERS_DEPLOYMENT_STATUS.md)** - Estado Workers
-6. **[docs/deployment/WORKERS_DEPLOYMENT.md](docs/deployment/WORKERS_DEPLOYMENT.md)** - Guía completa
+5. **[WORKERS_ESTADO_DESPLIEGUE.md](WORKERS_ESTADO_DESPLIEGUE.md)** - Estado Workers
+6. **[docs/deployment/DESPLIEGUE_WORKERS.md](docs/deployment/DESPLIEGUE_WORKERS.md)** - Guía completa
 7. **[docs/deployment/WORKERS_COMPLETE_SETUP.md](docs/deployment/WORKERS_COMPLETE_SETUP.md)** - Setup detallado
 
 ### Cloud Run
-8. **[docs/deployment/CLOUD_RUN_DEPLOYMENT.md](docs/deployment/CLOUD_RUN_DEPLOYMENT.md)** - Guía Cloud Run
+8. **[docs/deployment/DESPLIEGUE_CLOUD_RUN.md](docs/deployment/DESPLIEGUE_CLOUD_RUN.md)** - Guía Cloud Run
 9. **[docs/deployment/QUICK_START_CLOUD_RUN.md](docs/deployment/QUICK_START_CLOUD_RUN.md)** - 5-min deploy
 
 ### Verificaciones

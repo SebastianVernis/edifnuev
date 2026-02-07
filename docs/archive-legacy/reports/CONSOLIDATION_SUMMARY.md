@@ -208,7 +208,7 @@ edifnuev/
 │   └── package.json ✅ (scripts de testing)
 ├── TESTING_E2E.md
 ├── REMOTE_CODE_TASK.md
-├── CLOUDFLARE_ACCESS_SETUP.md
+├── CONFIGURACION_CLOUDFLARE_ACCESS.md
 └── CONSOLIDATION_SUMMARY.md (este archivo)
 ```
 
