@@ -242,7 +242,7 @@ Si encuentras algún problema durante la migración:
 1. Verifica que el archivo `main.css` esté en la ruta correcta
 2. Limpia el caché del navegador
 3. Abre DevTools y verifica los errores
-4. Compara con el [archivo de consolidación](/docs/css-consolidation/CSS_CONSOLIDATION_INDEX.md)
+4. Compara con el [archivo de consolidación](/docs/css-consolidation/INDICE_CONSOLIDACION_CSS.md)
 
 ---
 

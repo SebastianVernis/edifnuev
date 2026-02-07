@@ -28,21 +28,21 @@ Archivo consolidado con todo el CSS del proyecto.
 - 4 breakpoints responsive
 - 50+ variables CSS
 
-### 2. **CSS_CONSOLIDATION_REPORT.md**
+### 2. **REPORTE_CONSOLIDACION_CSS.md**
 Reporte detallado de la consolidación.
 - Duplicidades encontradas
 - Archivos consolidados
 - Beneficios de la consolidación
 - Instrucciones de uso
 
-### 3. **CSS_MIGRATION_GUIDE.md**
+### 3. **GUIA_MIGRACION_CSS.md**
 Guía paso a paso para migrar a main.css.
 - Instrucciones de actualización
 - Ejemplos de código
 - Checklist de verificación
 - Troubleshooting
 
-### 4. **CSS_DUPLICITIES_DETAILED.md**
+### 4. **ANALISIS_DUPLICIDADES_CSS.md**
 Análisis detallado de duplicidades.
 - Tabla de duplicidades por categoría
 - Estadísticas globales
@@ -272,9 +272,9 @@ public/css/
 
 ## 📚 Documentación
 
-- **CSS_CONSOLIDATION_REPORT.md** - Reporte de consolidación
-- **CSS_MIGRATION_GUIDE.md** - Guía de migración
-- **CSS_DUPLICITIES_DETAILED.md** - Análisis detallado de duplicidades
+- **REPORTE_CONSOLIDACION_CSS.md** - Reporte de consolidación
+- **GUIA_MIGRACION_CSS.md** - Guía de migración
+- **ANALISIS_DUPLICIDADES_CSS.md** - Análisis detallado de duplicidades
 - **analyze-css.sh** - Script de análisis
 
 ---

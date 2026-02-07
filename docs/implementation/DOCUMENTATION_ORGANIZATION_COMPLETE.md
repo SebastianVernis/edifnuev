@@ -40,31 +40,31 @@ docs/
 ## 📋 Archivos Movidos y Organizados
 
 ### 1. Documentación de Consolidación CSS (6 archivos)
-- `CSS_ARCHIVING_COMPLETE.md`
-- `CSS_CONSOLIDATION_INDEX.md`
-- `CSS_CONSOLIDATION_REPORT.md`
+- `ARCHIVADO_CSS_COMPLETADO.md`
+- `INDICE_CONSOLIDACION_CSS.md`
+- `REPORTE_CONSOLIDACION_CSS.md`
 - `CSS_CONSOLIDATION_SUMMARY.txt`
-- `CSS_DUPLICITIES_DETAILED.md`
-- `CSS_MIGRATION_GUIDE.md`
+- `ANALISIS_DUPLICIDADES_CSS.md`
+- `GUIA_MIGRACION_CSS.md`
 
 **Ubicación**: `/docs/css-consolidation/`
 
 ### 2. Documentación de Limpieza de Estilos Inline (1 archivo)
-- `INLINE_STYLES_CLEANUP_REPORT.md`
+- `REPORTE_LIMPIEZA_ESTILOS_INLINE.md`
 
 **Ubicación**: `/docs/inline-styles-cleanup/`
 
 ### 3. Documentación de Implementación (3 archivos)
-- `IMPLEMENTATION_COMPLETE.md`
-- `FINAL_PROJECT_SUMMARY.md`
-- `PROJECT_ORGANIZATION_SUMMARY.md`
+- `IMPLEMENTACION_COMPLETADA.md`
+- `RESUMEN_FINAL_PROYECTO.md`
+- `RESUMEN_ORGANIZACION_PROYECTO.md`
 
 **Ubicación**: `/docs/implementation/`
 
 ### 4. Reportes Técnicos (3 archivos)
-- `CLEANUP_GUIDE.md`
-- `README_CSS_CONSOLIDATION.md`
-- `DOCUMENTATION_REORGANIZATION_PLAN.md`
+- `GUIA_LIMPIEZA_PROYECTO.md`
+- `README_CONSOLIDACION_CSS.md`
+- `PLAN_REORGANIZACION_DOCUMENTACION.md`
 
 **Ubicación**: `/docs/technical-reports/`
 
@@ -144,12 +144,12 @@ Los siguientes archivos esenciales se mantuvieron en la raíz del proyecto:
 ### Para Mantenimiento
 1. **Consolidación CSS**: `/docs/css-consolidation/`
 2. **Limpieza de estilos**: `/docs/inline-styles-cleanup/`
-3. **Guías de limpieza**: `/docs/technical-reports/CLEANUP_GUIDE.md`
+3. **Guías de limpieza**: `/docs/technical-reports/GUIA_LIMPIEZA_PROYECTO.md`
 
 ### Para Despliegue
 1. **Guías completas**: `/docs/deployment/`
 2. **Configuración**: `/docs/setup/`
-3. **Checklist**: `/docs/deployment/DEPLOYMENT_CHECKLIST.md`
+3. **Checklist**: `/docs/deployment/LISTA_VERIFICACION_DESPLIEGUE.md`
 
 ---
 

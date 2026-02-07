@@ -32,13 +32,13 @@ Este documento proporciona instrucciones para limpiar el proyecto después de la
 Estos archivos están ahora organizados en `/docs/` y pueden ser eliminados de la raíz:
 
 ```
-❌ CSS_CONSOLIDATION_REPORT.md (Movido a /docs/css-consolidation/)
+❌ REPORTE_CONSOLIDACION_CSS.md (Movido a /docs/css-consolidation/)
 ❌ CSS_CONSOLIDATION_SUMMARY.txt (Movido a /docs/css-consolidation/)
-❌ CSS_CONSOLIDATION_INDEX.md (Movido a /docs/css-consolidation/)
-❌ CSS_MIGRATION_GUIDE.md (Movido a /docs/css-consolidation/)
-❌ CSS_DUPLICITIES_DETAILED.md (Movido a /docs/css-consolidation/)
-❌ README_CSS_CONSOLIDATION.md (Movido a /docs/css-consolidation/)
-❌ INLINE_STYLES_CLEANUP_REPORT.md (Movido a /docs/inline-styles-cleanup/)
+❌ INDICE_CONSOLIDACION_CSS.md (Movido a /docs/css-consolidation/)
+❌ GUIA_MIGRACION_CSS.md (Movido a /docs/css-consolidation/)
+❌ ANALISIS_DUPLICIDADES_CSS.md (Movido a /docs/css-consolidation/)
+❌ README_CONSOLIDACION_CSS.md (Movido a /docs/css-consolidation/)
+❌ REPORTE_LIMPIEZA_ESTILOS_INLINE.md (Movido a /docs/inline-styles-cleanup/)
 ❌ EXAMPLE_HTML_UPDATE.html (Movido a /docs/css-consolidation/)
 ❌ analyze-css.sh (Movido a /scripts/analysis/)
 ```
@@ -91,13 +91,13 @@ PROJECT_ROOT="$(pwd)"
 ls -la ./docs/
 
 # Eliminar archivos de raíz (después de verificar)
-rm ./CSS_CONSOLIDATION_REPORT.md
+rm ./REPORTE_CONSOLIDACION_CSS.md
 rm ./CSS_CONSOLIDATION_SUMMARY.txt
-rm ./CSS_CONSOLIDATION_INDEX.md
-rm ./CSS_MIGRATION_GUIDE.md
-rm ./CSS_DUPLICITIES_DETAILED.md
-rm ./README_CSS_CONSOLIDATION.md
-rm ./INLINE_STYLES_CLEANUP_REPORT.md
+rm ./INDICE_CONSOLIDACION_CSS.md
+rm ./GUIA_MIGRACION_CSS.md
+rm ./ANALISIS_DUPLICIDADES_CSS.md
+rm ./README_CONSOLIDACION_CSS.md
+rm ./REPORTE_LIMPIEZA_ESTILOS_INLINE.md
 rm ./EXAMPLE_HTML_UPDATE.html
 ```
 
@@ -164,19 +164,19 @@ wc -l ./public/css/main.css
 <project_root>/
 ├── docs/
 │   ├── INDEX.md
-│   ├── IMPLEMENTATION_COMPLETE.md
+│   ├── IMPLEMENTACION_COMPLETADA.md
 │   ├── css-consolidation/
 │   │   ├── README.md
-│   │   ├── CSS_CONSOLIDATION_REPORT.md
+│   │   ├── REPORTE_CONSOLIDACION_CSS.md
 │   │   ├── CSS_CONSOLIDATION_SUMMARY.txt
-│   │   ├── CSS_CONSOLIDATION_INDEX.md
-│   │   ├── CSS_MIGRATION_GUIDE.md
-│   │   ├── CSS_DUPLICITIES_DETAILED.md
-│   │   ├── README_CSS_CONSOLIDATION.md
+│   │   ├── INDICE_CONSOLIDACION_CSS.md
+│   │   ├── GUIA_MIGRACION_CSS.md
+│   │   ├── ANALISIS_DUPLICIDADES_CSS.md
+│   │   ├── README_CONSOLIDACION_CSS.md
 │   │   └── EXAMPLE_HTML_UPDATE.html
 │   └── inline-styles-cleanup/
 │       ├── README.md
-│       └── INLINE_STYLES_CLEANUP_REPORT.md
+│       └── REPORTE_LIMPIEZA_ESTILOS_INLINE.md
 ├── scripts/
 │   └── analysis/
 │       ├── README.md

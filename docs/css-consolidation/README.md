@@ -5,13 +5,13 @@ Este directorio contiene toda la documentación relacionada con la consolidació
 ## Archivos Incluidos
 
 ### Reportes Principales
-- `CSS_CONSOLIDATION_REPORT.md` - Reporte detallado de la consolidación
+- `REPORTE_CONSOLIDACION_CSS.md` - Reporte detallado de la consolidación
 - `CSS_CONSOLIDATION_SUMMARY.txt` - Resumen en texto plano
-- `CSS_CONSOLIDATION_INDEX.md` - Índice y referencias
+- `INDICE_CONSOLIDACION_CSS.md` - Índice y referencias
 
 ### Guías
-- `CSS_MIGRATION_GUIDE.md` - Guía paso a paso de migración
-- `CSS_DUPLICITIES_DETAILED.md` - Análisis detallado de duplicidades
+- `GUIA_MIGRACION_CSS.md` - Guía paso a paso de migración
+- `ANALISIS_DUPLICIDADES_CSS.md` - Análisis detallado de duplicidades
 
 ### Ejemplos
 - `EXAMPLE_HTML_UPDATE.html` - Ejemplo de cómo actualizar archivos HTML
@@ -43,7 +43,7 @@ Este directorio contiene toda la documentación relacionada con la consolidació
 
 - Archivo consolidado: `/public/css/main.css`
 - Documentación general: `/docs/`
-- Cambios de implementación: `IMPLEMENTATION_COMPLETE.md`
+- Cambios de implementación: `IMPLEMENTACION_COMPLETADA.md`
 
 ---
 

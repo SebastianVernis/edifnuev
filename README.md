@@ -32,5 +32,5 @@ Sistema completo de administración para edificios de departamentos con gestión
 - **Archivos**: Cloudflare R2.
 
 ---
-Ver documentación completa en [docs/](docs/DOCUMENTATION_INDEX.md).
+Ver documentación completa en [docs/](docs/INDICE_DOCUMENTACION.md).
 Reporte de pruebas disponible en [TESTING_REPORT.md](TESTING_REPORT.md).

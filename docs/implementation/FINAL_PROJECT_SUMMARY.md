@@ -68,19 +68,19 @@
 │
 ├── 📁 docs/ ⭐ (Documentación Centralizada)
 │   ├── INDEX.md (Índice general)
-│   ├── IMPLEMENTATION_COMPLETE.md
+│   ├── IMPLEMENTACION_COMPLETADA.md
 │   ├── 📁 css-consolidation/
 │   │   ├── README.md
-│   │   ├── CSS_CONSOLIDATION_REPORT.md
+│   │   ├── REPORTE_CONSOLIDACION_CSS.md
 │   │   ├── CSS_CONSOLIDATION_SUMMARY.txt
-│   │   ├── CSS_CONSOLIDATION_INDEX.md
-│   │   ├── CSS_MIGRATION_GUIDE.md
-│   │   ├── CSS_DUPLICITIES_DETAILED.md
-│   │   ├── README_CSS_CONSOLIDATION.md
+│   │   ├── INDICE_CONSOLIDACION_CSS.md
+│   │   ├── GUIA_MIGRACION_CSS.md
+│   │   ├── ANALISIS_DUPLICIDADES_CSS.md
+│   │   ├── README_CONSOLIDACION_CSS.md
 │   │   └── EXAMPLE_HTML_UPDATE.html
 │   └── 📁 inline-styles-cleanup/
 │       ├── README.md
-│       └── INLINE_STYLES_CLEANUP_REPORT.md
+│       └── REPORTE_LIMPIEZA_ESTILOS_INLINE.md
 │
 ├── 📁 scripts/ (Scripts de Análisis)
 │   └── 📁 analysis/
@@ -109,9 +109,9 @@
 │   └── 📁 css/
 │       └── main.css ⭐ (CSS Consolidado - ÚNICO)
 │
-├── 📄 PROJECT_ORGANIZATION_SUMMARY.md (Resumen de Organización)
-├── 📄 CLEANUP_GUIDE.md (Guía de Limpieza)
-├── 📄 CSS_ARCHIVING_COMPLETE.md (Confirmación de Archivado)
+├── 📄 RESUMEN_ORGANIZACION_PROYECTO.md (Resumen de Organización)
+├── 📄 GUIA_LIMPIEZA_PROYECTO.md (Guía de Limpieza)
+├── 📄 ARCHIVADO_CSS_COMPLETADO.md (Confirmación de Archivado)
 │
 └── ... (otros directorios del proyecto)
 ```
@@ -124,10 +124,10 @@
 | Archivo | Ubicación | Propósito |
 |---------|-----------|----------|
 | **INDEX.md** | `/docs/` | Índice general de documentación |
-| **IMPLEMENTATION_COMPLETE.md** | `/docs/` | Confirmación de implementación |
-| **PROJECT_ORGANIZATION_SUMMARY.md** | Raíz | Resumen de organización |
-| **CLEANUP_GUIDE.md** | Raíz | Guía de limpieza |
-| **CSS_ARCHIVING_COMPLETE.md** | Raíz | Confirmación de archivado |
+| **IMPLEMENTACION_COMPLETADA.md** | `/docs/` | Confirmación de implementación |
+| **RESUMEN_ORGANIZACION_PROYECTO.md** | Raíz | Resumen de organización |
+| **GUIA_LIMPIEZA_PROYECTO.md** | Raíz | Guía de limpieza |
+| **ARCHIVADO_CSS_COMPLETADO.md** | Raíz | Confirmación de archivado |
 
 ### CSS Consolidado
 | Archivo | Ubicación | Propósito |
@@ -146,21 +146,21 @@
 ### Para Entender la Estructura
 ```
 1. Lee: /docs/INDEX.md
-2. Consulta: PROJECT_ORGANIZATION_SUMMARY.md
-3. Referencia: CLEANUP_GUIDE.md
+2. Consulta: RESUMEN_ORGANIZACION_PROYECTO.md
+3. Referencia: GUIA_LIMPIEZA_PROYECTO.md
 ```
 
 ### Para Entender la Consolidación CSS
 ```
 1. Lee: /docs/css-consolidation/README.md
-2. Consulta: /docs/css-consolidation/CSS_CONSOLIDATION_REPORT.md
+2. Consulta: /docs/css-consolidation/REPORTE_CONSOLIDACION_CSS.md
 3. Referencia: /public/css/main.css
 ```
 
 ### Para Entender la Limpieza de Estilos Inline
 ```
 1. Lee: /docs/inline-styles-cleanup/README.md
-2. Consulta: /docs/inline-styles-cleanup/INLINE_STYLES_CLEANUP_REPORT.md
+2. Consulta: /docs/inline-styles-cleanup/REPORTE_LIMPIEZA_ESTILOS_INLINE.md
 ```
 
 ### Para Ejecutar Análisis

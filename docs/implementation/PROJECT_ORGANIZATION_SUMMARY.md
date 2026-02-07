@@ -6,11 +6,11 @@
 
 #### Directorio `/docs/css-consolidation/`
 - ✅ `README.md` - Introducción a la consolidación CSS
-- ✅ `CSS_CONSOLIDATION_REPORT.md` - Reporte detallado
+- ✅ `REPORTE_CONSOLIDACION_CSS.md` - Reporte detallado
 
 #### Directorio `/docs/inline-styles-cleanup/`
 - ✅ `README.md` - Introducción a la limpieza de estilos inline
-- ✅ `INLINE_STYLES_CLEANUP_REPORT.md` - Reporte detallado
+- ✅ `REPORTE_LIMPIEZA_ESTILOS_INLINE.md` - Reporte detallado
 
 #### Directorio `/docs/`
 - ✅ `INDEX.md` - Índice general de documentación
@@ -38,19 +38,19 @@
 │
 ├── 📁 docs/
 │   ├── INDEX.md ⭐ (Índice general)
-│   ├── IMPLEMENTATION_COMPLETE.md
+│   ├── IMPLEMENTACION_COMPLETADA.md
 │   ├── 📁 css-consolidation/
 │   │   ├── README.md
-│   │   ├── CSS_CONSOLIDATION_REPORT.md
+│   │   ├── REPORTE_CONSOLIDACION_CSS.md
 │   │   ├── CSS_CONSOLIDATION_SUMMARY.txt
-│   │   ├── CSS_CONSOLIDATION_INDEX.md
-│   │   ├── CSS_MIGRATION_GUIDE.md
-│   │   ├── CSS_DUPLICITIES_DETAILED.md
-│   │   ├── README_CSS_CONSOLIDATION.md
+│   │   ├── INDICE_CONSOLIDACION_CSS.md
+│   │   ├── GUIA_MIGRACION_CSS.md
+│   │   ├── ANALISIS_DUPLICIDADES_CSS.md
+│   │   ├── README_CONSOLIDACION_CSS.md
 │   │   └── EXAMPLE_HTML_UPDATE.html
 │   └── 📁 inline-styles-cleanup/
 │       ├── README.md
-│       └── INLINE_STYLES_CLEANUP_REPORT.md
+│       └── REPORTE_LIMPIEZA_ESTILOS_INLINE.md
 │
 ├── 📁 scripts/
 │   └── 📁 analysis/
@@ -80,9 +80,9 @@
 | Archivo | Ubicación | Propósito |
 |---------|-----------|----------|
 | INDEX.md | `/docs/` | Índice general de documentación |
-| IMPLEMENTATION_COMPLETE.md | `/docs/` | Confirmación de implementación |
-| CSS_CONSOLIDATION_REPORT.md | `/docs/css-consolidation/` | Reporte de consolidación CSS |
-| INLINE_STYLES_CLEANUP_REPORT.md | `/docs/inline-styles-cleanup/` | Reporte de limpieza de estilos inline |
+| IMPLEMENTACION_COMPLETADA.md | `/docs/` | Confirmación de implementación |
+| REPORTE_CONSOLIDACION_CSS.md | `/docs/css-consolidation/` | Reporte de consolidación CSS |
+| REPORTE_LIMPIEZA_ESTILOS_INLINE.md | `/docs/inline-styles-cleanup/` | Reporte de limpieza de estilos inline |
 
 ### Scripts de Análisis
 | Script | Ubicación | Propósito |
@@ -138,15 +138,15 @@
 
 ### Para Entender el Proyecto
 1. Lee: `/docs/INDEX.md` (Índice general)
-2. Consulta: `/docs/IMPLEMENTATION_COMPLETE.md` (Confirmación)
+2. Consulta: `/docs/IMPLEMENTACION_COMPLETADA.md` (Confirmación)
 
 ### Para Entender la Consolidación CSS
 1. Lee: `/docs/css-consolidation/README.md`
-2. Consulta: `/docs/css-consolidation/CSS_CONSOLIDATION_REPORT.md`
+2. Consulta: `/docs/css-consolidation/REPORTE_CONSOLIDACION_CSS.md`
 
 ### Para Entender la Limpieza de Estilos Inline
 1. Lee: `/docs/inline-styles-cleanup/README.md`
-2. Consulta: `/docs/inline-styles-cleanup/INLINE_STYLES_CLEANUP_REPORT.md`
+2. Consulta: `/docs/inline-styles-cleanup/REPORTE_LIMPIEZA_ESTILOS_INLINE.md`
 
 ### Para Ejecutar Análisis
 1. Lee: `/scripts/analysis/README.md`

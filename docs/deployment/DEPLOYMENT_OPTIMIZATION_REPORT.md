@@ -381,8 +381,8 @@ La documentación ya está bien organizada:
 - ✅ README.md
 - ✅ START_HERE.md
 - ✅ CHANGELOG.md
-- ✅ DEPLOY.md
-- ✅ DOCUMENTATION_INDEX.md
+- ✅ DESPLIEGUE.md
+- ✅ INDICE_DOCUMENTACION.md
 - ✅ QWEN.md
 
 **docs/ Directory (96 archivos organizados):**

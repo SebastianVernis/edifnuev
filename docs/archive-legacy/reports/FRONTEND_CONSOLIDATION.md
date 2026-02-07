@@ -40,10 +40,10 @@
 - ✅ `FINAL_DEPLOYMENT_REPORT.md` - Reporte de deployment
 - ✅ `DEPLOYMENT_SUMMARY.md` - Resumen de deployments
 - ✅ `PROJECT_SUMMARY.md` - Resumen del proyecto
-- ✅ `WORKERS_DEPLOYMENT_STATUS.md` - Estado de Workers
+- ✅ `WORKERS_ESTADO_DESPLIEGUE.md` - Estado de Workers
 
 ### Guías de Deployment
-- ✅ `DEPLOY.md` - Hub de deployment
+- ✅ `DESPLIEGUE.md` - Hub de deployment
 - ✅ `REMOTE_UPDATE.md` - Actualización de remoto
 - ✅ `docs/deployment/WORKERS_COMPLETE_SETUP.md` - Setup completo
 - ✅ `docs/cloudflare/pages-proxy/README.md` - Configuración proxy

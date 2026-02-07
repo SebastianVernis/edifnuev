@@ -4,7 +4,7 @@ Este directorio contiene documentación sobre la limpieza y consolidación de es
 
 ## Archivos Incluidos
 
-- `INLINE_STYLES_CLEANUP_REPORT.md` - Reporte completo del análisis de estilos inline
+- `REPORTE_LIMPIEZA_ESTILOS_INLINE.md` - Reporte completo del análisis de estilos inline
 
 ## Resumen
 

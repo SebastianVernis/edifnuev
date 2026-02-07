@@ -341,7 +341,7 @@ curl https://edificio-admin.sebastianvernis.workers.dev/api/validation/health
 ## 📚 Documentación
 
 - **[DEPLOYMENT_SUMMARY.md](DEPLOYMENT_SUMMARY.md)** - Resumen completo
-- **[WORKERS_DEPLOYMENT_STATUS.md](WORKERS_DEPLOYMENT_STATUS.md)** - Estado Workers
+- **[WORKERS_ESTADO_DESPLIEGUE.md](WORKERS_ESTADO_DESPLIEGUE.md)** - Estado Workers
 - **[docs/deployment/WORKERS_COMPLETE_SETUP.md](docs/deployment/WORKERS_COMPLETE_SETUP.md)** - Setup paso a paso
 - **[test-full-integration.js](test-full-integration.js)** - Tests de integración
 

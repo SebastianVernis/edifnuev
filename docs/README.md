@@ -209,11 +209,11 @@ edifnuev/
 
 ### 🎯 Inicio
 - **[START_HERE.md](START_HERE.md)** - Punto de entrada rápido
-- **[DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md)** - Índice completo de documentación
+- **[INDICE_DOCUMENTACION.md](INDICE_DOCUMENTACION.md)** - Índice completo de documentación
 
 ### 🚀 Despliegue
-- **[DEPLOY.md](DEPLOY.md)** - Guía de despliegue en Cloudflare
-- **[DEPLOYMENT_STATUS.md](DEPLOYMENT_STATUS.md)** - Estado actual del despliegue
+- **[DESPLIEGUE.md](DESPLIEGUE.md)** - Guía de despliegue en Cloudflare
+- **[ESTADO_DESPLIEGUE.md](ESTADO_DESPLIEGUE.md)** - Estado actual del despliegue
 
 ### 👨‍💻 Desarrollo
 - **[SETUP_SECRETS.md](SETUP_SECRETS.md)** - Configuración de secrets

@@ -31,12 +31,12 @@ docs/
 
 **Archivos disponibles**:
 - `README.md` - Introducción a la consolidación CSS
-- `CSS_CONSOLIDATION_REPORT.md` - Reporte detallado de consolidación
-- `CSS_ARCHIVING_COMPLETE.md` - Confirmación de archivado CSS
-- `CSS_CONSOLIDATION_INDEX.md` - Índice de consolidación CSS
+- `REPORTE_CONSOLIDACION_CSS.md` - Reporte detallado de consolidación
+- `ARCHIVADO_CSS_COMPLETADO.md` - Confirmación de archivado CSS
+- `INDICE_CONSOLIDACION_CSS.md` - Índice de consolidación CSS
 - `CSS_CONSOLIDATION_SUMMARY.txt` - Resumen de consolidación
-- `CSS_DUPLICITIES_DETAILED.md` - Análisis detallado de duplicidades
-- `CSS_MIGRATION_GUIDE.md` - Guía de migración CSS
+- `ANALISIS_DUPLICIDADES_CSS.md` - Análisis detallado de duplicidades
+- `GUIA_MIGRACION_CSS.md` - Guía de migración CSS
 
 **Contenido destacado**:
 - Resumen de consolidación de 9 archivos CSS a 1 archivo principal
@@ -53,7 +53,7 @@ docs/
 
 **Archivos disponibles**:
 - `README.md` - Introducción a la limpieza de estilos inline
-- `INLINE_STYLES_CLEANUP_REPORT.md` - Reporte detallado de análisis
+- `REPORTE_LIMPIEZA_ESTILOS_INLINE.md` - Reporte detallado de análisis
 
 **Contenido destacado**:
 - Análisis de 214 estilos inline encontrados
@@ -69,11 +69,11 @@ docs/
 **Ubicación**: `/docs/deployment/`
 
 **Archivos disponibles**:
-- `DEPLOY.md` - Guía principal de despliegue
-- `DEPLOYMENT_CHECKLIST.md` - Checklist de despliegue
-- `CLOUD_RUN_DEPLOYMENT.md` - Despliegue en Cloud Run
-- `CLOUDFLARE_ACCESS_SETUP.md` - Configuración de Cloudflare Access
-- `WORKERS_DEPLOYMENT.md` - Despliegue de Cloudflare Workers
+- `DESPLIEGUE.md` - Guía principal de despliegue
+- `LISTA_VERIFICACION_DESPLIEGUE.md` - Checklist de despliegue
+- `DESPLIEGUE_CLOUD_RUN.md` - Despliegue en Cloud Run
+- `CONFIGURACION_CLOUDFLARE_ACCESS.md` - Configuración de Cloudflare Access
+- `DESPLIEGUE_WORKERS.md` - Despliegue de Cloudflare Workers
 - `GUIA_DESPLIEGUE_COMPLETA.md` - Guía completa de despliegue
 
 **Contenido destacado**:
@@ -92,7 +92,7 @@ docs/
 **Archivos disponibles**:
 - `START_HERE.md` - Punto de inicio para configuración
 - `SETUP_SECRETS.md` - Configuración de secretos y variables
-- `SETUP_FIX_SUMMARY.md` - Resumen de correcciones de configuración
+- `RESUMEN_CORRECCION_CONFIGURACION.md` - Resumen de correcciones de configuración
 - `CREDENCIALES_CORRECTAS.md` - Credenciales correctas
 - `CREDENCIALES_DEMO_ACTUALIZADAS.md` - Credenciales de demo
 
@@ -110,9 +110,9 @@ docs/
 **Ubicación**: `/docs/implementation/`
 
 **Archivos disponibles**:
-- `IMPLEMENTATION_COMPLETE.md` - Confirmación de implementación completada
-- `FINAL_PROJECT_SUMMARY.md` - Resumen final del proyecto
-- `PROJECT_ORGANIZATION_SUMMARY.md` - Resumen de organización del proyecto
+- `IMPLEMENTACION_COMPLETADA.md` - Confirmación de implementación completada
+- `RESUMEN_FINAL_PROYECTO.md` - Resumen final del proyecto
+- `RESUMEN_ORGANIZACION_PROYECTO.md` - Resumen de organización del proyecto
 
 **Contenido destacado**:
 - Checklist de verificación de implementación
@@ -128,8 +128,8 @@ docs/
 **Ubicación**: `/docs/technical-reports/`
 
 **Archivos disponibles**:
-- `CLEANUP_GUIDE.md` - Guía de limpieza y organización
-- `README_CSS_CONSOLIDATION.md` - Documentación técnica de consolidación CSS
+- `GUIA_LIMPIEZA_PROYECTO.md` - Guía de limpieza y organización
+- `README_CONSOLIDACION_CSS.md` - Documentación técnica de consolidación CSS
 
 **Contenido destacado**:
 - Guías técnicas para mantenimiento
@@ -201,17 +201,17 @@ screenshots/
 ### Para Desarrolladores Nuevos
 1. **Configuración inicial**: `/docs/setup/START_HERE.md`
 2. **Estructura del proyecto**: `/docs/PROJECT_STRUCTURE.md`
-3. **Despliegue**: `/docs/deployment/DEPLOY.md`
+3. **Despliegue**: `/docs/deployment/DESPLIEGUE.md`
 
 ### Para Mantenimiento CSS
 1. **Consolidación CSS**: `/docs/css-consolidation/README.md`
-2. **Guía de migración**: `/docs/css-consolidation/CSS_MIGRATION_GUIDE.md`
-3. **Reporte técnico**: `/docs/technical-reports/README_CSS_CONSOLIDATION.md`
+2. **Guía de migración**: `/docs/css-consolidation/GUIA_MIGRACION_CSS.md`
+3. **Reporte técnico**: `/docs/technical-reports/README_CONSOLIDACION_CSS.md`
 
 ### Para Despliegue
-1. **Checklist**: `/docs/deployment/DEPLOYMENT_CHECKLIST.md`
-2. **Cloudflare Workers**: `/docs/deployment/WORKERS_DEPLOYMENT.md`
-3. **Cloud Run**: `/docs/deployment/CLOUD_RUN_DEPLOYMENT.md`
+1. **Checklist**: `/docs/deployment/LISTA_VERIFICACION_DESPLIEGUE.md`
+2. **Cloudflare Workers**: `/docs/deployment/DESPLIEGUE_WORKERS.md`
+3. **Cloud Run**: `/docs/deployment/DESPLIEGUE_CLOUD_RUN.md`
 
 ---
 
